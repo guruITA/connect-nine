@@ -24,10 +24,10 @@ Is blocked by
 Blocks
 - <number> <title> · epic <name>
 
-Relates to (docs/requirements.md)
+Relates to (docs/project/requirements.md)
 - <FR code> <name> · epic <name> · <first issue of that epic, or why it relates>
 
-Quality rules this issue follows (docs/requirements.md)
+Quality rules this issue follows (docs/project/requirements.md)
 - <NFR code> <name> · epic <name> · <issue that holds the rule, if there is one>
 
 ## HOW IT WORKS (for developers)
@@ -44,7 +44,7 @@ The road the data travels
    - Infrastructure (the storeroom) <what it reads or writes>
 3. The database. <which table, what changes>
 
-The answer goes back the same way, and the screen shows <what>. All words and setup steps: docs/onboarding.md. The rules for names and layout: docs/codeConventions.md.
+The answer goes back the same way, and the screen shows <what>. All words and setup steps: docs/team/onboarding.md. The rules for names and layout: docs/team/codeConventions.md.
 
 ## TESTING, WHAT PROVES THIS ISSUE
 
@@ -65,7 +65,7 @@ Non functional
 ## DEFINITION OF DONE (type client)
 
 - [ ] The question was asked to the client, and the answer is written in the issue with the date.
-- [ ] The answer is in the document it belongs in, such as docs/requirements.md or a file in docs/decisions.
+- [ ] The answer is in the document it belongs in, such as docs/project/requirements.md or a file in docs/decisions.
 - [ ] The issues that waited on the answer are updated and told they can start.
 - [ ] The BoKSA proof is collected, and AI use is declared.
 
