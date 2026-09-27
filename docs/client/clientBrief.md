@@ -1,7 +1,10 @@
 # Young Amstelland Connect, the client's brief
 
 What the client sent about the product, kept verbatim. Received from Rachid Kherrazi,
-WailSalutem Foundation, on 22 September 2026. The drawn concept is `clientBriefConcept.jpeg`.
+WailSalutem Foundation, on 22 September 2026. The drawn concept is
+`docs/client/clientBriefConcept.jpeg`. The requirements that follow from it are in
+`docs/project/requirements.md`, and the open questions for the client are in
+`docs/client/clientQuestions.md`.
 
 The studio's own assignment form is "Young Amstelland Award Engaing Social App Form Sem 1-
 Social Impact Apps - description sem1-2026-2027".
@@ -65,7 +68,7 @@ it. No wording below was drafted, reworded, or added by AI.
 
 ## The concept diagram
 
-`clientBriefConcept.jpeg`, 1536 by 1024. It shows the same split as the text: the awards
+`docs/client/clientBriefConcept.jpeg`, 1536 by 1024. It shows the same split as the text: the awards
 platform keeps nominations, voting, jury process and gala, marked "Los van elkaar (wel
 verbonden)", joined by link or reference only. Connect carries the modules profielen,
 projecten, challenges, events, community, badges, nieuws and beheer & statistieken, with its
@@ -73,5 +76,8 @@ own standalone hosting, its own database and external services for mail, payment
 analytics. The user groups down the right side match the Doel list in the text.
 
 One module appears only in the diagram and not in the text: a **webshop** for T-shirts, caps
-and agendas. Worth confirming with the client whether it is in scope for the semester, since
-payments pull in external services the text does not otherwise require.
+and agendas. Payments pull in external services the text does not otherwise require, so the
+client decides whether it is in scope for the semester. That is question 2 of
+`docs/client/clientQuestions.md`, asked in issue 10 The client's priorities for the epics. On
+the board it is FR10 Webshop (not confirmed by the client), epic Webshop, and issues 81, 82 and
+83 are blocked until the answer.

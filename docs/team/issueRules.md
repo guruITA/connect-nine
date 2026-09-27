@@ -277,3 +277,12 @@ The rank number is the build order over the whole board and follows the layers: 
 - [ ] The Definition of Done of the right type is on the issue, and on no task.
 - [ ] The issue stands in the right layer of its feature page, and its box in the pyramid map, its Linked items and GitLab say the same.
 - [ ] No em dashes and no semicolons.
+
+## AI use declaration
+
+AI was used as a writing support tool while working on this document. We used AI to draft
+the formulation of sentences, the structure of wording, readability, and clarity from
+content that we had provided, and to generate the diagrams. The content itself, including
+our experiences, reflections, learning goals, decisions, self-assessments, and
+conclusions, is our own. We reviewed the drafts and decided as a team which text to
+include.

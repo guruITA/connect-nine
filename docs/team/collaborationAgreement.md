@@ -10,7 +10,7 @@
 | Studio | Social Impact Apps, semester 1, 2026-2027 |
 | Client | Rachid Kherrazi, WailSalutem Foundation |
 | Team coach | Karthik Srinivasan |
-| Version | 1.11, 23 September 2026 |
+| Version | 1.12, 27 September 2026. Version 1.11 of 23 September 2026 was the version put forward for signing. 1.12 only updates the facts the board changed since then: the sprint dates, the stack, commits, branches and the Definition of Done |
 | Semester start | 31 August 2026 |
 | Sprint 1 start | 21 September 2026 |
 | Project completion | week of 4 January 2027 |
@@ -79,22 +79,22 @@ themselves.
 
 | Date | What |
 | --- | --- |
-| 21 Sep, 28 Sep, 5 Oct | sprint 1 |
+| 21 Sep to 9 Oct | sprint 1 |
 | week of 28 Sep | no lecturer guidance |
 | week of 5 Oct | progress evaluation 1 |
 | 12 to 17 Oct | autumn break |
-| 19 Oct, 26 Oct, 2 Nov | sprint 2 |
+| 19 Oct to 6 Nov | sprint 2 |
 | 26 Oct | knowledge test 1 |
-| 9 Nov, 16 Nov, 23 Nov | sprint 3 |
+| 9 to 27 Nov | sprint 3 |
 | 8 to 13 Nov | Bayon Eerhart is at the Stuttgart BIP |
 | week of 16 Nov | progress evaluation 2 |
+| 30 Nov to 18 Dec | sprint 4 |
 | week of 30 Nov | no lecturer guidance |
-| 7 Dec, 14 Dec | sprint 4 |
 | week of 14 Dec, day to be confirmed | knowledge test 2 |
 | 21 Dec to 2 Jan | Christmas break |
-| week of 4 Jan | project completion and progress evaluation 3 |
+| 4 to 8 Jan | sprint 5, project completion and progress evaluation 3 |
 
-Each sprint ends with a sprint review at the client and a retrospective.
+Each sprint ends with a sprint review at the client and a retrospective. The sprint dates are the milestones Sprint 1 to Sprint 5 in GitLab, see `gitlabSetup.md`.
 
 ## 5. Project roles
 
@@ -138,58 +138,85 @@ The retrospective is held on the last physical lesson day of the sprint.
 
 ### Commit Messages
 
-Use one of the following labels for each commit:
+Every commit follows Conventional Commits with the issue number at the end:
+`<type>(<scope>): <what changed> (#<issue number>)`, for example
+`feat(backend): add account endpoint (#3)`.
 
-1. `#issue number feat:` Add a new feature.
-2. `#issue number fix:` Fix bugs or resolve defects.
-3. `#issue number refactor:` Change existing code without changing behavior.
-4. `#issue number remove:` Remove code.
-5. `#issue number chore:` Make small maintenance changes.
-6. `#issue number docs:` Add or update documentation.
-7. `#issue number test:` Add or update tests.
+The types:
+
+1. `feat` Add a new feature.
+2. `fix` Fix bugs or resolve defects.
+3. `refactor` Change existing code without changing behavior, also when removing code.
+4. `chore` Make small maintenance changes.
+5. `docs` Add or update documentation.
+6. `test` Add or update tests.
+
+The scope is frontend, backend, database, pipeline or docs. Version 1.11 put the issue number
+in front (`#issue number feat:`) and had a separate label `remove`. The board changed that:
+the number moved to the end and removing code is a `refactor`. The full rules
+are in `codeConventions.md`.
 
 ### Code Conventions
 
-The stack is React for the frontend, .NET for the backend, and Microsoft SQL Server for the
-database, a team decision relayed by Wesley Oerlemans on 2026-09-22 and recorded with rationale
-in `techStack.md`. The conventions are the established best practices of that stack, together
-with SOLID, DRY as far as is practical, and clean code as far as is practical.
+The stack is React with TypeScript for the frontend, .NET 10 with ASP.NET Core for the backend,
+and PostgreSQL 16 for the database, used through EF Core and Npgsql. On 2026-09-22 the team chose
+Microsoft SQL Server, a decision relayed by Wesley Oerlemans. On 2026-09-26 the team changed it
+to PostgreSQL, because it is lighter to run in Docker on the client's server and has none of the
+license questions of SQL Server. Both decisions are recorded with their rationale in
+`docs/architecture/techStack.md`. The conventions are the established best practices of that
+stack, together with SOLID, DRY as far as is practical, and clean code as far as is practical.
 
-The stack-specific conventions land in `codeConventions.md`, whose stack-specific section the
-team fills at sprint 1 planning.
+The stack-specific conventions are in `codeConventions.md`, one part per layer: frontend,
+backend and database. Issue 01 The repository, the pipeline and the team rules writes them in
+the repository, and `docs/decisions/001-codeConventions.md` records the choices.
 
 ### Branches and Merge Requests
 
-1. `main` is protected. No direct commits and no pushes. It changes only through a merge
-   request.
-2. `dev` is the only branch that merges into `main`.
-3. Every work branch merges into `dev`: feature, fix, hotfix, refactor, remove and chore alike.
-4. Branch names follow the format `label/issue-number`, with a prefix for every commit label:
-   `feature/`, `fix/`, `refactor/`, `remove/`, `chore/`.
-5. Hotfix branches are `hotfix/` and are exempt from the issue number rules: no issue number in
-   the branch name, the commit label or the merge request name. An issue is created after the
+1. `main` and `dev` are protected. No direct commits and no pushes. They change only through a
+   merge request.
+2. `dev` is the only branch that merges into `main`. The pipeline job branch-flow checks this on
+   every merge request into `main`.
+3. Every work branch merges into `dev`: feature, fix, hotfix, refactor, docs, test and chore
+   alike.
+4. Branch names follow the format `<type>/<issue number>-<short name>`, for example
+   `feature/12-create-an-account`, with the types `feature/`, `fix/`, `refactor/`, `docs/`,
+   `test/` and `chore/`.
+5. Hotfix branches are `hotfix/<short name>` and are exempt from the issue number rules: no issue
+   number in the branch name, the commit or the merge request name. An issue is created after the
    fact, so the paper trail catches up.
-6. Merge request names must include an issue number, hotfixes excepted per rule 5.
-7. At least one reviewer must be a non-owner.
+6. Merge request names use the commit format, so they include an issue number, hotfixes excepted
+   per rule 5. The description starts with `Relates to #<issue number>`.
+7. At least one reviewer must be a non-owner. GitLab enforces this: a merge request needs one
+   approval, and neither its author nor anyone who added commits to it can approve it.
 
 There is deliberately no hotfix path straight into `main`. A bypass would weaken the protection
-that rule 1 exists to provide.
+that rule 1 exists to provide. A hotfix goes into `dev` and then from `dev` into `main`.
 
-Repository: to be added when the team repository exists.
+Repository: the project connect-nine on gitlab.fdmci.hva.nl, the GitLab of the HvA, set up on
+27 September 2026. How it is set up is in `gitlabSetup.md`.
 
 ## 7. Quality assurance
 
 ### Definition of Done
 
-Work is done when all of the following are true:
+Work is done when every line of the Definition of Done of its issue type is true. There is one
+list per type: slice, setup, research, decision and client. The lists are in
+`definitionOfDone.md` and every issue carries its list with a checkbox on every line.
+
+The lists replace the seven lines of version 1.11 and keep all seven:
 
 1. The code follows the team's code conventions.
 2. The linter passes.
 3. There are no compile errors.
-4. Any remaining warnings are explained, in the documentation, in a doc comment or in a summary.
-5. Unit tests are written and pass.
+4. No warnings remain. The backend treats every warning as an error, so a warning stops the
+   build and there is nothing left to explain.
+5. Tests are written and pass: unit tests, and for every slice also integration tests, screen
+   tests and one test in a real browser.
 6. The documentation is updated, for both the code and the architecture.
-7. Significant choices are documented.
+7. Significant choices are documented, one file per choice in `docs/decisions`.
+
+The lists also add a peer test, security, screen, review and deploy checks, and the AI
+declaration of section 9.
 
 ### Documentation location
 

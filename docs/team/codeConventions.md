@@ -11,9 +11,9 @@ The flow of every change:
 3. Open a merge request into dev. The title uses the commit format. The description starts with `Relates to #<issue number>` and holds the proof block of the task (the template Default does this for you).
 4. One teammate who is not the author approves it, the pipeline is green and every thread is resolved. Then it is merged into dev and the branch is deleted.
 5. Before a sprint review, dev goes into main through a merge request, approved by one teammate who is not the author.
-6. An urgent repair of the live site is `hotfix/<short name>`, made from main, and also goes through a merge request.
+6. An urgent repair of the live site is `hotfix/<short name>`, made from the newest dev. It also goes through dev: a merge request into dev, then right away a merge request from dev into main, because main only takes merge requests from dev.
 
-Nobody pushes directly to dev or main: both are protected, see docs/gitlabSetup.md.
+Nobody pushes directly to dev or main: both are protected, and the pipeline job branch-flow refuses a merge request into main from any branch other than dev, see docs/team/gitlabSetup.md.
 
 ## General and Git
 
@@ -22,12 +22,12 @@ Nobody pushes directly to dev or main: both are protected, see docs/gitlabSetup.
 1. Everything in English: names, comments, commit messages and documents.
 2. One file .editorconfig in the root sets the layout for every editor: UTF-8, line ending LF, 2 spaces for TypeScript, JSON, YAML and Markdown, 4 spaces for C#.
 3. Secrets only in the file .env on your own machine, never in Git. Every setting has an example value in .env.example.
-4. Documents live in docs, with file names in camelCase, for example docs/codeConventions.md. One decision per file in the folder docs/decisions, for example docs/decisions/003-minimalApis.md.
+4. Documents live in docs, with file names in camelCase, for example docs/team/codeConventions.md. One decision per file in the folder docs/decisions, for example docs/decisions/003-minimalApis.md.
 
 ### Branches
 
 5. Name: `<type>/<issue number>-<short name>`, for example `feature/12-create-an-account`. Types: feature, fix, refactor, docs, test, chore. The number lets GitLab link the branch to the issue by itself, the name tells a person what it is about. The button Create branch on a GitLab issue makes this name for you.
-6. A branch starts from dev and goes back into dev through a merge request (a GitLab page where a teammate reviews the change). main only changes from dev. An urgent repair on the live site is `hotfix/<short name>`, made from main.
+6. A branch starts from dev and goes back into dev through a merge request (a GitLab page where a teammate reviews the change). main only changes from dev. An urgent repair on the live site is `hotfix/<short name>`, and it also goes through dev, because main only takes merge requests from dev.
 
 ### Commits (Conventional Commits)
 
@@ -67,7 +67,7 @@ React is the library the screens are built with. A component is one piece of scr
 
 ## Backend: C#, ASP.NET Core
 
-C# is the language. .NET is the platform it runs on. ASP.NET Core is the part of .NET that turns C# into a web server. The four layers (Presentation, Application, Domain, Infrastructure) are four projects, explained in docs/onboarding.md.
+C# is the language. .NET is the platform it runs on. ASP.NET Core is the part of .NET that turns C# into a web server. The four layers (Presentation, Application, Domain, Infrastructure) are four projects, explained in docs/team/onboarding.md.
 
 ### Version and tools
 
@@ -144,7 +144,7 @@ These rules join the parts above. When an older text disagrees, these win.
 
 ### Test mail
 
-10. The test mailbox is Mailpit. On the test site it sits behind basic auth. The address may be in docs/testData.md, the login is in the GitLab variables MAILPIT_USER and MAILPIT_PASSWORD.
+10. The test mailbox is Mailpit. On the test site it sits behind basic auth. The address may be in docs/testing/testData.md, the login is in the GitLab variables MAILPIT_USER and MAILPIT_PASSWORD.
 
 ### Files and folders
 
@@ -162,6 +162,24 @@ These rules join the parts above. When an older text disagrees, these win.
 ### Checks
 
 18. A tester checks "not reachable" without technical knowledge: open the page, switch the phone to airplane mode, press the button, read the message. Stopping the database stays in the integration and screen tests.
-19. "Wait a day" is never a check step: the seed data holds an item with a date in the past, listed in docs/testData.md.
+19. "Wait a day" is never a check step: the seed data holds an item with a date in the past, listed in docs/testing/testData.md.
 20. Playwright logs in with page.request.post or context.request.post, never the separate request fixture, so the page gets the cookie.
-21. A test account that must be visible to others is confirmed through Mailpit in the test setup, as docs/testData.md describes.
+21. A test account that must be visible to others is confirmed through Mailpit in the test setup, as docs/testing/testData.md describes.
+
+## Kept from the collaboration agreement
+
+These rules come from section 6 of the collaboration agreement (Code Conventions). They hold for every layer, next to the rules above.
+
+1. Follow the established best practices of the language and framework in use.
+2. SOLID, the five design principles for classes.
+3. DRY (do not repeat yourself), as far as is practical.
+4. Clean code, as far as is practical.
+
+## AI use declaration
+
+AI was used as a writing support tool while working on this document. We used AI to draft
+the formulation of sentences, the structure of wording, readability, and clarity from
+content that we had provided, and to generate the diagrams. The content itself, including
+our experiences, reflections, learning goals, decisions, self-assessments, and
+conclusions, is our own. We reviewed the drafts and decided as a team which text to
+include.

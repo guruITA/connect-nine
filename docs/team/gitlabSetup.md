@@ -9,7 +9,10 @@ The HvA GitLab runs GitLab 19.4 in the Free tier. Where a setting of section 8 n
 - Code, Branches, New branch: dev, made from main.
 - Settings, Repository, Branch defaults: dev is the default branch, so every clone and every new merge request starts from dev, and GitLab offers the templates of .gitlab from dev.
 - Settings, Repository, Protected branches, for main and for dev: Allowed to push and merge set to No one, Allowed to merge set to Maintainers, Allowed to force push off. Nobody can push to dev or main, every change goes through a merge request.
-- A working branch is `<type>/<issue number>-<short name>`, made from dev. An urgent repair of the live site is `hotfix/<short name>`, made from main. See docs/codeConventions.md.
+- main only takes merge requests from dev. The pipeline job branch-flow in .gitlab-ci.yml checks it: a merge request into main from any other branch fails that job. The job runs on the HvA runners with the tag hva.
+- Settings, Merge requests: Pipelines must succeed is switched on after the job branch-flow is merged. From then on a red branch-flow blocks the Merge button.
+- A working branch is `<type>/<issue number>-<short name>`, made from dev. An urgent repair of the live site is `hotfix/<short name>`. It also goes through dev, because main only takes merge requests from dev. See docs/team/codeConventions.md.
+- History: the first set of templates and docs went onto main directly on 27 September 2026, before the protection existed. Every change after that goes through a merge request.
 
 ## Merge requests
 
@@ -59,8 +62,17 @@ Two limits of the Free tier:
 
 ## Issues and tasks
 
-- Every card of the board is one issue: the story as the title, and the parts from DESCRIPTION to DEFINITION OF DONE as the description. The first line names the board number and the rank. docs/boardNumbers.md lists the board number next to the GitLab number.
+- Every card of the board is one issue: the story as the title, and the parts from DESCRIPTION to DEFINITION OF DONE as the description. The first line names the board number and the rank. docs/team/boardNumbers.md lists the board number next to the GitLab number.
 - A title may hold 255 characters. A longer story is shortened in the title, and the full story stands at the top of the description.
 - Every task is a child item of its issue, in the order of the board, with its portfolio labels and the milestone of its issue.
 - Every "is blocked by" of the board is a linked item, so each issue also shows "blocks" on the other side.
 - New issues start from the templates in .gitlab/issue_templates, one per type.
+
+## AI use declaration
+
+AI was used as a writing support tool while working on this document. We used AI to draft
+the formulation of sentences, the structure of wording, readability, and clarity from
+content that we had provided, and to generate the diagrams. The content itself, including
+our experiences, reflections, learning goals, decisions, self-assessments, and
+conclusions, is our own. We reviewed the drafts and decided as a team which text to
+include.

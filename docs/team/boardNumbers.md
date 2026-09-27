@@ -231,3 +231,12 @@ The cards name each other by their board number. GitLab gives its own numbers.
 | 133 | #233 | Add a logo to my organisation profile |
 | 159 | #234 | Remove the picture of my project |
 | 152 | #235 | See the reports about members |
+
+## AI use declaration
+
+AI was used as a writing support tool while working on this document. We used AI to draft
+the formulation of sentences, the structure of wording, readability, and clarity from
+content that we had provided, and to generate the diagrams. The content itself, including
+our experiences, reflections, learning goals, decisions, self-assessments, and
+conclusions, is our own. We reviewed the drafts and decided as a team which text to
+include.
