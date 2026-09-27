@@ -10,6 +10,8 @@ stages:
 branch-flow:
   stage: check
   image: alpine:3.20
+  tags:
+    - hva
   script:
     - echo "Merge request from $CI_MERGE_REQUEST_SOURCE_BRANCH_NAME into $CI_MERGE_REQUEST_TARGET_BRANCH_NAME"
     - |
