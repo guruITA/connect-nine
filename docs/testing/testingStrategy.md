@@ -71,6 +71,8 @@ those flows, such as the confirmation link, are read from the test mailbox Mailp
 logs in with `page.request.post` or `context.request.post`, so the page gets the cookie
 (`docs/team/codeConventions.md`).
 
+The diagram below shows which tool tests which layer, and where each layer runs in the pipeline.
+
 ```mermaid
 flowchart TB
     subgraph Unit["Unit tests"]
@@ -86,7 +88,8 @@ flowchart TB
     end
     Unit --> MR{"Stage test, gates the merge request"}
     Integration --> MR
-    MR --> Deploy["Merge into dev, deploy to the test site"]
+    MR --> Scan["Stages analyze and scan, issues 89, 16 and 90"]
+    Scan --> Deploy["Merge into dev, deploy to the test site"]
     Deploy --> E2E
 ```
 
@@ -199,7 +202,7 @@ chooses. That tool has a rule on tested new code. The number of that rule is dec
 
 ## Two end to end tools, measured
 
-Issue 111 Two end to end test tools compared on one flow (sprint 5) is the research of one
+Issue 111 Two end to end test tools compared on one flow (sprint 2) is the research of one
 student: Playwright and Cypress on the same flows of Connect, compared on run time and flaky
 failures in the pipeline. The Cypress version lives on the branch test/111-cypress-flows, which
 is never merged. Until that research is done, Playwright is the end to end tool of the
@@ -210,7 +213,7 @@ product.
 - The coverage number of the quality gate and the tool that checks it: issue 88 The team picks
   the code quality tool (sprint 4).
 - Which end to end tool the foundation keeps after the comparison: issue 111 Two end to end test
-  tools compared on one flow (sprint 5).
+  tools compared on one flow (sprint 2).
 
 ## References
 

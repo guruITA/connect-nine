@@ -24,7 +24,7 @@ Make every slice as small as possible while a person using Connect still notices
 
 ### A5
 
-Build only what the client needs. A slice exists because of a requirement in docs/requirements.md, or because another required slice cannot start without it. Never invent a feature only to prove the technology works. The first technical setup (the server project, the database, the pipeline, the first deploy) goes into the first real slice. Example: the old card 02 (the home page shows how many members Connect has) was removed on 26 September 2026 because no requirement asks for a member count. It only existed to connect the screen, the server and the database for the first time, so that setup moved into 03 Create an account. Exception, decided by Wesley on 27 September 2026: an issue that an HvA workshop requires may exist without a client requirement. It carries the label school::required and the part SCHOOL REQUIREMENT (rule C1), which says it is there because of school and not because the client asked for it, names the workshop and says why school asks it. It is still as small as possible, the client does not pay for it and it never delays a slice the client needs.
+Build only what the client needs. A slice exists because of a requirement in docs/project/requirements.md, or because another required slice cannot start without it. Never invent a feature only to prove the technology works. The first technical setup (the server project, the database, the pipeline, the first deploy) goes into the first real slice. Example: the old card 02 (the home page shows how many members Connect has) was removed on 26 September 2026 because no requirement asks for a member count. It only existed to connect the screen, the server and the database for the first time, so that setup moved into 03 Create an account. Exception, decided by Wesley on 27 September 2026: an issue that an HvA workshop requires may exist without a client requirement. It carries the label school::required and the part SCHOOL REQUIREMENT (rule C1), which says it is there because of school and not because the client asked for it, names the workshop and says why school asks it. It is still as small as possible, the client does not pay for it and it never delays a slice the client needs.
 
 ### A6
 
@@ -54,6 +54,24 @@ The title of a task uses the same form with the developer as the role, and its "
 
 An issue has exactly these parts, in this order, each with its heading in capitals, and a blank line between parts and between paragraphs: the RANK line, STORY, DESCRIPTION, OUT OF SCOPE, LINKED ITEMS (GitLab), HOW IT WORKS (for developers), TASKS, ONE LAYER EACH, TESTING, WHAT PROVES THIS ISSUE, ACCEPTANCE CRITERIA, DEFINITION OF DONE, LABELS. The acceptance criteria always sit directly above the Definition of Done. An issue with the label school::required has one more part, SCHOOL REQUIREMENT, directly under STORY.
 
+The picture below shows the parts of an issue in their order, with the one extra part of a school issue.
+
+```mermaid
+flowchart TD
+    R[RANK line] --> S[STORY]
+    S -.->|only with school::required| SR[SCHOOL REQUIREMENT]
+    SR -.-> D
+    S --> D[DESCRIPTION]
+    D --> O[OUT OF SCOPE]
+    O --> L[LINKED ITEMS]
+    L --> H[HOW IT WORKS]
+    H --> T[TASKS, ONE LAYER EACH]
+    T --> TE[TESTING, WHAT PROVES THIS ISSUE]
+    TE --> AC[ACCEPTANCE CRITERIA]
+    AC --> DOD[DEFINITION OF DONE]
+    DOD --> LB[LABELS]
+```
+
 ### C2
 
 The RANK line: "RANK &lt;number> · &lt;EPIC> · weight &lt;n>". The rank is the build order on the board.
@@ -68,11 +86,11 @@ OUT OF SCOPE: a list of what a reader might expect here but is not part of this 
 
 ### C5
 
-LINKED ITEMS (GitLab): every link in one place, with the GitLab names. "Is blocked by": every issue that must be done first. "Blocks": every issue that cannot start before this one. "Relates to (docs/requirements.md)": the requirements this issue serves or prepares, each as code, name, epic and, when useful, the first issue of that epic. "Quality rules this issue follows (docs/requirements.md)": the NFRs, each as code, name, epic and, when there is one, the issue that holds the rule. Every issue is named as number, title and epic. Every link is set both ways in GitLab: when A blocks B, B says it is blocked by A.
+LINKED ITEMS (GitLab): every link in one place, with the GitLab names. "Is blocked by": every issue that must be done first. "Blocks": every issue that cannot start before this one. "Relates to (docs/project/requirements.md)": the requirements this issue serves or prepares, each as code, name, epic and, when useful, the first issue of that epic. "Quality rules this issue follows (docs/project/requirements.md)": the NFRs, each as code, name, epic and, when there is one, the issue that holds the rule. Every issue is named as number, title and epic. Every link is set both ways in GitLab: when A blocks B, B says it is blocked by A.
 
 ### C6
 
-HOW IT WORKS (for developers): first "Words on this card", a list that explains every technical word the card uses in one plain sentence, for a team that is new to React and .NET. Then "The road the data travels": the screen, the server with its four layers, and the database, in the order the data travels, with what happens in each for this issue. The four layers are always explained with the same picture: Presentation is the waiter, Application is the chef, Domain is the menu, Infrastructure is the storeroom. End with where to read more: docs/onboarding.md for words and setup, docs/codeConventions.md for names and layout.
+HOW IT WORKS (for developers): first "Words on this card", a list that explains every technical word the card uses in one plain sentence, for a team that is new to React and .NET. Then "The road the data travels": the screen, the server with its four layers, and the database, in the order the data travels, with what happens in each for this issue. The four layers are always explained with the same picture: Presentation is the waiter, Application is the chef, Domain is the menu, Infrastructure is the storeroom. End with where to read more: docs/team/onboarding.md for words and setup, docs/team/codeConventions.md for names and layout.
 
 ### C7
 
@@ -84,7 +102,7 @@ TESTING, WHAT PROVES THIS ISSUE: a checklist with one line per test: what it pro
 
 ### C9
 
-ACCEPTANCE CRITERIA: first the line "Checked on the test site by a team member who did not build this issue." Then two parts, each with its own heading: Functional and Non functional. Every criterion starts with "[ ] AC&lt;n> As a &lt;role>, I ..." with the role of the story, or a second real role when the issue touches two. It describes what that person sees or can do on the screen, in plain words, never a status code, a table, a name from the code or an NFR code. When a text appears, it says where: on the page in place of what, next to which field, as a popup or not. It is followed by "How to check:" with the page, the button, what to type and what you see, so a person without technical knowledge can do it on the test site. Together the criteria cover the normal path, every error the person can meet (wrong input, a value that is taken, the server not reachable) and every privacy or security rule that is special to this issue. There are as many as the issue needs. A rule that holds for every slice is not repeated here, it is in the Definition of Done. No criterion needs a developer to change the database by hand: when a check needs known data, the pipeline puts it there (seed data) and docs/testData.md lists it.
+ACCEPTANCE CRITERIA: first the line "Checked on the test site by a team member who did not build this issue." Then two parts, each with its own heading: Functional and Non functional. Every criterion starts with "[ ] AC&lt;n> As a &lt;role>, I ..." with the role of the story, or a second real role when the issue touches two. It describes what that person sees or can do on the screen, in plain words, never a status code, a table, a name from the code or an NFR code. When a text appears, it says where: on the page in place of what, next to which field, as a popup or not. It is followed by "How to check:" with the page, the button, what to type and what you see, so a person without technical knowledge can do it on the test site. Together the criteria cover the normal path, every error the person can meet (wrong input, a value that is taken, the server not reachable) and every privacy or security rule that is special to this issue. There are as many as the issue needs. A rule that holds for every slice is not repeated here, it is in the Definition of Done. No criterion needs a developer to change the database by hand: when a check needs known data, the pipeline puts it there (seed data) and docs/testing/testData.md lists it.
 
 ### C10
 
@@ -122,7 +140,7 @@ DESCRIPTION has two parts. "In short": one complete paragraph that says what you
 
 ### D7
 
-BEFORE YOU START has three headings of its own. "Needs first": the task or issue that must be done, with what it made. "Issue": number, title, epic and page. "New to .NET, React, the four layers or the tests?": read docs/onboarding.md first, which explains every word and how to get the code, make the branch &lt;type>/&lt;issue number>-&lt;short name> and start the database.
+BEFORE YOU START has three headings of its own. "Needs first": the task or issue that must be done, with what it made. "Issue": number, title, epic and page. "New to .NET, React, the four layers or the tests?": read docs/team/onboarding.md first, which explains every word and how to get the code, make the branch &lt;type>/&lt;issue number>-&lt;short name> and start the database.
 
 ### D8
 
@@ -206,7 +224,7 @@ A reference to another card always names its number, its title and its epic, and
 
 ### F6
 
-One set of names for the whole project, the same on every card: the folders frontend and backend, the backend projects Presentation, Application, Domain, Infrastructure and Connect.Tests, docs/requirements.md, docs/architecture.md, docs/api.md, docs/onboarding.md, docs/codeConventions.md, docs/definitionOfDone.md, docs/testData.md, the folder docs/decisions, the docker compose service database, and server addresses under /api. Names in code follow section 3b.
+One set of names for the whole project, the same on every card: the folders frontend and backend, the backend projects Presentation, Application, Domain, Infrastructure and Connect.Tests, docs/project/requirements.md, docs/architecture/architecture.md, docs/architecture/api.md, docs/team/onboarding.md, docs/team/codeConventions.md, docs/team/definitionOfDone.md, docs/testing/testData.md, the folder docs/decisions, the docker compose service database, and server addresses under /api. Names in code follow section 3b.
 
 ### F7
 

@@ -47,6 +47,9 @@ describes the shape that connection could take, with room left for the team to a
 ideas on top of it. Each of these modules is now a requirement (FR1 to FR9) in
 `docs/project/requirements.md` and an epic on the board.
 
+The diagram shows the step from the current situation, through the gap, to the desired
+situation.
+
 ```mermaid
 flowchart LR
     subgraph Current["Current situation"]
@@ -76,7 +79,10 @@ already runs the awards cycle.
 ## Stakeholder analysis
 
 Built from the user groups the client's brief names (`docs/client/clientBrief.md`, "Doel"). What each
-group needs from Connect, and what each group brings to it:
+group needs from Connect, and what each group brings to it.
+
+The diagram shows the seven groups around the platform, the table after it says what each
+group needs and brings.
 
 ```mermaid
 flowchart TD

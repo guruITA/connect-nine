@@ -8,8 +8,7 @@ design patterns it uses.
 
 The board is the source of truth. This file follows the issues that decide or build each part,
 and it names every issue by its board number and title. The GitLab number of every board
-number is in `docs/team/boardNumbers.md`. The issues still name this file by its old path
-`docs/architecture.md`. It now lives at `docs/architecture/architecture.md`.
+number is in `docs/team/boardNumbers.md`.
 
 Three issues shape this file:
 
@@ -138,6 +137,8 @@ Which project may use which (the `ProjectReference` lines, issue 03 task 3.1):
 - Infrastructure uses Domain.
 - Domain uses nothing.
 
+The diagram below shows the four layers and the direction in which each may use another.
+
 ```mermaid
 flowchart TB
     Browser["Browser: the React screen"] -->|"HTTP request to /api"| P
@@ -178,6 +179,32 @@ slice copies it:
 4. Infrastructure: the repository saves one row in the table `account`.
 5. The answer goes back the same way and the page shows "Your account is made".
 
+The diagram below shows the same request as messages between the screen, the layers and the database.
+
+```mermaid
+sequenceDiagram
+    participant Page as Page Make an account
+    participant P as Presentation
+    participant A as Application
+    participant I as Infrastructure
+    participant DB as PostgreSQL 16
+    Page->>P: POST /api/accounts with email address and password
+    P->>P: CreateAccountRequestValidator checks the input
+    alt wrong input
+        P-->>Page: ValidationProblem, one message per field
+    else right input
+        P->>A: create the account
+        A->>I: is this email address still free
+        I->>DB: look for the address
+        DB-->>I: not found
+        I-->>A: the address is free
+        A->>A: turn the password into a hash
+        A->>I: save the account
+        I->>DB: one row in the table account
+        P-->>Page: 201 created, the page shows Your account is made
+    end
+```
+
 ## Components
 
 The parts of Connect and every outside service it talks to. Issue 102 task 102.1 draws them from
@@ -211,6 +238,8 @@ marks what is not built yet as planned.
 The client's concept diagram also names maps and analytics as outside services. No issue on the
 board uses either one. The usage numbers the foundation sees come from Connect itself (issue 47
 See this month's usage numbers), so this file draws no maps or analytics service.
+
+The diagram below shows the parts of Connect and every outside service it talks to.
 
 ```mermaid
 flowchart LR
@@ -389,6 +418,8 @@ orchestration and infrastructure as code. The foundation did not ask for it.
   files in `infra/terraform` describe all of it. Every merge into main goes to production (job
   `deploy-production`, issue 96 A merge into main goes to production). Production is built in
   sprint 4.
+
+The diagram below shows what runs on the test site and in production, and how the pipeline reaches each.
 
 ```mermaid
 flowchart TB

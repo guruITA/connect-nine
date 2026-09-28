@@ -14,6 +14,15 @@ The HvA GitLab runs GitLab 19.4 in the Free tier. Where a setting of section 8 n
 - A working branch is `<type>/<issue number>-<short name>`, made from dev. An urgent repair of the live site is `hotfix/<short name>`. It also goes through dev, because main only takes merge requests from dev. See docs/team/codeConventions.md.
 - History: the first set of templates and docs went onto main directly on 27 September 2026, before the protection existed. Every change after that goes through a merge request.
 
+The picture below shows which branch may merge into which.
+
+```mermaid
+flowchart LR
+    W["Working branch<br/>type/number-short-name"] -->|merge request| D[dev, default branch, protected]
+    X["hotfix/short-name"] -->|merge request| D
+    D -->|merge request, checked by branch-flow| M[main, protected]
+```
+
 ## Merge requests
 
 - Settings, Merge requests: All threads must be resolved on, and Delete source branch on by default.
@@ -55,12 +64,34 @@ Every milestone description has the three headings the assessor looks for: Sprin
 
 Plan, Issue boards: Sprint 1 to Sprint 5, each with the lists Open, Doing, Verify and Closed. Doing has a limit of 3 per person. The Free tier cannot enforce list limits, so the team checks it at the daily.
 
+The picture below shows the four lists an issue moves through on a sprint board.
+
+```mermaid
+flowchart LR
+    O[Open] --> D["Doing<br/>at most 3 per person"] --> V[Verify] --> C[Closed]
+```
+
 Two limits of the Free tier:
 
 1. A board cannot be tied to a milestone. Every milestone description therefore holds a link to its board with the milestone filter, which shows only the issues of that sprint. Keep that link as a bookmark.
 2. A board shows issues, not tasks. The same milestone description links to the list of all tasks of that sprint.
 
 ## Issues and tasks
+
+The picture below shows how an epic, its issues, their tasks and the sprint milestone hang together.
+
+```mermaid
+flowchart TD
+    E["Issue EPIC: name<br/>labels EPIC and epic::name"]
+    I1[Issue of the epic] -->|relates to| E
+    I2[Another issue of the epic] -->|relates to| E
+    I2 -->|is blocked by| I1
+    I1 --> T1["Task, child item<br/>portfolio labels"]
+    I1 --> T2["Task, child item<br/>portfolio labels"]
+    MS[Milestone Sprint n] -.- I1
+    MS -.- T1
+    MS -.- T2
+```
 
 - Every card of the board is one issue: the story as the title, and the parts from DESCRIPTION to DEFINITION OF DONE as the description. The first line names the board number and the rank. docs/team/boardNumbers.md lists the board number next to the GitLab number.
 - A title may hold 255 characters. A longer story is shortened in the title, and the full story stands at the top of the description.

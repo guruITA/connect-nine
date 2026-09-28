@@ -53,8 +53,9 @@ went through.
 `docs/project/deliveryPlan.md`'s own minimum credible set for Sprint Review 1, restated compactly
 here and updated to the board.
 
-1. The collaboration agreement, agreed in version 1.12 and signed
-   (`collaborationAgreement.md`). Owner: whole team.
+1. The final version of the collaboration agreement, agreed and signed
+   (`collaborationAgreement.md`). Version 1.12 is a draft and not signed yet, the team is still
+   working on the final version. Owner: whole team.
 2. The sprint 1 decisions, made in their issues rather than proposed: issue 10 The client's
    priorities for the epics, issue 11 The team agrees on the layered architecture, issue 12
    Inventory of the personal data per module and issue 13 The role table per module. Owner:
@@ -82,7 +83,7 @@ merge request carries the declaration of section 9 of `collaborationAgreement.md
 
 1. Wesley's research proposal, which goes to the learning group teacher by 5 October 2026,
    reads as his own work and carries a true declaration. Issue 106 Each student's research
-   topic approved (sprint 2) covers the review in Portflow. Owner: Wesley. Date: before 5
+   topic approved (sprint 1) covers the review in Portflow. Owner: Wesley. Date: before 5
    October 2026.
 2. Each document that becomes a datapoint gets the same check before its own hand-in. Owner:
    Wesley for his individual evidence, the whole team for team documents. Date: before each
@@ -94,6 +95,8 @@ The research proposal first closes the nearest deadline. The same check then car
 later document, and the check at each hand-in is what confirms it held.
 
 ## How the three risks connect
+
+The picture below shows which steps wait for which, and how the three risks meet.
 
 ```mermaid
 flowchart LR

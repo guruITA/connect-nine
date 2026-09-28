@@ -21,15 +21,15 @@ sprint.
 
 | Sprint | Start | End | Issues | Must | Should | Could |
 |---|---|---|---|---|---|---|
-| Sprint 1 | Mon 21 Sep 2026 | Fri 9 Oct 2026 | 12, plus 12 stretch | 12, plus 11 stretch | 0, plus 1 stretch | 0 |
+| Sprint 1 | Mon 21 Sep 2026 | Fri 9 Oct 2026 | 14, plus 12 stretch | 14, plus 11 stretch | 0, plus 1 stretch | 0 |
 | Sprint 2 | Mon 19 Oct 2026 | Fri 6 Nov 2026 | 54 | 31 | 18 | 5 |
-| Sprint 3 | Mon 9 Nov 2026 | Fri 27 Nov 2026 | 54 | 10 | 34 | 10 |
-| Sprint 4 | Mon 30 Nov 2026 | Fri 18 Dec 2026 | 48 | 23 | 12 | 13 |
-| Sprint 5 | Mon 4 Jan 2027 | Fri 8 Jan 2027 | 47 | 4 | 0 | 43 |
+| Sprint 3 | Mon 9 Nov 2026 | Fri 27 Nov 2026 | 55 | 11 | 34 | 10 |
+| Sprint 4 | Mon 30 Nov 2026 | Fri 18 Dec 2026 | 49 | 24 | 12 | 13 |
+| Sprint 5 | Mon 4 Jan 2027 | Fri 8 Jan 2027 | 43 | 0 | 0 | 43 |
 
 Together that is all 227 issues of the board, in 21 epics. The stretch issues of sprint 1
 carry the label sprint::1-stretch: the team builds them in sprint 1 when the sprint 1 issues
-are done. Sprint 5 is one week and holds mostly could issues, so what the team does not reach
+are done. Sprint 5 is one week and holds only could issues, so what the team does not reach
 there is the natural place to cut. The priorities are the proposal of the team until the
 client confirms the order of the epics (`docs/client/clientQuestions.md`, question 1).
 
@@ -46,7 +46,7 @@ section 4, where both are recorded).
 
 | Date | Milestone | Owner | Feeds |
 | --- | --- | --- | --- |
-| Thu 24 Sep 2026 | Team moment: confirm the open notes of the collaboration agreement and sign version 1 | whole team | MS |
+| Thu 24 Sep 2026 | Team moment: confirm the open notes of the collaboration agreement. The agreement is still a draft, the team is working on the final version | whole team | MS |
 | before Fri 9 Oct 2026 | The meeting with the client of issue 10 The client's priorities for the epics, questions 1 to 8 | sprint 1 Product Owner Nick Hoebe | AA, MS |
 | week of 5 Oct 2026 | Progress evaluation 1 | individual, all students | PL, all outcomes |
 | Fri 9 Oct 2026 | Sprint Review 1 (DLO deadline, 11:59 PM), end of sprint 1 | whole team | AA, OR, Sprint Review datapoint |
@@ -114,6 +114,9 @@ The team writes the sprint goal itself in the sprint 1 milestone.
   page.
 - **Security analysis.** Issue 12 Inventory of the personal data per module and issue 13 The
   role table per module, by Kelvin van Voorst.
+- **School.** Issue 85 The coach sees per student which issue proves which workshop, and issue
+  106 Each student's research topic approved, so every student starts the research with an
+  approved topic.
 - **Stretch.** Issues 84 The DevOps learning outcomes agreed with the teacher, 04b, 03b, 06b,
   16 A security scan in the pipeline, 17 A health check and structured logs, 19 GDPR notes on
   minors' data, 18 Data flow diagram of profile creation, 07b, 14 View another member's
@@ -128,7 +131,8 @@ three account questions. The answers go under Client feedback in the sprint 1 mi
 
 **Minimum credible set for Sprint Review 1.**
 
-- The collaboration agreement, signed.
+- The collaboration agreement. It is a draft now, not signed yet. The team finishes the final
+  version and then signs it.
 - The repository on gitlab.fdmci.hva.nl with dev and main protected, the templates, and the
   pipeline (issue 01).
 - The sprint board, showing the sprint 1 issues and their tasks.
@@ -141,14 +145,16 @@ three account questions. The answers go under Client feedback in the sprint 1 mi
 ## Sprint 2, 19 October to 6 November 2026
 
 Account (15 issues), profiles (14), account security (10) and matching (13), from issue 113
-Delete my account and all my data to issue 44 See my saved items. Two school issues start here: issue 85 The coach sees per student which
-issue proves which workshop, and issue 106 Each student's research topic approved.
+Delete my account and all my data to issue 44 See my saved items. Two research issues are in
+this sprint: issue 110 The cost of password hashing, measured, and issue 111 Two end to end
+test tools compared on one flow.
 
 ## Sprint 3, 9 to 27 November 2026
 
 Admin, the site pages (privacy statement and house rules), opportunities, events and news, and
 the first issues of showcases and challenges. Activity for the admin (issues 32, 120, 121 and
-32b) also lands here.
+32b) also lands here. Research issue 107 Three ways to give out the last event place, measured,
+is in this sprint, together with issue 68b A full event refuses a place fairly that it measures.
 
 ## Sprint 4, 30 November to 18 December 2026
 
@@ -166,14 +172,16 @@ The school deliverables of DevOps and architecture land in this sprint:
   a project, 105 and 105b.
 - **Features.** The rest of showcases and challenges, badges (80 and 80b) and the first
   webshop issues (81 to 82d), which stay blocked until question 2 is answered.
-- **Research.** Issues 107 Three ways to give out the last event place, measured, and 108 Two
-  ways of paging the showcases, measured.
+- **Research.** Issues 108 Two ways of paging the showcases, measured, and 109 Image formats
+  for project pictures, measured on a phone. Both stay in sprint 4 because they measure
+  features built in sprint 4: issue 63 Browse all showcases, issue 61b Add an image to my
+  project and issue 64 Open a project page. Issue 112 Every research report reviewed by a
+  fellow student closes the research in this sprint.
 
 ## Sprint 5, 4 to 8 January 2027
 
-The last research reports (issues 109 to 111) and issue 112 Every research report reviewed by
-a fellow student, the four must issues of this sprint. The rest are could extras across the
-feature epics. Many of them wait for a yes of the client in questions 9 and up of
+Only could extras across the feature epics. The research is done by the end of sprint 4, so
+this week holds no must issue. Many of them wait for a yes of the client in questions 9 and up of
 `docs/client/clientQuestions.md`. Issues 167 to 170 of epic Challenges are blocked on
 questions 84 to 87.
 
@@ -184,9 +192,11 @@ as a GitLab milestone Handover (issue 10, task 10.7).
 
 **Wesley Oerlemans, Research & Design.** The earlier plan had a draft R&D research piece to the
 learning group teacher by 5 October 2026. The approval of every student's research topic is now
-issue 106, in sprint 2. The event capacity race of the earlier plan is issue 107 Three ways to
-give out the last event place, measured, in sprint 4. The peer review of every report is issue
-112, in sprint 5. The exact Portflow deadlines for the proposal and the report are not in the
+issue 106, in sprint 1. The event capacity race of the earlier plan is issue 107 Three ways to
+give out the last event place, measured, in sprint 3. The peer review of every report is issue
+112, in sprint 4. The research schedule was moved forward on 27 September 2026 so that it sits
+closer to the level 3 datapoint sheet (Research & Design in sprint 1, Review of R&D Report in
+sprint 3). The exact Portflow deadlines for the proposal and the report are not in the
 material the team holds. Route: coach Karthik Srinivasan.
 
 **Kelvin van Voorst, Security.** His security requirements and risk framing datapoint is issue
@@ -237,9 +247,9 @@ individual evidence. Route: coach Karthik Srinivasan.
 
 ## Open points
 
-1. The signatures of the collaboration agreement. The signature table in
-   `docs/team/collaborationAgreement.md` section 11 is still empty in the version the team
-   holds. Owner: whole team.
+1. The final version of the collaboration agreement. It is a draft, not signed yet, and the
+   team is still working on the final version. The signature table in
+   `docs/team/collaborationAgreement.md` section 11 stays empty until then. Owner: whole team.
 2. Who holds Scrum Master and Product Owner in sprint 5. Owner: whole team, in section 5 of the
    collaboration agreement.
 3. Whether sprint 3 has its own sprint review datapoint, and how the school counts five
@@ -250,6 +260,9 @@ individual evidence. Route: coach Karthik Srinivasan.
 6. The client's answers to questions 1 to 8, before 9 October 2026. Issue 10.
 
 ## Semester overview
+
+The chart shows the five sprints, the sprint review deadlines, the school dates and the sprint
+of every research issue.
 
 ```mermaid
 gantt
@@ -275,10 +288,16 @@ gantt
     Autumn break                   :ab, 2026-10-12, 2026-10-18
     Christmas break                :cb, 2026-12-21, 2027-01-03
     Decision committee week        :dc, 2027-01-11, 2027-01-16
+
+    section Research
+    85 table and 106 topics     :r1, 2026-09-21, 2026-10-10
+    110 and 111 measured           :r2, 2026-10-19, 2026-11-07
+    107 measured                   :r3, 2026-11-09, 2026-11-28
+    108 and 109 measured, 112     :r4, 2026-11-30, 2026-12-19
 ```
 
 *Figure: the five sprints of the board, the four sprint review deadlines from DLO, the breaks,
-knowledge test 1 and the decision committee week. The meeting of issue 10, knowledge test 2
+knowledge test 1, the decision committee week and the sprint of each research issue. The meeting of issue 10, knowledge test 2
 and the
 portfolio submission are not on the chart, since a bar would invent a date none of the
 sources hold.*

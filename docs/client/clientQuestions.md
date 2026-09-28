@@ -42,7 +42,7 @@ Questions 1 to 8 are written in full by the tasks of issue 10. Questions 9 and u
 | 34 | 120 Old activity lines are removed after the retention period | How many months must Connect keep a line on the page Activity before it is removed for good (the team proposes 12 months)? | | |
 | 35 | 122 Accounts that are never confirmed are removed after a while | Should Connect remove an account whose email address was never confirmed, and after how many days (the team proposes 30 days)? | | |
 | 36 | 117 Log out on every device at once | Should a member see a list of every device where they are logged in, with its name and last use, and end one device at a time? | | |
-| 37 | 148 Add or delete a site page | Does the foundation want an admin to add a new site page and delete a site page it no longer needs, knowing that the privacy statement and the house rules can never be deleted? | | |
+| 37 | 148 Add or delete a site page | Does the foundation want an admin to add a new site page and delete a site page it no longer needs, knowing that the privacy statement and the house rules can never be deleted, and which pages besides those two does it expect? | | |
 | 38 | 149 See and restore an earlier version of a site page | Does the foundation want an admin to see every earlier version of a site page with its date and author, and put an earlier version back? | | |
 | 39 | 151 Report a member to the foundation | Does the foundation want a member to report another member with a reason from the house rules, and who at the foundation reads those reports and how fast? | | |
 | 40 | 142 Remove a profile text that breaks the rules | Does the foundation want an admin to remove only the short line of a member profile that breaks the house rules, instead of deactivating the whole member? | | |
@@ -63,8 +63,8 @@ Questions 1 to 8 are written in full by the tasks of issue 10. Questions 9 and u
 | 55 | 15b Search engines do not list member pages | Should the foundation ask search engines to remove a member page that they listed before Connect told them not to? | | |
 | 56 | 50b See a preview while I edit a site page | Does the foundation want buttons for headings and lists above the editor of a site page, or is typing markdown with a live preview enough? | | |
 | 57 | 142 Remove a profile text that breaks the rules | Does the foundation want an admin to empty only the short line of a member profile that breaks the house rules, with a reason the member sees on My profile, instead of deactivating the whole member? | | |
-| 58 | 148 Add or delete a site page | Does the foundation want an admin to add a new site page and delete a site page through Admin, Pages, and which pages besides the privacy statement and the house rules does it expect? | | |
-| 59 | 149 See and restore an earlier version of a site page | Does the foundation want an admin to see every earlier version of a site page with its date and author and put an old version back with one button? | | |
+| 58 | 148 Add or delete a site page | Same as question 37, answer it there. | | |
+| 59 | 149 See and restore an earlier version of a site page | Same as question 38, answer it there. | | |
 | 60 | 151 Report a member to the foundation | Does the foundation want a button Report on the page of a member, which reasons should it offer, and who at the foundation reads the reports and how fast? | | |
 | 61 | 130 A young person under 16 asks a parent for permission | When a parent does not answer before the link ends, may the young person send a new request, to the same or to another email address of a parent? | | |
 | 62 | 130 A young person under 16 asks a parent for permission | Is one email to the address that the young person types enough as the check that a parent gave permission, or does the foundation want a stronger check? | | |

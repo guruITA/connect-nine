@@ -15,6 +15,17 @@ section on SQL Server is kept as the research behind that first choice. On 26 Se
 database became PostgreSQL 16 with EF Core and Npgsql, and the section on PostgreSQL says what is
 known about it from the documents and the board, and what research is still to do.
 
+The timeline below shows how the database choice moved from SQL Server to PostgreSQL 16.
+
+```mermaid
+timeline
+    title The database of Connect
+    22 September 2026 : Stack research done : Microsoft SQL Server chosen
+    23 and 24 September 2026 : Stack documents weigh PostgreSQL against SQL Server : EF Core chosen as the data access layer
+    26 September 2026 : PostgreSQL 16 with EF Core and Npgsql : No code existed yet, so no code changed
+    Sprint 4 : Issue 92 checks the license of every production tool, PostgreSQL included
+```
+
 ## React
 
 **What it is.** React is a JavaScript library, not a full application framework. Its own
@@ -260,6 +271,6 @@ React. (n.d.-b). *Quick start*. Retrieved September 22, 2026, from https://react
 
 AI was used as a writing support tool while working on this document. We used AI to draft
 the formulation of sentences, the structure of wording, readability, and clarity from
-content that we had provided. The content itself, including our experiences, reflections,
+content that we had provided, and to generate the diagram. The content itself, including our experiences, reflections,
 learning goals, decisions, self-assessments, and conclusions, is our own. We reviewed the
 drafts and decided as a team which text to include.

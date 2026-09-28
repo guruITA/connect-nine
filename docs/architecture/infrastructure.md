@@ -108,6 +108,8 @@ environment is one more thing to patch, back up and keep credentials for.
   a live version on the foundation's server (question 111), production runs on a spare computer of
   the team, for school only.
 
+The diagram below shows the three places Connect runs and how a change moves from one to the next.
+
 ```mermaid
 flowchart TB
     subgraph Laptop["A laptop"]
@@ -265,6 +267,8 @@ migration only adds (proposed in issue 17 task 17.4 and linked from `docs/team/c
 means going back never has to change the data. The drill uses a version broken on purpose (the tag
 `drill-97`) and a teammate who did not write the steps, with a goal of ten minutes or less.
 
+The diagram below shows the road of a visit and the road of a change in production.
+
 ```mermaid
 flowchart LR
     Visitor["Visitor"] -->|"https"| Caddy["Caddy: ports 80 and 443"]
@@ -308,6 +312,8 @@ Beside them run `env-file-check`, which fails when a `.env` file is in Git (issu
 repository, the pipeline and the team rules), `terraform-check` and `terraform-plan` on every merge
 request, and `monitoring-check` on every merge request that touches the monitoring files. The
 checks finish within ten minutes (issue 01).
+
+The diagram below shows the stages of the pipeline in order and the two ways out.
 
 ```mermaid
 flowchart LR
@@ -391,7 +397,20 @@ watched by the monitoring tools. The test site has its health check and its logs
   the lines of that moment (issue 101). The retention is question 109, with 14 days as the proposal
   of the team.
 
-## Hosting
+The diagram below shows how the numbers and the log lines of production travel to the dashboard and the warning emails.
+
+```mermaid
+flowchart LR
+    Server["connect-server: metrics on port 9464, JSON log lines"] -->|"numbers"| Prom["Prometheus, kept two weeks"]
+    DBMon["Database, read only account connect_monitor"] -->|"numbers"| Prom
+    Server -->|"log lines"| Shipper["Log shipper: Grafana Alloy or Promtail, task 101.2"]
+    Shipper --> Loki["Loki, days as question 109 decides"]
+    Prom --> Grafana["Grafana dashboard Connect health, read only login for the client"]
+    Loki --> Grafana
+    Prom -->|"six alert rules"| AM["Alertmanager"]
+    AM -->|"email through the foundation's mail account"| People["The people of question 115"]
+```
+
 
 **The history.** On 23 and 24 September 2026 this document compared four ways to host Connect on a
 student budget: one virtual server, Azure for Students credit, a hybrid of a free static host and a

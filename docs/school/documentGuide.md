@@ -23,36 +23,20 @@ flowchart TD
     Guide --> Testing["docs/testing: testing strategy"]
     Guide --> School["docs/school: workshops, labels, this guide"]
     Guide --> Later["Made by the issues: docs/decisions, docs/security, docs/research"]
+    Guide -.-> Soon["Files the issues add to the folders above, for example api.md, designPatterns.md, onboarding.md, testData.md"]
 ```
 
 *Figure: the folders of docs, in reading order.*
 
 | Folder | Documents |
 |---|---|
-| docs/project | productVision.md, problemAnalysis.md, requirements.md, deliveryPlan.md |
-| docs/client | clientBrief.md, clientBriefConcept.jpeg, clientQuestions.md |
-| docs/architecture | architecture.md, techStack.md, stackResearch.md, infrastructure.md, and later api.md |
+| docs/project | productVision.md, problemAnalysis.md, requirements.md, deliveryPlan.md, and later houseRules.md |
+| docs/client | clientBrief.md, clientBriefConcept.jpeg, clientQuestions.md, and later clientContact.md |
+| docs/architecture | architecture.md, techStack.md, stackResearch.md, infrastructure.md, and later api.md, designPatterns.md, socialLogin.md, concurrencyRegistration.md |
 | docs/team | collaborationAgreement.md, codeConventions.md, definitionOfDone.md, gitlabSetup.md, issueRules.md, boardNumbers.md, openItems.md, actionOverview.md, and later onboarding.md |
 | docs/testing | testingStrategy.md, and later testData.md |
-| docs/school | workshopCoverage.md, issueMapping.md, documentGuide.md |
+| docs/school | workshopCoverage.md, issueMapping.md, documentGuide.md, and later devopsLearningOutcomes.md, workshopEvidenceMap.md, recordingScript.md, liveDemoPlan.md |
 | Made by the issues | docs/decisions, docs/security, docs/research |
-
-## Where an issue points
-
-The issues in GitLab were written before the documents moved, so they still name the old flat paths. The issues are not changed. Use this table to find the document an issue means.
-
-| An issue names | The document is at |
-|---|---|
-| docs/requirements.md | docs/project/requirements.md |
-| docs/clientQuestions.md | docs/client/clientQuestions.md |
-| docs/architecture.md | docs/architecture/architecture.md |
-| docs/api.md | docs/architecture/api.md |
-| docs/codeConventions.md | docs/team/codeConventions.md |
-| docs/definitionOfDone.md | docs/team/definitionOfDone.md |
-| docs/gitlabSetup.md | docs/team/gitlabSetup.md |
-| docs/onboarding.md | docs/team/onboarding.md |
-| docs/testData.md | docs/testing/testData.md |
-| docs/decisions, docs/security, docs/research, docs/school | the same folder |
 
 ## The criteria in short
 
@@ -160,7 +144,7 @@ For the team, it is where the frontend developer looks up an endpoint without re
 
 The team's working agreement: roles, communication, working hours and the semester calendar, the git conventions, the Definition of Done, the AI use rules (section 9) and the consequences when someone does not keep to it.
 
-For the studio, it serves **MS** and maps to all five success criteria: MS1 through foreseeing risks and keeping work transparent, MS2 through the retrospective rhythm, MS3 through the consequences section, MS4 through the branch and review rules that connect each member's work, and MS5 through the rotating Scrum Master and Product Owner roles. The five signatures are the evidence.
+For the studio, it serves **MS** and maps to all five success criteria: MS1 through foreseeing risks and keeping work transparent, MS2 through the retrospective rhythm, MS3 through the consequences section, MS4 through the branch and review rules that connect each member's work, and MS5 through the rotating Scrum Master and Product Owner roles. The agreement is still a draft: the team is working on the final version and nobody has signed it yet. Once the five members sign it, the signatures are the evidence.
 
 For the team, it is the agreement itself: who to contact and how, which hours count, what finished work looks like, and what happens when someone does not do their part. Every merge request carries the AI declaration of section 9.1 (Definition of Done).
 
@@ -270,7 +254,7 @@ This guide. It carries no criterion of its own. It helps the assessor find the e
 
 ### Made by the issues in docs/school
 
-Some school issues write their own file here: the DevOps learning outcomes (issue 84), the table student by workshop (issue 85), the recording script (issue 86) and the live demo plan (issue 87). Each is evidence for the workshop its issue names.
+Some school issues write their own file here: the DevOps learning outcomes in devopsLearningOutcomes.md (issue 84), the table student by workshop in workshopEvidenceMap.md (issue 85), the recording script in recordingScript.md (issue 86) and the live demo plan in liveDemoPlan.md (issue 87). Each is evidence for the workshop its issue names.
 
 ## Made later by the issues
 
@@ -282,9 +266,9 @@ Some school issues write their own file here: the DevOps learning outcomes (issu
 
 The research of each student is individual, as the R&D workshop requires. Only the proposal, the one page summary and the peer review pairs are in the repository. On 23 September 2026 Wesley drafted a research proposal of his own, on eager and lazy loading in EF Core, and a plan for the Advanced Programming elective on the event capacity race. The elective plan now runs through issues 68b A full event refuses a place fairly and 107 Three ways to give out the last event place, measured. Whether the research proposal stays his own topic is decided in issue 106 Each student's research topic approved, task 106.1.
 
-## Still open
+## Other files the issues make
 
-- Some issues name a document outside the folders above: docs/designPatterns.md (issue 103), docs/socialLogin.md (issue 23), docs/privacyStatement.md (issue 51), docs/houseRules.md (issue 52), docs/concurrencyRegistration.md (issue 68b) and docs/clientContact.md (issue 01). Where each one goes in the new folders is not decided yet. Until the team decides, it is made at the path the issue names.
+Some issues make a document of their own inside the folders above. The issues name each one at its place: docs/architecture/designPatterns.md (issue 103), docs/architecture/socialLogin.md (issue 23), docs/architecture/concurrencyRegistration.md (issue 68b), docs/security/privacyStatement.md (issue 51), docs/project/houseRules.md (issue 52) and docs/client/clientContact.md (issue 01).
 
 ## AI use declaration
 

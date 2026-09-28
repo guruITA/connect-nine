@@ -37,6 +37,30 @@ by link at first, with an API a possible later step, not a semester 1 requiremen
 The separation is deliberate on the client's part: it lets new ideas be built and tested for
 Connect without putting the existing award cycle at risk.
 
+The diagram shows the two platforms side by side and the only thing that joins them in
+semester 1, a link.
+
+```mermaid
+flowchart LR
+    subgraph YAA["Young Amstelland Awards website, unchanged"]
+        Y1[Nominations, voting, jury, gala]
+        Y2[(YAA database)]
+    end
+    subgraph Connect["Young Amstelland Connect, standalone"]
+        C1[Profiles, matching, opportunities, events and more]
+        C2[(Own database)]
+    end
+    Server[Server rented by the foundation: test site now, live version after issue 91]
+    Y1 -- link only --> C1
+    Y1 --- Y2
+    C1 --- C2
+    Connect --> Server
+```
+
+*Figure: Connect has its own database and runs on the foundation's server, the YAA website
+stays as it is, and in semester 1 the two meet only through a link. An API is a possible later
+step.*
+
 ## Who it serves
 
 The brief's own list of who Connect connects young talent with, unchanged:
@@ -74,6 +98,8 @@ threads follow from that:
 No part of the brief or the agreement mentions revenue, pricing, or a funding model for
 Connect itself. The only commercial element is the webshop, which sits at the edge of scope
 (see below).
+
+The diagram shows how the foundation's goal reaches the user groups and what they get from it.
 
 ```mermaid
 flowchart LR

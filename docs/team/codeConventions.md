@@ -6,6 +6,17 @@ What "the code follows the team's code conventions" in the Definition of Done me
 
 The flow of every change:
 
+The picture below shows the road of a normal change and of a hotfix, from the newest dev to main.
+
+```mermaid
+flowchart LR
+    D1[newest dev] -->|make branch| F["feature/12-create-an-account"]
+    D1 -->|make branch| H["hotfix/short-name"]
+    F -->|merge request, approved,<br/>pipeline green| D2[dev]
+    H -->|merge request, approved| D2
+    D2 -->|merge request before a sprint review,<br/>or right away for a hotfix| M[main]
+```
+
 1. Make your branch from the newest dev: `<type>/<issue number>-<short name>`, for example `feature/12-create-an-account`. Types: feature, fix, refactor, docs, test, chore. The button Create branch on a GitLab issue makes this name for you.
 2. Commit in the format `<type>(<scope>): <what changed> (#<issue number>)`, for example `feat(backend): add account endpoint (#3)`.
 3. Open a merge request into dev. The title uses the commit format. The description starts with `Relates to #<issue number>` and holds the proof block of the task (the template Default does this for you).

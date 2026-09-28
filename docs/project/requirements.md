@@ -33,6 +33,8 @@ diagram in `docs/client/clientBrief.md`. Each requirement now has its own epic o
 The board has 227 issues in 21 epics. Seventeen epics build or prepare Connect itself, and four
 exist because the school asks for them (see "The school epics" below).
 
+The diagram shows the ten feature modules of Connect with their requirement codes.
+
 ```mermaid
 flowchart TD
     Platform[Young Amstelland Connect]
@@ -239,6 +241,8 @@ Definition of Done applies from sprint 1.
 
 What each requirement group asks of the stack. The reasoning behind each technology's fit is in
 `docs/architecture/stackResearch.md` and `docs/architecture/techStack.md`.
+
+The diagram shows each requirement group next to the part of the stack that serves it.
 
 ```mermaid
 flowchart LR

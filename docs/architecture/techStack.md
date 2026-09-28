@@ -271,6 +271,8 @@ SQL are both high, which the frontend and database layers can draw on. His high 
 Nick's and Kelvin's Docker experience are the team's starting point for the test server and
 production.
 
+The diagram below shows the three parts of Connect, the test site they run on now, and production later.
+
 ```mermaid
 flowchart LR
     User["User's browser"] --> Caddy["Caddy with the padlock"]

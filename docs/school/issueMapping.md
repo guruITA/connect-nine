@@ -16,6 +16,20 @@ The seven labels themselves stayed the same.
 
 Portfolio evidence in Portflow is taken from real project work, not written from memory months later. [workshopCoverage.md](workshopCoverage.md) builds the first half of that chain: a sprint 0 workshop feeds a datapoint, and the issues that deliver it. This document adds the last step: from the datapoint down to the task and the merge request that produced the evidence. A task that is labelled when it is made can be found at datapoint time by filtering, instead of the team having to rebuild at the sprint review which merge request proved which outcome.
 
+The chart below shows the whole chain, from a workshop to the evidence in Portflow, and where the labels of this document sit in it.
+
+```mermaid
+flowchart LR
+    W[Sprint 0 workshop] --> DP[Datapoint of the level 3 sheet]
+    DP --> I[Issue on the board<br/>type, epic, prio, sprint]
+    I --> T[Task<br/>outcome, level, direction]
+    T --> MR[Merge request<br/>with the proof block]
+    MR --> PF[Portflow, under the outcome]
+    DP -. filter the tasks of the sprint on the outcome label .-> T
+```
+
+*Figure: from workshop to Portflow. workshopCoverage.md covers the first two steps, this document the rest.*
+
 The labels sit on the task and not on the issue because one issue proves different things. Issue 03 Create an account has a database task, backend and frontend tasks, test tasks and two pipeline tasks. The pipeline tasks prove Management & Collaboration, the others prove Design & Realisation. Only the task knows which one.
 
 ## The labels in GitLab

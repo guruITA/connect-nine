@@ -68,13 +68,13 @@ flowchart LR
 
 | Requirement | Kind | Covered by | Sprint |
 |---|---|---|---|
-| Choose one elective and record it | Required | 85 (#37) The coach sees per student which issue proves which workshop, task 85.1 (the elective of each student as a decision file) | 2 |
-| Show per student which work proves each workshop | Required | 85 (#37), tasks 85.2 (the table student by workshop, with thin cells marked) and 85.4 (the table reviewed with the coach at mid-term) | 2 |
+| Choose one elective and record it | Required | 85 (#37) The coach sees per student which issue proves which workshop, task 85.1 (the elective of each student as a decision file) | 1 |
+| Show per student which work proves each workshop | Required | 85 (#37), tasks 85.2 (the table student by workshop, with thin cells marked) and 85.4 (the table reviewed with the coach at mid-term) | 1 |
 | Write the proposals per workshop in the personal development plan | Required | Outside. Each student copies their row of the table of 85 into their own plan | |
 | All evidence goes in the portfolio | Required | Every task has a proof block "Where it goes: the merge request, linked in Portflow" (rule E2), and the Definition of Done line "The BoKSA proof that each task asks for is in the merge request, ready for Portflow" | all |
 | Work on GitLab, with commits | Required | 01 (#1) The repository, the pipeline and the team rules, tasks 1.2 and 1.8, and the commit line of the Definition of Done | 1 |
 | Sprint board and stand ups | Required | 01 (#1) task 1.3, one board per sprint in [gitlabSetup.md](../team/gitlabSetup.md), and the review lines of the Definition of Done | 1 |
-| A retrospective every sprint | Required | 85 (#37) task 85.3 (a short retrospective at the end of every sprint, written in the milestone) | 2 |
+| A retrospective every sprint | Required | 85 (#37) task 85.3 (a short retrospective at the end of every sprint, written in the milestone) | 1 |
 | Two knowledge tests on the BoKSA domain | Required | Outside. Scheduled by school, individual | |
 
 ## 1. Research and Development (R&D)
@@ -85,18 +85,57 @@ flowchart LR
 
 | Requirement | Kind | Covered by | Sprint |
 |---|---|---|---|
-| Choose an applied topic, not a "what is" topic, judged against the topic rubric | Required | 106 (#38) Each student's research topic approved, tasks 106.1 and 106.2 | 2 |
-| Proposal with title, problem statement, questions, methods and three references | Required | 106 (#38) task 106.2, written in docs/research/proposals/ | 2 |
-| Proposal handed in on Portflow, reviewed by a teacher, revised when needed | Required | 106 (#38) task 106.3, and task 106.4 writes the approved topics in one decision file | 2 |
-| A repeatable experiment with an artefact | Required | One per student: 107 (#187) Three ways to give out the last event place, measured. 108 (#188) Two ways of paging the showcases, measured. 109 (#189) Image formats for project pictures, measured on a phone. 110 (#190) The cost of password hashing, measured (a good fit for the security specialist). 111 (#191) Two end to end test tools compared on one flow | 107 and 108 in 4, 109 to 111 in 5 |
-| Scientific report: abstract, background with peer reviewed sources, method, results, conclusion with limitations, APA or IEEE | Required | Task 4 of each of 107 to 111 (the scientific report, handed in on Portflow) | 4 and 5 |
+| Choose an applied topic, not a "what is" topic, judged against the topic rubric | Required | 106 (#38) Each student's research topic approved, tasks 106.1 and 106.2 | 1 |
+| Proposal with title, problem statement, questions, methods and three references | Required | 106 (#38) task 106.2, written in docs/research/proposals/ | 1 |
+| Proposal handed in on Portflow, reviewed by a teacher, revised when needed | Required | 106 (#38) task 106.3, and task 106.4 writes the approved topics in one decision file | 1 |
+| A repeatable experiment with an artefact | Required | One per student: 107 (#187) Three ways to give out the last event place, measured. 108 (#188) Two ways of paging the showcases, measured. 109 (#189) Image formats for project pictures, measured on a phone. 110 (#190) The cost of password hashing, measured (a good fit for the security specialist). 111 (#191) Two end to end test tools compared on one flow | 110 and 111 in 2, 107 in 3, 108 and 109 in 4 |
+| Scientific report: abstract, background with peer reviewed sources, method, results, conclusion with limitations, APA or IEEE | Required | Task 4 of each of 107 to 111 (the scientific report, handed in on Portflow) | 2 to 4 |
 | Graded with the assessment form | Required | Outside. Filled in by the teacher | |
-| Review another student's report with the peer review form, the form in both portfolios | Required | 112 (#192) Every research report reviewed by a fellow student, tasks 112.1 to 112.3 | 5 |
+| Review another student's report with the peer review form, the form in both portfolios | Required | 112 (#192) Every research report reviewed by a fellow student, tasks 112.1 to 112.3 | 4 |
 
 **History.** On 23 September Wesley drafted a proposal of his own on eager and lazy loading in Entity Framework Core. The board now routes every proposal through issue 106. Whether Wesley keeps that topic as an own topic or takes one of 107 to 111 is decided in 106 task 106.1.
 
+**Schedule.** On 27 September 2026 the research moved earlier, to follow the level 3 datapoint sheet, which puts **Research & Design** in sprint 1 and **Review of R&D Report** in sprint 3. Issue 106 is now in sprint 1, so the proposals are ready for the Research & Design datapoint. The experiments that do not wait on a feature come early: 110 and 111 in sprint 2, 107 in sprint 3 right after 68b A full event refuses a place fairly. Issues 108 and 109 stay in sprint 4 because they measure features that are built in sprint 4: 108 measures 63 Browse all showcases, and 109 measures 61b Add an image to my project and 64 Open a project page. The peer review 112 waits for the reports, so it is in sprint 4 too.
+
+The chart below shows in which sprint each research issue is planned, next to the two R&D datapoints.
+
+```mermaid
+flowchart LR
+    subgraph S1["Sprint 1, 21 Sep to 9 Oct"]
+        I106[106 Research topic approved]
+        D1{{Datapoint Research and Design}}
+    end
+    subgraph S2["Sprint 2, 19 Oct to 6 Nov"]
+        I110[110 Cost of password hashing]
+        I111[111 Two end to end test tools]
+    end
+    subgraph S3["Sprint 3, 9 to 27 Nov"]
+        I107[107 Last event place]
+        D3{{Datapoint Review of R and D Report}}
+    end
+    subgraph S4["Sprint 4, 30 Nov to 18 Dec"]
+        I108[108 Paging the showcases]
+        I109[109 Image formats on a phone]
+        I112[112 Reports reviewed by a fellow student]
+    end
+    I106 --> D1
+    I106 --> I110
+    I106 --> I111
+    I106 --> I107
+    I106 --> I108
+    I106 --> I109
+    I107 --> D3
+    I110 --> I112
+    I111 --> I112
+    I107 --> I112
+    I108 --> I112
+    I109 --> I112
+```
+
+*Figure: the research issues per sprint, with the two R&D datapoints of the level 3 sheet.*
+
 **Still open.**
-- The level 3 datapoint sheet puts **Research & Design** in sprint 1 and **Review of R&D Report** in sprint 3. The board plans 106 in sprint 2, the experiments in sprints 4 and 5, and the peer review 112 in sprint 5. The team has to check these dates with the R&D teacher at 106. The Portflow deadlines are not in any material the team holds.
+- The reports of 108 and 109 and the peer review 112 fall in sprint 4, after the Review of R&D Report datapoint in sprint 3. Which reports that datapoint reviews is checked with the R&D teacher in 106. The Portflow deadlines are not in any material the team holds.
 - The board has five topics for five students. Per the study manual, level 2 carries no R&D datapoint, and [techStack.md](../architecture/techStack.md) records Bayon Eerhart at Full-Stack level 2 and Kelvin van Voorst at Security Specialist level 2. Which students actually take a research issue is decided in 106 task 106.1. A topic that nobody takes is marked as not taken this semester (issue 106, description).
 
 ## 2. Architecture & Patterns
@@ -171,7 +210,7 @@ flowchart LR
 | Unsafe input: parameterised queries, validation, safe APIs | Required | EF Core only in Infrastructure (code line of the Definition of Done), validators in Presentation, and 61b (#180) Add an image to my project (size, type, new random name) | every issue, and 4 |
 | Established identity libraries | Required | 03 (#14) task 3.4 (the password hasher of ASP.NET Core Identity), 23 (#46) Register or log in with Google | 1 and 2 |
 | Secrets out of code, logs and client apps | Required | 09 (#10) task 9.5, and the code and security lines of the Definition of Done | 1 |
-| Dependencies patched by risk | Required | 16 (#22) A security scan in the pipeline, with accepted risks in docs/securityExceptions.md | 1-stretch |
+| Dependencies patched by risk | Required | 16 (#22) A security scan in the pipeline, with accepted risks in docs/security/securityExceptions.md | 1-stretch |
 | Availability: limits, rate limits, monitoring | Required | Rate limits on single addresses: 28c (#57) Wait a minute before I ask for the confirmation email again, 30 (#60) Wait a minute after five wrong passwords, 30b (#61) Wait a minute after ten tries from one phone or laptop, 31 (#62) Account locked after fifteen wrong passwords. A limit on all addresses: 105 (#185) Connect keeps working under too many requests. A size limit: 105b (#186) A request that is far too large is refused. Monitoring: 98 to 100 | 2 and 4 |
 | What must be logged and what never | Required | 17 (#23) task 17.2, the security line on logs in the Definition of Done, and 32 (#92) See who did what on the platform | 1-stretch and 3 |
 | Least privilege, secure defaults, defence in depth, design for response | Required as principles | 01 (#1) task 1.3 (the client and the coach as readers), 13 (#28) (a minor is treated more carefully), 32 (#92) (audit trail), 30 and 31 (two layers against guessing) | 1 to 3 |
@@ -190,14 +229,14 @@ flowchart LR
 |---|---|---|---|
 | Show and explain a race condition on shared mutable state | Elective | 68b (#129) A full event refuses a place fairly: two people pressing Register for the last place at once, task 68b.8 | 3 |
 | Fix it with a lock, and name the trade-off | Elective | 68b (#129) task 68b.1 (the locked step that counts the places before it saves), and task 68b.7 (the document that explains why registering is fair) | 3 |
-| Fix it with an atomic operation | Elective | 22 (#44) Set a new password through the link, task 22.1 (finish a reset in one transaction with one conditional update), compared with the lock in 107 (#187) | 2 and 4 |
-| Avoid shared state by design | Elective | 68b (#129) task 68b.1 counts the registration rows instead of keeping a counter, compared as a design choice in 107 (#187) | 3 and 4 |
-| Reflect on imperative and functional style, and which fix to trust | Elective | 107 (#187) Three ways to give out the last event place, measured, task 107.5 (the reflection on shared mutable state for the Programming elective) | 4 |
-| Record the chosen elective | Required | 85 (#37) task 85.1 | 2 |
+| Fix it with an atomic operation | Elective | 22 (#44) Set a new password through the link, task 22.1 (finish a reset in one transaction with one conditional update), compared with the lock in 107 (#187) | 2 and 3 |
+| Avoid shared state by design | Elective | 68b (#129) task 68b.1 counts the registration rows instead of keeping a counter, compared as a design choice in 107 (#187) | 3 |
+| Reflect on imperative and functional style, and which fix to trust | Elective | 107 (#187) Three ways to give out the last event place, measured, task 107.5 (the reflection on shared mutable state for the Programming elective) | 3 |
+| Record the chosen elective | Required | 85 (#37) task 85.1 | 1 |
 
 **History.** On 23 September the event capacity race (FR6) was chosen as the risk, with three planned fixes: a SemaphoreSlim lock, an EF Core optimistic concurrency token, and counting registration rows instead of a counter. The board keeps the risk. 68b builds the fair registration, and 107 measures three ways against each other: a row lock, an optimistic check and one conditional update.
 
-**Still open.** The level 3 sheet names three **Custom Datapoints**, in sprints 2, 3 and 4, and T009 says each is decided at the start of the sprint it falls in. The board makes one split possible, 22 in sprint 2, 68b in sprint 3 and 107 in sprint 4, but that is Wesley's choice per sprint. Whether one elective may cover all three Custom Datapoints was a question for coach Karthik Srinivasan (to ask by 24 September 2026). No answer is recorded in the team documents. The mid-term review with the coach in 85 task 85.4 is the latest moment to settle it.
+**Still open.** The level 3 sheet names three **Custom Datapoints**, in sprints 2, 3 and 4, and T009 says each is decided at the start of the sprint it falls in. Since 27 September 2026, 107 is in sprint 3 next to 68b, so the board offers 22 in sprint 2 and 68b and 107 in sprint 3. No Programming issue is planned in sprint 4 for the third Custom Datapoint. The split is Wesley's choice per sprint. Whether one elective may cover all three Custom Datapoints was a question for coach Karthik Srinivasan (to ask by 24 September 2026). No answer is recorded in the team documents. The mid-term review with the coach in 85 task 85.4 is the latest moment to settle it.
 
 ## 6. Testing
 
@@ -222,8 +261,8 @@ The six workshops crossed with the "What each workshop feeds" table of the level
 
 | Workshop | Datapoint | Sprint of the datapoint | Learning outcome | Issues that feed it |
 |---|---|---|---|---|
-| Research (R&D) | Research & Design | 1 | Analysing & Advising | 106 (planned in sprint 2) |
-| Research (R&D) | Review of R&D Report | 3 | variable, peer and teacher | 107 to 111 (sprints 4 and 5), 112 (sprint 5) |
+| Research (R&D) | Research & Design | 1 | Analysing & Advising | 106 (sprint 1) |
+| Research (R&D) | Review of R&D Report | 3 | variable, peer and teacher | 110 and 111 (sprint 2), 107 (sprint 3), 108, 109 and 112 (sprint 4) |
 | Architecture & Patterns | Security & Architecture | 1 | Designing & Realising | 11 (sprint 1), deepened by 102 and 103 (sprint 4) |
 | Security | Security & Architecture | 1 | Designing & Realising | 12, 13 (sprint 1), 18, 19 (1-stretch) |
 | Security | Review of Security & Testing | 4 | variable | 104, 105, 105b (sprint 4), and the security and tests lines of the Definition of Done on every finished issue |
@@ -231,11 +270,11 @@ The six workshops crossed with the "What each workshop feeds" table of the level
 | DevOps | the two graded deliverables | 4 | per the teacher's check-in of 84 | 86, 87, built on 88 to 101 (sprint 4) |
 | Testing | DevOps & Testing | 2 | Designing & Realising | the tests lines of the Definition of Done, 03 tasks 3.1, 3.6, 3.7 and 3.9 |
 | Testing | Review of Security & Testing | 4 | variable | the same lines on every finished issue, re-checked at the sprint 4 review |
-| Advanced Programming | Custom Datapoint | 2, 3, 4 | variable | 22 (sprint 2), 68b (sprint 3), 107 (sprint 4), see section 5 |
+| Advanced Programming | Custom Datapoint | 2, 3, 4 | variable | 22 (sprint 2), 68b and 107 (sprint 3), see section 5 |
 
 ## Open points, gathered
 
-1. The R&D dates on the board (106 in sprint 2, 107 to 111 in sprints 4 and 5, 112 in sprint 5) are later than the datapoint sheet (Research & Design in sprint 1, Review of R&D Report in sprint 3). Check with the R&D teacher in 106.
+1. The reports of 108 and 109 and the peer review 112 are in sprint 4, after the Review of R&D Report datapoint in sprint 3. They stay there because 108 and 109 measure features built in sprint 4. Which reports the datapoint reviews is checked with the R&D teacher in 106.
 2. Which students take a research issue, given that level 2 carries no R&D datapoint. Decided in 106 task 106.1.
 3. Where production runs, its address and who gets the alerts. Decided by the client in 91.
 4. The code quality tool. Decided in 88, after the teacher's check-in in 84.

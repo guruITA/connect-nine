@@ -1,5 +1,7 @@
 # Team 9, Connect Nine, Collaboration Agreement
 
+**Status: draft, not signed yet. The team is still working on the final version.**
+
 | | |
 | --- | --- |
 | Team number | 9 |
@@ -10,7 +12,7 @@
 | Studio | Social Impact Apps, semester 1, 2026-2027 |
 | Client | Rachid Kherrazi, WailSalutem Foundation |
 | Team coach | Karthik Srinivasan |
-| Version | 1.12, 27 September 2026. Version 1.11 of 23 September 2026 was the version put forward for signing. 1.12 only updates the facts the board changed since then: the sprint dates, the stack, commits, branches and the Definition of Done |
+| Version | 1.12 draft, 27 September 2026. It follows version 1.11 of 23 September 2026 and updates the facts the board changed since then: the sprint dates, the stack, commits, branches and the Definition of Done |
 | Semester start | 31 August 2026 |
 | Sprint 1 start | 21 September 2026 |
 | Project completion | week of 4 January 2027 |
@@ -189,6 +191,14 @@ the repository, and `docs/decisions/001-codeConventions.md` records the choices.
 7. At least one reviewer must be a non-owner. GitLab enforces this: a merge request needs one
    approval, and neither its author nor anyone who added commits to it can approve it.
 
+The picture below shows the only way a change reaches `main`.
+
+```mermaid
+flowchart LR
+    W["Work branch<br/>feature, fix, hotfix, refactor,<br/>docs, test, chore"] -->|merge request,<br/>one approval by a non-owner| D[dev]
+    D -->|merge request,<br/>checked by branch-flow| M[main]
+```
+
 There is deliberately no hotfix path straight into `main`. A bypass would weaken the protection
 that rule 1 exists to provide. A hotfix goes into `dev` and then from `dev` into `main`.
 
@@ -285,7 +295,7 @@ Strikes do not reset and do not expire. They stand for the semester.
 
 ## 11. Signed by
 
-This collaboration agreement was signed by:
+The team signs here once the final version is agreed. Until then the table stays empty.
 
 | Name | Signed | Date |
 | --- | --- | --- |
