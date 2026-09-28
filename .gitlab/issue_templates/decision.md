@@ -16,13 +16,9 @@ When it is done, <what that person can do and see>. <What they see when somethin
 
 - <what a reader might expect here>: issue <number> <title>
 
-## LINKED ITEMS (GitLab)
+## RELATES TO
 
-Is blocked by
-- <number> <title> · epic <name>
-
-Blocks
-- <number> <title> · epic <name>
+<!-- The issues this one waits for and the issues that wait for it are set as Linked items (is blocked by, blocks) in GitLab, not in this text. -->
 
 Relates to (docs/project/requirements.md)
 - <FR code> <name> · epic <name> · <first issue of that epic, or why it relates>
@@ -55,7 +51,7 @@ The answer goes back the same way, and the screen shows <what>. All words and se
 Checked on the test site by a team member who did not build this issue.
 
 Functional
-- [ ] AC1 As a <role>, I <see or do what, and where on the screen>.
+- [ ] AC1 As a <role>, I <see or do what, and where on the screen>, in plain words for a tester without technical knowledge.
   How to check: <page, button, what to type, what you see>.
 
 Non functional

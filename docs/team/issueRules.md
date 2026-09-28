@@ -52,7 +52,7 @@ The title of a task uses the same form with the developer as the role, and its "
 
 ### C1
 
-An issue has exactly these parts, in this order, each with its heading in capitals, and a blank line between parts and between paragraphs: the RANK line, STORY, DESCRIPTION, OUT OF SCOPE, LINKED ITEMS (GitLab), HOW IT WORKS (for developers), TASKS, ONE LAYER EACH, TESTING, WHAT PROVES THIS ISSUE, ACCEPTANCE CRITERIA, DEFINITION OF DONE, LABELS. The acceptance criteria always sit directly above the Definition of Done. An issue with the label school::required has one more part, SCHOOL REQUIREMENT, directly under STORY.
+An issue has exactly these parts, in this order, each with its heading in capitals, and a blank line between parts and between paragraphs: the RANK line, STORY, DESCRIPTION, OUT OF SCOPE, RELATES TO, HOW IT WORKS (for developers), TASKS, ONE LAYER EACH, TESTING, WHAT PROVES THIS ISSUE, ACCEPTANCE CRITERIA, DEFINITION OF DONE, LABELS. The acceptance criteria always sit directly above the Definition of Done. An issue with the label school::required has one more part, SCHOOL REQUIREMENT, directly under STORY.
 
 The picture below shows the parts of an issue in their order, with the one extra part of a school issue.
 
@@ -63,7 +63,7 @@ flowchart TD
     SR -.-> D
     S --> D[DESCRIPTION]
     D --> O[OUT OF SCOPE]
-    O --> L[LINKED ITEMS]
+    O --> L[RELATES TO]
     L --> H[HOW IT WORKS]
     H --> T[TASKS, ONE LAYER EACH]
     T --> TE[TESTING, WHAT PROVES THIS ISSUE]
@@ -86,7 +86,7 @@ OUT OF SCOPE: a list of what a reader might expect here but is not part of this 
 
 ### C5
 
-LINKED ITEMS (GitLab): every link in one place, with the GitLab names. "Is blocked by": every issue that must be done first. "Blocks": every issue that cannot start before this one. "Relates to (docs/project/requirements.md)": the requirements this issue serves or prepares, each as code, name, epic and, when useful, the first issue of that epic. "Quality rules this issue follows (docs/project/requirements.md)": the NFRs, each as code, name, epic and, when there is one, the issue that holds the rule. Every issue is named as number, title and epic. Every link is set both ways in GitLab: when A blocks B, B says it is blocked by A.
+RELATES TO: "Relates to (docs/project/requirements.md)": the requirements this issue serves or prepares, each as code, name, epic and, when useful, the first issue of that epic. "Quality rules this issue follows (docs/project/requirements.md)": the NFRs, each as code, name, epic and, when there is one, the issue that holds the rule. The issues this one waits for and the issues that wait for it are never written in the text: they are the linked items "is blocked by" and "blocks" in GitLab, set both ways (Wesley, 28 September 2026).
 
 ### C6
 
@@ -102,7 +102,7 @@ TESTING, WHAT PROVES THIS ISSUE: a checklist with one line per test: what it pro
 
 ### C9
 
-ACCEPTANCE CRITERIA: first the line "Checked on the test site by a team member who did not build this issue." Then two parts, each with its own heading: Functional and Non functional. Every criterion starts with "[ ] AC&lt;n> As a &lt;role>, I ..." with the role of the story, or a second real role when the issue touches two. It describes what that person sees or can do on the screen, in plain words, never a status code, a table, a name from the code or an NFR code. When a text appears, it says where: on the page in place of what, next to which field, as a popup or not. It is followed by "How to check:" with the page, the button, what to type and what you see, so a person without technical knowledge can do it on the test site. Together the criteria cover the normal path, every error the person can meet (wrong input, a value that is taken, the server not reachable) and every privacy or security rule that is special to this issue. There are as many as the issue needs. A rule that holds for every slice is not repeated here, it is in the Definition of Done. No criterion needs a developer to change the database by hand: when a check needs known data, the pipeline puts it there (seed data) and docs/testing/testData.md lists it.
+ACCEPTANCE CRITERIA: first the line "Checked on the test site by a team member who did not build this issue." Then two parts, each with its own heading: Functional and Non functional. Every criterion starts with "[ ] AC&lt;n> As a &lt;role>, I ..." with the role of the story, or a second real role when the issue touches two. It describes what that person sees or can do on the screen, in plain words, never a status code, a table, a name from the code or an NFR code. When a text appears, it says where: on the page in place of what, next to which field, as a popup or not. It is followed by "How to check:" with the page, the button, what to type and what you see, so a person without technical knowledge can do it on the test site. The tester has no technical knowledge, so neither the criterion nor How to check names files, server addresses, the database, commands, branches, merge requests or issue numbers. There is no role "data protection contact": use the client at the foundation. Together the criteria cover the normal path, every error the person can meet (wrong input, a value that is taken, the server not reachable) and every privacy or security rule that is special to this issue. There are as many as the issue needs. A rule that holds for every slice is not repeated here, it is in the Definition of Done. No criterion needs a developer to change the database by hand: when a check needs known data, the pipeline puts it there (seed data) and docs/testing/testData.md lists it.
 
 ### C10
 
@@ -124,7 +124,7 @@ The unit tests and integration tests belong to the task that writes the code the
 
 ### D3
 
-A task has exactly these parts, in this order, each with its heading and a blank line between parts: the TASK line, STORY, LABELS, DESCRIPTION, BEFORE YOU START, a context block when the task works inside a structure (for a backend task: THE FOUR FOLDERS YOU WORK IN), FILES, BUILD THEM IN THIS ORDER, WATCH OUT, CHECK IT ON YOUR OWN MACHINE, DONE MEANS, ACCEPTANCE CRITERIA, CHECKED BY THE REVIEWER, and PROOF FOR THE PORTFOLIO (BoKSA).
+A task has exactly these parts, in this order, each with its heading and a blank line between parts: the TASK line, STORY, LABELS, DESCRIPTION, BEFORE YOU START, a context block when the task works inside a structure (for a backend task: THE FOUR FOLDERS YOU WORK IN), FILES, BUILD THEM IN THIS ORDER, WATCH OUT, CHECK IT ON YOUR OWN MACHINE, DONE MEANS, ACCEPTANCE CRITERIA, REVIEWER CHECKS, and PROOF FOR THE PORTFOLIO (BoKSA).
 
 ### D4
 
@@ -164,7 +164,7 @@ DONE MEANS: a short list: the merge request is open, the pipeline is green, what
 
 ### D13
 
-ACCEPTANCE CRITERIA, CHECKED BY THE REVIEWER: a checklist of what the reviewer checks for this task. Technical words are allowed here, because the reader is a developer.
+ACCEPTANCE CRITERIA: 1 to 3 criteria "[ ] As a <role of the issue>, I ..." with "How to check:", in the same plain words as the criteria of the issue: what that role notices once this task is done, checked on the test site by a person without technical knowledge. REVIEWER CHECKS: a checklist of what the reviewer checks for this task. Technical words are allowed there, because the reader is a developer.
 
 ### D14
 
