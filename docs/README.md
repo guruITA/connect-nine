@@ -20,6 +20,7 @@ This page is the way in. Start with the part that fits your question.
 | [architecture](architecture/) | How Connect is built and where it runs | [architecture.md](architecture/architecture.md), [techStack.md](architecture/techStack.md), [stackResearch.md](architecture/stackResearch.md), [infrastructure.md](architecture/infrastructure.md) |
 | [team](team/) | How the team works and the rules for every change | [collaborationAgreement.md](team/collaborationAgreement.md), [codeConventions.md](team/codeConventions.md), [definitionOfDone.md](team/definitionOfDone.md), [gitlabSetup.md](team/gitlabSetup.md), [issueRules.md](team/issueRules.md), [boardNumbers.md](team/boardNumbers.md), [openItems.md](team/openItems.md), [actionOverview.md](team/actionOverview.md) |
 | [testing](testing/) | How Connect is tested | [testingStrategy.md](testing/testingStrategy.md) |
+| [pages](pages/) | Every page of the website, one document per page with every element | [pages/README.md](pages/README.md), the overview with a link to each of the 66 page documents |
 | [school](school/) | What the HvA asks and how the issues prove it | [workshopCoverage.md](school/workshopCoverage.md), [issueMapping.md](school/issueMapping.md), [documentGuide.md](school/documentGuide.md) |
 
 [school/documentGuide.md](school/documentGuide.md) describes every document with what it is for and which school criterion it serves.
@@ -39,30 +40,6 @@ These folders and files do not exist yet. The issue that makes them says so on i
 | docs/testing | Also testData.md (the seed accounts and seed data of the test site) |
 | docs/client | Also clientContact.md (who asked what and when) |
 | docs/project | Also houseRules.md (the house rules of Connect) |
-
-## Old paths in the issues
-
-The issues in GitLab were written before the documents moved into folders, so they still name the old paths. Until the issues are updated, use this table.
-
-| The issue says | The document is at |
-|---|---|
-| docs/requirements.md | docs/project/requirements.md |
-| docs/architecture.md | docs/architecture/architecture.md |
-| docs/api.md | docs/architecture/api.md |
-| docs/designPatterns.md | docs/architecture/designPatterns.md |
-| docs/socialLogin.md | docs/architecture/socialLogin.md |
-| docs/concurrencyRegistration.md | docs/architecture/concurrencyRegistration.md |
-| docs/codeConventions.md | docs/team/codeConventions.md |
-| docs/definitionOfDone.md | docs/team/definitionOfDone.md |
-| docs/gitlabSetup.md | docs/team/gitlabSetup.md |
-| docs/onboarding.md | docs/team/onboarding.md |
-| docs/testData.md | docs/testing/testData.md |
-| docs/clientQuestions.md | docs/client/clientQuestions.md |
-| docs/clientContact.md | docs/client/clientContact.md |
-| docs/privacyStatement.md | docs/security/privacyStatement.md |
-| docs/houseRules.md | docs/project/houseRules.md |
-
-The folders docs/decisions, docs/security, docs/research and docs/school keep the names the issues use.
 
 ## Where the rest lives
 
