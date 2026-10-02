@@ -46,6 +46,7 @@ Decisions the team, or the team with the client, still has to make.
 | The web address of the live version | The client | Issue 10 task 10.6, confirmed in issue 91, client question 113 | `docs/architecture/infrastructure.md` |
 | One line of the Definition of Done is still a proposal to confirm with the client: every button and link on a phone is at least 44 by 44 pixels | Whole team, with the client | Issue 10, no question number yet | `definitionOfDone.md` |
 | Clarify one unreadable entry in the skills inventory, recorded as "lid low" | Bayon Eerhart | Open, no issue | `docs/architecture/techStack.md` |
+| A temporary test address with a padlock before the client's DNS record: a wildcard DNS name such as sslip.io, a free dynamic DNS name, an own domain, or a Let's Encrypt certificate for the bare IP address | Whole team | A stand up in sprint 1, owner Nick Hoebe, inside issue 09 task 9.4 |  |
 
 ## Needs asking
 

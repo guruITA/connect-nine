@@ -175,6 +175,40 @@ Issue 09 Every team member on the client's server prepares the machine. The firs
 - **Log size.** The containers `server` and `database` use the logging driver json-file with
   `max-size 10m` and `max-file 5`, so each keeps at most about 50 MB (issue 17 task 17.5).
 
+### The front door and the test address, options compared
+
+**The front door.** Caddy is the choice of task 9.4 and of issue 95 task 95.3, which keeps it as
+the one front door for production too because the team knows it and it renews its certificate by
+itself.
+
+| Option | What it gives | What it costs the team | Why not now |
+| --- | --- | --- | --- |
+| Caddy, chosen | One binary, one short Caddyfile, certificates from Let's Encrypt made and renewed by itself, http to https (Caddy, n.d.) | One Caddyfile to write in task 9.4, and the team knows it | Not applicable |
+| Nginx with certbot | The most common reverse proxy and what most guides show | The certificate needs a second tool and a timer, more to set up and one more thing that can break quietly | The team already runs Caddy and would gain nothing |
+| Traefik | Reads Docker labels and configures itself, already chosen inside k3s for production (issue 93) | More concepts than Caddy for one compose stack | Fewer concepts is better for a single test server |
+| A deployment platform such as Dokploy or Coolify | A web interface with deploy buttons and Traefik underneath, the fastest first deploy | Hides the pipeline the DevOps workshop grades | It is what the server arrived with and was removed |
+| Cloudflare Tunnel | No open ports and no certificate work | A third party in the path of every visit, which the GDPR notes on minors' data (issue 19) would have to cover (Cloudflare, n.d.) | Adds a party to the data path for no need the team has now |
+
+**A test address before the DNS record.** The server is reachable now and nothing in the deploy
+waits on the domain, only the padlock does, because Let's Encrypt gives a certificate to a name
+and the client's DNS record for the test address is not there yet (task 9.1).
+
+- **A wildcard DNS name, proposal.** The name `31-70-66-186.sslip.io` resolves to `31.70.66.186`
+  with no account and no cost, nip.io is the same service, both in operation for over ten years
+  (sslip.io, n.d.). Caddy gets a real certificate for it. When the client's record comes, the
+  first line of the Caddyfile changes and nothing else. It depends on a third party staying up,
+  and it is never published to users.
+- **A free dynamic DNS name such as DuckDNS.** Needs an account, same trade.
+- **A domain of the team's own, around ten euros a year.** Money, and a name nobody needs after
+  the client's record exists.
+- **A certificate for the bare IP address.** Let's Encrypt issues six-day certificates for IP
+  addresses, generally available since 15 January 2026 (Let's Encrypt, 2026). New, and whether
+  Caddy can request one on this server is not checked yet.
+
+Proposal: Caddy on the sslip.io name until the client's DNS record arrives, so the test site has
+a padlock from its first deploy. Decided by the whole team at a stand up, owner the Product Owner
+of sprint 1, Nick Hoebe, inside task 9.4.
+
 ## Production in detail
 
 The choice is recorded in `docs/decisions/<number>-productionOnK3s.md` (issue 92). Wesley Oerlemans
@@ -470,6 +504,7 @@ that step.
 | Open point | Decided by |
 | --- | --- |
 | The test address | The client, issue 09 task 9.1 |
+| A temporary test address with a padlock before the client's DNS record | Whole team, issue 09 task 9.4 |
 | A live version on the foundation's server at all | Issue 91, question 111 |
 | One server or two | Issue 91, question 112 |
 | The production address | Issue 91, question 113 |
@@ -490,6 +525,12 @@ the test site runs that stand in on the same machine on the same port, one of th
 
 ## References
 
+Caddy. (n.d.). *Automatic HTTPS*. Caddy Documentation. Retrieved October 2, 2026, from
+https://caddyserver.com/docs/automatic-https
+
+Cloudflare. (n.d.). *Cloudflare Tunnel*. Cloudflare One docs. Retrieved October 2, 2026, from
+https://developers.cloudflare.com/cloudflare-one/networks/connectors/cloudflare-tunnel/
+
 Docker. (n.d.). *Why use Compose?* Docker Docs. Retrieved September 23, 2026, from
 https://docs.docker.com/compose/intro/features-uses/
 
@@ -500,6 +541,10 @@ https://docs.k3s.io/
 
 Kubernetes. (n.d.). *Overview*. Kubernetes. Retrieved September 23, 2026, from
 https://kubernetes.io/docs/concepts/overview/
+
+Let's Encrypt. (2026, January 15). *6-day and IP address certificates are generally available*.
+Retrieved October 2, 2026, from
+https://letsencrypt.org/2026/01/15/6day-and-ip-general-availability.html
 
 Microsoft. (n.d.-a). *Health checks in ASP.NET Core*. Microsoft Learn. Retrieved September 23,
 2026, from https://learn.microsoft.com/en-us/aspnet/core/host-and-deploy/health-checks
@@ -512,6 +557,9 @@ Microsoft. (n.d.-c). *Activate your Azure grant*. Microsoft Learn. Retrieved Sep
 
 Microsoft. (n.d.-d). *Eligibility guidelines*. Microsoft Learn. Retrieved September 24, 2026,
 from https://learn.microsoft.com/en-us/industry/nonprofit/microsoft-for-nonprofits/eligibility
+
+sslip.io. (n.d.). *Welcome to nip.io / sslip.io*. Retrieved October 2, 2026, from
+https://sslip.io/
 
 Strato. (n.d.). *Sicherheit: Maximaler Schutz mit STRATO Hosting-Produkten*. Retrieved October 2,
 2026, from https://www.strato.de/sicherheit/
