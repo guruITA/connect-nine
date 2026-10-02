@@ -48,6 +48,8 @@ The seed accounts and the seed data of the test site are described in the testin
 ## 4. Configuration and secrets
 
 This is the section to get right. Connect keeps every secret out of Git, and there is one way to do that per environment.
+The complete reference is [architecture/configuration.md](../architecture/configuration.md);
+the tables and commands below are the onboarding version of the same rules.
 
 ### How the server reads settings
 
@@ -131,7 +133,7 @@ The ignore rules cover the variants, so `.env.local` and `.env.production` canno
 ## 5. Run Connect
 
 ```
-dotnet run --project backend/Presentation
+dotnet run --project api/Connect/Connect.csproj
 npm install
 npm run dev
 ```
