@@ -32,8 +32,6 @@ Decisions the team, or the team with the client, still has to make.
 | Who holds the Scrum Master and Product Owner roles in sprint 5. The roles table of the collaboration agreement covers sprints 0 to 4, and the board added sprint 5 (4 to 8 January 2027). New in this register | Whole team | Before sprint 5 | `collaborationAgreement.md` section 5, `gitlabSetup.md` |
 | Where the live version of Connect runs, on which web address, from which mail account it sends email and who gets its warnings. The shape is decided (see Closed below), the client's yes is not | Whole team, with the client | Issue 91 The director agrees where production runs, sprint 4, client questions 111 to 116 | `docs/architecture/infrastructure.md` |
 | Who runs and pays for Connect after January 2027, and the grant of Microsoft for Nonprofits | The client | Issue 10 The client's priorities for the epics, client question 6 | `docs/architecture/infrastructure.md` |
-| Data access pattern: the repository pattern, or CQRS (Command Query Responsibility Segregation) as the real alternative, given Nick Hoebe's prior CQRS experience | Whole team | Issue 11 The team agrees on the layered architecture, sprint 1, task 11.1 compares both | `docs/architecture/architecture.md` |
-| The layered architecture itself: four backend projects Presentation, Application, Domain and Infrastructure | Whole team | Issue 11 The team agrees on the layered architecture, sprint 1 | `docs/architecture/architecture.md` |
 | The component diagram and the other architecture drawings | Whole team | Issue 102 The architecture drawn in layers, parts and places, sprint 4 | `docs/architecture/architecture.md` |
 | The design patterns Connect uses, at least three, including the third one if Strategy is not the team's pick | Whole team | Issue 103 The design patterns Connect uses, where and why, sprint 4 | `docs/architecture/architecture.md` |
 | The code quality tool that stops a change, and the line it stops at, also for tested new code (the coverage ambition) | Whole team | Issue 88 The team picks the code quality tool and issue 89 A change that lowers code quality is stopped, both sprint 4 | `docs/testing/testingStrategy.md` |
@@ -137,6 +135,11 @@ Kept here so the history stays findable.
   issue.
 - **Database provider.** Decided on 22 September 2026 for Microsoft SQL Server, changed on 26
   September 2026 to PostgreSQL 16 with EF Core and Npgsql, see `docs/architecture/techStack.md`.
+- **Layered architecture and CQRS.** Four backend projects, Presentation, Application, Domain
+  and Infrastructure, with CQRS by functionality as the data access pattern, decided by the team
+  on 1 October 2026, over the repository pattern and over one project with four folders, see
+  `docs/architecture/architecture.md` (issue 11 The team agrees on the layered architecture, task
+  11.2).
 - **Hosting and container orchestration.** The test site runs with docker compose on the
   client's server (issue 09 Every team member on the client's server). Production runs on k3s
   with Terraform on the client's server (issue 92 k3s and Terraform for production, compose for

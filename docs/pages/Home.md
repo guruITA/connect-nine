@@ -65,7 +65,7 @@ The page sits inside AppShell of issue 06. The shell draws a header with the nam
    - No pictures, also after issue 72b, so the home page stays short on a phone.
    - Data: getNewsHeadlines(1, 3) in frontend/src/api/newsItems.ts asks GET /api/news-items/headlines?page=1&pageSize=3 through the shared helper in client.ts. It is the only call of the part.
    - The server address (task 166.2): open to everyone, also without a cookie. page and pageSize are read as text by PageQueryValidator. The answer 200 is { "data": [ { "id", "title", "publishedAt" } ], "meta": { "page": 1, "pageSize": 3, "total": 25 } }. Never the text, the author or a picture field. A wrong page value gives 400 with "Use a page number of 1 or more" or "Use a page size from 1 to 50". A stopped database gives 503 with "Connect is not reachable right now".
-   - The database (task 166.1): ListHeadlinesAsync on INewsItemRepository reads only Id, Title and PublishedAt into NewsItemHeadline, newest first by published_at and then id, through the index ix_news_item_published_at_id of the news list. The order is shared with the news list in one method NewestFirst, so the home page and the news list always show the same newest item.
+   - The database (task 166.1): GetNewsHeadlinesHandler, through IAppDbContext, reads only Id, Title and PublishedAt into NewsItemHeadline, newest first by published_at and then id, through the index ix_news_item_published_at_id of the news list. The order is shared with the news list in one method NewestFirst, so the home page and the news list always show the same newest item.
    - Built by tasks 166.1, 166.2 and 166.3, issue 166 News on the home page, GitLab #226, sprint 5.
 
 ## States

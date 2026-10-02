@@ -37,8 +37,14 @@ understanding).
   `POST /api/accounts`.
 - **Minimal API**: the way ASP.NET Core defines endpoints in a few lines, without controller
   classes.
-- **Repository**: one class that reads and writes one kind of data, behind a contract (an
-  interface) in Domain.
+- **Command**: a request to change data, one class per use case, for example
+  `CreateAccountCommand`.
+- **Query**: a request to read data, one class per use case, for example
+  `GetPublicProfileQuery`.
+- **Handler**: the one class that carries out one command or one query, in
+  `backend/Application/Features`.
+- **CQRS**: short for command and query responsibility segregation: a separate piece of code
+  for every read and every write, the structure the team chose on 1 October 2026.
 - **Dependency injection**: a class gets what it needs through its constructor, and ASP.NET Core
   hands it in while the program runs.
 - **Migration**: a script that EF Core writes to change the tables one step at a time.
@@ -105,8 +111,8 @@ project with the reference builds the same line. The rule is also in
 `docs/team/codeConventions.md`, backend rules 7 and 8.
 
 The dependency rule that the proposal of 24 September took from Clean Architecture stays: the
-business rules depend on a repository contract in Domain, not on EF Core, so a unit test can hand
-in a fake repository (Microsoft, n.d.-a). Wesley Oerlemans decided on 24 September 2026 that the
+business rules depend on a contract, not on EF Core directly, so a handler is unit tested with an
+in-memory SQLite database (Microsoft, n.d.-a). Wesley Oerlemans decided on 24 September 2026 that the
 top layer uses ASP.NET Core Minimal APIs, not controllers. That choice is now part of the code
 conventions (backend rule 9).
 
@@ -124,10 +130,10 @@ with a restaurant.
 
 | Layer | On the cards | What it holds | Folders |
 | --- | --- | --- | --- |
-| Presentation | the waiter | The endpoints, the validators of what comes in, the session guard, the rate limit, the health address. It reads a request, calls a service and returns the answer. | `Program.cs`, `Endpoints/<Feature>Endpoints.cs`, `Validators/<Name>RequestValidator.cs`, `Authentication/`, `RateLimiting/` |
-| Application | the chef | The services with the business rules, for example that an email address must still be free. | `DependencyInjection.cs` (`AddApplication`), `<Feature>/<Name>Service.cs` |
-| Domain | the menu | The entities and the contracts (interfaces) the other layers agree on. It uses nothing. | `<Feature>/<Entity>.cs`, `Interfaces/I<Entity>Repository.cs`, `Accounts/PasswordRules.cs` |
-| Infrastructure | the storeroom | The only layer that talks to the database and the mail server: the `DbContext`, the table settings, the repositories, the migrations, the mail sender. | `DependencyInjection.cs` (`AddInfrastructure`), `Persistence/ConnectDbContext.cs`, `Persistence/Configurations/`, `Repositories/`, `Migrations/`, `Mail/` |
+| Presentation | the waiter | The endpoints, the validators of what comes in, the session guard, the rate limit, the health address. It reads a request, calls a handler and returns the answer. | `Program.cs`, `Features/<Feature>/<Feature>Endpoints.cs`, `Validators/<Name>RequestValidator.cs`, `Authentication/`, `RateLimiting/` |
+| Application | the chef | The commands, queries and handlers with the business rules, for example that an email address must still be free. | `DependencyInjection.cs`, `Abstractions/ICommandHandler.cs`, `IQueryHandler.cs`, `IAppDbContext.cs`, `Features/<Feature>/<UseCase>/<UseCase>Command.cs` or `Query.cs` with `<UseCase>Handler.cs` |
+| Domain | the menu | The entities and the contracts that are not about data access, for example `IMailSender`. It uses nothing. | `Entities/<Entity>.cs`, `Accounts/PasswordRules.cs` |
+| Infrastructure | the storeroom | Holds the database connection, the table settings, the migrations and the mail sender. The chef reaches the data through the hatch IAppDbContext. | `Persistence/AppDbContext.cs`, `Persistence/Configurations/`, `Migrations/`, `Mail/` |
 
 Which project may use which (the `ProjectReference` lines, issue 03 task 3.1):
 
@@ -144,9 +150,9 @@ flowchart TB
     Browser["Browser: the React screen"] -->|"HTTP request to /api"| P
     subgraph Server["Connect server, backend/Connect.sln"]
         P["Presentation, the waiter: endpoints and validators"]
-        A["Application, the chef: services and business rules"]
+        A["Application, the chef: handlers and business rules"]
         D["Domain, the menu: entities and contracts"]
-        I["Infrastructure, the storeroom: repositories, EF Core, mail"]
+        I["Infrastructure, the storeroom: AppDbContext, EF Core, mail"]
         P -->|"uses"| A
         P -->|"uses, only to register classes"| I
         A -->|"uses"| D
@@ -159,11 +165,12 @@ flowchart TB
 *Figure: the four layers and the direction in which each may use another. An arrow is a
 project reference, so the compiler refuses any other direction.*
 
-**Quality it protects.** Changeability: only the storeroom talks to the database, so a change of
-database touches one layer. That already happened once on paper, when SQL Server became
-PostgreSQL on 26 September 2026 before any code existed. Testability: the chef depends on
-contracts in Domain, so a unit test hands in a fake repository instead of a database. Safety for
-beginners: a wrong reference does not build.
+**Quality it protects.** Changeability: a change of database still touches one layer, because only
+Infrastructure holds the connection, the mappings and the migrations. That already happened once
+on paper, when SQL Server became PostgreSQL on 26 September 2026 before any code existed.
+Testability: the chef depends on the contract `IAppDbContext`, so a handler is unit tested with an
+in-memory SQLite database instead of the real one. Safety for beginners: a wrong reference does
+not build.
 
 ### The road of one request
 
@@ -174,9 +181,9 @@ slice copies it:
    `frontend/src/api/client.ts` to `POST /api/accounts`.
 2. Presentation: `CreateAccountRequestValidator` (FluentValidation) checks the input and answers
    wrong input with one message per field.
-3. Application: the service checks that the email address is still free and turns the password
+3. Application: the handler checks that the email address is still free and turns the password
    into a hash.
-4. Infrastructure: the repository saves one row in the table `account`.
+4. Infrastructure: `AppDbContext` saves one row in the table `account`.
 5. The answer goes back the same way and the page shows "Your account is made".
 
 The diagram below shows the same request as messages between the screen, the layers and the database.
@@ -484,10 +491,14 @@ place in the Layers drawing above. That page is the source for the patterns. The
 
 The candidates the board already names (issue 103 task 103.1):
 
-1. **Repository.** `IAccountRepository` in `backend/Domain/Interfaces` and `AccountRepository` in
-   `backend/Infrastructure/Repositories`, one per kind of data (issues 03 and 11). EF Core's own
-   `DbContext` already "implements both the Repository and the Unit of Work patterns"
-   (Microsoft, n.d.-d), so the team's repository is a thin, testable contract in front of it.
+1. **CQRS.** CQRS splits the model that writes from the model that reads (Microsoft, n.d.-b):
+   `CreateAccountCommand` with `CreateAccountHandler` in
+   `backend/Application/Features/Account/CreateAccount` (issues 03 and 11), reaching the data
+   through `IAppDbContext` in `backend/Application/Abstractions`. `AppDbContext` in
+   `backend/Infrastructure/Persistence` implements it. EF Core's own `DbContext` already
+   "implements both the Repository and the Unit of Work patterns" (Microsoft, n.d.-d), so
+   `IAppDbContext` is a thin, testable contract in front of it, one handler per use case instead
+   of one repository per kind of data.
 2. **A contract for sending mail.** `IMailSender` in Domain and `SmtpMailSender` in
    `backend/Infrastructure/Mail` (issue 21). Issue 103 decides with sources whether this is an
    Adapter, a Strategy or both.
@@ -497,19 +508,12 @@ The candidates the board already names (issue 103 task 103.1):
 4. **A rule with an injected clock.** `OpportunityOpenRule` in `backend/Domain/Opportunities` with
    `TimeProvider`, once issue 54 is built. Issue 103 names the pattern or writes that it has none.
 
-**Dependency injection** wires the layers together and is what makes the repository contracts
-swappable in tests. Microsoft's framing of the problem: a class that creates its own dependency
-"is difficult to unit test" (Microsoft, n.d.-c). Each layer registers its classes in one method,
-`AddApplication()` and `AddInfrastructure()`, and every class gets what it needs through its
-constructor (code conventions, backend rule 14). ASP.NET Core offers it built in, so the team uses
-it on purpose rather than choosing it.
-
-**CQRS, weighed as the alternative to Repository.** CQRS splits the model that writes from the
-model that reads (Microsoft, n.d.-b). Microsoft warns that even its simplest form "can introduce
-significant complexity into the application design" (Microsoft, n.d.-b). Nick Hoebe has used CQRS
-before (fact from Wesley Oerlemans, 24 September 2026), which made it a real option. Issue 11 task
-11.1 compares one repository per kind of data with separate paths for reading and writing, and the
-proposal the team decides on is the repository (task 11.2).
+**Dependency injection** wires the layers together and is what makes `IAppDbContext` and the
+handlers swappable in tests. Microsoft's framing of the problem: a class that creates its own
+dependency "is difficult to unit test" (Microsoft, n.d.-c). Each layer registers its classes in
+one method, `AddApplication()` and `AddInfrastructure()`, and every class gets what it needs
+through its constructor (code conventions, backend rule 14). ASP.NET Core offers it built in, so
+the team uses it on purpose rather than choosing it.
 
 **The Strategy proposal of 24 September.** The first version of this document proposed an
 `IMatchStrategy` for matching (FR2). The board settled matching differently: issue 37 See suggested
@@ -524,9 +528,12 @@ to a teacher (task 103.4).
 
 ## What stays open
 
+The structure is settled: CQRS by functionality, decided by the team on 1 October 2026 (issue 11
+task 11.2), over the repository pattern and over one project with four folders, because the code
+splits by feature instead of by one class per kind of data.
+
 | Open point | Decided by |
 | --- | --- |
-| Four projects and the repository, or another option | Issue 11 task 11.2, team moment in the first week of sprint 1 |
 | Same server as the test site or a second production server | Issue 91, question 112 |
 | Whether there is a live version on the foundation's server at all | Issue 91, question 111 |
 | The production address | Issue 91, question 113 |

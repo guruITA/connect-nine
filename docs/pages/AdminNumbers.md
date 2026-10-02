@@ -69,7 +69,7 @@ Each tile is a StatTile (frontend/src/components/StatTile.tsx): a small label an
 | New members this month | Members whose account was made on or after the start of the month. |
 | Connections this month | Connection requests (issue 39) with the status Accepted whose answer moment (answered_at, issue 41b) is on or after the start of the month. |
 
-- Data: GET /api/admin/statistics through getStatistics() in frontend/src/api/admin.ts. The answer holds three numbers and monthStart in the envelope {"data": ..., "meta": {}}, never a name or an id. The numbers are counted fresh every time the page opens. The counts are made by IStatisticsRepository (task 47.1) with the indexes ix_account_created_at and ix_connection_request_answered_at.
+- Data: GET /api/admin/statistics through getStatistics() in frontend/src/api/admin.ts. The answer holds three numbers and monthStart in the envelope {"data": ..., "meta": {}}, never a name or an id. The numbers are counted fresh every time the page opens. The counts are made by GetStatisticsHandler (task 47.1) with the indexes ix_account_created_at and ix_connection_request_answered_at.
 - Layout: CSS grid, one column on a phone (360 pixels), the tiles next to each other on a laptop (1280 pixels): three with issue 47, four once issue 144 adds its tile. No chart library.
 - Built by: issue 47, tasks 47.1 (counts), 47.2 (address), 47.3 (tiles). Issue 143 tasks 143.1 and 143.2 count for an earlier month.
 
