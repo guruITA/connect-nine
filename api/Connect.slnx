@@ -1,0 +1,15 @@
+<Solution>
+  <Folder Name="/Application/">
+    <Project Path="Application/Connect.Application.Authentication/Connect.Application.Authentication.csproj" />
+  </Folder>
+  <Folder Name="/Domain/">
+    <Project Path="Domain/Connect.Domain.Authentication/Connect.Domain.Authentication.csproj" />
+  </Folder>
+  <Folder Name="/Infrastructure/">
+    <Project Path="Infrastructure/Connect.Infrastructure.Authentication/Connect.Infrastructure.Authentication.csproj" />
+  </Folder>
+  <Folder Name="/Presentation/">
+    <Project Path="Presentation/Connect.Presentation.Authentication/Connect.Presentation.Authentication.csproj" />
+  </Folder>
+    <Project Path="Connect/Connect.csproj" />
+</Solution>

@@ -1,0 +1,7 @@
+<Solution>
+  <Project Path="../Application/Connect.Application.Authentication/Connect.Application.Authentication.csproj" />
+  <Project Path="../Connect/Connect.csproj" />
+  <Project Path="../Domain/Connect.Domain.Authentication/Connect.Domain.Authentication.csproj" />
+  <Project Path="../Infrastructure/Connect.Infrastructure.Authentication/Connect.Infrastructure.Authentication.csproj" />
+  <Project Path="../Presentation/Connect.Presentation.Authentication/Connect.Presentation.Authentication.csproj" />
+</Solution>
