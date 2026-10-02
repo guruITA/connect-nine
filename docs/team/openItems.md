@@ -102,10 +102,11 @@ were to be asked by Thursday 24 September 2026. No answer is recorded yet.
 
 Dated items the team has to schedule.
 
-- **Issue 09 Every team member on the client's server is blocked.** It waits for the client to
-  give the first login and to point the test address at the server. Issue 03 Create an account
-  puts Connect on that server for the first time. Owner: the Product Owner of sprint 1, Nick Hoebe, with the
-  client. Date: sprint 1, before 9 October 2026.
+- **Issue 09 Every team member on the client's server waits on the test address.** The first
+  login arrived from the client on 2 October 2026 and the server is prepared. It waits only on
+  the DNS record of the test address. Issue 03 Create an account puts Connect on that server for
+  the first time. Owner: the Product Owner of sprint 1, Nick Hoebe, with the client. Date: sprint
+  1, before 9 October 2026.
 - **Kelvin van Voorst's Security requirements and risk framing datapoint.** The security
   requirements, key assets and main risks of the project. On the board as issue 12 Inventory of
   the personal data per module and issue 13 The role table per module (sprint 1), and issue 18

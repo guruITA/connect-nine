@@ -138,13 +138,17 @@ to the existing YAA website, by link only.*
 
 ## The test site in detail
 
-Issue 09 Every team member on the client's server prepares the machine. It is blocked until the
-client gives the first login and points the test address at the server (task 9.1).
+Issue 09 Every team member on the client's server prepares the machine. The first login came on
+2 October 2026, the server is prepared, and it waits only on the test address (task 9.1).
 
-- **The machine.** Its facts (processor, memory, disk, operating system, data centre and its
-  country) go in the section The client's server of `docs/team/onboarding.md` once the client has
-  answered. The data centre must be inside the European Union, because data of young people under 18
-  will be stored there.
+- **The server as received, 2 October 2026.** The server had been used before, by an earlier
+  iteration of this project built by other people. It carried Dokploy as a Docker Swarm stack
+  with Traefik, PostgreSQL and Redis, a leftover Strapi volume and container images of that
+  earlier work, and ssh keys and root logins that were not the team's. Wesley Oerlemans wiped it
+  and rebuilt it clean on the same day. The rebuild is logged on the server.
+- **The machine.** Its facts are in the section The client's server of `docs/team/onboarding.md`.
+  The data centre is in Germany, inside the European Union, which NFR2 GDPR footing requires
+  because data of young people under 18 will be stored there.
 - **Logins.** Every team member has a personal user with an ssh key. Password login and root login
   are off, and two members have sudo rights so the team is never locked out (task 9.2).
 - **Open doors.** The firewall ufw opens only ports 22, 80 and 443. Every container listens on the
@@ -465,7 +469,7 @@ that step.
 
 | Open point | Decided by |
 | --- | --- |
-| The server's facts, the test address and the first login | The client, issue 09 task 9.1 (issue 09 is blocked on it) |
+| The test address | The client, issue 09 task 9.1 |
 | A live version on the foundation's server at all | Issue 91, question 111 |
 | One server or two | Issue 91, question 112 |
 | The production address | Issue 91, question 113 |
@@ -508,6 +512,9 @@ Microsoft. (n.d.-c). *Activate your Azure grant*. Microsoft Learn. Retrieved Sep
 
 Microsoft. (n.d.-d). *Eligibility guidelines*. Microsoft Learn. Retrieved September 24, 2026,
 from https://learn.microsoft.com/en-us/industry/nonprofit/microsoft-for-nonprofits/eligibility
+
+Strato. (n.d.). *Sicherheit: Maximaler Schutz mit STRATO Hosting-Produkten*. Retrieved October 2,
+2026, from https://www.strato.de/sicherheit/
 
 ## AI use declaration
 

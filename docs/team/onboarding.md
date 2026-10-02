@@ -188,6 +188,82 @@ Everything it finds has to be a placeholder or the name of a variable. If a real
 | Slice | A board item that adds something a person can see and use |
 | Epic | A group of board items that belong to one part of Connect |
 
+## 10. The client's server
+
+Issue 09 Every team member on the client's server (task 9.2) prepares the foundation's server for the team.
+
+### The machine
+
+| Fact | Value |
+|---|---|
+| Provider and country | Strato, Germany |
+| CPU | 4 vCPU, AMD EPYC Milan, 2.0 GHz |
+| Memory | 7.7 GiB |
+| Disk | 240 GB, 232 GB usable, 2.9 GB used |
+| Operating system | Ubuntu 24.04.5 LTS, kernel 6.8.0-146-generic |
+| IPv4 | 31.70.66.186 |
+| Hostname | connect |
+| Time zone | Europe/Amsterdam |
+
+The server is IPv4 only today. The client's sheet names an IPv6 address, 2a01:239:4b8:db00::1, but it is not configured on the interface yet.
+
+### How to log in
+
+For now, every team member logs in as root:
+
+```
+ssh root@31.70.66.186
+```
+
+Send your public ed25519 key to Wesley Oerlemans. Task 9.2 gives every member their own user with their own key, and after that root login and password login go off.
+
+On your first login, check the host key fingerprint against these three:
+
+```
+ED25519 SHA256:jZUye4ZjNvmKksJkDOtlQ94+O/jKnpsfWvzAhqj2Nbk
+ECDSA SHA256:jFBiJlKA3mGbIo0c5qv3sqeLa3xRRGyXRuGp9mSYLCI
+RSA SHA256:CmuGqwCHzubotlbA2rp/Ocg/P4yHMlochwTAXRxr35U
+```
+
+### What runs on it today
+
+- Docker 29.8.2, Compose v5.5.1, buildx. `hello-world` ran. No containers, no volumes.
+- ufw is active, default deny incoming, and allows only 22/tcp, 80/tcp and 443/tcp, on IPv4 and IPv6.
+- fail2ban guards sshd: five failures bans an address for one hour.
+- unattended-upgrades is enabled.
+- Nothing of Connect is deployed yet.
+
+### How it was received and rebuilt on 2 October 2026
+
+The server had been used before, by an earlier iteration of this project built by other people. It carried Dokploy as a Docker Swarm stack with Traefik, PostgreSQL and Redis, a leftover Strapi volume, container images named sonarqube, young-amstelland-frontend and young-amstelland-backend, six ssh keys that were not the team's, and root logins from six different addresses since May 2026. Ports 3000, 8080 and 8081 were open to the internet.
+
+On 2 October 2026 Wesley Oerlemans removed all of it: left the Docker swarm, removed every container, image and volume, purged and reinstalled Docker, deleted the old Dokploy files and home directories, removed every foreign key from root's authorized_keys, fully upgraded every package, removed old kernels, vacuumed the journal, reset the firewall to 22, 80 and 443, added fail2ban, set the hostname and the time zone, and rebooted. Disk use dropped from 21 GB to 2.9 GB. A copy of the old authorized_keys file stays on the server, in case a key belonged to someone who should keep access. The scripts and the log of the rebuild stay on the server too.
+
+### Who logged in
+
+Run `last` or `journalctl -u ssh` on the server to see every login.
+
+Today every login is root, because personal users come with task 9.2. The list cannot yet show names. Once every member has their own user, this part lists each member by name instead.
+
+### First login per team member
+
+| Name | First login |
+|---|---|
+| Wesley Oerlemans | 2 October 2026 |
+| Bayon Eerhart | |
+| Nick Hoebe | |
+| Gurpreet Singh | |
+| Kelvin van Voorst | |
+
+### What is still to do
+
+- Task 9.1: the client points the DNS record of the test address at the server.
+- Task 9.2: every team member gets a personal user with their own key, two members get sudo, then password login and root login go off.
+- Task 9.3: check that every container listens on the server itself, not past the firewall.
+- Task 9.4: Caddy makes the padlock on the test address.
+- Task 9.5: a deploy user and `/srv/connect-test`, with the pipeline's own ssh key.
+- Task 9.6: the whole team and the client confirm access and the padlock.
+
 ## References
 
 Microsoft. (2026). *Configuration in ASP.NET Core*. Microsoft Learn. https://learn.microsoft.com/en-us/aspnet/core/fundamentals/configuration/

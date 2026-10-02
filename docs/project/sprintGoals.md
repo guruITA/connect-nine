@@ -33,7 +33,7 @@ gantt
 
 What is in it: Profiles 5 items, Account 5, Security analysis 4, Hosting and deploy 3, Foundation 2, Site shell 2, Decisions 2, Workshop evidence 2, Research and development 1.
 
-What it also settles: the layered architecture with four backend projects on .NET 10 and CQRS by functionality, the client's priorities for the epics, and the inventory of personal data. Every team member on the client's server waits for the first login and the DNS record of the test address from the client.
+What it also settles: the layered architecture with four backend projects on .NET 10 and CQRS by functionality, the client's priorities for the epics, and the inventory of personal data. Every team member on the client's server waits for the DNS record of the test address from the client. The first login came on 2 October 2026.
 
 ## Sprint 2, 19 October to 6 November 2026
 
