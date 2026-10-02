@@ -1,7 +1,7 @@
-using Connect.Application.Authentication;
-using Connect.Domain.Authentication;
-using Connect.Infrastructure.Authentication;
-using Connect.Presentation.Authentication;
+using Connect.Application;
+using Connect.Infrastructure;
+using Connect.Presentation;
+using Connect.Presentation.Users;
 
 var builder = WebApplication.CreateBuilder(args);
 
