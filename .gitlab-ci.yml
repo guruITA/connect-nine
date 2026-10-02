@@ -19,3 +19,17 @@ branch-flow:
         echo "main only takes merge requests from dev. Merge your branch into dev first."
         exit 1
       fi
+
+dotenv-check:
+  stage: check
+  image: alpine:3.20
+  tags:
+    - hva
+  script:
+    - |
+      dotenv_files="$(find . -type f \( -name '.env' -o -name '.env.*' \) ! -name '.env.example' -not -path './.git/*' -print)"
+      if [ -n "$dotenv_files" ]; then
+        echo "Dotenv files must not be committed:"
+        printf '%s\n' "$dotenv_files"
+        exit 1
+      fi
