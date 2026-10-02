@@ -1,6 +1,6 @@
 # Post a challenge
 
-- Component: frontend/src/pages/PostChallenge.tsx, with PostChallenge.module.css and PostChallenge.test.tsx. The three fields sit in the shared component frontend/src/components/ChallengeForm.tsx (issue 167).
+- Component: web/src/pages/PostChallenge.tsx, with PostChallenge.module.css and PostChallenge.test.tsx. The three fields sit in the shared component web/src/components/ChallengeForm.tsx (issue 167).
 - Address in the browser: /challenges/new
 
 ## What the page is for
@@ -41,8 +41,8 @@ The page Discover of issue 37 gets a link Post a challenge to /challenges/new, s
 4. Message area above the button, in role alert
    - "Connect is not reachable right now, try again later" on 503 or no answer (task 74.3). What was typed stays.
 5. Button: Publish, or the notice of issue 140 in its place
-   - isCheckedOrganisation from useSession() (task 140.3) decides. When it is false, the button Publish is not rendered, and NotCheckedNotice (frontend/src/components/NotCheckedNotice.tsx) stands where it was, a paragraph with role status and the sentence "The foundation checks your organisation first. You can publish after that." The fields stay visible. While the session loads the page shows "Loading...", never a flash of the button. Task 140.4, issue 140 Only a checked organisation can publish, GitLab #139, sprint 3.
-   - Pressing Publish calls postChallenge(values) in frontend/src/api/challenges.ts, which sends POST /api/challenges through frontend/src/api/client.ts. It returns published (with the challenge), wrong fields, not an organisation, or not reachable. The page never calls fetch.
+   - isCheckedOrganisation from useSession() (task 140.3) decides. When it is false, the button Publish is not rendered, and NotCheckedNotice (web/src/components/NotCheckedNotice.tsx) stands where it was, a paragraph with role status and the sentence "The foundation checks your organisation first. You can publish after that." The fields stay visible. While the session loads the page shows "Loading...", never a flash of the button. Task 140.4, issue 140 Only a checked organisation can publish, GitLab #139, sprint 3.
+   - Pressing Publish calls postChallenge(values) in web/src/api/challenges.ts, which sends POST /api/challenges through web/src/api/client.ts. It returns published (with the challenge), wrong fields, not an organisation, or not reachable. The page never calls fetch.
    - While waiting the button says "Publishing..." and is disabled.
    - 400: every message of the answer next to its field, as above. What was typed stays.
    - 403 not an organisation: "Only organisations can post a challenge". This happens when the profile was removed while the form was open.
@@ -66,7 +66,7 @@ Since issue 167, the three fields with their labels, messages and checks live on
 - Not allowed: "Only organisations can post a challenge" with a link back to Discover, no fields.
 - Not reachable: "Connect is not reachable right now, try again later" above the button, what was typed stays.
 - Phone (360 pixels wide) and laptop (1280 pixels wide): the page matches the Figma frame Post a challenge at both widths, shown with screenshots in the merge request.
-- Design: the Figma frame Post a challenge on the Figma board of Connect, page Design directions. Colours, fonts and spacing only through frontend/src/styles/tokens.css.
+- Design: the Figma frame Post a challenge on the Figma board of Connect, page Design directions. Colours, fonts and spacing only through web/src/styles/tokens.css.
 
 ## Accessibility and privacy
 

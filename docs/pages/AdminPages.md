@@ -1,6 +1,6 @@
 # Admin, Pages
 
-- Component: frontend/src/pages/AdminPages.tsx, with AdminPages.module.css and AdminPages.test.tsx
+- Component: web/src/pages/AdminPages.tsx, with AdminPages.module.css and AdminPages.test.tsx
 - Address in the browser: /admin/pages
 - Title of the browser tab: Connect, Admin, Pages
 
@@ -52,7 +52,7 @@ The page sits inside the site shell of issue 06, so the tabs stay around it.
    - Built by task 148.5, issue 148, GitLab #209, sprint 5.
 5. List of site pages
    - A list (ul) with one item per page: the title as a link to /admin/pages/<slug>, and under it Last changed on followed by the date in words, for example 12 October 2026. The date is written with Intl.DateTimeFormat in English with the time zone Europe/Amsterdam.
-   - Data: listSitePages(page) in frontend/src/api/adminSitePages.ts asks GET /api/admin/site-pages?page=<page>&pageSize=20 through the shared helper in frontend/src/api/client.ts. The page never calls fetch.
+   - Data: listSitePages(page) in web/src/api/adminSitePages.ts asks GET /api/admin/site-pages?page=<page>&pageSize=20 through the shared helper in web/src/api/client.ts. The page never calls fetch.
    - The answer: code 200 with { "data": [ { "slug": "house-rules", "title": "House rules", "updatedAt": "2026-10-12T09:30:00Z" }, ... ], "meta": { "page": 1, "pageSize": 20, "total": 2 } }, ordered by title. Issue 148 adds isProtected to every item.
    - Server rules: the address is inside the group /api/admin in AdminEndpoints.cs with the rule AdminOnly of issue 45. page starts at 1, pageSize is at most 50. A wrong page or pageSize (abc, 0, 51) gives 400 in the ValidationProblem format, for example "The page must be a whole number of 1 or higher" or "Ask for 1 to 50 pages at a time". A member gets 403, a request without a valid session 401, and a database that cannot be reached 503 with "Connect is not reachable right now".
    - At the start the list holds the privacy statement and the house rules, made by the migration of task 50.1. Issue 51b adds privacy-nl and issue 52 adds house-rules-nl, and the list shows them without any change.
@@ -70,7 +70,7 @@ The page sits inside the site shell of issue 06, so the tabs stay around it.
 - Not logged in (code 401): RequireLogin of issue 04 sends the person to Log in.
 - Not reachable (code 503 or no answer): Connect is not reachable right now, try again later, in place of the list, with no code.
 - Phone and laptop: the cards ask for a check on a phone of about 360 pixels wide and on a laptop in the team check of task 50.7. They give no separate layout for this list.
-- Design: the Figma frame of the admin pages on the Figma board of Connect, page Design directions. Colours, fonts and spacing come only from the variables in frontend/src/styles/tokens.css.
+- Design: the Figma frame of the admin pages on the Figma board of Connect, page Design directions. Colours, fonts and spacing come only from the variables in web/src/styles/tokens.css.
 
 ## Accessibility and privacy
 
@@ -87,7 +87,7 @@ The page sits inside the site shell of issue 06, so the tabs stay around it.
 | 50 | Edit a site page without a deploy | #100 | 3 | must |
 | 148 | Add or delete a site page | #209 | 5 | could |
 
-Issue 50 needs issues 45 See all members and 32 See who did what on the platform first. Issue 148 needs issues 50, 10, 113, 32, 51, 51b and 52 first. Tasks that touch this page in build order: 50.1 database, 50.2 list address, 50.4 this page, 50.6 end to end test (frontend/e2e/editSitePage.spec.ts), 50.7 team check, then 148.3 isProtected in the list, 148.4 button New page, 148.5 message Page deleted, 148.6 end to end test (frontend/e2e/addDeleteSitePage.spec.ts), 148.7 team check.
+Issue 50 needs issues 45 See all members and 32 See who did what on the platform first. Issue 148 needs issues 50, 10, 113, 32, 51, 51b and 52 first. Tasks that touch this page in build order: 50.1 database, 50.2 list address, 50.4 this page, 50.6 end to end test (web/e2e/editSitePage.spec.ts), 50.7 team check, then 148.3 isProtected in the list, 148.4 button New page, 148.5 message Page deleted, 148.6 end to end test (web/e2e/addDeleteSitePage.spec.ts), 148.7 team check.
 
 ## Open points
 

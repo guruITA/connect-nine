@@ -1,6 +1,6 @@
 # The page Add a project
 
-Component: `frontend/src/pages/AddProject.tsx`, with `frontend/src/components/ProjectForm.tsx`.
+Component: `web/src/pages/AddProject.tsx`, with `web/src/components/ProjectForm.tsx`.
 Address in the browser: `/profile/projects/new`.
 
 ## What the page is for
@@ -47,13 +47,13 @@ flowchart TD
 - Label: Description, above the field, a textarea, with the hint "At most 1000 characters" under the label.
 - Rules: required, at most 1000 characters after trimming. A description of exactly 1000 characters is saved.
 - Messages next to the field: "Describe your project", "Your description can be at most 1000 characters".
-- The numbers come from the constants `TITLE_MAX_LENGTH = 80` and `DESCRIPTION_MAX_LENGTH = 1000` in `frontend/src/api/projects.ts`, which match `ProjectRules` on the server. The database also refuses a text that is too long with a check constraint (task 60b.1).
+- The numbers come from the constants `TITLE_MAX_LENGTH = 80` and `DESCRIPTION_MAX_LENGTH = 1000` in `web/src/api/projects.ts`, which match `ProjectRules` on the server. The database also refuses a text that is too long with a check constraint (task 60b.1).
 - Built by: issue 60, task 60.3, and issue 60b, tasks 60b.1 to 60b.3.
 
 ### Button Save
 
 - Label: Save. While Connect saves, the button says "Saving..." and is disabled, so pressing it twice saves the project only once.
-- Data: `addProject(title, description)` in `frontend/src/api/projects.ts` sends `POST /api/projects` through `request()` in `frontend/src/api/client.ts`, and the browser adds the cookie connect_session by itself. The guard of issue 04 checks the session, the server trims both fields and checks them, finds the profile of the logged in account, and saves one row in the table project with the time of now. Deleting the account deletes its projects too (task 60.1, task 60.2).
+- Data: `addProject(title, description)` in `web/src/api/projects.ts` sends `POST /api/projects` through `request()` in `web/src/api/client.ts`, and the browser adds the cookie connect_session by itself. The guard of issue 04 checks the session, the server trims both fields and checks them, finds the profile of the logged in account, and saves one row in the table project with the time of now. Deleting the account deletes its projects too (task 60.1, task 60.2).
 - Code 201: the form is replaced by "Your project is saved", the title, and "Added on" with the date and time in the time zone of the browser, plus a link Back to my profile and a link Open my project.
 - Code 400: each message goes next to its field, linked with `aria-describedby` and `aria-invalid`, and the cursor goes to the first wrong field. What was typed stays. Nothing is saved.
 - Code 403: "Make your profile first" below the form, with a link to `/profile/new`.
@@ -62,7 +62,7 @@ flowchart TD
 
 ### The shared form (ProjectForm)
 
-- Issue 157 Change my project moves the two fields and the button Save out of `AddProject.tsx` into `frontend/src/components/ProjectForm.tsx`, so adding and changing use the same fields, limits and messages. Nothing changes for the young person on this page.
+- Issue 157 Change my project moves the two fields and the button Save out of `AddProject.tsx` into `web/src/components/ProjectForm.tsx`, so adding and changing use the same fields, limits and messages. Nothing changes for the young person on this page.
 - The shared ProjectForm has no `maxLength` on Title or Description either (task 157.3).
 - Built by: issue 157, task 157.3 (GitLab #179, sprint 4).
 
@@ -87,7 +87,7 @@ flowchart TD
 - The form asks only for a title and a description. No school, no address and no birth date.
 - The server takes the maker from the session, never from the form, also when the form carries another id.
 
-The design: colours, fonts and spacing come only from `frontend/src/styles/tokens.css`, following the Figma frame Add a project on the page Design directions of the Figma board.
+The design: colours, fonts and spacing come only from `web/src/styles/tokens.css`, following the Figma frame Add a project on the page Design directions of the Figma board.
 
 ## Built by
 

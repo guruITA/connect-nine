@@ -1,7 +1,7 @@
 # Member page (another member's profile)
 
-- Component: frontend/src/pages/MemberProfile.tsx, with MemberProfile.module.css and MemberProfile.test.tsx
-- Parts on this page: ProfileDetails.tsx and TagList.tsx (frontend/src/components), BadgeRow of task 80.4, ProjectList and ProjectCard of task 62.3, and the page parts frontend/src/components/memberProfile/ConnectButton.tsx and ReportDialog.tsx
+- Component: web/src/pages/MemberProfile.tsx, with MemberProfile.module.css and MemberProfile.test.tsx
+- Parts on this page: ProfileDetails.tsx and TagList.tsx (web/src/components), BadgeRow of task 80.4, ProjectList and ProjectCard of task 62.3, and the page parts web/src/components/memberProfile/ConnectButton.tsx and ReportDialog.tsx
 - Address in the browser: /members/:id, for example /members/00000000-0000-4000-8000-000000000141 (the test member Robin in docs/testing/testData.md)
 - Title of the browser tab: "<first name> · Connect", for example "Robin · Connect"
 
@@ -48,7 +48,7 @@ flowchart LR
 
 The page sits inside AppShell of issue 06, so the five tabs stay around it.
 
-Data for the profile: getMemberProfile(id) in frontend/src/api/memberProfiles.ts asks GET /api/member-profiles/{id} through request() of client.ts and reads the type PublicMemberProfile. The answer holds only the public part: first name, age band, region, short line (issue 14), tags (issue 36c) and badges (issue 80b). A value that is hidden is left out of the answer completely, never sent as empty. The rule for minors lives in ProfileVisibility on the server and follows the role table of issue 13. Members who never confirmed are filtered inside the database by AccountVisibility (issue 29).
+Data for the profile: getMemberProfile(id) in web/src/api/memberProfiles.ts asks GET /api/member-profiles/{id} through request() of client.ts and reads the type PublicMemberProfile. The answer holds only the public part: first name, age band, region, short line (issue 14), tags (issue 36c) and badges (issue 80b). A value that is hidden is left out of the answer completely, never sent as empty. The rule for minors lives in ProfileVisibility on the server and follows the role table of issue 13. Members who never confirmed are filtered inside the database by AccountVisibility (issue 29).
 
 1. Loading text: "Loading..."
    - Shows while the profile loads, and again when the id in the address changes. The page first empties the profile it holds, and ignores a late answer for an id that is no longer in the address, so the name of the member you looked at before never stays on screen. The tab title is "Connect" while loading.
@@ -61,7 +61,7 @@ Data for the profile: getMemberProfile(id) in frontend/src/api/memberProfiles.ts
    - The badges come with the profile answer, so there is no separate call. A member without a badge shows no heading Badges and no empty box. Badges show for every age band, also 15 to 17, because a badge only says that someone took part.
    - Built by task 80b.3, issue 80b See the badges of another member, GitLab #183, sprint 4.
 4. Button Connect, or a line in its place, just below the heading
-   - Data: getConnectionStatus(profileId) in frontend/src/api/connectionRequests.ts asks GET /api/member-profiles/{id}/connection-status. While waiting nothing is shown in its place.
+   - Data: getConnectionStatus(profileId) in web/src/api/connectionRequests.ts asks GET /api/member-profiles/{id}/connection-status. While waiting nothing is shown in its place.
    - none: a button Connect. requested: the text Requested with aria-disabled="true", which does nothing when pressed. received: the line "They asked you first" and below it a link Answer their request to /requests/received (task 41.4). connected: the text Connected and no button (task 41b.5). closed: the line "No new request possible" and no button, and the line never says who declined or when (task 41c.5). self: nothing. notAllowed: the line "You cannot send a request to this member" and no button (the role table cell for members aged 15 to 17 in docs/security/roleTable.md). notMember: the line "Connection requests are between members" and no button.
    - Pressing Connect: the button says "Sending..." and cannot be pressed again. sendConnectionRequest(profileId) sends POST /api/connection-requests. Within a second the button says Requested, without reloading the page, and it still says Requested after a reload.
    - Refusals next to the button: "Make your own profile first" with a link Create your profile to /profile/new. "This member does not exist" when the member deleted their profile meanwhile. A conflict asks the status again and shows it. "Connect is not reachable right now, try again later" and the button says Connect again.
@@ -81,12 +81,12 @@ Data for the profile: getMemberProfile(id) in frontend/src/api/memberProfiles.ts
    - It opens ReportDialog, built on ConfirmDialog of issue 113, with the heading "Which house rule does this member break?" and a radio group with seven reasons: Bullying or hate, Sexual messages, Asking for personal details or to meet alone, Sharing photos or data of someone without asking, Pretending to be someone else, Selling or advertising, Something else that breaks the house rules.
    - The link Read the house rules to /house-rules opens in a new tab (target _blank, rel noopener), and the window stays open.
    - Cancel and Escape close the window and send nothing. Send report is disabled until a reason is picked. While waiting it says "Sending..." and two presses send one report.
-   - Send report calls reportMember(profileId, reason) in frontend/src/api/memberReports.ts, which sends POST /api/member-profiles/{id}/reports.
+   - Send report calls reportMember(profileId, reason) in web/src/api/memberReports.ts, which sends POST /api/member-profiles/{id}/reports.
    - Answers in the window: "Thank you, the foundation will look at it." in a region with role status, with a button Close. "You already reported this member. The foundation will look at it." for a second report. "You cannot report yourself." "This member does not exist." A wrong reason shows a message under the reasons. "Connect is not reachable right now, try again later" in a region with role alert, and the picked reason stays so Send report works again.
    - Built by task 151.3, issue 151 Report a member to the foundation, GitLab #211, sprint 5.
 8. Part Projects (heading h2), below the profile
    - Shown only after the profile has loaded. For a member who does not exist or is hidden the part is not there and the list is never asked.
-   - Data: getMemberProjects(profileId, page) in frontend/src/api/projects.ts asks GET /api/member-profiles/{id}/projects?page=<page>&pageSize=20. The server first checks that the member is visible to the one who asks, with the same question as the profile.
+   - Data: getMemberProjects(profileId, page) in web/src/api/projects.ts asks GET /api/member-profiles/{id}/projects?page=<page>&pageSize=20. The server first checks that the member is visible to the one who asks, with the same question as the profile.
    - ProjectList and ProjectCard of task 62.3, reused unchanged: one card per project with the title as an h3 in plain text, the start of the description and the date it was added. Newest on top, the same order the member sees on their own My profile. Since task 64.4 (issue 64 Open a project page, GitLab #181, sprint 4) every title is a link to /projects/<id>, made by ProjectCard itself, and after Load more the focus goes to the link of the first new card.
    - Load more below the list while the cards are fewer than the total. It adds the next 20 below.
    - Loading: "Loading projects...". Empty: "No projects yet". Not reachable on the first page: "Connect is not reachable right now" with a button Try again. On Load more the same sentence stands below the list, and the cards already shown stay.
@@ -103,7 +103,7 @@ Data for the profile: getMemberProfile(id) in frontend/src/api/memberProfiles.ts
 - Not found, hidden member or odd id: issue 14 and issue 29 first showed the heading "This member does not exist" with a link Go to My account and the tab title "This member does not exist · Connect". Since issue 53 the page shows the friendly page NotFound in place of the profile, with "This page does not exist or is no longer available" and a link Go to home, and issues 62b and 80b now expect that same text. No badge, no button and no part Projects show.
 - Not reachable: "Connect is not reachable right now, try again later" in an area with role alert, never the not found page, and the tab title "Connect". After a full reload with the server down, RequireLogin shows its own not reachable message first. A tester checks it by switching the phone to airplane mode and reloading the page.
 - Phone (360 pixels wide) and laptop (1280 pixels wide): the screenshots are checked against the Figma frame. The first 20 project cards are there within two seconds after the page opens (issue 62b AC10).
-- Design: the Figma frame Member page (task 14.4 calls it Member profile) on the Figma board of Connect, page Design directions. Colours, fonts and spacing come only from the variables in frontend/src/styles/tokens.css.
+- Design: the Figma frame Member page (task 14.4 calls it Member profile) on the Figma board of Connect, page Design directions. Colours, fonts and spacing come only from the variables in web/src/styles/tokens.css.
 
 ## Accessibility and privacy
 

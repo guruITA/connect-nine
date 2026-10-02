@@ -1,6 +1,6 @@
 # The page New page (admin)
 
-Component: `frontend/src/pages/AdminNewPage.tsx`.
+Component: `web/src/pages/AdminNewPage.tsx`.
 Address in the browser: `/admin/new-page`.
 
 ## What the page is for
@@ -55,7 +55,7 @@ flowchart TD
 
 - Label: Add page. While saving: "Adding..." and disabled.
 - Before calling the server, empty fields get their message next to them.
-- Data: `addSitePage(slug, title, body)` in `frontend/src/api/adminSitePages.ts` sends `POST /api/admin/site-pages` through `request()`. The server checks the fields with the rules of issue 50 plus the rule for a web address, makes the page, and writes the Activity line sitepage.created in the same save. It answers the new page in the same shape as `GET /api/admin/site-pages/{slug}`, and the public address of issue 51 serves it at once (task 148.2).
+- Data: `addSitePage(slug, title, body)` in `web/src/api/adminSitePages.ts` sends `POST /api/admin/site-pages` through `request()`. The server checks the fields with the rules of issue 50 plus the rule for a web address, makes the page, and writes the Activity line sitepage.created in the same save. It answers the new page in the same shape as `GET /api/admin/site-pages/{slug}`, and the public address of issue 51 serves it at once (task 148.2).
 - Answer 201: go to `/admin/pages/<slug>` with "Page added" in a region with role status, and the link Open the page.
 - Answer 400 or 409: each message from the answer next to its field, for example "A page with this address already exists" next to Web address. Nothing is added.
 - Answer 503 or no answer: "Connect is not reachable right now, try again later" above the button, and the fields keep what was typed.
@@ -85,7 +85,7 @@ The team check of task 148.7 runs on a phone and on a laptop.
 - Adding a page works with only the keyboard.
 - A script typed in the text never runs for a visitor.
 
-The design: colours, fonts and spacing come only from `frontend/src/styles/tokens.css`, in the style of the editor of issue 50, which follows the Figma frame of the editor on the page Design directions of the Figma board.
+The design: colours, fonts and spacing come only from `web/src/styles/tokens.css`, in the style of the editor of issue 50, which follows the Figma frame of the editor on the page Design directions of the Figma board.
 
 ## Built by
 

@@ -67,7 +67,7 @@ directly: "For testing SPAs, we recommend a tool such as Playwright for .NET, wh
 a browser" (Microsoft, n.d.-a). Second, Playwright drives the browser against whatever is
 running, regardless of which side, React or ASP.NET Core, serves a given request, so one E2E
 suite covers the whole platform end to end the way the workshop's third layer is meant to. The
-tests live in `frontend/e2e/<name>.spec.ts` and run in Chromium against the test site, driving
+tests live in `web/e2e/<name>.spec.ts` and run in Chromium against the test site, driving
 real user flows, for example making an account and seeing "Your account is made". Emails in
 those flows, such as the confirmation link, are read from the test mailbox Mailpit. Playwright
 logs in with `page.request.post` or `context.request.post`, so the page gets the cookie

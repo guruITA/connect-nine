@@ -1,6 +1,6 @@
 # The page Reports (admin)
 
-Component: `frontend/src/pages/AdminReports.tsx`.
+Component: `web/src/pages/AdminReports.tsx`.
 Address in the browser: `/admin/reports`.
 
 ## What the page is for
@@ -40,7 +40,7 @@ flowchart TD
 ### The list of reports
 
 - What it shows: one item per report, newest first, twenty at a time. Each item is an `article` named by its first line through `aria-labelledby`.
-- Data: `getReports(page)` in `frontend/src/api/admin.ts` asks `GET /api/admin/reports` through the shared helper `client.ts`, and returns the page with the total, or not reachable. The page never sees a status code. The server checks the page number and page size, and turns every reason code into its sentence with `ReportReasonTexts` of issue 151. The answer holds nothing about who reported (task 152.2). A wrong page number gets a message.
+- Data: `getReports(page)` in `web/src/api/admin.ts` asks `GET /api/admin/reports` through the shared helper `client.ts`, and returns the page with the total, or not reachable. The page never sees a status code. The server checks the page number and page size, and turns every reason code into its sentence with `ReportReasonTexts` of issue 151. The answer holds nothing about who reported (task 152.2). A wrong page number gets a message.
 - Built by: issue 152, tasks 152.2 and 152.3.
 
 ### One report
@@ -81,7 +81,7 @@ The team check of task 152.5 runs on a phone and on a laptop.
 - The page never shows the name, the email address or anything else about the member who sent a report, because it is the name of a young person who spoke up.
 - Opening the reports adds no line to the page Activity, because issue 32 logs only actions that change something.
 
-The design: colours, fonts and spacing come only from `frontend/src/styles/tokens.css`, following the Figma frame of the admin pages on the page Design directions of the Figma board.
+The design: colours, fonts and spacing come only from `web/src/styles/tokens.css`, following the Figma frame of the admin pages on the page Design directions of the Figma board.
 
 ## Built by
 

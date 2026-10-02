@@ -1,6 +1,6 @@
 # My profile (MyProfile)
 
-Component: `frontend/src/pages/MyProfile.tsx`, with `MyProfile.module.css`.
+Component: `web/src/pages/MyProfile.tsx`, with `MyProfile.module.css`.
 Address in the browser: `/profile`.
 Title of the browser tab: "Connect, My profile", without the first name (task 8.3, issue 06 Move between the five tabs of Connect).
 
@@ -71,7 +71,7 @@ The cards give the place of each part relative to one or two others. Where two c
 ### Banner: email address not confirmed
 
 - Text: "Your email address is not confirmed yet, so other members cannot see your profile. Open the link in the email we sent you to confirm it."
-- What it shows: the component `frontend/src/components/UnconfirmedEmailBanner.tsx`, at the top of My profile, above the heading with the first name, for every state of the page. The profile stays fully visible below it.
+- What it shows: the component `web/src/components/UnconfirmedEmailBanner.tsx`, at the top of My profile, above the heading with the first name, for every state of the page. The profile stays fully visible below it.
 - Data: `useSession` keeps `emailConfirmed` from `GET /api/sessions/current` (task 29b.2). The banner shows when it is false, and shows nothing when it is true or not known yet.
 - When the member confirms on the page Confirm your email address (issue 27), that page calls `refresh()` of `useSession`, so the banner is gone without logging in again.
 - When Connect cannot be reached: no banner, and the page shows its own not reachable message.
@@ -80,14 +80,14 @@ The cards give the place of each part relative to one or two others. Where two c
 
 ### Banner: waiting for a parent, or the link for a parent has ended
 
-- Shown only for a young person under 16 whose parent has not given permission. The component is `frontend/src/components/myProfile/ParentConsentBanner.tsx`, above the heading, in an area with role status. It uses the colour for information, not the colour for errors, because nothing is wrong.
+- Shown only for a young person under 16 whose parent has not given permission. The component is `web/src/components/myProfile/ParentConsentBanner.tsx`, above the heading, in an area with role status. It uses the colour for information, not the colour for errors, because nothing is wrong.
 - Data: `GET /api/member-profiles/current` gives `parentConsent`, which is `pending`, `ended`, or left out (tasks 130.4 and 130b.4).
 - Text when pending: "Only you can see your profile for now. Other members see it once your parent gives permission through the email we sent." No button. The banner goes away by itself once the parent gives permission (issue 131).
 - Text when ended: "The link for your parent has ended. Only you can see your profile. We removed the address you gave. Ask a parent again below."
-- Below the ended banner: the form `frontend/src/components/myProfile/AskParentAgainForm.tsx`:
+- Below the ended banner: the form `web/src/components/myProfile/AskParentAgainForm.tsx`:
   - A field of type email with the label "Email address of a parent", autocomplete off, empty at the start. The old address is never filled in anywhere.
   - A button Ask again. While the answer is on its way it says Sending and cannot be pressed twice.
-  - Pressing it calls `askParentAgain(parentEmail)` in `frontend/src/api/memberProfiles.ts`, which sends `POST /api/member-profiles/current/parent-consent` (task 130b.5).
+  - Pressing it calls `askParentAgain(parentEmail)` in `web/src/api/memberProfiles.ts`, which sends `POST /api/member-profiles/current/parent-consent` (task 130b.5).
   - 204: the page asks `getCurrentMemberProfile()` again and shows what the server says, normally the pending banner without the field.
   - 400: the message of the server below the field, linked with `aria-describedby`, and the focus moves to the field. The messages are "Fill in the email address of a parent", "Fill in a valid email address" and "Fill in the address of a parent, not your own".
   - 409: the text of the server above the field in an area with role alert, and the page asks for the profile again.
@@ -98,10 +98,10 @@ The cards give the place of each part relative to one or two others. Where two c
 
 ### Part: Removed by the foundation
 
-- What it shows: the component `frontend/src/components/myProfile/RemovalNotices.tsx` (task 49.3), at the top of My profile, above the profile details, and only on My profile. It is a section with `aria-labelledby` pointing to its heading, an h2 Removed by the foundation, and a list with one item per removed project:
+- What it shows: the component `web/src/components/myProfile/RemovalNotices.tsx` (task 49.3), at the top of My profile, above the profile details, and only on My profile. It is a section with `aria-labelledby` pointing to its heading, an h2 Removed by the foundation, and a list with one item per removed project:
   "The foundation removed your project <title> on <date>. Reason: <sentence>."
   The newest message comes first. The date is written with `Intl.DateTimeFormat` in English with the time zone Europe/Amsterdam, for example 12 October 2026. The title is shown as text, never as HTML. It never names the employee of the foundation who removed it.
-- Data: `getRemovalNotices(page)` in `frontend/src/api/removalNotices.ts` asks `GET /api/accounts/current/removal-notices` with pageSize 20 (task 49.2). The part asks this on its own, next to the profile, so a failure of the messages never breaks the profile.
+- Data: `getRemovalNotices(page)` in `web/src/api/removalNotices.ts` asks `GET /api/accounts/current/removal-notices` with pageSize 20 (task 49.2). The part asks this on its own, next to the profile, so a failure of the messages never breaks the profile.
 - Load more: shown under the list while the messages shown are fewer than `meta.total`. It asks the next page and adds the messages below.
 - Empty list: the part renders nothing, no heading and no empty box.
 - While waiting: Loading messages... in the same place. The profile itself shows as soon as its own answer is there.
@@ -110,7 +110,7 @@ The cards give the place of each part relative to one or two others. Where two c
 - It looks like a notice, not like an error.
 - The button Dismiss on every message (issue 145):
   - A real button with the visible text Dismiss and the accessible name "Dismiss the message about <title>" through `aria-label`.
-  - Pressing it calls `dismissRemovalNotice(projectId)` in `frontend/src/api/removalNotices.ts`, which sends `POST /api/accounts/current/removal-notices/{projectId}/dismissal` (task 145.2). While waiting the button says Hiding... and is disabled.
+  - Pressing it calls `dismissRemovalNotice(projectId)` in `web/src/api/removalNotices.ts`, which sends `POST /api/accounts/current/removal-notices/{projectId}/dismissal` (task 145.2). While waiting the button says Hiding... and is disabled.
   - 204, or 404 when the message is already gone: the item leaves the list, "Message hidden" appears in an area with role status at the top of the part, and the focus moves to the button Dismiss of the next message, or of the one before when it was the last in the list.
   - The last message: the whole part disappears, and the focus moves to the heading of My profile.
   - 503 or no answer: the item stays, the button can be pressed again, and "This message could not be hidden right now. Try again later." appears under the button, linked with `aria-describedby`.
@@ -130,7 +130,7 @@ The cards give the place of each part relative to one or two others. Where two c
 ### Heading: the first name
 
 - What it shows: the first name as the one heading of the page, exactly as saved.
-- Data: `getCurrentMemberProfile()` in `frontend/src/api/memberProfiles.ts` asks `GET /api/member-profiles/current` (task 8.2). The answer holds the first name, the age band, the region and the short line, later also the tags, the badges, `parentConsent` and `bioRemoval`. It never holds the email address, the account id or dates of the account.
+- Data: `getCurrentMemberProfile()` in `web/src/api/memberProfiles.ts` asks `GET /api/member-profiles/current` (task 8.2). The answer holds the first name, the age band, the region and the short line, later also the tags, the badges, `parentConsent` and `bioRemoval`. It never holds the email address, the account id or dates of the account.
 - Built by: issue 08 See my own profile page, task 8.3 (GitLab #27, sprint 1).
 
 ### Link: Edit
@@ -141,7 +141,7 @@ The cards give the place of each part relative to one or two others. Where two c
 
 ### Badge row
 
-- What it shows: the component `frontend/src/components/BadgeRow.tsx`, directly below the first name and above the part Projects. For each badge: the gold icon as an img with the badge name as its alt text, the name in bold and the line below it. For the first badge that is the icon, First project and "You added your first project".
+- What it shows: the component `web/src/components/BadgeRow.tsx`, directly below the first name and above the part Projects. For each badge: the gold icon as an img with the badge name as its alt text, the name in bold and the line below it. For the first badge that is the icon, First project and "You added your first project".
 - Data: the badges come with `GET /api/member-profiles/current` (task 80.3), so the row makes no call of its own. Each badge holds only its code, its name and its line, nothing about the project, the date, the age or the region.
 - An empty list: the row renders nothing, no heading Badges and no empty space.
 - An unknown code: a plain gold circle with role img and the badge name as its `aria-label`, never a broken picture.
@@ -151,29 +151,29 @@ The cards give the place of each part relative to one or two others. Where two c
 
 ### Profile details: Age band, Region, About you
 
-- What it shows: the component `frontend/src/components/ProfileDetails.tsx`, a description list (dl, dt and dd), so a screen reader reads each label with its value, such as Region, Amstelveen.
+- What it shows: the component `web/src/components/ProfileDetails.tsx`, a description list (dl, dt and dd), so a screen reader reads each label with its value, such as Region, Amstelveen.
   - Age band: in words, 15 to 17, 18 to 21 or 22 to 30, from `AGE_BAND_LABELS`. Never an exact age or a birth date.
   - Region.
   - About you: the short line. When it was left empty, the label is not shown at all and no placeholder appears.
-- The message about a removed short line (issue 142): when `bioRemoval` in the answer is there, the component `frontend/src/components/myProfile/BioRemovalNotice.tsx` shows in place of the short line:
+- The message about a removed short line (issue 142): when `bioRemoval` in the answer is there, the component `web/src/components/myProfile/BioRemovalNotice.tsx` shows in place of the short line:
   "The foundation removed your short line on <date>. Reason: <reason sentence>. You can write a new one with Edit."
   The date is written with `Intl.DateTimeFormat` in English, and the word Edit is a link to `/profile/edit`. It is a paragraph inside the profile, not a role alert, so a screen reader reads it in order. It names nobody of the foundation. After the young person saves a new short line, the message is gone. Without `bioRemoval` nothing extra shows.
 - Built by: issue 08, task 8.3, and issue 142 Remove a profile text that breaks the rules, task 142.5 (GitLab #217, sprint 5).
 
 ### Part: Skills and interests
 
-- What it shows: a section with the heading Skills and interests, below ProfileDetails, with the component `frontend/src/components/TagInput.tsx`.
-- Data on load: `getSuggestedTags()` in `frontend/src/api/tags.ts` asks `GET /api/tags/suggested` (page 1, pageSize 50) for the starter list of about twenty tags, and the chosen tags come from `GET /api/member-profiles/current`. While waiting: "Loading your tags...".
+- What it shows: a section with the heading Skills and interests, below ProfileDetails, with the component `web/src/components/TagInput.tsx`.
+- Data on load: `getSuggestedTags()` in `web/src/api/tags.ts` asks `GET /api/tags/suggested` (page 1, pageSize 50) for the starter list of about twenty tags, and the chosen tags come from `GET /api/member-profiles/current`. While waiting: "Loading your tags...".
 - Your tags: a list under the heading Your tags, or "You have no tags yet". Below Your tags the count, for example "3 of 10 tags", in normal text (issue 36d).
 - Suggested tags: buttons. A chosen one shows as chosen with `aria-pressed="true"` and does nothing when pressed again.
 - Add your own: a text field with that visible label, a button Add, and the hint "Skills and interests only. Nothing about your health, faith or other private matters."
-- Adding: every tap or Add calls `addMemberProfileTag(name)` in `frontend/src/api/memberProfileTags.ts`, which sends `POST /api/member-profiles/current/tags` (task 36.2). While waiting that tag, or the button Add, shows a busy state and is disabled, so tapping twice adds once.
+- Adding: every tap or Add calls `addMemberProfileTag(name)` in `web/src/api/memberProfileTags.ts`, which sends `POST /api/member-profiles/current/tags` (task 36.2). While waiting that tag, or the button Add, shows a busy state and is disabled, so tapping twice adds once.
   - 201 or 200: the tag appears in Your tags, the field is emptied, and "Saved" appears in an area with role status.
   - 400: the message of the server below Add your own, linked with `aria-describedby`, and the typed text stays. The messages are "Fill in a tag", "A tag has at most 30 characters" and "Use only letters, numbers, spaces and -".
   - 409: "You have 10 tags, the most there is. Remove one to add another." below Add your own, also when the tap was on a suggested tag, and Your tags stays as it was.
   - 503 or no answer: "Connect is not reachable right now, your tags are kept" in an area with role alert above the part, and the chosen tags stay as they were.
   - A message goes away on the next add that works, or when the young person types in the field again.
-- Rules: a tag is saved in small letters (Video Editing becomes video editing), at most 30 characters, only letters, numbers, spaces and the sign -, so café and hip-hop are fine. At most ten tags per profile (`MAX_TAGS = 10` in `frontend/src/api/tags.ts`, which follows `TagRules.MaxPerProfile` on the server). The browser never refuses the eleventh tag itself, the server decides.
+- Rules: a tag is saved in small letters (Video Editing becomes video editing), at most 30 characters, only letters, numbers, spaces and the sign -, so café and hip-hop are fine. At most ten tags per profile (`MAX_TAGS = 10` in `web/src/api/tags.ts`, which follows `TagRules.MaxPerProfile` on the server). The browser never refuses the eleventh tag itself, the server decides.
 - Removing: every chosen tag has a button with an x sign and the accessible name "Remove <tag>", for example "Remove football" (issue 36b). Pressing it calls `removeMemberProfileTag(tagId)`, which sends `DELETE /api/member-profiles/current/tags/{tagId}` (task 36b.2). While waiting the tag shows a busy state.
   - 204: the tag leaves the list, "Removed" appears in the status area, and the focus moves to the next chosen tag, or to Add your own when it was the last one.
   - 400 or 404: "This tag could not be removed, reload the page" in the area with role alert, and the tag stays.
@@ -183,8 +183,8 @@ The cards give the place of each part relative to one or two others. Where two c
 
 ### Part: Projects
 
-- What it shows: a part with the heading Projects and Add a project to `/profile/projects/new` (issue 60). It is a link element drawn as a button, because it goes to another page (task 60.3). Below it the component `frontend/src/components/ProjectList.tsx` with one `ProjectCard` per project (issue 62).
-- Data: `getOwnProjects(page)` in `frontend/src/api/projects.ts` asks `GET /api/member-profiles/current/projects?page=<page>&pageSize=20` (task 62.2). The profile comes from the session, never from the address.
+- What it shows: a part with the heading Projects and Add a project to `/profile/projects/new` (issue 60). It is a link element drawn as a button, because it goes to another page (task 60.3). Below it the component `web/src/components/ProjectList.tsx` with one `ProjectCard` per project (issue 62).
+- Data: `getOwnProjects(page)` in `web/src/api/projects.ts` asks `GET /api/member-profiles/current/projects?page=<page>&pageSize=20` (task 62.2). The profile comes from the session, never from the address.
 - A card: the picture of the project with its width, height, `loading="lazy"` and the title as alt text, or an empty space of the same shape without a picture, hidden for a screen reader (task 61b.5). After the young person removes the picture on the project page, the card shows no picture (issue 159). Then the title as a heading (h3) and a real link to `/projects/<id>` (task 64.4, before issue 64 it was `/profile/projects/<id>`), the start of the description, and "Added on" with the date in the time zone of the browser. Newest on top, in the order of the server.
 - While waiting: "Loading projects...".
 - Empty: "You have no projects yet", next to Add a project.
@@ -207,8 +207,8 @@ The cards give the place of each part relative to one or two others. Where two c
 
 ### Part: My challenges
 
-- What it shows: the component `frontend/src/components/myProfile/MyChallenges.tsx`, below the profile, with the heading (h2) My challenges. One item per joined challenge, with the `ChallengeCard` of issue 75: the title, the organisation, the deadline as a readable date such as 30 June 2027, and the word Closed on a closed one, as text and not only as a colour. Each item is one link to `/challenges/<id>`. The nearest deadline is on top, closed ones below the open ones, in the order of the server.
-- Data: `getJoinedChallenges(page)` in `frontend/src/api/challengeParticipants.ts` asks `GET /api/member-profiles/current/challenges?page=1&pageSize=20` (task 78.2). The profile does not wait for this part.
+- What it shows: the component `web/src/components/myProfile/MyChallenges.tsx`, below the profile, with the heading (h2) My challenges. One item per joined challenge, with the `ChallengeCard` of issue 75: the title, the organisation, the deadline as a readable date such as 30 June 2027, and the word Closed on a closed one, as text and not only as a colour. Each item is one link to `/challenges/<id>`. The nearest deadline is on top, closed ones below the open ones, in the order of the server.
+- Data: `getJoinedChallenges(page)` in `web/src/api/challengeParticipants.ts` asks `GET /api/member-profiles/current/challenges?page=1&pageSize=20` (task 78.2). The profile does not wait for this part.
 - Load more: while fewer items are shown than `meta.total`. It adds the next page below.
 - Empty: "You have not joined a challenge yet." with a link See the open challenges to `/challenges`.
 - Loading: "Loading your challenges..." in an area with role status.
@@ -245,7 +245,7 @@ The part My challenges shows within two seconds after opening My profile (issue 
 - A young person only ever sees their own profile. Every address this page calls takes the account from the session and has no id of a person in it.
 - Deleting the account also deletes the tags, the projects, the removal facts and the hidden dates (issues 36, 60, 62, 142, 145 with issue 113).
 
-The design: colours, fonts and spacing come only from the variables in `frontend/src/styles/tokens.css`, following the Figma frames of My profile on the page Design directions of the Figma board (among them My profile state not confirmed, Skills and interests, Projects, Profile and My profile with My challenges).
+The design: colours, fonts and spacing come only from the variables in `web/src/styles/tokens.css`, following the Figma frames of My profile on the page Design directions of the Figma board (among them My profile state not confirmed, Skills and interests, Projects, Profile and My profile with My challenges).
 
 ## Built by
 

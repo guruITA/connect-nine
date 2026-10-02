@@ -75,8 +75,8 @@ A value in `appsettings.json` is therefore a default, and an environment variabl
 | User Secrets | no, never | your local passwords, keys and connection strings | local machines |
 | `appsettings.Production.json` | yes | production settings that are not secret | production |
 | Kubernetes Secrets | no, never | production passwords, keys and connection strings | production on k3s |
-| `frontend/.env` | no, never | local frontend settings | local machines |
-| `frontend/.env.example` | yes | the names of the frontend variables, with no real values | documentation |
+| `web/.env` | no, never | local frontend settings | local machines |
+| `web/.env.example` | yes | the names of the frontend variables, with no real values | documentation |
 
 A real password, key, token or connection string that carries credentials never goes in a file whose row says yes.
 

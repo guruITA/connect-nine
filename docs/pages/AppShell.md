@@ -1,7 +1,7 @@
 # The frame around every page (AppShell)
 
-Component: `frontend/src/components/AppShell.tsx`, with `frontend/src/components/TabBar.tsx` and `frontend/src/components/SiteFooter.tsx`.
-Address in the browser: none of its own. The frame is a layout route in `frontend/src/App.tsx`, so it is around every address of Connect, from `/` to an address that does not exist.
+Component: `web/src/components/AppShell.tsx`, with `web/src/components/TabBar.tsx` and `web/src/components/SiteFooter.tsx`.
+Address in the browser: none of its own. The frame is a layout route in `web/src/App.tsx`, so it is around every address of Connect, from `/` to an address that does not exist.
 
 ## What the page is for
 
@@ -59,9 +59,9 @@ flowchart TD
 
 - Text: "You asked too often. Wait a minute and try again."
 - What it shows: a message at the top of `main` when Connect refuses a computer that sent far too many requests. It hides itself after the seconds the server gives, 60 when the server gives none. There is no countdown, no number and no code on the screen. A second refusal while it shows restarts the time, it never shows two messages.
-- Data: `request()` in `frontend/src/api/client.ts` turns code 429 into the result tooManyRequests with the seconds of the header Retry-After, and tells the listeners of `onTooManyRequests`. AppShell listens while it is on the screen. The server limit is 600 requests per minute per IP address on `/api`, and `GET /api/health` is never counted (task 105.1).
+- Data: `request()` in `web/src/api/client.ts` turns code 429 into the result tooManyRequests with the seconds of the header Retry-After, and tells the listeners of `onTooManyRequests`. AppShell listens while it is on the screen. The server limit is 600 requests per minute per IP address on `/api`, and `GET /api/health` is never counted (task 105.1).
 - Rules: the pages Log in (issues 30 and 30b) and the confirmation email page (issue 28c) keep only their own wait message, because their calls pass `ownWaitMessage: true`. After five wrong passwords a member sees only the countdown of Log in, not a second message at the top.
-- Component: `frontend/src/components/TooManyRequestsNotice.tsx`, in an area with role alert, in the same style as the not reachable line.
+- Component: `web/src/components/TooManyRequestsNotice.tsx`, in an area with role alert, in the same style as the not reachable line.
 - Built by: issue 105 Connect keeps working under too many requests, task 105.2 (GitLab #185, sprint 4).
 
 ### Header: the name Connect
@@ -86,7 +86,7 @@ flowchart TD
 
 - Text: Basket, followed by the number of items when it is higher than 0, for example Basket 3.
 - What it shows: a link to `/basket` next to the link Shop, only for a logged in member.
-- Data: `BasketProvider` in `frontend/src/hooks/useBasket.tsx` sits around the pages inside AppShell. When a member is logged in it calls `getBasket()` in `frontend/src/api/basket.ts` once, which asks `GET /api/baskets/current` (task 82b.2). It keeps the answer and forgets it on log out. After every Add to basket, `ProductCard` hands over the new number from the answer, so the number goes up at once without a reload. The screen never counts itself, it shows the number of the server.
+- Data: `BasketProvider` in `web/src/hooks/useBasket.tsx` sits around the pages inside AppShell. When a member is logged in it calls `getBasket()` in `web/src/api/basket.ts` once, which asks `GET /api/baskets/current` (task 82b.2). It keeps the answer and forgets it on log out. After every Add to basket, `ProductCard` hands over the new number from the answer, so the number goes up at once without a reload. The screen never counts itself, it shows the number of the server.
 - When the basket cannot be read: the link shows Basket without a number. No message at the top of every page, the page Basket says why.
 - Read out: a visually hidden area with role status says "Your basket has 1 item" or "Your basket has 3 items" each time the number changes after an add.
 - Built by: issue 82b See my basket, task 82b.3 (GitLab #149, sprint 4).
@@ -109,7 +109,7 @@ flowchart TD
   - Logged in: the display name of the member. For now that is the part of the email address before the @ sign, for example anna for anna@example.org. Issue 07 Create a profile can replace it with the first name the member chooses.
   - Logged out: Log in.
   - Not reachable: nothing (the line above the tabs says so).
-- Data: `getCurrentSession()` in `frontend/src/api/sessions.ts` reads `data.displayName` from `GET /api/sessions/current`, the address the screen asks once when Connect opens (task 6b.2). The column `account.display_name` holds the name (task 6b.1).
+- Data: `getCurrentSession()` in `web/src/api/sessions.ts` reads `data.displayName` from `GET /api/sessions/current`, the address the screen asks once when Connect opens (task 6b.2). The column `account.display_name` holds the name (task 6b.1).
 - Rules: a long name is cut after one line with three dots, so the five tabs keep their size. The name is plain text, never HTML. The email address is never shown in the tab bar, not even as a tooltip. The name appears right after logging in, without a reload, because the page Log in calls `refresh()` of `useSession`. After log out (`clear()`), the tab shows Log in and no name.
 - Built by: issue 06b See my name under the tab Profile, task 6b.3 (GitLab #20, sprint 1-stretch), on top of issue 06.
 
@@ -129,7 +129,7 @@ flowchart TD
 ### The page (main)
 
 - What it shows: the page of the current address, through an `Outlet` inside a `main` element. Every page sets the title of the browser tab itself, for example "Connect, Events". A page title never holds a name or an email address.
-- An unknown address: the catch all route `*` inside the layout route shows `frontend/src/pages/NotFound.tsx` with the heading "This page does not exist or is no longer available" and a link Go to home to `/`, styled as a button. The browser tab title is "Connect, Page not found". The tabs and the footer stay (issue 53, task 53.3, GitLab #105, sprint 3).
+- An unknown address: the catch all route `*` inside the layout route shows `web/src/pages/NotFound.tsx` with the heading "This page does not exist or is no longer available" and a link Go to home to `/`, styled as a button. The browser tab title is "Connect, Page not found". The tabs and the footer stay (issue 53, task 53.3, GitLab #105, sprint 3).
 
 ### Footer: Privacy and House rules
 
@@ -162,7 +162,7 @@ A tap on a tab shows the new page within one second, without the tabs flashing w
 - The email address is never shown in the tabs, in the title of the browser tab or in the address bar. Only the display name is shown, so someone looking over a shoulder on a shared computer does not read the email address. A second browser with another account shows only that other name.
 - The frame itself calls nothing on the server. It reads `useSession`, which asks once when Connect opens.
 
-The design: colours, fonts and spacing come only from the variables in `frontend/src/styles/tokens.css`, following the Figma frame of the app shell on the page Design directions of the Figma board.
+The design: colours, fonts and spacing come only from the variables in `web/src/styles/tokens.css`, following the Figma frame of the app shell on the page Design directions of the Figma board.
 
 ## Built by
 

@@ -1,6 +1,6 @@
 # Connections (my connections)
 
-- Component: frontend/src/pages/Connections.tsx, with Connections.module.css and Connections.test.tsx
+- Component: web/src/pages/Connections.tsx, with Connections.module.css and Connections.test.tsx
 - Address in the browser: /connections
 
 ## What the page is for
@@ -52,7 +52,7 @@ flowchart LR
   - The age band in words, through AGE_BAND_LABELS of issue 07.
   - The region, when it is in the answer. The server hides the region of a member aged 15 to 17 when ProfileVisibility of task 14.3 says so. A row without region shows no empty place for it.
   - "Connected on" with the date, written in the member's own language through Intl.DateTimeFormat.
-- Data: GET /api/connections?page=1&pageSize=20 through getConnections(page) in frontend/src/api/connections.ts and request() of frontend/src/api/client.ts. The answer is {"data": [...], "meta": {"page", "pageSize", "total"}}. Per connection it gives connectionId, profileId, firstName, ageBand, region and connectedAt. connectionId is added by issue 135.
+- Data: GET /api/connections?page=1&pageSize=20 through getConnections(page) in web/src/api/connections.ts and request() of web/src/api/client.ts. The answer is {"data": [...], "meta": {"page", "pageSize", "total"}}. Per connection it gives connectionId, profileId, firstName, ageBand, region and connectedAt. connectionId is added by issue 135.
 - Rules: page and pageSize are checked by PageQueryValidator of task 40.2. pageSize is at most 50. No email address and no birth date is on any row.
 - A member whom the admin switched off is not in the list. The row stays in the database. Task 46.4 adds this to the one visibility rule AccountVisibility, which the query of issue 42 uses. Issue 46 Deactivate a member, GitLab #90, sprint 3.
 - Built by: issue 42, tasks 42.1 (the query from both sides), 42.3 (GET /api/connections), 42.4 (the page). Task 42.2 adds seed data with a test member who has twenty one connections.
@@ -104,7 +104,7 @@ The list appears within two seconds after pressing Connections on the test site 
 - Each button Remove has the aria-label "Remove `<first name>`", so a screen reader hears whose row it is. The question of the window is read when it opens.
 - Loading uses aria-busy, the error messages role alert, and the already removed message role status.
 - Cancel and Escape put the focus back on the button Remove. After a remove the focus moves to the heading.
-- Colours, fonts and spacing come only from frontend/src/styles/tokens.css, following the Figma frame Connections on the page Design directions.
+- Colours, fonts and spacing come only from web/src/styles/tokens.css, following the Figma frame Connections on the page Design directions.
 - Privacy: nobody else can see this list, not another member and not a visitor. A list of who knows whom says a lot about a young person, so a row shows only the first name, the age band in words, the region and the date. No email address and no birth date. The other member is never told about a remove. There is no message button on this page.
 
 ## Built by

@@ -1,6 +1,6 @@
 # Make an account (CreateAccount)
 
-Component: `frontend/src/pages/CreateAccount.tsx`, with `CreateAccount.module.css`.
+Component: `web/src/pages/CreateAccount.tsx`, with `CreateAccount.module.css`.
 Address in the browser: `/create-account`.
 
 ## What the page is for
@@ -65,7 +65,7 @@ The title of the browser tab is Connect, Make an account, set by the page itself
 - Hint: "At least fifteen characters", under the field, visible before typing, linked with `aria-describedby` (issue 03b A clear message when my password is too weak, task 3b.3, GitLab #17, sprint 1-stretch).
 - Messages, next to the field, the field marked `aria-invalid`:
   - "Fill in a password" when it is empty (issue 03, task 3.6).
-  - "Use at least fifteen characters for your password" when it is shorter than fifteen characters. The page checks this itself and then sends nothing. The server checks it again in `CreateAccountRequestValidator`, with the number in `PasswordRules.cs` (task 3b.1). The screen keeps its own number in `MIN_PASSWORD_LENGTH = 15` in `frontend/src/api/accounts.ts`.
+  - "Use at least fifteen characters for your password" when it is shorter than fifteen characters. The page checks this itself and then sends nothing. The server checks it again in `CreateAccountRequestValidator`, with the number in `PasswordRules.cs` (task 3b.1). The screen keeps its own number in `MIN_PASSWORD_LENGTH = 15` in `web/src/api/accounts.ts`.
   - "This password is known from data leaks, choose another one" when the password is on the list of passwords from data leaks. Only the server checks this, also in other capital letters (issue 116 A password that is known from data leaks is refused, tasks 116.1 and 116.3, GitLab #35, sprint 2). The list stays on the server and is never in the frontend. A password that is too short gets only the message about fifteen characters.
 - The page shows the message the server sends for the password field as the server wrote it, so a later rule on the password needs no change here.
 
@@ -80,7 +80,7 @@ The title of the browser tab is Connect, Make an account, set by the page itself
 ### Button Make account
 
 - Text: Make account. While waiting: "Making your account..." and disabled, so it cannot be pressed twice.
-- What happens: `createAccount(email, password)` in `frontend/src/api/accounts.ts` sends `POST /api/accounts` through `request()` in `frontend/src/api/client.ts`. The server saves one new row in the table account with a hashed password (task 3.4). Right after, it sends one confirmation email (task 27.3). When the mail server fails, the account is still made and the answer is the same.
+- What happens: `createAccount(email, password)` in `web/src/api/accounts.ts` sends `POST /api/accounts` through `request()` in `web/src/api/client.ts`. The server saves one new row in the table account with a hashed password (task 3.4). Right after, it sends one confirmation email (task 27.3). When the mail server fails, the account is still made and the answer is the same.
 - Rules: nothing is saved when a field is wrong, so the person can fix the password and make the account with the same email address at once.
 - Built by: issue 03, task 3.6.
 
@@ -97,7 +97,7 @@ The title of the browser tab is Connect, Make an account, set by the page itself
 ### The line "or" and Continue with Google
 
 - Text: the line "or" between the form and the button, then a button with the Google icon and the words Continue with Google.
-- What it is: `SocialLoginButton` with the provider google, a link styled as a button, because it takes the person to another place. The icon is `frontend/src/components/GoogleIcon.tsx`, an inline SVG with `aria-hidden`. A screen reader hears Continue with Google.
+- What it is: `SocialLoginButton` with the provider google, a link styled as a button, because it takes the person to another place. The icon is `web/src/components/GoogleIcon.tsx`, an inline SVG with `aria-hidden`. A screen reader hears Continue with Google.
 - What happens: the browser goes to `/api/auth/google/start?next=/` (task 23.3). On this page next is always `/`. Connect asks Google only for openid and email, and keeps only the email address. No script from Google is loaded in the page.
 - Rules: an email address that already has an account is never joined to a Google account on the email address alone. The person then reads "This email address already has an account. Log in with your password first." on the return page.
 - Design: the Figma frame Social buttons and the branding rules Google publishes for this button.
@@ -105,7 +105,7 @@ The title of the browser tab is Connect, Make an account, set by the page itself
 
 ### Continue with Facebook
 
-- Text: the Facebook icon (`frontend/src/components/FacebookIcon.tsx`, `aria-hidden`) and the words Continue with Facebook, under the Google button.
+- Text: the Facebook icon (`web/src/components/FacebookIcon.tsx`, `aria-hidden`) and the words Continue with Facebook, under the Google button.
 - What it is: `SocialLoginButton` with the provider facebook, the same link styled as a button that Continue with Google uses. There is no separate FacebookButton.
 - What happens: the link goes to `/api/auth/facebook/start?next=/` (task 24.2). An account made with Facebook counts as confirmed at once and gets no confirmation email. An email address that already has an account is refused and never linked.
 - When the server cannot be reached at all, the browser leaves Connect and shows its own page that the site cannot be reached.
@@ -143,7 +143,7 @@ The return page `/login/return` is its own page (`SocialLoginReturn.tsx`), but i
 - The form asks for nothing but an email address and a password. From Google or Facebook, Connect shows nothing but the email address, and a fifteen year old sees exactly the same as an adult.
 - While issue 03 is built and checked, the test site only holds invented accounts such as check-03-sam@example.org.
 
-The design: colours, fonts and spacing come only from the variables in `frontend/src/styles/tokens.css` (task 3.5 names navy 0E2038, green 16A34A, Bricolage Grotesque for headings and Hanken Grotesk for text), following the Figma frame Make an account, its state made, and the frame Social buttons on the Figma board.
+The design: colours, fonts and spacing come only from the variables in `web/src/styles/tokens.css` (task 3.5 names navy 0E2038, green 16A34A, Bricolage Grotesque for headings and Hanken Grotesk for text), following the Figma frame Make an account, its state made, and the frame Social buttons on the Figma board.
 
 ## Built by
 

@@ -1,6 +1,6 @@
 # Parent permission
 
-- Component: frontend/src/pages/ParentConsent.tsx, with ParentConsent.module.css and ParentConsent.test.tsx.
+- Component: web/src/pages/ParentConsent.tsx, with ParentConsent.module.css and ParentConsent.test.tsx.
 - Address in the browser: /parent-consent?token=<token>, the link in the email to the parent. The page removes the token from the address bar at once, so afterwards the address reads /parent-consent.
 
 ## What the page is for
@@ -36,7 +36,7 @@ All screen elements are built by task 131.4, issue 131 A parent gives permission
 1. On load (not visible)
    - The page reads token from the address, keeps it in memory, and replaces the address with /parent-consent (history.replaceState), so the token is not left in the address bar or in the history of the browser.
    - No token in the address: "This link does not work any more" at once, without a request.
-   - Then it calls lookupParentConsent(token) of frontend/src/api/parentConsents.ts, which sends POST /api/parent-consents/lookup through request(), with the token in the body and never in the address.
+   - Then it calls lookupParentConsent(token) of web/src/api/parentConsents.ts, which sends POST /api/parent-consents/lookup through request(), with the token in the body and never in the address.
    - Server side, task 131.2: the token is required and at most 100 characters (ParentConsentTokenValidator). The server hashes the token with ResetToken.Hash of issue 21, finds the request and checks that it has not been used and has not ended. The answer holds firstName, ageBand, region, bio and alreadyGiven. It never holds the email address of the parent or the young person, the account id, the profile id or any date. The token is never written in a log line. Task 131.1 reads the request and the four values in one look up (FindSummaryByTokenHashAsync).
 2. Heading: What Connect keeps about <first name>
 3. Description list with a plain label per value
@@ -66,7 +66,7 @@ All screen elements are built by task 131.4, issue 131 A parent gives permission
 - Not reachable: "Connect is not reachable right now, try again later". A tester checks this by switching the phone to airplane mode before pressing Give permission, and presses again after switching it off.
 - Empty: not used. The page has no list.
 - Phone (360 pixels wide or close) and laptop: the team check of task 131.6 goes through every criterion on both.
-- Design: the Figma frame Parent permission on the Figma board of Connect, page Design directions. Colours, fonts and spacing come only from the variables in frontend/src/styles/tokens.css.
+- Design: the Figma frame Parent permission on the Figma board of Connect, page Design directions. Colours, fonts and spacing come only from the variables in web/src/styles/tokens.css.
 
 ## Accessibility and privacy
 
@@ -84,7 +84,7 @@ All screen elements are built by task 131.4, issue 131 A parent gives permission
 |---|---|---|---|---|
 | 131 | A parent gives permission for a young person under 16 | #42 | 2 | must |
 
-Issue 131 needs issues 130 A young person under 16 asks a parent for permission (#40), 14 View another member's profile (#30) and 21 Ask for a password reset link by email (#39) first. The tasks run in this order: 131.1 (database: the two queries on parent_consent, no migration), 131.2 (POST /api/parent-consents/lookup), 131.3 (POST /api/parent-consents/confirm), 131.4 (this page), 131.5 (end to end test frontend/e2e/parentConsentGive.spec.ts) and 131.6 (team check on a phone and a laptop).
+Issue 131 needs issues 130 A young person under 16 asks a parent for permission (#40), 14 View another member's profile (#30) and 21 Ask for a password reset link by email (#39) first. The tasks run in this order: 131.1 (database: the two queries on parent_consent, no migration), 131.2 (POST /api/parent-consents/lookup), 131.3 (POST /api/parent-consents/confirm), 131.4 (this page), 131.5 (end to end test web/e2e/parentConsentGive.spec.ts) and 131.6 (team check on a phone and a laptop).
 
 ## Open points
 

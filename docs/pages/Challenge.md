@@ -1,7 +1,7 @@
 # Challenge page
 
-- Component: frontend/src/pages/Challenge.tsx, with Challenge.module.css and Challenge.test.tsx
-- Parts on this page: frontend/src/components/challenge/JoinButton.tsx (issue 77, with Leave of issue 169) and frontend/src/components/challenge/ChallengeParticipants.tsx (issue 79, with Download of issue 170)
+- Component: web/src/pages/Challenge.tsx, with Challenge.module.css and Challenge.test.tsx
+- Parts on this page: web/src/components/challenge/JoinButton.tsx (issue 77, with Leave of issue 169) and web/src/components/challenge/ChallengeParticipants.tsx (issue 79, with Download of issue 170)
 - Address in the browser: /challenges/:id, for example /challenges/00000000-0000-4000-8000-000000000999
 - Title of the browser tab: the title of the challenge
 
@@ -46,7 +46,7 @@ flowchart LR
 
 The page sits inside AppShell of issue 06, so the five tabs stay around it.
 
-Data for the whole page: getChallenge(id) in frontend/src/api/challenges.ts asks GET /api/challenges/{id} through request() of client.ts. The answer holds the title, the full description, the organisation name, the deadline, the moment it was posted (issue 75b), isClosed (issue 76b), hasJoined and canJoin (issue 77), isOwner (issue 79) and updatedAt (issue 167). It never holds who else joined. The page decides nothing about closed, joining or owning by itself, and never uses the clock of the browser.
+Data for the whole page: getChallenge(id) in web/src/api/challenges.ts asks GET /api/challenges/{id} through request() of client.ts. The answer holds the title, the full description, the organisation name, the deadline, the moment it was posted (issue 75b), isClosed (issue 76b), hasJoined and canJoin (issue 77), isOwner (issue 79) and updatedAt (issue 167). It never holds who else joined. The page decides nothing about closed, joining or owning by itself, and never uses the clock of the browser.
 
 1. Saved or other message at the top: "Your changes are saved"
    - Shows above the challenge in an area with role status after the organisation saved a change on Edit challenge.
@@ -81,7 +81,7 @@ Data for the whole page: getChallenge(id) in frontend/src/api/challenges.ts asks
    - Built by task 167.4, issue 167, GitLab #228, sprint 5.
 10. Join sentence and button Join (young person with a profile, open challenge)
     - Below the deadline and the mark Closed. When canJoin is true: the sentence "When you join, the organisation that posted this challenge sees your first name." and right below it a button Join. The sentence stands above the button, so the young person decides before pressing.
-    - Pressing Join calls joinChallenge(challengeId) in frontend/src/api/challengeParticipants.ts, which sends POST /api/challenges/{id}/participants. While waiting the button says "Joining..." and is disabled, so a second press sends nothing.
+    - Pressing Join calls joinChallenge(challengeId) in web/src/api/challengeParticipants.ts, which sends POST /api/challenges/{id}/participants. While waiting the button says "Joining..." and is disabled, so a second press sends nothing.
     - Joined (201): the button is replaced by "You joined this challenge" in an area with role status, and the focus moves to that text. When hasJoined is true on opening, the page shows this text in place of the button, also after a reload or on another device.
     - Already joined in another window: the page shows "You joined this challenge", because it is true.
     - Closed meanwhile: "This challenge is closed, you can no longer join" below the button, role alert, and the button disappears.
@@ -92,7 +92,7 @@ Data for the whole page: getChallenge(id) in frontend/src/api/challenges.ts asks
     - Rules: a young person joins a challenge once and only while it is open. The table challenge_member stores only who joined which challenge and when.
     - Built by task 77.4, issue 77 Join a challenge, GitLab #144, sprint 4.
     - Button Leave (young person who joined, open or closed challenge): a real button next to "You joined this challenge", only when hasJoined is true. Pressing it opens the window ConfirmDialog of task 113.3 with the question "Leave this challenge?", the sentence "The organisation will no longer see your first name on it." and the buttons Leave and Cancel. The focus goes to Cancel. Cancel and the Escape key close the window and put the focus back on Leave.
-    - Leave in the window calls leaveChallenge(id) in frontend/src/api/challengeParticipants.ts, which sends DELETE /api/challenges/{id}/participants/current. While waiting it says "Leaving..." and both buttons are disabled. The server only ever removes the young person who is logged in.
+    - Leave in the window calls leaveChallenge(id) in web/src/api/challengeParticipants.ts, which sends DELETE /api/challenges/{id}/participants/current. While waiting it says "Leaving..." and both buttons are disabled. The server only ever removes the young person who is logged in.
     - Left (204): the window closes, the page asks GET /api/challenges/{id} again, and "You left this challenge" shows in an area with role status, with the focus on it. When canJoin is true the button Join shows again below it. On a closed challenge there is no button Join.
     - Not allowed (403): "Only young people with a profile can join or leave a challenge" in the window, role alert. Not found (404): the page NotFound of issue 53 in place of the challenge. Not reachable: "Connect is not reachable right now, you are still joined" in the window, role alert. The window stays open, so Leave can be pressed again.
     - Built by task 169.3, issue 169 Leave a challenge, GitLab #230, sprint 5.
@@ -103,9 +103,9 @@ Data for the whole page: getChallenge(id) in frontend/src/api/challenges.ts asks
     - Built by task 75b.3, issue 75b, GitLab #141, sprint 4.
 13. Part Participants (organisation that posted the challenge only)
     - Below the description, with a heading (h2) "Participants (<total>)", for example Participants (3). Only rendered when isOwner is true. Otherwise the part is not there and the participants address is never called.
-    - Data: getParticipants(challengeId, page) in frontend/src/api/challengeParticipants.ts asks GET /api/challenges/{id}/participants?page=<page>&pageSize=20. The server checks that the organisation of the session posted the challenge (task 79.2). Hiding the part on the screen is never the protection.
+    - Data: getParticipants(challengeId, page) in web/src/api/challengeParticipants.ts asks GET /api/challenges/{id}/participants?page=<page>&pageSize=20. The server checks that the organisation of the session posted the challenge (task 79.2). Hiding the part on the screen is never the protection.
     - Each line: the first name as a link to /members/<profileId> and "joined on 5 October 2026" in Dutch time. Nothing else about the young person. The one who joined last is on top, in the order of the server.
-    - Button Download, directly under the heading "Participants (<total>)", only when the total is 1 or more. With Participants (0) there is no button. Pressing it calls downloadParticipants(challengeId) in frontend/src/api/challengeParticipants.ts, which asks GET /api/challenges/{id}/participants/export through the file option of request() in client.ts (task 127.3). While waiting it says "Preparing the file..." and cannot be pressed again.
+    - Button Download, directly under the heading "Participants (<total>)", only when the total is 1 or more. With Participants (0) there is no button. Pressing it calls downloadParticipants(challengeId) in web/src/api/challengeParticipants.ts, which asks GET /api/challenges/{id}/participants/export through the file option of request() in client.ts (task 127.3). While waiting it says "Preparing the file..." and cannot be pressed again.
     - The file: the browser saves a CSV file whose name starts with challenge-participants, with two columns First name and Joined on, the one who joined last on top. Then "Your file is ready." shows next to the button in an area with role status. The server uses the same owner rule as the list.
     - Download refused (403 or 404): "The list of participants cannot be downloaded" next to the button, role alert. Not reachable: "Connect is not reachable right now, try again later" next to the button, role alert, and the names already shown stay.
     - Download is built by task 170.3, issue 170 Download the list of participants of my challenge, GitLab #231, sprint 5.
@@ -128,7 +128,7 @@ Data for the whole page: getChallenge(id) in frontend/src/api/challenges.ts asks
 - Not reachable on opening: "Connect is not reachable right now, try again later" in place of the challenge, in an area with role alert. A tester checks it by opening Challenges on the phone, switching to airplane mode and pressing a challenge.
 - The owner sees the names under Participants within two seconds after the challenge opens on a phone (issue 79 AC12).
 - Phone (360 pixels wide) and laptop (1280 pixels wide): the screenshots are checked against the Figma frames. The button Join is at least 44 by 44 pixels on a phone.
-- Design: the Figma frames Challenge page, Challenge page with the closed state, Challenge page with Join and Challenge page with participants, on the Figma board of Connect, page Design directions. Colours, fonts and spacing come only from the variables in frontend/src/styles/tokens.css.
+- Design: the Figma frames Challenge page, Challenge page with the closed state, Challenge page with Join and Challenge page with participants, on the Figma board of Connect, page Design directions. Colours, fonts and spacing come only from the variables in web/src/styles/tokens.css.
 
 ## Accessibility and privacy
 

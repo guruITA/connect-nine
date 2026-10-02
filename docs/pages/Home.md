@@ -1,6 +1,6 @@
 # Home page
 
-- Component: frontend/src/pages/Home.tsx, with Home.module.css and Home.test.tsx. The part News is frontend/src/components/home/HomeNews.tsx, with HomeNews.module.css and HomeNews.test.tsx.
+- Component: web/src/pages/Home.tsx, with Home.module.css and Home.test.tsx. The part News is web/src/components/home/HomeNews.tsx, with HomeNews.module.css and HomeNews.test.tsx.
 - Address in the browser: / (the start address of Connect, also the tab Home)
 - Title of the browser tab: a title element with Connect and the name of the page (task 6.3). No name or email address is ever in it.
 
@@ -63,7 +63,7 @@ The page sits inside AppShell of issue 06. The shell draws a header with the nam
    - A list of the three newest items. Each item shows its title as a link to /news/<id> (the page of one item, issue 73) and its date, in the same format as the news list of task 72.4.
    - Below the list: a link See all news to /news (the news list, issue 72).
    - No pictures, also after issue 72b, so the home page stays short on a phone.
-   - Data: getNewsHeadlines(1, 3) in frontend/src/api/newsItems.ts asks GET /api/news-items/headlines?page=1&pageSize=3 through the shared helper in client.ts. It is the only call of the part.
+   - Data: getNewsHeadlines(1, 3) in web/src/api/newsItems.ts asks GET /api/news-items/headlines?page=1&pageSize=3 through the shared helper in client.ts. It is the only call of the part.
    - The server address (task 166.2): open to everyone, also without a cookie. page and pageSize are read as text by PageQueryValidator. The answer 200 is { "data": [ { "id", "title", "publishedAt" } ], "meta": { "page": 1, "pageSize": 3, "total": 25 } }. Never the text, the author or a picture field. A wrong page value gives 400 with "Use a page number of 1 or more" or "Use a page size from 1 to 50". A stopped database gives 503 with "Connect is not reachable right now".
    - The database (task 166.1): GetNewsHeadlinesHandler, through IAppDbContext, reads only Id, Title and PublishedAt into NewsItemHeadline, newest first by published_at and then id, through the index ix_news_item_published_at_id of the news list. The order is shared with the news list in one method NewestFirst, so the home page and the news list always show the same newest item.
    - Built by tasks 166.1, 166.2 and 166.3, issue 166 News on the home page, GitLab #226, sprint 5.
@@ -80,7 +80,7 @@ The page sits inside AppShell of issue 06. The shell draws a header with the nam
 - Phone (360 pixels wide): the tabs sit at the bottom of the screen and the page gets room at the bottom, so the last line is never hidden. The part News shows within two seconds over a mobile connection, and Make an account shows before or with it.
 - Laptop (1280 pixels wide): the tabs sit in the header at the top, from 768 pixels wide.
 - Speed: tapping a tab to Home shows the page within one second, and the tabs do not flash white. The server sends index.html with Cache-Control: no-cache and the built files with a code in their name for a year (task 6.1), so a new version of Connect reaches every visitor at the next visit.
-- Design: the Figma frame Home on the page Design directions of the Figma board of Connect. Colours, fonts and spacing come only from the variables in frontend/src/styles/tokens.css (navy 0E2038, green 16A34A, Bricolage Grotesque for headings, Hanken Grotesk for text).
+- Design: the Figma frame Home on the page Design directions of the Figma board of Connect. Colours, fonts and spacing come only from the variables in web/src/styles/tokens.css (navy 0E2038, green 16A34A, Bricolage Grotesque for headings, Hanken Grotesk for text).
 
 ## Accessibility and privacy
 

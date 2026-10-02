@@ -1,6 +1,6 @@
 # Projects, the list of all projects
 
-- Component: frontend/src/pages/Projects.tsx, with Projects.module.css and Projects.test.tsx
+- Component: web/src/pages/Projects.tsx, with Projects.module.css and Projects.test.tsx
 - Address in the browser: /projects, behind the tab Projects
 - Server address: GET /api/projects?page=1&pageSize=20
 
@@ -38,12 +38,12 @@ The page sits inside AppShell of issue 06, so the five tabs stay around it.
    - Built by task 63.4, issue 63 Browse all showcases, GitLab #177, sprint 4.
 
 2. The list of project cards
-   - Each card is ProjectCard (frontend/src/components/ProjectCard.tsx) of issue 62 See my projects on my profile, reused and never copied. It shows the title, the start of the description, the date the project was added and, below the date, the first name of the maker (the optional prop makerFirstName). The profile pages of issue 62 do not pass that prop, so they look the same as before.
+   - Each card is ProjectCard (web/src/components/ProjectCard.tsx) of issue 62 See my projects on my profile, reused and never copied. It shows the title, the start of the description, the date the project was added and, below the date, the first name of the maker (the optional prop makerFirstName). The profile pages of issue 62 do not pass that prop, so they look the same as before.
    - The title on every card is a Link of React Router to /projects/<id>, a real link and never a click handler on the card. ProjectCard makes the link for every list, the page itself builds no address. Built by task 64.4, issue 64 Open a project page, GitLab #181, sprint 4.
    - Each card carries its project id in the attribute data-project-id. It stays after issue 64, because the end to end tests of issues 63 and 63b use it.
    - A card shows nothing else about the maker: never an age, a region, a school or an email address.
    - The picture: the list answer gives the field image for each project (task 61b.4), and ProjectCard shows it with width, height, loading="lazy" and the title as alt text. A project without a picture keeps an empty space of the same shape, hidden for a screen reader. Built by task 61b.5, issue 61b Add an image to my project, GitLab #180, sprint 4.
-   - Data: getProjectFeed(page) in frontend/src/api/projects.ts asks GET /api/projects?page=<page>&pageSize=20 through the shared helper frontend/src/api/client.ts. The page itself never calls fetch and never sees a status code. The answer is the team answer: the projects in data, and page, pageSize and total in meta.
+   - Data: getProjectFeed(page) in web/src/api/projects.ts asks GET /api/projects?page=<page>&pageSize=20 through the shared helper web/src/api/client.ts. The page itself never calls fetch and never sees a status code. The answer is the team answer: the projects in data, and page, pageSize and total in meta.
    - The server checks the session through the guard of issue 04 and checks page and pageSize (whole numbers, page from 1, pageSize at most 50). It gives up to twenty projects, newest first, and the total. A page after the last one gives an empty list. A wrong page or pageSize gives a ProblemDetails answer with a message for that field.
    - In the database the projects come from the table project, with the maker from member_profile and account. Removed projects are left out through the query filter of issue 48 Remove content that breaks the rules, and makers who are switched off or not confirmed through the visibility rule of issues 29 and 46. Only the id and the first name of the maker leave the server. The index on the date and the id keeps the list fast with thousands of projects.
    - The list is one column on a phone and more columns on a laptop.
@@ -89,7 +89,7 @@ The page sits inside AppShell of issue 06, so the five tabs stay around it.
 - Too many tries: "You are loading projects very fast. Wait a moment and try again." with Try again below the cards, which stay.
 - Phone (360 pixels wide): one column of cards. Scrolling with a thumb loads the next pages.
 - Laptop (1280 pixels wide): more columns. No scrolling sideways on either screen.
-- Design: the Figma frame Projects on the page Design directions of the Figma board of Connect. Colours, fonts and spacing come only from the variables in frontend/src/styles/tokens.css.
+- Design: the Figma frame Projects on the page Design directions of the Figma board of Connect. Colours, fonts and spacing come only from the variables in web/src/styles/tokens.css.
 - Test data: docs/testing/testData.md lists sixty five test projects of the test member Robin (Seed project 01 to 25 and Scroll project 01 to 40), four pages. The removed project Seed project removed and the Project of Sam (a switched off test member) must never show.
 
 ## Accessibility and privacy

@@ -1,6 +1,6 @@
 # Numbers (admin usage numbers)
 
-- Component: frontend/src/pages/AdminNumbers.tsx, with AdminNumbers.module.css and AdminNumbers.test.tsx
+- Component: web/src/pages/AdminNumbers.tsx, with AdminNumbers.module.css and AdminNumbers.test.tsx
 - Address in the browser: /admin/numbers, and /admin/numbers?month=2026-08 for an earlier month (issue 143)
 
 ## What the page is for
@@ -15,7 +15,7 @@ The page Numbers tells the WailSalutem Foundation at a glance whether Connect is
 | Member (young person) or organisation | "You are not allowed to see this page" and no numbers. This comes from RequireAdmin of issue 45. |
 | Visitor who is not logged in | The log in page first, through RequireLogin of issue 04. |
 
-The route in frontend/src/App.tsx is /admin/numbers inside RequireLogin and then RequireAdmin. The server address GET /api/admin/statistics sits in the admin group of issue 45 with the rule AdminOnly, so a member gets not allowed and a visitor must log in, also when they call the server directly.
+The route in web/src/App.tsx is /admin/numbers inside RequireLogin and then RequireAdmin. The server address GET /api/admin/statistics sits in the admin group of issue 45 with the rule AdminOnly, so a member gets not allowed and a visitor must log in, also when they call the server directly.
 
 ## How you get there and where you go next
 
@@ -49,7 +49,7 @@ flowchart LR
 
 ### 3. Choice Month (issue 143)
 - Label: Month.
-- What it shows: a select with the twelve months from this month back, written like September 2026, with this month first. The value of each option is year-month, such as 2026-08. The list comes from lastTwelveMonths(today) in frontend/src/utils/lastTwelveMonths.ts.
+- What it shows: a select with the twelve months from this month back, written like September 2026, with this month first. The value of each option is year-month, such as 2026-08. The list comes from lastTwelveMonths(today) in web/src/utils/lastTwelveMonths.ts.
 - Behaviour: choosing a month puts it in the address as ?month=2026-08 and asks GET /api/admin/statistics?month=2026-08. Choosing this month removes month from the address, so the plain address stays the same as in issue 47. A reload or a shared link shows the same month.
 - Rules: a month in a wrong form or in the future gets an answer 400 from the server. The choice keeps working and shows this month.
 - Built by: issue 143 See the usage numbers of earlier months (GitLab #208, sprint 5), task 143.4. The server part is task 143.2.
@@ -61,7 +61,7 @@ flowchart LR
 - Built by: issue 47, task 47.3, with the server address of task 47.2. Issue 143 task 143.4 uses the same line for an earlier month, such as Numbers for August 2026.
 
 ### 5. Three tiles
-Each tile is a StatTile (frontend/src/components/StatTile.tsx): a small label and a big number, in a section named by its label through aria-labelledby.
+Each tile is a StatTile (web/src/components/StatTile.tsx): a small label and a big number, in a section named by its label through aria-labelledby.
 
 | Tile label | What it counts |
 |---|---|
@@ -69,7 +69,7 @@ Each tile is a StatTile (frontend/src/components/StatTile.tsx): a small label an
 | New members this month | Members whose account was made on or after the start of the month. |
 | Connections this month | Connection requests (issue 39) with the status Accepted whose answer moment (answered_at, issue 41b) is on or after the start of the month. |
 
-- Data: GET /api/admin/statistics through getStatistics() in frontend/src/api/admin.ts. The answer holds three numbers and monthStart in the envelope {"data": ..., "meta": {}}, never a name or an id. The numbers are counted fresh every time the page opens. The counts are made by GetStatisticsHandler (task 47.1) with the indexes ix_account_created_at and ix_connection_request_answered_at.
+- Data: GET /api/admin/statistics through getStatistics() in web/src/api/admin.ts. The answer holds three numbers and monthStart in the envelope {"data": ..., "meta": {}}, never a name or an id. The numbers are counted fresh every time the page opens. The counts are made by GetStatisticsHandler (task 47.1) with the indexes ix_account_created_at and ix_connection_request_answered_at.
 - Layout: CSS grid, one column on a phone (360 pixels), the tiles next to each other on a laptop (1280 pixels): three with issue 47, four once issue 144 adds its tile. No chart library.
 - Built by: issue 47, tasks 47.1 (counts), 47.2 (address), 47.3 (tiles). Issue 143 tasks 143.1 and 143.2 count for an earlier month.
 
@@ -78,13 +78,13 @@ Each tile is a StatTile (frontend/src/components/StatTile.tsx): a small label an
 - Text: the label Upcoming events, the number of events that start now or later, the note "From now on, not only this month" under the number, and the link Events to /events, a real link element. 0 events shows 0, never an empty or a hidden tile.
 - Data: the same single call getStatistics(). The answer of GET /api/admin/statistics also holds data.upcomingEvents. The server takes now from its own clock and counts the rows of the table event (issue 65) that start now or later, with the same shared query Upcoming(now) as the list of issue 66 See the upcoming events, so the tile always shows as many events as a member finds under Events. Issue 163 Cancel my event puts its rule into the same query, so cancelled events leave both.
 - StatTile gets two optional props, note and link. The three tiles of issue 47 pass neither and look the same as before.
-- Built by: issue 144 See the number of upcoming events on the admin home (GitLab #221, sprint 5), tasks 144.1 (the count), 144.2 (the address) and 144.3 (the tile). The end to end test is frontend/e2e/adminUpcomingEvents.spec.ts (task 144.4).
+- Built by: issue 144 See the number of upcoming events on the admin home (GitLab #221, sprint 5), tasks 144.1 (the count), 144.2 (the address) and 144.3 (the tile). The end to end test is web/e2e/adminUpcomingEvents.spec.ts (task 144.4).
 
 ### 7. Graph of twelve months (issue 143)
 - What it shows: under the tiles a small bar graph with two bars per month, new members and connections, for each of the last twelve months. Under each group the short month, such as Aug. A legend New members and Connections next to a small square of each colour.
-- Data: GET /api/admin/statistics/months through getStatisticsMonths() in frontend/src/api/admin.ts, asked once. Twelve months, oldest first, each with its new members and accepted connections.
+- Data: GET /api/admin/statistics/months through getStatisticsMonths() in web/src/api/admin.ts, asked once. Twelve months, oldest first, each with its new members and accepted connections.
 - Rules: plain SVG without a library. The height of a bar is relative to the highest number of the twelve. The graph does not follow the choice Month. It always shows the last twelve months. The two series are never told apart by colour alone.
-- Component: frontend/src/components/adminNumbers/MonthsGraph.tsx.
+- Component: web/src/components/adminNumbers/MonthsGraph.tsx.
 - Built by: issue 143, task 143.5, with the server address of task 143.3.
 
 ### 8. Table of twelve months (issue 143)
@@ -115,7 +115,7 @@ The numbers appear within two seconds after pressing Numbers, also with all the 
 - The admin menu marks the open page with aria-current.
 - The graph svg has aria-hidden. The table with its caption and headings is read instead, so a screen reader hears every month with both numbers.
 - The legend names both series next to their colour.
-- Colours, fonts and spacing come only from frontend/src/styles/tokens.css. The design is the Figma frame of the admin pages on the Figma board (page Design directions, Young Amstelland colours and fonts). This document does not give colours or a layout beyond what the cards say.
+- Colours, fonts and spacing come only from web/src/styles/tokens.css. The design is the Figma frame of the admin pages on the Figma board (page Design directions, Young Amstelland colours and fonts). This document does not give colours or a layout beyond what the cards say.
 - Privacy: the page shows only the admin menu, the heading, the month line, the labels and the numbers. No name or anything else about a member appears (issue 47, AC9). The server answer holds no name and no id.
 - Numbers per region, per age or per kind of organisation are left out, because smaller groups can point to one young person.
 

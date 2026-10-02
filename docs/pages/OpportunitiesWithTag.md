@@ -1,6 +1,6 @@
 # The page Opportunities with the tag
 
-Component: `frontend/src/pages/OpportunitiesWithTag.tsx`.
+Component: `web/src/pages/OpportunitiesWithTag.tsx`.
 Address in the browser: `/opportunities/tag/<name>`, for example `/opportunities/tag/seed%20tag`.
 
 ## What the page is for
@@ -15,7 +15,7 @@ Opportunities on Connect carry tags about skills and interests, such as video ed
 
 ## How you get there and where you go next
 
-- Every tag on the page of one opportunity (`frontend/src/pages/Opportunity.tsx`, issue 54c) is a link here. The tags sit in a list under the small heading Tags, below the kind and the closing date. A closed opportunity keeps its tags as links, because this page shows only the open ones.
+- Every tag on the page of one opportunity (`web/src/pages/Opportunity.tsx`, issue 54c) is a link here. The tags sit in a list under the small heading Tags, below the kind and the closing date. A closed opportunity keeps its tags as links, because this page shows only the open ones.
 - From here each card opens the page of its opportunity. The link See all opportunities goes to `/opportunities`.
 
 ```mermaid
@@ -31,7 +31,7 @@ flowchart TD
 
 ### The tag links on the page of an opportunity (the way in)
 
-- Each tag becomes a React Router link to `/opportunities/tag/<name>`. The name goes through `encodeURIComponent` in `tagListPath(name)` of `frontend/src/api/opportunities.ts`, so drone video becomes drone%20video and a tag of two words or with a - works.
+- Each tag becomes a React Router link to `/opportunities/tag/<name>`. The name goes through `encodeURIComponent` in `tagListPath(name)` of `web/src/api/opportunities.ts`, so drone video becomes drone%20video and a tag of two words or with a - works.
 - The text of the link is the name of the tag, with no extra words and no icon, so a screen reader says "link" and the name.
 - Each link is at least as big as the touch area the Definition of Done asks for, with the focus style of `tokens.css`.
 - Without tags nothing changes: no heading and no list.
@@ -48,7 +48,7 @@ flowchart TD
 ### The list of opportunities
 
 - What it shows: every open opportunity with the tag, the newest first, twenty at a time, as OpportunityCard of tasks 55.4 and 55b.4 in a list (`ul` with `li`). Each card is a link to its opportunity.
-- Data: `listOpportunitiesWithTag(name, page)` in `frontend/src/api/opportunities.ts` asks `GET /api/tags/<encoded name>/opportunities?page=<page>&pageSize=20` through `request()` of `client.ts`. It returns the items with page, pageSize and total, not a tag, or not reachable. The page never sees a status code.
+- Data: `listOpportunitiesWithTag(name, page)` in `web/src/api/opportunities.ts` asks `GET /api/tags/<encoded name>/opportunities?page=<page>&pageSize=20` through `request()` of `client.ts`. It returns the items with page, pageSize and total, not a tag, or not reachable. The page never sees a status code.
 - The server normalises the name with `TagRules.Normalize` of issue 36 and checks it with the same length and character rules that a tag must follow. It takes today from `OpportunityOpenRule`. When no open opportunity has the tag, or the tag does not exist, the list is empty with total 0. A visitor is turned away by the guard (task 156.3).
 - Built by: issue 156, tasks 156.3 and 156.5.
 
@@ -84,7 +84,7 @@ The team check of task 156.7 runs on a phone and on a laptop.
 - After Load more the focus moves to the first new card.
 - The list shows opportunities only, never people.
 
-The design: colours, fonts and spacing come only from `frontend/src/styles/tokens.css`, following the Figma frames Opportunity and Opportunities on the page Design directions of the Figma board.
+The design: colours, fonts and spacing come only from `web/src/styles/tokens.css`, following the Figma frames Opportunity and Opportunities on the page Design directions of the Figma board.
 
 ## Built by
 

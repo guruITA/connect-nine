@@ -1,6 +1,6 @@
 # The page Requests I received
 
-Component: `frontend/src/pages/ReceivedRequests.tsx`.
+Component: `web/src/pages/ReceivedRequests.tsx`.
 Address in the browser: `/requests/received`.
 
 ## What the page is for
@@ -55,7 +55,7 @@ flowchart TD
   - The region.
   - The date of the request, in the member's own language through `Intl.DateTimeFormat`.
 - A screen reader reads each row as the first name and the date.
-- Data: `getReceivedRequests(page)` in `frontend/src/api/connectionRequests.ts` asks `GET /api/connection-requests/received` through the shared helper in `client.ts` and returns a list, not reachable or not logged in. The page never sees a status code. The server checks the session, lets `PageQueryValidator` of task 40.2 parse page and pageSize, and applies `ProfileVisibility` of issue 14. The answer holds up to pageSize requests in `data` and page, pageSize and total in `meta`. A member without a profile yet gets an empty list (task 41.2).
+- Data: `getReceivedRequests(page)` in `web/src/api/connectionRequests.ts` asks `GET /api/connection-requests/received` through the shared helper in `client.ts` and returns a list, not reachable or not logged in. The page never sees a status code. The server checks the session, lets `PageQueryValidator` of task 40.2 parse page and pageSize, and applies `ProfileVisibility` of issue 14. The answer holds up to pageSize requests in `data` and page, pageSize and total in `meta`. A member without a profile yet gets an empty list (task 41.2).
 - Built by: issue 41, tasks 41.2 and 41.3.
 
 ### Alert area above a row
@@ -66,7 +66,7 @@ flowchart TD
 ### Button Accept on each row
 
 - Label: Accept. Accessible name: "Accept the request of <first name>".
-- What it does: calls `acceptRequest(id)` in `frontend/src/api/connectionRequests.ts`, which sends `POST /api/connection-requests/{id}/accept` with the connectionRequestId of the row. Every button of that row is disabled until the answer comes, so a second press does nothing.
+- What it does: calls `acceptRequest(id)` in `web/src/api/connectionRequests.ts`, which sends `POST /api/connection-requests/{id}/accept` with the connectionRequestId of the row. Every button of that row is disabled until the answer comes, so a second press does nothing.
 - Done (code 204): the row disappears at once, within one second, without the page reloading. The focus moves to the next row, or to the heading when the list is empty. From then on both member pages say Connected (task 41b.5).
 - No confirm popup.
 - Built by: issue 41b, tasks 41b.2 and 41b.4 (GitLab #80, sprint 2).
@@ -74,7 +74,7 @@ flowchart TD
 ### Button Decline on each row
 
 - Label: Decline. Accessible name: "Decline the request of <first name>". It sits next to Accept.
-- What it does: calls `declineRequest(id)` in `frontend/src/api/connectionRequests.ts`, which sends `POST /api/connection-requests/{id}/decline`. Every button of that row is disabled until the answer comes.
+- What it does: calls `declineRequest(id)` in `web/src/api/connectionRequests.ts`, which sends `POST /api/connection-requests/{id}/decline`. Every button of that row is disabled until the answer comes.
 - Done (code 204): the row disappears at once. The focus moves to the next row, or to the heading when the list is empty. After a decline neither of the two can send the other a new request, and both member pages say "No new request possible", without saying who said no or when (task 41c.5).
 - No confirm popup and no box that asks for a reason. No reason is stored.
 - Both buttons fit on one row at 360 pixels wide.
@@ -108,7 +108,7 @@ flowchart TD
 - Nobody but the logged in member can read or answer the requests that wait for them.
 - A decline never shows who said no or when, on any page.
 
-The design: colours, fonts and spacing come only from `frontend/src/styles/tokens.css`, following the Figma frame Requests on the page Design directions of the Figma board.
+The design: colours, fonts and spacing come only from `web/src/styles/tokens.css`, following the Figma frame Requests on the page Design directions of the Figma board.
 
 ## Built by
 

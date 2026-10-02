@@ -1,6 +1,6 @@
 # Change my event
 
-- Component: frontend/src/pages/EditEvent.tsx, with EditEvent.test.tsx. The form itself is the shared component frontend/src/components/EventForm.tsx.
+- Component: web/src/pages/EditEvent.tsx, with EditEvent.test.tsx. The form itself is the shared component web/src/components/EventForm.tsx.
 - Address in the browser: /events/:id/edit, for example /events/<id of the event>/edit.
 
 ## What the page is for
@@ -34,7 +34,7 @@ flowchart LR
 
 ## Every element of the page, top to bottom
 
-The page loads the event with getEvent(id) of frontend/src/api/events.ts, which asks GET /api/events/{id}. That answer holds isMine, the title, description, place, start time and places the form needs (task 162.3). isMine is true only when the organisation profile of the caller owns the event. The answer never holds the owner id, an account id or an email address. isMine is only used to show the form. The server never trusts it and checks the owner itself on every change.
+The page loads the event with getEvent(id) of web/src/api/events.ts, which asks GET /api/events/{id}. That answer holds isMine, the title, description, place, start time and places the form needs (task 162.3). isMine is true only when the organisation profile of the caller owns the event. The answer never holds the owner id, an account id or an email address. isMine is only used to show the form. The server never trusts it and checks the owner itself on every change.
 
 All elements below are built by task 162.4 (screen), issue 162 Change my event after publishing, GitLab #223, sprint 5, unless another task is named.
 
@@ -49,7 +49,7 @@ All elements below are built by task 162.4 (screen), issue 162 Change my event a
    - Number of places may never be lower than the number of young people who already registered. When it is, the server answers 409 and the sentence sits next to the field Number of places, directly below it, for example "2 young people registered, choose at least 2 places". Nothing is changed. Task 162.1 counts the registrations under the same row lock as registering for an event (issue 68), so a registration and a change never count at the same moment.
    - A wrong field (code 400): the message of that field sits directly below the field, with the same texts as when publishing. Each message is linked with aria-describedby, and the focus goes to the first wrong field. What was typed stays.
 3. Button Save changes
-   - Calls updateEvent(id, fields) of frontend/src/api/events.ts, which sends PUT /api/events/{id} through request() of frontend/src/api/client.ts. PUT sends the whole new version of the event.
+   - Calls updateEvent(id, fields) of web/src/api/events.ts, which sends PUT /api/events/{id} through request() of web/src/api/client.ts. PUT sends the whole new version of the event.
    - What goes to the server: title, description, place, startsAt and capacity. The owner comes from the session, never from the body.
    - While waiting the button says "Saving..." and is disabled.
    - Code 204 (done): the browser goes to /events/{id}, where "Your changes are saved" shows above the details in an area with role status.
@@ -58,7 +58,7 @@ All elements below are built by task 162.4 (screen), issue 162 Change my event a
    - The link Edit next to the title, only rendered when isMine is true and hasTakenPlace(startsAt, now) is false. It is left out of the page, not hidden with CSS.
    - Once the event has started there is no link Edit, and the event page says it has taken place (issue 66b).
    - The sentence "Your changes are saved" after a change.
-   - Built by task 162.4 in frontend/src/pages/EventDetails.tsx.
+   - Built by task 162.4 in web/src/pages/EventDetails.tsx.
 
 ## States
 
@@ -73,7 +73,7 @@ All elements below are built by task 162.4 (screen), issue 162 Change my event a
 - Not reachable: "Connect is not reachable right now, your changes are kept" above the form, every field keeps its value. A tester checks this by switching the phone to airplane mode before pressing Save changes.
 - Empty: not used. The page has no list.
 - Phone (360 pixels wide or close) and laptop: the team check of task 162.6 goes through every criterion on both.
-- Design: the Figma frame New event on the Figma board of Connect, page Design directions. Colours, fonts and spacing come only from the variables in frontend/src/styles/tokens.css.
+- Design: the Figma frame New event on the Figma board of Connect, page Design directions. Colours, fonts and spacing come only from the variables in web/src/styles/tokens.css.
 
 ## Accessibility and privacy
 
@@ -89,7 +89,7 @@ All elements below are built by task 162.4 (screen), issue 162 Change my event a
 |---|---|---|---|---|
 | 162 | Change my event after publishing | #223 | 5 | could |
 
-Issue 162 needs issues 66b Open an event page (#125), 10 The client's priorities for the epics (#11, question 74), 140 Only a checked organisation can publish (#139), 29 Unconfirmed accounts stay hidden (#58) and 68 Register for an event (#128) first. The tasks run in this order: 162.1 (database: updated_at, the places rule and the change under the row lock), 162.2 (PUT /api/events/{id}), 162.3 (isMine on GET /api/events/{id}), 162.4 (the button Edit and this page), 162.5 (end to end test frontend/e2e/editEvent.spec.ts) and 162.6 (team check on a phone and a laptop).
+Issue 162 needs issues 66b Open an event page (#125), 10 The client's priorities for the epics (#11, question 74), 140 Only a checked organisation can publish (#139), 29 Unconfirmed accounts stay hidden (#58) and 68 Register for an event (#128) first. The tasks run in this order: 162.1 (database: updated_at, the places rule and the change under the row lock), 162.2 (PUT /api/events/{id}), 162.3 (isMine on GET /api/events/{id}), 162.4 (the button Edit and this page), 162.5 (end to end test web/e2e/editEvent.spec.ts) and 162.6 (team check on a phone and a laptop).
 
 ## Open points
 

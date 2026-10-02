@@ -256,7 +256,7 @@ there goes to the client under question 116.
 green. It fills the Secrets, runs the apply with the commit id as image tag, waits for the rollout,
 and asks `https://<production address>/api/health` until it answers healthy. Every run is recorded
 in the GitLab environment `production`. The job `smoke-production` then runs
-`frontend/e2e/productionSmoke.spec.ts`, a read only Playwright test that opens the home page and
+`web/e2e/productionSmoke.spec.ts`, a read only Playwright test that opens the home page and
 asks the health address, and changes nothing, because production may hold real data.
 
 **Going back in production** (issue 97 Going back to the previous version is practised): the manual

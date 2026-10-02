@@ -1,6 +1,6 @@
 # The page of one opportunity
 
-- Component: frontend/src/pages/Opportunity.tsx, with Opportunity.module.css and Opportunity.test.tsx. Two parts of the page have their own component: InterestButton (the button Interested) and InterestedMembers (the part Interested members).
+- Component: web/src/pages/Opportunity.tsx, with Opportunity.module.css and Opportunity.test.tsx. Two parts of the page have their own component: InterestButton (the button Interested) and InterestedMembers (the part Interested members).
 - Address in the browser: /opportunities/:id, for example /opportunities/00000000-0000-4000-8000-000000055001.
 - Title of the browser tab: the title of the opportunity.
 
@@ -48,7 +48,7 @@ flowchart LR
 
 ## Every element of the page, top to bottom
 
-The page calls getOpportunity(id) of frontend/src/api/opportunities.ts, which asks GET /api/opportunities/{id} through request() of frontend/src/api/client.ts. The answer holds id, title, organisationName, kind, closingDate, description, isOpen and tags, inside {"data": ..., "meta": {}}. It never holds an account id, an email address, the organisation_profile_id or anything about who is interested. The id is read as text and checked on the server, so text that is not a uuid gets the same not found as an unknown id. Built by task 55b.1 (database), task 55b.2 (server), task 56.2 (isOpen) and task 54c.2 (tags).
+The page calls getOpportunity(id) of web/src/api/opportunities.ts, which asks GET /api/opportunities/{id} through request() of web/src/api/client.ts. The answer holds id, title, organisationName, kind, closingDate, description, isOpen and tags, inside {"data": ..., "meta": {}}. It never holds an account id, an email address, the organisation_profile_id or anything about who is interested. The id is read as text and checked on the server, so text that is not a uuid gets the same not found as an unknown id. Built by task 55b.1 (database), task 55b.2 (server), task 56.2 (isOpen) and task 54c.2 (tags).
 
 1. Sentence: This opportunity is closed
    - Only when isOpen is false, in an area with role status, above the title, in the colour for notices from tokens.css.
@@ -73,7 +73,7 @@ The page calls getOpportunity(id) of frontend/src/api/opportunities.ts, which as
 7. Description
    - Shown as plain text, exactly as the organisation typed it, with its line breaks kept (CSS white-space: pre-line). Never shown as HTML, so <b>Hello</b> shows the characters and not a bold word. Task 55b.3.
 8. Button Interested (component InterestButton)
-   - Placed below the description, in the place task 55b.3 left empty for it. File frontend/src/components/opportunity/InterestButton.tsx.
+   - Placed below the description, in the place task 55b.3 left empty for it. File web/src/components/opportunity/InterestButton.tsx.
    - On start it calls getInterest(id), which asks GET /api/opportunities/{id}/interest. The answer is {"canMark": true or false, "isInterested": true or false}. canMark is true only for an account with a member profile on an open opportunity. While that loads, nothing shows, so the button never jumps.
    - canMark false: nothing shows, also when isInterested is true, for example a young person who pressed Interested before the closing date. The place of the button stays empty on a closed opportunity (task 56.3), the same as for an organisation. Taking the interest back after the closing date goes through My interests instead (issue 58b Take back my interest from my list), whose server call still works (task 57b.2).
    - Not pressed: a button "Interested" with aria-pressed false. A press calls markInterest(id), which sends POST /api/opportunities/{id}/interest. There is no body, the young person comes from the session.
@@ -86,7 +86,7 @@ The page calls getOpportunity(id) of frontend/src/api/opportunities.ts, which as
    - Server messages: "Only young people with a profile can press Interested" (403), "This opportunity does not exist" (404), "This opportunity is closed" (409), "Connect is not reachable right now" (503).
    - Built by task 57.1 (table opportunity_member), 57.2 (POST), 57.3 (GET), 57.4 (the button) of issue 57 Press Interested on an opportunity, GitLab #114, sprint 3, and by task 57b.1 (remove), 57b.2 (DELETE), 57b.3 (undo) of issue 57b Take back my interest in an opportunity, GitLab #115, sprint 3.
 9. Part Interested members (component InterestedMembers, owner only)
-   - Placed below the description. File frontend/src/components/opportunity/InterestedMembers.tsx. It stays on a closed opportunity, so the organisation can still get in touch.
+   - Placed below the description. File web/src/components/opportunity/InterestedMembers.tsx. It stays on a closed opportunity, so the organisation can still get in touch.
    - On start it calls getInterestedMembers(id, 1), which asks GET /api/opportunities/{id}/interested-members?page=1&pageSize=20. While waiting it shows "Loading who is interested...".
    - Filled: a heading (h2) "Interested members (22)" with the total, and one line per young person, the most recent on top: the first name as a link to /members/{memberProfileId} and "Interested since" with the day in words. Only the first name is shown, even if the server one day sends more.
    - Nobody yet: the heading "Interested members (0)" and the sentence "Nobody is interested yet".
@@ -107,7 +107,7 @@ The page calls getOpportunity(id) of frontend/src/api/opportunities.ts, which as
 - Part Interested members: "Loading who is interested...", filled, "Nobody is interested yet", Load more, and "Connect is not reachable right now" with Try again inside the part.
 - Empty: an opportunity without tags shows no heading Tags and no list.
 - Phone (360 pixels wide or close) and laptop (1280 pixels wide): the screenshots at 360 and 1280 pixels match the Figma frame Opportunity (task 55b.3), and the team checks of issues 55b, 56, 54c, 57, 57b, 59 and 156 go through every criterion on both.
-- Design: the Figma frame Opportunity on the Figma board of Connect, page Design directions. The part Interested members follows the frame of the page of an opportunity for its organisation, on the same page Design directions. Colours, fonts and spacing come only from the variables in frontend/src/styles/tokens.css.
+- Design: the Figma frame Opportunity on the Figma board of Connect, page Design directions. The part Interested members follows the frame of the page of an opportunity for its organisation, on the same page Design directions. Colours, fonts and spacing come only from the variables in web/src/styles/tokens.css.
 
 ## Accessibility and privacy
 

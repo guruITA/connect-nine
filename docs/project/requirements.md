@@ -264,8 +264,8 @@ flowchart LR
 *Figure: how the business case goals trace through each requirement group to the part of the
 stack that serves it.*
 
-**Screens, React.** Every feature requirement has pages in `frontend/src/pages`. The screen and
-the server share one origin through the dev proxy in `frontend/vite.config.ts`.
+**Screens, React.** Every feature requirement has pages in `web/src/pages`. The screen and
+the server share one origin through the dev proxy in `web/vite.config.ts`.
 
 **Server, ASP.NET Core on .NET 10.** FR2 (matching), FR3 (admin), FR4 (opportunities), FR6
 (events) and FR8 (challenges) hold the most server logic. The server uses Minimal APIs

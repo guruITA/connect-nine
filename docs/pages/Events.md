@@ -1,6 +1,6 @@
 # Events, the upcoming and past events of Connect
 
-- Component: frontend/src/pages/Events.tsx, with Events.test.tsx
+- Component: web/src/pages/Events.tsx, with Events.test.tsx
 - Address in the browser: /events, behind the tab Events
 - Server addresses: GET /api/events?page=1&pageSize=20 for the upcoming events, GET /api/events?state=past&page=1&pageSize=20 for the past events
 
@@ -53,10 +53,10 @@ The page sits inside AppShell of issue 06, so the five tabs stay around it. The 
    - Built by task 66.4, issue 66 See the upcoming events, GitLab #124, sprint 3.
 
 4. The list of upcoming events
-   - The component EventList (frontend/src/components/EventList.tsx) shows one EventCard (frontend/src/components/EventCard.tsx) per event, as a list (ul with li), in the order the server sends. The screen never sorts or filters again.
+   - The component EventList (web/src/components/EventList.tsx) shows one EventCard (web/src/components/EventCard.tsx) per event, as a list (ul with li), in the order the server sends. The screen never sorts or filters again.
    - Each card is an article element with the title as a heading, the date and time such as "Thursday 15 October, 19:30", the place, the number of places such as "20 places", and the organisation such as "by Sportclub Amstelveen".
    - The date and time are shown with Intl.DateTimeFormat in the time zone Europe/Amsterdam, so every member sees the time of the event wherever their phone is set.
-   - Data: getUpcomingEvents(page, pageSize) in frontend/src/api/events.ts asks GET /api/events?page=<page>&pageSize=<pageSize> through request() of frontend/src/api/client.ts. The page never sees a status code.
+   - Data: getUpcomingEvents(page, pageSize) in web/src/api/events.ts asks GET /api/events?page=<page>&pageSize=<pageSize> through request() of web/src/api/client.ts. The page never sees a status code.
    - The server checks the session with the guard of issue 04, checks page and pageSize as text with a validator, takes now from TimeProvider and reads the events that start now or later, soonest first, with the organisation name from organisation_profile. The answer holds the events in data and page, pageSize and total in meta. It never says who registered or who made the event. A wrong page or pageSize gives a plain message that says which one and why.
    - An event leaves this list the moment its start time has passed (AC2 of issue 66). A new event shows here right after an organisation publishes it, at the place its date gives it (AC3 of issue 66).
    - Each card is one link to the page of the event at /events/<id>, with the title and the date in its accessible name for a screen reader. Nothing inside the card can be pressed on its own. Built by task 66b.3, issue 66b Open an event page, GitLab #125, sprint 3.
@@ -70,9 +70,9 @@ The page sits inside AppShell of issue 06, so the five tabs stay around it. The 
    - Built by task 66.4, issue 66, GitLab #124, sprint 3.
 
 6. Part: Past
-   - A section with the heading Past as a real h2 element, below the upcoming list. The component is PastEventList in frontend/src/components/events/PastEventList.tsx.
+   - A section with the heading Past as a real h2 element, below the upcoming list. The component is PastEventList in web/src/components/events/PastEventList.tsx.
    - Shows the events that already started, most recent first, as compact cards: EventCard with the prop compact shows the title, the date and time in Amsterdam time, the place and the organisation, but not the number of places.
-   - Data: EventList with the prop list="past" calls getPastEventList(page, pageSize) in frontend/src/api/events.ts, which asks GET /api/events?state=past&page=<page>&pageSize=<pageSize> through request().
+   - Data: EventList with the prop list="past" calls getPastEventList(page, pageSize) in web/src/api/events.ts, which asks GET /api/events?state=past&page=<page>&pageSize=<pageSize> through request().
    - The past events are asked in their own request, at the same time as the upcoming ones. Each list shows its own result as soon as it comes, so the upcoming list never waits for the history.
    - An event is never in both lists (AC2 of issue 67).
    - A card links to the page of the event in the same way as an upcoming card (task 66b.3).
@@ -101,7 +101,7 @@ Part Past:
 
 Phone and laptop:
 - On a phone on mobile data the list is there within two seconds after tapping the tab, with "Loading events..." in between (AC9 of issue 66).
-- Design: the Figma frame Events on the page Design directions of the Figma board. Colours, fonts and spacing come only from frontend/src/styles/tokens.css.
+- Design: the Figma frame Events on the page Design directions of the Figma board. Colours, fonts and spacing come only from web/src/styles/tokens.css.
 
 ## Accessibility and privacy
 

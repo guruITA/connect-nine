@@ -42,7 +42,7 @@ understanding).
 - **Query**: a request to read data, one class per use case, for example
   `GetPublicProfileQuery`.
 - **Handler**: the one class that carries out one command or one query, in
-  `backend/Application/Features`.
+  `api/Application/Features`.
 - **CQRS**: short for command and query responsibility segregation: a separate piece of code
   for every read and every write, the structure the team chose on 1 October 2026.
 - **Dependency injection**: a class gets what it needs through its constructor, and ASP.NET Core
@@ -125,7 +125,7 @@ support version, supported until November 2028, because .NET 8 stops getting sec
 ## Layers
 
 The server has four layers, each one project in `backend`, plus the test project
-`backend/Connect.Tests`. The solution file is `backend/Connect.sln`. The cards explain the layers
+`api/Connect.Tests`. The solution file is `api/Connect.sln`. The cards explain the layers
 with a restaurant.
 
 | Layer | On the cards | What it holds | Folders |
@@ -148,7 +148,7 @@ The diagram below shows the four layers and the direction in which each may use 
 ```mermaid
 flowchart TB
     Browser["Browser: the React screen"] -->|"HTTP request to /api"| P
-    subgraph Server["Connect server, backend/Connect.sln"]
+    subgraph Server["Connect server, api/Connect.sln"]
         P["Presentation, the waiter: endpoints and validators"]
         A["Application, the chef: handlers and business rules"]
         D["Domain, the menu: entities and contracts"]
@@ -178,7 +178,7 @@ Issue 03 Create an account walks the first real request through every layer, and
 slice copies it:
 
 1. The page Make an account (`/create-account`) sends the email address and password through
-   `frontend/src/api/client.ts` to `POST /api/accounts`.
+   `web/src/api/client.ts` to `POST /api/accounts`.
 2. Presentation: `CreateAccountRequestValidator` (FluentValidation) checks the input and answers
    wrong input with one message per field.
 3. Application: the handler checks that the email address is still free and turns the password
@@ -215,12 +215,12 @@ sequenceDiagram
 ## Components
 
 The parts of Connect and every outside service it talks to. Issue 102 task 102.1 draws them from
-the settings in `backend/Presentation/appsettings.json` and `appsettings.Development.json`, and
+the settings in `api/Presentation/appsettings.json` and `appsettings.Development.json`, and
 marks what is not built yet as planned.
 
 - **The screen.** React with TypeScript in strict mode, built with Vite, pages chosen by React
-  Router, styled with CSS Modules and the Young Amstelland tokens in `frontend/src/styles/tokens.css`.
-  Only `frontend/src/api` talks to the server. On a laptop the Vite dev proxy sends `/api` to the
+  Router, styled with CSS Modules and the Young Amstelland tokens in `web/src/styles/tokens.css`.
+  Only `web/src/api` talks to the server. On a laptop the Vite dev proxy sends `/api` to the
   server on `http://localhost:5000`, so the screen and the server share one origin, just as on the
   test site.
 - **The server.** One image `server` serves the built screen and every address under `/api` from
@@ -379,7 +379,7 @@ How the parts above carry it:
 - **Sessions.** After a log in the server stores a row in `session` and sets the cookie
   `connect_session` with the flags Secure, HttpOnly and SameSite=Lax, for one day. The table keeps
   only a hash of the token (issue 04).
-- **Passwords.** At least 15 characters, the rules in one place `backend/Domain/Accounts/PasswordRules.cs`
+- **Passwords.** At least 15 characters, the rules in one place `api/Domain/Accounts/PasswordRules.cs`
   (issue 03b A clear message when my password is too weak), a password known from data leaks is
   refused (issue 116 A password that is known from data leaks is refused), and the password is
   stored as a hash. Issue 110 The cost of password hashing, measured checks the strength of that
@@ -493,19 +493,19 @@ The candidates the board already names (issue 103 task 103.1):
 
 1. **CQRS.** CQRS splits the model that writes from the model that reads (Microsoft, n.d.-b):
    `CreateAccountCommand` with `CreateAccountHandler` in
-   `backend/Application/Features/Account/CreateAccount` (issues 03 and 11), reaching the data
-   through `IAppDbContext` in `backend/Application/Abstractions`. `AppDbContext` in
-   `backend/Infrastructure/Persistence` implements it. EF Core's own `DbContext` already
+   `api/Application/Features/Account/CreateAccount` (issues 03 and 11), reaching the data
+   through `IAppDbContext` in `api/Application/Abstractions`. `AppDbContext` in
+   `api/Infrastructure/Persistence` implements it. EF Core's own `DbContext` already
    "implements both the Repository and the Unit of Work patterns" (Microsoft, n.d.-d), so
    `IAppDbContext` is a thin, testable contract in front of it, one handler per use case instead
    of one repository per kind of data.
 2. **A contract for sending mail.** `IMailSender` in Domain and `SmtpMailSender` in
-   `backend/Infrastructure/Mail` (issue 21). Issue 103 decides with sources whether this is an
+   `api/Infrastructure/Mail` (issue 21). Issue 103 decides with sources whether this is an
    Adapter, a Strategy or both.
 3. **Two log in providers behind one flow.** `GoogleLoginSetup` and `FacebookLoginSetup` in
-   `backend/Presentation/Authentication` with `SocialLoginService` in `backend/Application/Accounts`
+   `api/Presentation/Authentication` with `SocialLoginService` in `api/Application/Accounts`
    (issues 23 and 24). Only what the team designed counts, not what ASP.NET Core already does.
-4. **A rule with an injected clock.** `OpportunityOpenRule` in `backend/Domain/Opportunities` with
+4. **A rule with an injected clock.** `OpportunityOpenRule` in `api/Domain/Opportunities` with
    `TimeProvider`, once issue 54 is built. Issue 103 names the pattern or writes that it has none.
 
 **Dependency injection** wires the layers together and is what makes `IAppDbContext` and the
