@@ -6,14 +6,25 @@ What "the code follows the team's code conventions" in the Definition of Done me
 
 The flow of every change:
 
+The picture below shows the road of a normal change and of a hotfix, from the newest dev to main.
+
+```mermaid
+flowchart LR
+    D1[newest dev] -->|make branch| F["feature/12-create-an-account"]
+    D1 -->|make branch| H["hotfix/short-name"]
+    F -->|merge request, approved,<br/>pipeline green| D2[dev]
+    H -->|merge request, approved| D2
+    D2 -->|merge request before a sprint review,<br/>or right away for a hotfix| M[main]
+```
+
 1. Make your branch from the newest dev: `<type>/<issue number>-<short name>`, for example `feature/12-create-an-account`. Types: feature, fix, refactor, docs, test, chore. The button Create branch on a GitLab issue makes this name for you.
 2. Commit in the format `<type>(<scope>): <what changed> (#<issue number>)`, for example `feat(backend): add account endpoint (#3)`.
 3. Open a merge request into dev. The title uses the commit format. The description starts with `Relates to #<issue number>` and holds the proof block of the task (the template Default does this for you).
 4. One teammate who is not the author approves it, the pipeline is green and every thread is resolved. Then it is merged into dev and the branch is deleted.
 5. Before a sprint review, dev goes into main through a merge request, approved by one teammate who is not the author.
-6. An urgent repair of the live site is `hotfix/<short name>`, made from main, and also goes through a merge request.
+6. An urgent repair of the live site is `hotfix/<short name>`, made from the newest dev. It also goes through dev: a merge request into dev, then right away a merge request from dev into main, because main only takes merge requests from dev.
 
-Nobody pushes directly to dev or main: both are protected, see docs/gitlabSetup.md.
+Nobody pushes directly to dev or main: both are protected, and the pipeline job branch-flow refuses a merge request into main from any branch other than dev, see docs/team/gitlabSetup.md.
 
 ## General and Git
 
@@ -22,12 +33,12 @@ Nobody pushes directly to dev or main: both are protected, see docs/gitlabSetup.
 1. Everything in English: names, comments, commit messages and documents.
 2. One file .editorconfig in the root sets the layout for every editor: UTF-8, line ending LF, 2 spaces for TypeScript, JSON, YAML and Markdown, 4 spaces for C#.
 3. Secrets only in the file .env on your own machine, never in Git. Every setting has an example value in .env.example.
-4. Documents live in docs, with file names in camelCase, for example docs/codeConventions.md. One decision per file in the folder docs/decisions, for example docs/decisions/003-minimalApis.md.
+4. Documents live in docs, with file names in camelCase, for example docs/team/codeConventions.md. One decision per file in the folder docs/decisions, for example docs/decisions/003-minimalApis.md.
 
 ### Branches
 
 5. Name: `<type>/<issue number>-<short name>`, for example `feature/12-create-an-account`. Types: feature, fix, refactor, docs, test, chore. The number lets GitLab link the branch to the issue by itself, the name tells a person what it is about. The button Create branch on a GitLab issue makes this name for you.
-6. A branch starts from dev and goes back into dev through a merge request (a GitLab page where a teammate reviews the change). main only changes from dev. An urgent repair on the live site is `hotfix/<short name>`, made from main.
+6. A branch starts from dev and goes back into dev through a merge request (a GitLab page where a teammate reviews the change). main only changes from dev. An urgent repair on the live site is `hotfix/<short name>`, and it also goes through dev, because main only takes merge requests from dev.
 
 ### Commits (Conventional Commits)
 
@@ -67,7 +78,7 @@ React is the library the screens are built with. A component is one piece of scr
 
 ## Backend: C#, ASP.NET Core
 
-C# is the language. .NET is the platform it runs on. ASP.NET Core is the part of .NET that turns C# into a web server. The four layers (Presentation, Application, Domain, Infrastructure) are four projects, explained in docs/onboarding.md.
+C# is the language. .NET is the platform it runs on. ASP.NET Core is the part of .NET that turns C# into a web server. The four layers (Presentation, Application, Domain, Infrastructure) are four projects, explained in docs/team/onboarding.md.
 
 ### Version and tools
 
@@ -77,18 +88,18 @@ C# is the language. .NET is the platform it runs on. ASP.NET Core is the part of
 
 ### Names (the Microsoft C# conventions)
 
-4. PascalCase for classes, methods, properties and everything public: StatusService, GetStatusAsync. camelCase for local variables and parameters: memberCount. Private fields: _camelCase, for example _repository.
-5. Interfaces (contracts) start with I: IAccountRepository. A method that waits on something (async) ends in Async.
+4. PascalCase for classes, methods, properties and everything public: StatusService, GetStatusAsync. camelCase for local variables and parameters: memberCount. Private fields: _camelCase, for example _context.
+5. Interfaces (contracts) start with I: IAppDbContext. A method that waits on something (async) ends in Async.
 6. One class per file, and the file has the name of the class. The namespace follows the folder: Connect.Application.Status, written once at the top of the file as a file scoped namespace.
 
 ### Structure
 
-7. Four projects in backend: Presentation, Application, Domain and Infrastructure, plus the test project Connect.Tests. Inside each project, one folder per feature: Application/Status, Application/Accounts.
+7. Four projects in backend: Presentation, Application, Domain and Infrastructure, plus the test project Connect.Tests. Application holds one folder per feature in Features, one feature per epic, and inside it one folder per use case with its command or query and its handler: Features/Account/CreateAccount/CreateAccountCommand.cs with CreateAccountHandler.cs. A write is a command, a read is a query, never both in one handler. There are no repository classes, no IXRepository interfaces and no Repositories folder.
 8. Presentation uses Application and Infrastructure. Application and Infrastructure use Domain. Domain uses nothing. Because they are separate projects, the compiler refuses code that breaks this, so a beginner cannot break the layers by accident.
 
 ### Web addresses (endpoints)
 
-9. Minimal APIs. One static class per feature, for example StatusEndpoints with one method MapStatusEndpoints. An endpoint stays thin: read the request, call the service, return the answer.
+9. Minimal APIs. One static class per feature, for example StatusEndpoints with one method MapStatusEndpoints. An endpoint stays thin: read the request, call the handler, return the answer.
 10. Addresses start with /api, are lower case and use plural nouns: /api/members, /api/members/{id}. Words are joined with a -: /api/member-profiles.
 11. What goes in and out are records named ...Request and ...Response: CreateAccountRequest, StatusResponse. A database class (entity) is never sent straight to the browser.
 12. Errors use the built in ProblemDetails format (web standard RFC 9457): `Results.Problem(...)`, and for a wrong form `Results.ValidationProblem(...)` with one message per field. Status codes: 200 OK, 201 created, 204 done without content, 400 wrong input, 401 not logged in, 403 not allowed, 404 not found, 409 conflict, 503 not available.
@@ -96,7 +107,7 @@ C# is the language. .NET is the platform it runs on. ASP.NET Core is the part of
 
 ### Other
 
-14. A class gets what it needs through its constructor (dependency injection). Each layer registers its classes in one method: AddApplication(), AddInfrastructure().
+14. A class gets what it needs through its constructor (dependency injection). Each layer registers its classes in one method: AddApplication(), AddInfrastructure(). Every handler is also registered in Program.cs, one line per handler.
 15. Logging with ILogger and a message template: `_logger.LogError(ex, "Status failed for {RequestId}", requestId)`. Never glue text together with `$"..."` in a log line, the template keeps the values searchable.
 16. Tests with NUnit. Name: Method_Situation_ExpectedResult, for example GetStatusAsync_DatabaseDown_ReturnsNotReachable. Every test has three parts: Arrange (prepare), Act (do), Assert (check).
 
@@ -144,12 +155,12 @@ These rules join the parts above. When an older text disagrees, these win.
 
 ### Test mail
 
-10. The test mailbox is Mailpit. On the test site it sits behind basic auth. The address may be in docs/testData.md, the login is in the GitLab variables MAILPIT_USER and MAILPIT_PASSWORD.
+10. The test mailbox is Mailpit. On the test site it sits behind basic auth. The address may be in docs/testing/testData.md, the login is in the GitLab variables MAILPIT_USER and MAILPIT_PASSWORD.
 
 ### Files and folders
 
 11. A record ...Request or ...Response may sit in the endpoint file of its feature (an agreed exception to "one class per file"). A component used on one page only may sit in components under a folder named after the page.
-12. Test folders: backend/Connect.Tests/Domain, backend/Connect.Tests/Application, backend/Connect.Tests/Infrastructure, backend/Connect.Tests/Presentation, backend/Connect.Tests/Fixtures.
+12. Test folders: backend/Connect.Tests/Features/<Feature>, with a handler test named <UseCase>HandlerTests.cs, backend/Connect.Tests/Domain, backend/Connect.Tests/Infrastructure, with a database test named <Feature>DatabaseTests.cs, backend/Connect.Tests/Presentation, backend/Connect.Tests/Fixtures.
 
 ### Commands
 
@@ -162,6 +173,24 @@ These rules join the parts above. When an older text disagrees, these win.
 ### Checks
 
 18. A tester checks "not reachable" without technical knowledge: open the page, switch the phone to airplane mode, press the button, read the message. Stopping the database stays in the integration and screen tests.
-19. "Wait a day" is never a check step: the seed data holds an item with a date in the past, listed in docs/testData.md.
+19. "Wait a day" is never a check step: the seed data holds an item with a date in the past, listed in docs/testing/testData.md.
 20. Playwright logs in with page.request.post or context.request.post, never the separate request fixture, so the page gets the cookie.
-21. A test account that must be visible to others is confirmed through Mailpit in the test setup, as docs/testData.md describes.
+21. A test account that must be visible to others is confirmed through Mailpit in the test setup, as docs/testing/testData.md describes.
+
+## Kept from the collaboration agreement
+
+These rules come from section 6 of the collaboration agreement (Code Conventions). They hold for every layer, next to the rules above.
+
+1. Follow the established best practices of the language and framework in use.
+2. SOLID, the five design principles for classes.
+3. DRY (do not repeat yourself), as far as is practical.
+4. Clean code, as far as is practical.
+
+## AI use declaration
+
+AI was used as a writing support tool while working on this document. We used AI to draft
+the formulation of sentences, the structure of wording, readability, and clarity from
+content that we had provided, and to generate the diagrams. The content itself, including
+our experiences, reflections, learning goals, decisions, self-assessments, and
+conclusions, is our own. We reviewed the drafts and decided as a team which text to
+include.

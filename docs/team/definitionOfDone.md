@@ -11,9 +11,9 @@ The source is section 3 of the page Issue creation on the Figma board. When it c
 - [ ] **The work was done on its own branch and reached dev only through a merge request that a teammate approved.**
   How to check: the branch is named `<type>/<issue number>-<short name>` and started from dev, and the merge request into dev shows an approval. Nobody pushed directly to dev or main.
 - [ ] **Every commit message follows the team format: type, scope, what changed and the issue number, for example feat(backend): add account endpoint (#3).**
-  How to check: every commit in the merge request reads `<type>(<scope>): <what changed> (#<issue number>)`, as in docs/codeConventions.md.
-- [ ] **The code follows the team's code conventions in docs/codeConventions.md.**
-  How to check: the reviewer compares names, folders and structure with docs/codeConventions.md for every layer the change touches.
+  How to check: every commit in the merge request reads `<type>(<scope>): <what changed> (#<issue number>)`, as in docs/team/codeConventions.md.
+- [ ] **The code follows the team's code conventions in docs/team/codeConventions.md.**
+  How to check: the reviewer compares names, folders and structure with docs/team/codeConventions.md for every layer the change touches.
 - [ ] **The linter reports no errors and no warnings, and the build passes.**
   How to check: the lint and build steps of the pipeline are green. On your own machine: `npm run lint` and `npx prettier --check .` in frontend, `dotnet build` and `dotnet format --verify-no-changes` in backend.
 - [ ] **No password, key or other secret is in the code, in a commit or in any shared text.**
@@ -46,7 +46,7 @@ The source is section 3 of the page Issue creation on the Figma board. When it c
 ### Security
 
 - [ ] **Every server address says who may use it, and anyone else is refused.**
-  How to check: docs/api.md names the role for every address (visitor, member, organisation or admin), and the integration test shows that a wrong role gets 401 or 403.
+  How to check: docs/architecture/api.md names the role for every address (visitor, member, organisation or admin), and the integration test shows that a wrong role gets 401 or 403.
 - [ ] **Error messages never show technical details, such as database errors or internal names.**
   How to check: stop the database or send wrong input and read the answer: no stack trace, no database text, no internal names.
 - [ ] **The logs never contain passwords, tokens, full email addresses or message texts.**
@@ -94,7 +94,7 @@ The source is section 3 of the page Issue creation on the Figma board. When it c
 ### Docs
 
 - [ ] **The description of the architecture and the list of server addresses in docs are up to date.**
-  How to check: docs/architecture.md and its diagrams are updated when this issue added a table, an address or a layer, and docs/api.md describes every new or changed address with who may call it, what goes in and every answer.
+  How to check: docs/architecture/architecture.md and its diagrams are updated when this issue added a table, an address or a layer, and docs/architecture/api.md describes every new or changed address with who may call it, what goes in and every answer.
 - [ ] **Every important choice is its own file in docs/decisions, with the date, who decided, the options and why.**
   How to check: every choice of a library, a structure or a rejected alternative is a file `docs/decisions/<number>-<shortName>.md` with the date, who decided, the options, the choice and why the others lost.
 - [ ] **The BoKSA proof that each task asks for is in the merge request, ready for Portflow.**
@@ -138,6 +138,15 @@ A choice between options.
 A question to the client.
 
 - [ ] The question was asked to the client, and the answer is written in the issue with the date.
-- [ ] The answer is in the document it belongs in, such as docs/requirements.md or a file in docs/decisions.
+- [ ] The answer is in the document it belongs in, such as docs/project/requirements.md or a file in docs/decisions.
 - [ ] The issues that waited on the answer are updated and told they can start.
 - [ ] The BoKSA proof is collected, and AI use is declared.
+
+## AI use declaration
+
+AI was used as a writing support tool while working on this document. We used AI to draft
+the formulation of sentences, the structure of wording, readability, and clarity from
+content that we had provided, and to generate the diagrams. The content itself, including
+our experiences, reflections, learning goals, decisions, self-assessments, and
+conclusions, is our own. We reviewed the drafts and decided as a team which text to
+include.

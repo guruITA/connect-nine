@@ -16,18 +16,14 @@ When it is done, <what that person can do and see>. <What they see when somethin
 
 - <what a reader might expect here>: issue <number> <title>
 
-## LINKED ITEMS (GitLab)
+## RELATES TO
 
-Is blocked by
-- <number> <title> · epic <name>
+<!-- The issues this one waits for and the issues that wait for it are set as Linked items (is blocked by, blocks) in GitLab, not in this text. -->
 
-Blocks
-- <number> <title> · epic <name>
-
-Relates to (docs/requirements.md)
+Relates to (docs/project/requirements.md)
 - <FR code> <name> · epic <name> · <first issue of that epic, or why it relates>
 
-Quality rules this issue follows (docs/requirements.md)
+Quality rules this issue follows (docs/project/requirements.md)
 - <NFR code> <name> · epic <name> · <issue that holds the rule, if there is one>
 
 ## HOW IT WORKS (for developers)
@@ -44,7 +40,7 @@ The road the data travels
    - Infrastructure (the storeroom) <what it reads or writes>
 3. The database. <which table, what changes>
 
-The answer goes back the same way, and the screen shows <what>. All words and setup steps: docs/onboarding.md. The rules for names and layout: docs/codeConventions.md.
+The answer goes back the same way, and the screen shows <what>. All words and setup steps: docs/team/onboarding.md. The rules for names and layout: docs/team/codeConventions.md.
 
 ## TESTING, WHAT PROVES THIS ISSUE
 
@@ -55,7 +51,7 @@ The answer goes back the same way, and the screen shows <what>. All words and se
 Checked on the test site by a team member who did not build this issue.
 
 Functional
-- [ ] AC1 As a <role>, I <see or do what, and where on the screen>.
+- [ ] AC1 As a <role>, I <see or do what, and where on the screen>, in plain words for a tester without technical knowledge.
   How to check: <page, button, what to type, what you see>.
 
 Non functional
