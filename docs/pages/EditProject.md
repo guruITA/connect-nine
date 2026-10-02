@@ -1,6 +1,6 @@
 # Change my project
 
-- Component: frontend/src/pages/EditProject.tsx, with EditProject.module.css and EditProject.test.tsx. The form itself is the shared component frontend/src/components/ProjectForm.tsx.
+- Component: web/src/pages/EditProject.tsx, with EditProject.module.css and EditProject.test.tsx. The form itself is the shared component web/src/components/ProjectForm.tsx.
 - Address in the browser: /profile/projects/:id/edit, for example /profile/projects/<id of the project>/edit.
 - Heading on the page: Change my project.
 
@@ -16,7 +16,7 @@ A young person who added a project to Connect may see a typo, want to tell more,
 
 ## How you get there and where you go next
 
-You arrive from the page of your own project, My project (frontend/src/pages/MyProject.tsx, issue 61). Since task 64.3 that page lives at /projects/:id, and the old address /profile/projects/:id sends on to it. There you press Edit, a link to /profile/projects/<id>/edit, which only the owner sees. You reach My project from My profile or from any list of projects.
+You arrive from the page of your own project, My project (web/src/pages/MyProject.tsx, issue 61). Since task 64.3 that page lives at /projects/:id, and the old address /profile/projects/:id sends on to it. There you press Edit, a link to /profile/projects/<id>/edit, which only the owner sees. You reach My project from My profile or from any list of projects.
 
 You leave in one of three ways. Save takes you back to My project with "Your changes are saved". Cancel takes you back to My project without saving. When the project cannot be found, the button Go to home on the page NotFound takes you home.
 
@@ -34,7 +34,7 @@ flowchart LR
 
 ## Every element of the page, top to bottom
 
-The page loads the project with getProject(id) of frontend/src/api/projects.ts, which asks GET /api/projects/{id}. Task 157.3 first used getOwnProject(id) of issue 61. Task 64.3 renamed it to getProject(id), because the address now answers every logged in member with isOwner true or false, and EditProject shows NotFound when isOwner is false. Since task 157.2 the answer also holds updatedAt, empty when the project was never changed.
+The page loads the project with getProject(id) of web/src/api/projects.ts, which asks GET /api/projects/{id}. Task 157.3 first used getOwnProject(id) of issue 61. Task 64.3 renamed it to getProject(id), because the address now answers every logged in member with isOwner true or false, and EditProject shows NotFound when isOwner is false. Since task 157.2 the answer also holds updatedAt, empty when the project was never changed.
 
 All screen elements are built by task 157.3, issue 157 Change my project, GitLab #179, sprint 4, unless another task is named.
 
@@ -48,7 +48,7 @@ All screen elements are built by task 157.3, issue 157 Change my project, GitLab
    - Messages: "Describe your project" when it is empty, "Your description can be at most 1000 characters" when it is longer.
    - Spaces at the start and end are removed before the check, on the server.
 4. Button Save
-   - Calls changeProject(id, title, description) of frontend/src/api/projects.ts, which sends PUT /api/projects/{id} through the shared helper request().
+   - Calls changeProject(id, title, description) of web/src/api/projects.ts, which sends PUT /api/projects/{id} through the shared helper request().
    - What goes to the server: {"title": "...", "description": "..."}. Any other field is ignored. The account comes from the session, never from the address or the body.
    - While waiting the button says "Saving..." and is disabled.
    - Saved (code 200): back to My project with "Your changes are saved" in an area with role status, the new title and text, and "Changed on" with the date in the time zone of the browser.
@@ -71,7 +71,7 @@ All screen elements are built by task 157.3, issue 157 Change my project, GitLab
 - Not reachable: "Connect is not reachable right now, try again later" below the form, what was typed stays. A tester checks this by switching the phone to airplane mode before pressing Save.
 - Empty: not used. The page has no list.
 - Phone (360 pixels wide or close) and laptop: the team check of task 157.5 goes through every criterion on both.
-- Design: the Figma frame Add a project on the Figma board of Connect, page Design directions, with the heading Change my project. Colours, fonts and spacing come only from the variables in frontend/src/styles/tokens.css.
+- Design: the Figma frame Add a project on the Figma board of Connect, page Design directions, with the heading Change my project. Colours, fonts and spacing come only from the variables in web/src/styles/tokens.css.
 
 ## Accessibility and privacy
 
@@ -90,7 +90,7 @@ All screen elements are built by task 157.3, issue 157 Change my project, GitLab
 
 Issue 64 comes after 157. Its task 64.3 makes the page load with getProject(id) and show NotFound when the project is missing or isOwner is false, with a screen test for isOwner false. Its task 64.5 changes the end to end test of task 157.4 so it expects the sentence of NotFound.
 
-Issue 157 needs issues 61 See my project on its own page (#173), 29 Unconfirmed accounts stay hidden (#58), 48 Remove content that breaks the rules (#121), 60b A clear message when my project title or text is too long (#120) and 62b See the projects of another member on their page (#176) first. The tasks run in this order: 157.1 (database: updated_at, the change rule and the owner lookup), 157.2 (PUT /api/projects/{id} and updatedAt on GET /api/projects/{id}), 157.3 (the button Edit and this page), 157.4 (end to end test frontend/e2e/changeProject.spec.ts) and 157.5 (team check on a phone and a laptop).
+Issue 157 needs issues 61 See my project on its own page (#173), 29 Unconfirmed accounts stay hidden (#58), 48 Remove content that breaks the rules (#121), 60b A clear message when my project title or text is too long (#120) and 62b See the projects of another member on their page (#176) first. The tasks run in this order: 157.1 (database: updated_at, the change rule and the owner lookup), 157.2 (PUT /api/projects/{id} and updatedAt on GET /api/projects/{id}), 157.3 (the button Edit and this page), 157.4 (end to end test web/e2e/changeProject.spec.ts) and 157.5 (team check on a phone and a laptop).
 
 ## Open points
 

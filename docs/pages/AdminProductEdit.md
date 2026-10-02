@@ -1,6 +1,6 @@
 # Add or change a shop item
 
-- Component: frontend/src/pages/AdminProductEdit.tsx, with the form frontend/src/components/ProductForm.tsx and ProductForm.module.css
+- Component: web/src/pages/AdminProductEdit.tsx, with the form web/src/components/ProductForm.tsx and ProductForm.module.css
 - Addresses in the browser: /admin/shop/new (add an item) and /admin/shop/:id (change an item)
 
 ## What the page is for
@@ -40,7 +40,7 @@ When changing, AdminProductEdit reads the item from the list page, or asks the f
    - Messages: "Fill in a short text", "Use at most 500 characters for the text".
 3. Field: Price
    - The price in euros, hint "For example 12,50".
-   - parseEuroToCents(text) in frontend/src/utils/parseEuroToCents.ts accepts 12, 12,5, 12,50 and 12.50 and gives 1250 for 12,50. It gives nothing for text, a minus sign or more than two decimals. The price travels as priceInCents, a whole number.
+   - parseEuroToCents(text) in web/src/utils/parseEuroToCents.ts accepts 12, 12,5, 12,50 and 12.50 and gives 1250 for 12,50. It gives nothing for text, a minus sign or more than two decimals. The price travels as priceInCents, a whole number.
    - Messages: "Type a price like 12,50", "Type a price from 0 to 1.000 euro".
 4. Checkbox: VAT included
 5. Checkbox: For sale
@@ -55,7 +55,7 @@ When changing, AdminProductEdit reads the item from the list page, or asks the f
    - "Connect is not reachable right now, the item is not saved. Try again later." on 503 or no answer. Every value stays in the form, and the chosen picture stays chosen.
 8. Button: Save
    - The form first checks every field in the browser with the same numbers as the server (task 150.1). Each message sits next to its field, linked with aria-describedby, and the focus moves to the first field with a message. Nothing is sent then.
-   - Then createProduct(values, picture) or changeProduct(id, values, picture) in frontend/src/api/adminProducts.ts sends a multipart form (FormData) through client.ts to POST /api/admin/products (task 150.4) or PUT /api/admin/products/{id} (task 150.5).
+   - Then createProduct(values, picture) or changeProduct(id, values, picture) in web/src/api/adminProducts.ts sends a multipart form (FormData) through client.ts to POST /api/admin/products (task 150.4) or PUT /api/admin/products/{id} (task 150.5).
    - While waiting the button says "Saving..." and is disabled.
    - 201 or 200: back to /admin/shop, where the status area reads "The item is saved".
    - 400: every message of the server next to its field.
@@ -72,7 +72,7 @@ All fields and Save are built by task 150.8, issue 150 Change the items of the s
 - Error: a message next to each wrong field, or next to the field Picture. "This item was not found" for an unknown id. An error when the list cannot be loaded.
 - Not reachable: "Connect is not reachable right now, the item is not saved. Try again later." above Save, and every value stays.
 - Phone (360 pixels wide) and laptop (1280 pixels wide): the team ticks every criterion on both (task 150.10).
-- Design: the Figma frame of the admin pages on the Figma board of Connect, page Design directions. Colours, fonts and spacing only through frontend/src/styles/tokens.css.
+- Design: the Figma frame of the admin pages on the Figma board of Connect, page Design directions. Colours, fonts and spacing only through web/src/styles/tokens.css.
 
 ## Accessibility and privacy
 

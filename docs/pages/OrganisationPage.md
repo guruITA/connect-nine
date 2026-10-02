@@ -1,7 +1,7 @@
 # The page of an organisation
 
-- Component: frontend/src/pages/OrganisationPage.tsx, with OrganisationPage.module.css and OrganisationPage.test.tsx
-- Parts used on this page only: frontend/src/components/organisationPage/OrganisationTagList.tsx (issue 129) and frontend/src/components/organisationPage/OrganisationLogo.tsx (issue 133)
+- Component: web/src/pages/OrganisationPage.tsx, with OrganisationPage.module.css and OrganisationPage.test.tsx
+- Parts used on this page only: web/src/components/organisationPage/OrganisationTagList.tsx (issue 129) and web/src/components/organisationPage/OrganisationLogo.tsx (issue 133)
 - Address in the browser: /organisations/:id, for example /organisations/<id of Seed Club Atlas>
 - Server addresses: GET /api/organisation-profiles/{id} and GET /api/organisation-profiles/{id}/logo
 
@@ -45,7 +45,7 @@ flowchart LR
 
 ## Every element of the page, top to bottom
 
-All data comes from one call: getOrganisationProfile(id) in frontend/src/api/organisationProfiles.ts asks GET /api/organisation-profiles/{id} through request() of frontend/src/api/client.ts and reads data from the answer. The page never calls fetch itself. On the server the guard of issue 04 checks the session, a validator checks that the id is a real id, and PublicOrganisationProfileService asks FindVisibleByIdAsync for the profile with the account of the session as the viewer. The answer holds only the public fields: id, name, kind, description, website, tags, logo and checkedAt. The account behind the organisation never leaves the database. The profile is read from the table organisation_profile, with a look at account.email_confirmed_at.
+All data comes from one call: getOrganisationProfile(id) in web/src/api/organisationProfiles.ts asks GET /api/organisation-profiles/{id} through request() of web/src/api/client.ts and reads data from the answer. The page never calls fetch itself. On the server the guard of issue 04 checks the session, a validator checks that the id is a real id, and PublicOrganisationProfileService asks FindVisibleByIdAsync for the profile with the account of the session as the viewer. The answer holds only the public fields: id, name, kind, description, website, tags, logo and checkedAt. The account behind the organisation never leaves the database. The profile is read from the table organisation_profile, with a look at account.email_confirmed_at.
 
 1. Logo, or a circle with the first letter
    - Without a logo: a round placeholder with the first letter of the name. It is aria-hidden, because the heading already says the name.
@@ -96,7 +96,7 @@ There is no Edit button on this page, and no list of opportunities, events or ch
 - Does not exist: "This organisation does not exist" with a link Back to My account, in place of the page. The same for an unknown id, an id that is not a real id (for example /organisations/abc), and an organisation that has not confirmed its email address.
 - Not reachable: "Connect is not reachable right now, try again later" in an area with role alert, in place of the page, never an empty page. A tester checks it by switching the phone to airplane mode and pressing See our page.
 - Visitor: "Log in to see organisations" with its sentence and the button Log in.
-- Phone (360 pixels wide) and laptop (1280 pixels wide): the page matches the Figma frame Organisation page at both widths. Colours, fonts and spacing come only from frontend/src/styles/tokens.css. The frame is on the page Design directions of the Figma board of Connect.
+- Phone (360 pixels wide) and laptop (1280 pixels wide): the page matches the Figma frame Organisation page at both widths. Colours, fonts and spacing come only from web/src/styles/tokens.css. The frame is on the page Design directions of the Figma board of Connect.
 - Test data: docs/testing/testData.md lists Seed Club Atlas (with website https://example.org, kind Club), Seed Bakery De Korenaar (no website), Seed Hidden Fund (not confirmed) and an id that no organisation has.
 
 ## Accessibility and privacy

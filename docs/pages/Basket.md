@@ -1,6 +1,6 @@
 # Basket
 
-- Component: frontend/src/pages/Basket.tsx, with Basket.module.css and Basket.test.tsx
+- Component: web/src/pages/Basket.tsx, with Basket.module.css and Basket.test.tsx
 - Address in the browser: /basket (after a cancelled payment: /basket?paid=no)
 
 ## What the page is for
@@ -30,7 +30,7 @@ flowchart LR
 
 1. Link Basket with the number, in the header of every page (not on the page itself, but it leads here)
    - Sits in the header of AppShell.tsx next to the link Shop, only for a logged in member. The text is Basket and the number when it is higher than 0, for example Basket 3. It goes to /basket.
-   - Data: BasketProvider in frontend/src/hooks/useBasket.tsx asks GET /api/baskets/current once per log in, through getBasket() in frontend/src/api/basket.ts. ProductCard of issue 82 passes on itemCount of every answer of Add to basket, so the number goes up at once without a reload. On log out the basket is forgotten.
+   - Data: BasketProvider in web/src/hooks/useBasket.tsx asks GET /api/baskets/current once per log in, through getBasket() in web/src/api/basket.ts. ProductCard of issue 82 passes on itemCount of every answer of Add to basket, so the number goes up at once without a reload. On log out the basket is forgotten.
    - A visually hidden area with role status says "Your basket has 1 item" or "Your basket has 3 items" each time the number changes after an add.
    - When getBasket() fails, the link shows Basket without a number.
    - Built by task 82b.3, issue 82b See my basket, GitLab #149, sprint 4.
@@ -39,13 +39,13 @@ flowchart LR
    - Built by task 83.4, issue 83 Pay for my basket, GitLab #194, sprint 5.
 3. The lines of the basket
    - When the page opens it calls refresh() of useBasket once, which asks GET /api/baskets/current again, so it shows what the server has now.
-   - One row per item: the name, the number (for example 2 x), the price of one and the price of the line, all with formatPrice(cents) of frontend/src/utils/formatPrice.ts, with VAT included or VAT not included.
+   - One row per item: the name, the number (for example 2 x), the price of one and the price of the line, all with formatPrice(cents) of web/src/utils/formatPrice.ts, with VAT included or VAT not included.
    - The server reads the tables basket and basket_item of issue 82 together with product of issue 81 in one query, always with today's names and prices. A line of an item that the foundation switched off is left out. The server works out the price of every line and the total in cents. The page never adds up prices itself.
    - On a phone the lines stack with the price under the name. From 768 pixels up they form a table like list.
    - Built by tasks 82b.1, 82b.2 and 82b.4, issue 82b.
 4. Button Remove, on every line
    - Text Remove, label for a screen reader "Remove <name> from your basket".
-   - Calls removeFromBasket(productId) in frontend/src/api/basket.ts, which sends DELETE /api/baskets/current/items/{productId}. The server checks that the id is a real id and removes the line in one query that also checks that the basket belongs to this member. One row of basket_item goes, the basket row stays. The answer is the whole basket, in the same shape as GET /api/baskets/current.
+   - Calls removeFromBasket(productId) in web/src/api/basket.ts, which sends DELETE /api/baskets/current/items/{productId}. The server checks that the id is a real id and removes the line in one query that also checks that the basket belongs to this member. One row of basket_item goes, the basket row stays. The answer is the whole basket, in the same shape as GET /api/baskets/current.
    - While its request runs the button says "Removing..." and is disabled. A second press does no harm on the server.
    - After it works, setBasket of useBasket takes the whole basket of the answer. The line is gone, the total and the number at the top go down. Focus moves to the heading of the page.
    - When the last line is gone, the page shows the empty sentence.
@@ -56,11 +56,11 @@ flowchart LR
    - "Total" and the amount of totalInCents from the server, with formatPrice, at the bottom.
    - Built by task 82b.4.
 6. Line about the provider, above the button Pay
-   - "You pay on the page of <provider>. Connect never sees your card or bank details." The provider name is the constant PAYMENT_PROVIDER_NAME in frontend/src/api/orders.ts, from the decision of issue 171.
+   - "You pay on the page of <provider>. Connect never sees your card or bank details." The provider name is the constant PAYMENT_PROVIDER_NAME in web/src/api/orders.ts, from the decision of issue 171.
    - Built by task 83.4.
 7. Button Pay
    - Shown only when there are lines. The text is Pay and the total of the server with formatPrice, for example Pay € 25,00.
-   - Calls startCheckout() in frontend/src/api/orders.ts, which sends POST /api/orders. The server makes an order from the basket with today's prices (tables shop_order and shop_order_item) and asks the provider for a payment of exactly the server's total. It never starts for an empty basket, without a key or without a log in.
+   - Calls startCheckout() in web/src/api/orders.ts, which sends POST /api/orders. The server makes an order from the basket with today's prices (tables shop_order and shop_order_item) and asks the provider for a payment of exactly the server's total. It never starts for an empty basket, without a key or without a log in.
    - While it runs the button says "Taking you to the payment page..." and is disabled, so a double tap never makes two orders.
    - When it works the browser goes to paymentUrl with window.location.assign, but only when the address starts with https://. Otherwise the page shows the message of not possible.
    - 503: "Paying is not possible right now. Your basket is kept." above the button in role alert.
@@ -83,7 +83,7 @@ The page asks for nothing personal: no field at all, no address, no phone number
 - Not reachable: "Connect is not reachable right now, try again later" in role alert in place of the lines when the basket cannot be read, next to a line when Remove fails, and above the button when Pay gets no answer. The basket always stays.
 - Speed: the page shows with its total within two seconds after pressing Basket, on a normal phone connection.
 - Phone (360 pixels wide): the lines stack, price under the name. Laptop (1280 pixels wide): a table like list from 768 pixels up.
-- Design: the Figma frame Basket and the frame of the app shell on the Figma board of Connect, page Design directions. Colours and sizes only from frontend/src/styles/tokens.css. The merge requests show screenshots at 360 and 1280 pixels.
+- Design: the Figma frame Basket and the frame of the app shell on the Figma board of Connect, page Design directions. Colours and sizes only from web/src/styles/tokens.css. The merge requests show screenshots at 360 and 1280 pixels.
 
 ## Accessibility and privacy
 

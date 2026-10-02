@@ -1,6 +1,6 @@
 # Send the confirmation email again
 
-- Component: frontend/src/pages/ConfirmEmailAgain.tsx, with ConfirmEmailAgain.module.css and ConfirmEmailAgain.test.tsx
+- Component: web/src/pages/ConfirmEmailAgain.tsx, with ConfirmEmailAgain.module.css and ConfirmEmailAgain.test.tsx
 - Address in the browser: /confirm-email/again
 
 ## What the page is for
@@ -35,7 +35,7 @@ flowchart LR
    - Required. Pressing Send again with the field empty shows "Fill in your email address" next to the field. A 400 answer shows the message of the server next to the field.
    - Built by task 28.3, issue 28 Ask for the confirmation email again, GitLab #55, sprint 2.
 2. Button: Send again
-   - Calls resendConfirmation(email) in frontend/src/api/emailConfirmations.ts, which sends POST /api/email-confirmations through frontend/src/api/client.ts. The page never calls fetch and never sees a status code.
+   - Calls resendConfirmation(email) in web/src/api/emailConfirmations.ts, which sends POST /api/email-confirmations through web/src/api/client.ts. The page never calls fetch and never sees a status code.
    - While it waits, about two seconds on purpose, the button says "Sending..." and is disabled.
    - The server always gives the same answer, never before two seconds have passed. When the account exists and is not confirmed, it ends the older links of the account (they get an end time of now) and writes one new row in email_confirmation with the hash of the new link, then sends the email. Otherwise it does nothing. Tasks 28.1 and 28.2.
    - The server counts the links of the account in the last hour and stops at five, the first email after making the account included (task 28b.2, setting ConfirmationEmailLimits:PerAccountPerHour). At the limit nothing is written, and the answer stays the same.
@@ -59,7 +59,7 @@ Changes on other pages made by task 28.3: CreateAccount.tsx gets the link "send 
 - Too often: "You asked too often. Wait a minute and try again." below the button, button off for the seconds of Retry-After.
 - Not reachable: "Connect is not reachable right now, try again later" below the button, the address stays in the field. A tester checks this with airplane mode.
 - Phone (360 pixels wide) and laptop (1280 pixels wide): the page matches the Figma frame Send the confirmation email again at both widths, shown with screenshots in the merge request.
-- Design: the Figma frame Send the confirmation email again on the Figma board of Connect. Colours, fonts and spacing only through frontend/src/styles/tokens.css.
+- Design: the Figma frame Send the confirmation email again on the Figma board of Connect. Colours, fonts and spacing only through web/src/styles/tokens.css.
 
 ## Accessibility and privacy
 

@@ -1,6 +1,6 @@
 # Edit your profile (EditProfile)
 
-Component: `frontend/src/pages/EditProfile.tsx`, with `EditProfile.module.css`, and the shared form `frontend/src/components/MemberProfileForm.tsx`.
+Component: `web/src/pages/EditProfile.tsx`, with `EditProfile.module.css`, and the shared form `web/src/components/MemberProfileForm.tsx`.
 Address in the browser: `/profile/edit`.
 
 ## What the page is for
@@ -74,7 +74,7 @@ flowchart TD
 ### Button Save and link Cancel
 
 - Save: while waiting "Saving..." and disabled, so My profile opens once.
-- What happens: `updateMemberProfile(values)` in `frontend/src/api/memberProfiles.ts` sends `PUT /api/member-profiles/current` through `request()`. The server takes the account from the session, finds its profile and saves the change (task 33.2). Creating and editing use one shared validator, `MemberProfileFieldsValidator`, so they can never refuse different things.
+- What happens: `updateMemberProfile(values)` in `web/src/api/memberProfiles.ts` sends `PUT /api/member-profiles/current` through `request()`. The server takes the account from the session, finds its profile and saves the change (task 33.2). Creating and editing use one shared validator, `MemberProfileFieldsValidator`, so they can never refuse different things.
 - Code 200: the page goes to `/profile`, which shows "Your changes are saved" in an area with role status above the profile.
 - Code 400: each message appears directly below its field, linked with `aria-describedby`, and the focus moves to the first wrong field. What was typed stays.
 - Code 404 on Save: the profile is gone, so the page sends the member on to `/profile/new`.
@@ -105,7 +105,7 @@ The four fields live in `MemberProfileForm`, taken out of Create your profile by
 - The form asks for exactly four things: First name, Age band, Region and About you. Never an exact age, a birth date, a school or a street address, and the hints say not to put those in.
 - The address shows `/profile/edit` with no number of a member in it.
 
-The design: colours, fonts and spacing come only from the variables in `frontend/src/styles/tokens.css`, following the Figma frame Edit your profile (and Create your profile for the shared form) on the Figma board.
+The design: colours, fonts and spacing come only from the variables in `web/src/styles/tokens.css`, following the Figma frame Edit your profile (and Create your profile for the shared form) on the Figma board.
 
 ## Built by
 

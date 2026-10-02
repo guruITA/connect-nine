@@ -1,6 +1,6 @@
 # Finishing a Google or Facebook log in
 
-- Component: frontend/src/pages/SocialLoginReturn.tsx, with SocialLoginReturn.module.css and SocialLoginReturn.test.tsx (task 23.6). Issue 46 adds one sentence to the same file.
+- Component: web/src/pages/SocialLoginReturn.tsx, with SocialLoginReturn.module.css and SocialLoginReturn.test.tsx (task 23.6). Issue 46 adds one sentence to the same file.
 - Address in the browser: /login/return, with the values provider, next and error in the address (for example /login/return?provider=facebook&error=cancelled or /login/return?error=notActive)
 
 ## What the page is for
@@ -74,7 +74,7 @@ What the server does before the page opens:
 - Not reachable: when the server runs but cannot finish, "Connect is not reachable right now, try again later" with the link Back to Log in. When the server cannot be reached at all, the browser shows its own page that the site cannot be reached, because Connect is not running to show anything.
 - Empty: not used.
 - Phone (360 pixels wide) and laptop (1280 pixels wide): the team does the whole log in on both on the test site (tasks 23.8 and 24.5), and checks the not active sentence of a switched off member on both (task 46.8).
-- Design: the Figma board of Connect, page Design directions (the buttons follow the Figma frame Social buttons). Colours, fonts and spacing only through frontend/src/styles/tokens.css.
+- Design: the Figma board of Connect, page Design directions (the buttons follow the Figma frame Social buttons). Colours, fonts and spacing only through web/src/styles/tokens.css.
 
 ## Accessibility and privacy
 

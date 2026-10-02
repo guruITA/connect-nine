@@ -1,6 +1,6 @@
 # Event page
 
-- Component: frontend/src/pages/EventDetails.tsx, with EventDetails.module.css and EventDetails.test.tsx
+- Component: web/src/pages/EventDetails.tsx, with EventDetails.module.css and EventDetails.test.tsx
 - Address in the browser: /events/:id
 - Title of the browser tab: Connect, followed by the title of the event
 
@@ -44,12 +44,12 @@ EventCard of issue 66 is one link to /events/<id>, with the title and the date i
 3. The details
    - "by <organisation>", the date and time in Amsterdam time such as "Thursday 15 October, 19:30", the place, the places, and the full description with its line breaks kept. The description is plain text, never HTML.
    - The places: "7 of 20 places left" from placesLeft and capacity. The number is always the one the server counts. After every answer of Register the page asks the event again, it never lowers the number itself (task 68b.5). Before issue 68b the line reads "20 places".
-   - Data: getEvent(id) in frontend/src/api/events.ts asks GET /api/events/{id} through request(). It returns the event, not found or not reachable. The server checks the session, reads the id as text with EventIdValidator (a text that is no uuid gets the shared not found answer of issue 53), and reads one row of the table event (issue 65) with the name of its organisation from organisation_profile in one question. The answer also says, only for the person who asks, myRegistration (registered, notRegistered, notAllowed, started, cancelled), saved, isMine, isCancelled and placesLeft (tasks 66b.2, 68.3, 68b.4, 161.3, 162.3, 163.3).
+   - Data: getEvent(id) in web/src/api/events.ts asks GET /api/events/{id} through request(). It returns the event, not found or not reachable. The server checks the session, reads the id as text with EventIdValidator (a text that is no uuid gets the shared not found answer of issue 53), and reads one row of the table event (issue 65) with the name of its organisation from organisation_profile in one question. The answer also says, only for the person who asks, myRegistration (registered, notRegistered, notAllowed, started, cancelled), saved, isMine, isCancelled and placesLeft (tasks 66b.2, 68.3, 68b.4, 161.3, 162.3, 163.3).
    - Built by task 66b.3, issue 66b Open an event page, GitLab #125, sprint 3.
 4. The area for registering (a div with data-slot="register", below the details)
-   - An event that has started (hasTakenPlace(startsAt, now) in frontend/src/utils/hasTakenPlace.ts is true only when startsAt lies before now): "This event has taken place" as plain text in role status, and no button or link to join. Task 66b.3.
+   - An event that has started (hasTakenPlace(startsAt, now) in web/src/utils/hasTakenPlace.ts is true only when startsAt lies before now): "This event has taken place" as plain text in role status, and no button or link to join. Task 66b.3.
    - A cancelled event: "This event is cancelled" in role status, and no button Register, Edit or Cancel event. Task 163.4.
-   - Otherwise RegisterButton (frontend/src/components/eventDetails/RegisterButton.tsx, task 68.4, issue 68 Register for an event, GitLab #128, sprint 3):
+   - Otherwise RegisterButton (web/src/components/eventDetails/RegisterButton.tsx, task 68.4, issue 68 Register for an event, GitLab #128, sprint 3):
      - notRegistered: the button Register.
      - registered: "You already have a place".
      - notAllowed: "Only young people with a profile can register".
@@ -83,7 +83,7 @@ EventCard of issue 66 is one link to /events/<id>, with the title and the date i
 - Not found: the page NotFound of issue 53 in place of the event, with the link Go to home.
 - Not reachable: "Connect is not reachable right now, try again later" in role alert, in place of the details.
 - Phone (360 pixels wide) and laptop (1280 pixels wide): the team checks every criterion on both on the test site.
-- Design: the Figma frame Event page on the Figma board of Connect, page Design directions. Colours, fonts and spacing only through frontend/src/styles/tokens.css.
+- Design: the Figma frame Event page on the Figma board of Connect, page Design directions. Colours, fonts and spacing only through web/src/styles/tokens.css.
 
 ## Accessibility and privacy
 

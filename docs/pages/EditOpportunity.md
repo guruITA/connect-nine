@@ -1,6 +1,6 @@
 # Change opportunity
 
-- Component: frontend/src/pages/EditOpportunity.tsx, with EditOpportunity.module.css and EditOpportunity.test.tsx
+- Component: web/src/pages/EditOpportunity.tsx, with EditOpportunity.module.css and EditOpportunity.test.tsx
 - Address in the browser: /opportunities/:id/edit
 
 ## What the page is for
@@ -25,7 +25,7 @@ flowchart LR
   E -->|Not yours| B[Back to My organisation]
 ```
 
-Every line under Your opportunities (issue 54b, OwnOpportunities.tsx) and under Closed (issue 56b, ClosedOpportunities.tsx) in frontend/src/components/myOrganisation gets a link Edit with the accessible name "Edit <title of the line>".
+Every line under Your opportunities (issue 54b, OwnOpportunities.tsx) and under Closed (issue 56b, ClosedOpportunities.tsx) in web/src/components/myOrganisation gets a link Edit with the accessible name "Edit <title of the line>".
 
 ## Every element of the page, top to bottom
 
@@ -35,14 +35,14 @@ Every line under Your opportunities (issue 54b, OwnOpportunities.tsx) and under 
    - Shown only when isOpen from the server is false. The page never decides open or closed with the clock of the laptop.
 3. Alert area above the form, in role alert
    - "Connect is not reachable right now, your changes are kept" when Save gets a 5xx answer or no answer. Every field keeps its value.
-4. The four fields, in the shared component OpportunityFields (frontend/src/components/OpportunityFields.tsx)
+4. The four fields, in the shared component OpportunityFields (web/src/components/OpportunityFields.tsx)
    - The same fields as the page New opportunity of issue 54, taken out of NewOpportunity.tsx so posting and changing look and work the same. The component gets the values, the messages and onChange, and never calls the server. The field Tags of issue 54c stays on New opportunity only.
    - Title: a text field, required, at most 120 characters. An empty title shows "Fill in a title" and nothing is sent. A title of 121 characters shows "A title has at most 120 characters".
    - Description: a textarea with a counter, such as "3800 characters left" (issue 54). Required, at most 4000 characters: "Fill in a description", "A description has at most 4000 characters".
-   - Kind: a select with Internship, Job, Project and Other. The labels come from KIND_LABELS in frontend/src/api/opportunities.ts. Without a kind: "Choose a kind".
+   - Kind: a select with Internship, Job, Project and Other. The labels come from KIND_LABELS in web/src/api/opportunities.ts. Without a kind: "Choose a kind".
    - Closing date: the date field of the browser, with today as the earliest day. Empty shows "Fill in a closing date". A day before today shows "The closing date cannot be in the past", also when the date did not change. Today is accepted.
    - Every field has its label above it. Each message sits below its own field (task 153.5 and AC7 of issue 153), linked with aria-describedby. See the open points: issue 54 puts the same messages next to the field.
-   - Data: on load getOwnOpportunity(id) in frontend/src/api/opportunities.ts asks GET /api/organisation-profiles/current/opportunities/{id} through request(). It returns the fields with isOpen, not yours, not an organisation, or not reachable. The server reads the id as text and refuses an unknown, odd or strange id, a member and a visitor (task 153.3).
+   - Data: on load getOwnOpportunity(id) in web/src/api/opportunities.ts asks GET /api/organisation-profiles/current/opportunities/{id} through request(). It returns the fields with isOpen, not yours, not an organisation, or not reachable. The server reads the id as text and refuses an unknown, odd or strange id, a member and a visitor (task 153.3).
 5. Button: Save
    - The page first checks the same simple rules as New opportunity (required fields, no day before today).
    - Then changeOpportunity(id, form) sends PUT /api/opportunities/{id} with the four fields. The browser adds the cookie connect_session by itself.
@@ -64,7 +64,7 @@ All parts built by task 153.5, issue 153 Change my opportunity after publishing,
 - Not reachable on save: "Connect is not reachable right now, your changes are kept" above the form, every value stays.
 - Empty: not used, the form is always filled.
 - Phone (360 pixels wide) and laptop (1280 pixels wide): the team checks the page on both on the test site.
-- Design: the Figma frame New opportunity on the Figma board of Connect, page Design directions. Colours, fonts and spacing only through frontend/src/styles/tokens.css.
+- Design: the Figma frame New opportunity on the Figma board of Connect, page Design directions. Colours, fonts and spacing only through web/src/styles/tokens.css.
 
 ## Accessibility and privacy
 

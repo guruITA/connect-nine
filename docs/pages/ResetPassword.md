@@ -1,6 +1,6 @@
 # Choose a new password
 
-- Component: frontend/src/pages/ResetPassword.tsx, with ResetPassword.module.css and ResetPassword.test.tsx
+- Component: web/src/pages/ResetPassword.tsx, with ResetPassword.module.css and ResetPassword.test.tsx
 - Address in the browser: /reset-password. The link in the email opens /reset-password?token=<code>, and the page removes the token from the address bar at once, so the address then ends in /reset-password with nothing after it.
 - Title of the browser tab: not named on the cards.
 
@@ -40,7 +40,7 @@ The page sits inside the frame AppShell, so the tabs stay in place around it. Th
 1. Reading the token on opening
    - The page reads the token from ?token= in the address, keeps it in the state of the page, and replaces the address with /reset-password using navigate with replace: true. The browser history also shows only /reset-password.
    - Without a token the page shows the state This link does not work any more at once.
-   - frontend/index.html has the meta tag referrer with the value no-referrer, so the address with the token is never sent to another site.
+   - web/index.html has the meta tag referrer with the value no-referrer, so the address with the token is never sent to another site.
    - Built by task 22.3, issue 22 Set a new password through the link, GitLab #44, sprint 2.
 2. Field New password
    - Label New password above the field. Type password, autocomplete new-password. Below it a place for its message, linked to the field with aria-describedby.
@@ -53,7 +53,7 @@ The page sits inside the frame AppShell, so the tabs stay in place around it. Th
    - Message: "The two passwords are not the same" next to this field, and nothing is sent.
    - Built by task 22.3, issue 22, GitLab #44, sprint 2.
 4. Button Save new password
-   - The form has noValidate. Pressing the button first compares the two fields. When they are the same, the page calls setNewPassword(token, password) in frontend/src/api/passwordResets.ts, through the shared helper in frontend/src/api/client.ts. The page never calls fetch and never sees a status code.
+   - The form has noValidate. Pressing the button first compares the two fields. When they are the same, the page calls setNewPassword(token, password) in web/src/api/passwordResets.ts, through the shared helper in web/src/api/client.ts. The page never calls fetch and never sees a status code.
    - Server address: POST /api/password-resets/new-password, open to everyone (AllowAnonymous) and on the open list in docs/architecture/api.md. The body is only { "token": "...", "password": "..." }. The token is in the body, never in the address.
    - While waiting the button says "Saving..." and is disabled, so a second press does nothing.
    - Answers of the server and what setNewPassword gives the page:
@@ -89,7 +89,7 @@ The page sits inside the frame AppShell, so the tabs stay in place around it. Th
 - Link does not work: "This link does not work any more. A link works once, and for one hour." with Ask for a new link.
 - Not reachable: "Connect is not reachable right now, try again later" below the form. Nobody is logged out anywhere and the password stays the old one. A tester checks this with airplane mode on the phone.
 - Phone and laptop: the page matches the Figma frame Choose a new password at 360 and 1280 pixels wide, shown with screenshots in the merge request.
-- Design: the Figma frame Choose a new password on the Figma board of Connect, page Design directions. Colours, fonts and spacing come only from the variables in frontend/src/styles/tokens.css.
+- Design: the Figma frame Choose a new password on the Figma board of Connect, page Design directions. Colours, fonts and spacing come only from the variables in web/src/styles/tokens.css.
 
 ## Accessibility and privacy
 
@@ -110,7 +110,7 @@ The page sits inside the frame AppShell, so the tabs stay in place around it. Th
 | 22 | Set a new password through the link | #44 | 2 | should |
 | 22b | A new password logs me out on my other devices | #45 | 2 | should |
 
-Issue 22 needs issues 03b A clear message when my password is too weak, 05 Log out, 21 Ask for a password reset link by email, 04b A member page asks me to log in first and brings me back and 116 A password that is known from data leaks is refused first. Issue 22b needs issue 22. Tasks in build order: 22.1 database, 22.2 address, 22.3 page, 22.4 end to end test (frontend/e2e/resetPassword.spec.ts), 22.5 team check, then 22b.1 database, 22b.2 address, 22b.3 page, 22b.4 end to end test with two devices (frontend/e2e/resetPasswordOtherDevices.spec.ts), 22b.5 team check.
+Issue 22 needs issues 03b A clear message when my password is too weak, 05 Log out, 21 Ask for a password reset link by email, 04b A member page asks me to log in first and brings me back and 116 A password that is known from data leaks is refused first. Issue 22b needs issue 22. Tasks in build order: 22.1 database, 22.2 address, 22.3 page, 22.4 end to end test (web/e2e/resetPassword.spec.ts), 22.5 team check, then 22b.1 database, 22b.2 address, 22b.3 page, 22b.4 end to end test with two devices (web/e2e/resetPasswordOtherDevices.spec.ts), 22b.5 team check.
 
 ## Open points
 

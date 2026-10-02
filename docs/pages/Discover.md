@@ -1,6 +1,6 @@
 # Discover, suggested matches and what is new on Connect
 
-- Component: frontend/src/pages/Discover.tsx, with Discover.module.css and Discover.test.tsx
+- Component: web/src/pages/Discover.tsx, with Discover.module.css and Discover.test.tsx
 - Address in the browser: /discover, behind the tab Discover, and /discover?kind=member or /discover?kind=organisation with a filter
 - Server addresses: GET /api/suggestions?page=1&pageSize=20 (with &kind=member or &kind=organisation), GET /api/opportunities?page=1&pageSize=3, GET /api/events?page=1&pageSize=3, and for the button Save PUT and DELETE /api/saved-items/<kind>/<itemId>
 
@@ -69,7 +69,7 @@ The page sits inside AppShell of issue 06, so the five tabs stay around it. The 
    - Since issue 140 Only a checked organisation can publish (GitLab #139, sprint 3), an organisation that the foundation has not checked yet still sees this link, but on the page Post a challenge it reads "The foundation checks your organisation first. You can publish after that." in place of the button Publish.
 
 5. Filter buttons: All, People, Organisations
-   - Three real buttons in a group with the label "Show", above the suggestions. The component is KindChips in frontend/src/components/discover/KindChips.tsx. The words live in SUGGESTION_KINDS in frontend/src/api/suggestions.ts.
+   - Three real buttons in a group with the label "Show", above the suggestions. The component is KindChips in web/src/components/discover/KindChips.tsx. The words live in SUGGESTION_KINDS in web/src/api/suggestions.ts.
    - All is chosen when Discover opens. The chosen button has aria-pressed="true" and a mark that is not only a colour: a border and bold text.
    - The choice lives in the address, read with useSearchParams. People makes the address /discover?kind=member, Organisations makes it /discover?kind=organisation, All makes it /discover. A reload and a shared link keep the choice.
    - A missing kind or any other word, for example /discover?kind=cars, chooses All and is never sent to the server.
@@ -81,18 +81,18 @@ The page sits inside AppShell of issue 06, so the five tabs stay around it. The 
 
 6. The list of suggestions
    - A real list (ul with one li per card), up to twenty cards, those who share the most tags first.
-   - The component SuggestionCard (frontend/src/components/SuggestionCard.tsx) shows one suggestion.
+   - The component SuggestionCard (web/src/components/SuggestionCard.tsx) shows one suggestion.
      - A member card: the first name as a real link to /members/<id>, below it the age band in words from AGE_BAND_LABELS (for example "18 to 21") and the region when it is there, and the line "Matches you on:" with the shared tags, for example "Matches you on: film, music". A card without region shows no empty label.
      - An organisation card: the name as a real link to /organisations/<id>, the kind in words from ORGANISATION_KIND_LABELS (for example "School"), and the same line "Matches you on:".
    - The line "Matches you on:" is text, never an icon or a tooltip. A card shows no number or score.
-   - Button Save on every card: the component SaveButton (frontend/src/components/SaveButton.tsx) with the props kind, itemId, name and saved. Since task 43.3 every item of GET /api/suggestions holds the field saved, so the button says Save or Saved when Discover opens.
+   - Button Save on every card: the component SaveButton (web/src/components/SaveButton.tsx) with the props kind, itemId, name and saved. Since task 43.3 every item of GET /api/suggestions holds the field saved, so the button says Save or Saved when Discover opens.
      - The accessible name is "Save <name>" or "Saved <name>", for example "Save Robin".
-     - Pressing Save calls saveItem(kind, itemId) in frontend/src/api/savedItems.ts, which sends PUT /api/saved-items/<kind>/<itemId>. The word changes to Saved at once, and the button is disabled until the answer comes, so a double tap sends one request. Saved stays after a reload.
+     - Pressing Save calls saveItem(kind, itemId) in web/src/api/savedItems.ts, which sends PUT /api/saved-items/<kind>/<itemId>. The word changes to Saved at once, and the button is disabled until the answer comes, so a double tap sends one request. Saved stays after a reload.
      - Saving fails: the word Save comes back, and "Not saved, Connect is not reachable right now" shows next to the button in an area with role alert.
      - Pressing Saved (since task 43b.3) calls unsaveItem(kind, itemId), which sends DELETE /api/saved-items/<kind>/<itemId>. The word changes to Save at once, with the same busy state. Taking back fails: the word Saved comes back, and "Not removed, Connect is not reachable right now" shows next to the button in an area with role alert.
      - Nothing else on the card changes, and the member who was saved sees nothing about it anywhere on Connect. Discover passes no onChange, the optional prop that issue 44b adds for the page Saved.
      - Built by tasks 43.1, 43.2, 43.3 and 43.4, issue 43 Save a suggestion, GitLab #84, sprint 2, and tasks 43b.1, 43b.2 and 43b.3, issue 43b Unsave a suggestion, GitLab #85, sprint 2.
-   - Data: getSuggestions(page, kind) in frontend/src/api/suggestions.ts asks GET /api/suggestions through request() of frontend/src/api/client.ts. The page and the card never call fetch.
+   - Data: getSuggestions(page, kind) in web/src/api/suggestions.ts asks GET /api/suggestions through request() of web/src/api/client.ts. The page and the card never call fetch.
    - The server checks the session with the guard of issue 04 and finds out who is asking: a member with a profile and tags, a member without tags, an account without a profile, or an organisation. For a member it asks the query of task 37.1, which counts the shared tags inside the database, and applies ProfileVisibility of issue 14 to every card. The answer holds the suggestions in data, and page, pageSize, total and a state (noProfile, noTags, organisation or ready) in meta.
    - Built by tasks 37.1 (query), 37.2 (seed data), 37.3 (server address) and 37.4 (screen), issue 37 See suggested matches with the reason, GitLab #74, sprint 2.
 
@@ -105,10 +105,10 @@ The page sits inside AppShell of issue 06, so the five tabs stay around it. The 
    - Built by tasks 37b.1 (query takes a page), 37b.2 (server takes page and pageSize) and 37b.3 (screen), issue 37b Load more suggestions, GitLab #75, sprint 2.
 
 8. Block: Opportunities
-   - A block below the suggestions with the heading Opportunities (h2), the three newest open opportunities in a list (ul with li), and at the bottom the link See all opportunities to /opportunities. The component is OpportunitiesBlock in frontend/src/components/discover/OpportunitiesBlock.tsx.
+   - A block below the suggestions with the heading Opportunities (h2), the three newest open opportunities in a list (ul with li), and at the bottom the link See all opportunities to /opportunities. The component is OpportunitiesBlock in web/src/components/discover/OpportunitiesBlock.tsx.
    - Each item is OpportunityCard of issue 55, reused and never copied, so the block and the list look the same. Each card is a link to the page of that opportunity (issue 55b), named by its title, with the organisation name, the kind and the closing date.
    - The block always shows every kind. The filter of issue 155 does not change it.
-   - Data: listOpportunities(1, 3) in frontend/src/api/opportunities.ts asks GET /api/opportunities?page=1&pageSize=3, the same address as the full list. The three are exactly the first three of the full list, in the same order. An opportunity of an unconfirmed or switched off organisation never reaches the block, even when it is the newest. A closed opportunity is gone from the block on the day after its closing date, counted in Dutch time (issue 56 Closed opportunities disappear, GitLab #112, sprint 3). Since issue 140 the block only holds opportunities of organisations that the foundation checked.
+   - Data: listOpportunities(1, 3) in web/src/api/opportunities.ts asks GET /api/opportunities?page=1&pageSize=3, the same address as the full list. The three are exactly the first three of the full list, in the same order. An opportunity of an unconfirmed or switched off organisation never reaches the block, even when it is the newest. A closed opportunity is gone from the block on the day after its closing date, counted in Dutch time (issue 56 Closed opportunities disappear, GitLab #112, sprint 3). Since issue 140 the block only holds opportunities of organisations that the foundation checked.
    - Task 55.4 first put a plain link See all opportunities below the matches. Task 55c.3 removes it, because the block now holds it.
    - The block asks in its own request, and a failure stays inside the block.
    - Built by task 55.4 (first link), issue 55 See the open opportunities, GitLab #108, sprint 3, and tasks 55c.1 (seed data), 55c.2 (test of the page of three) and 55c.3 (the block), issue 55c See the newest opportunities on Discover, GitLab #111, sprint 3.
@@ -116,7 +116,7 @@ The page sits inside AppShell of issue 06, so the five tabs stay around it. The 
 9. Part: Upcoming events
    - A section with the heading Upcoming events (h2), after what issue 37 put on Discover. It shows the three events that start soonest, each with its title, the date and time, the place and the organisation, and below them the link See all events to /events.
    - It uses EventList of issue 66 with pageSize 3, showLoadMore false and the card heading level h3, so there is no Load more. Each EventCard is a link to its event page through issue 66b Open an event page.
-   - Data: getUpcomingEvents(1, 3) in frontend/src/api/events.ts asks GET /api/events?page=1&pageSize=3, in its own request, at the same time as the suggestions.
+   - Data: getUpcomingEvents(1, 3) in web/src/api/events.ts asks GET /api/events?page=1&pageSize=3, in its own request, at the same time as the suggestions.
    - A failure here never hides the suggestions.
    - Built by tasks 66c.1 (query plan), 66c.2 (page of three) and 66c.3 (the part), issue 66c See the upcoming events on Discover, GitLab #126, sprint 3.
 
@@ -147,7 +147,7 @@ Part Upcoming events:
 
 Phone and laptop:
 - The first twenty cards show within two seconds of pressing Discover (AC15 of issue 37), and a new list after pressing a filter button within two seconds (AC11 of issue 38).
-- Design: the Figma frame Discover on the page Design directions of the Figma board. Colours, fonts and spacing come only from frontend/src/styles/tokens.css.
+- Design: the Figma frame Discover on the page Design directions of the Figma board. Colours, fonts and spacing come only from web/src/styles/tokens.css.
 
 ## Accessibility and privacy
 

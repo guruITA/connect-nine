@@ -1,6 +1,6 @@
 # Edit our profile (edit an organisation profile)
 
-- Component: frontend/src/pages/EditOrganisationProfile.tsx, with EditOrganisationProfile.module.css and EditOrganisationProfile.test.tsx
+- Component: web/src/pages/EditOrganisationProfile.tsx, with EditOrganisationProfile.module.css and EditOrganisationProfile.test.tsx
 - Address in the browser: /organisation/edit
 
 ## What the page is for
@@ -38,7 +38,7 @@ flowchart LR
 
 ## Every element of the page, top to bottom
 
-The form is the shared component frontend/src/components/OrganisationProfileForm.tsx (task 132.3). Create an organisation profile uses the same component with empty start values. The page gives it initialValues (name, kind, description, website), submitLabel Save and onSubmit.
+The form is the shared component web/src/components/OrganisationProfileForm.tsx (task 132.3). Create an organisation profile uses the same component with empty start values. The page gives it initialValues (name, kind, description, website), submitLabel Save and onSubmit.
 
 ### 1. Heading
 - Text: Edit our profile.
@@ -83,7 +83,7 @@ The form is the shared component frontend/src/components/OrganisationProfileForm
 
 ### 8. Button Save
 - Text: Save. While saving it says "Saving..." and is disabled, so it cannot be pressed a second time.
-- Data: updateOrganisationProfile(values) in frontend/src/api/organisationProfiles.ts sends PUT /api/organisation-profiles/current through request(). The answer is the changed profile inside data.
+- Data: updateOrganisationProfile(values) in web/src/api/organisationProfiles.ts sends PUT /api/organisation-profiles/current through request(). The answer is the changed profile inside data.
 - What happens per answer:
   - 200: the page goes to /account with a note in the navigation state, and My account shows "Your changes are saved" in an area with role status above the name. A reload of My account does not show it again.
   - 400: each message appears directly below its field, and the focus moves to the first wrong field. Nothing is saved and what was typed stays.
@@ -118,7 +118,7 @@ The form is the shared component frontend/src/components/OrganisationProfileForm
 - Each message is linked to its field with aria-describedby, so a screen reader hears the message together with the name of the field. The focus moves to the first wrong field.
 - The not reachable messages sit in role alert, the saved text on My account in role status.
 - Edit our profile and Cancel are links, because they go to another page.
-- Colours, fonts and spacing come only from frontend/src/styles/tokens.css, following the Figma frame Create an organisation profile.
+- Colours, fonts and spacing come only from web/src/styles/tokens.css, following the Figma frame Create an organisation profile.
 - Privacy: the form never asks for the name, phone number or email address of a person, and the line above the form says not to put them in. An organisation can only ever change its own profile. The address has no id that could be changed.
 
 ## Built by
@@ -127,7 +127,7 @@ The form is the shared component frontend/src/components/OrganisationProfileForm
 |---|---|---|---|---|
 | 132 | Edit my organisation profile | #66 | 2 | should |
 
-Tasks: 132.1 DATABASE (the column updated_at and UpdateAsync), 132.2 BACKEND (PUT /api/organisation-profiles/current with the shared validator), 132.3 FRONTEND (the shared form OrganisationProfileForm), 132.4 FRONTEND (this page), 132.5 FRONTEND (the link Edit our profile and the saved text on My account), 132.6 TEST (end to end test in frontend/e2e/editOrganisationProfile.spec.ts) and 132.7 TEST (team check).
+Tasks: 132.1 DATABASE (the column updated_at and UpdateAsync), 132.2 BACKEND (PUT /api/organisation-profiles/current with the shared validator), 132.3 FRONTEND (the shared form OrganisationProfileForm), 132.4 FRONTEND (this page), 132.5 FRONTEND (the link Edit our profile and the saved text on My account), 132.6 TEST (end to end test in web/e2e/editOrganisationProfile.spec.ts) and 132.7 TEST (team check).
 
 ## Open points
 

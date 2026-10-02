@@ -63,9 +63,9 @@ React is the library the screens are built with. A component is one piece of scr
 3. Component: PascalCase, and the file has the same name. MemberCard.tsx holds MemberCard.
 4. Hook (a function starting with use that holds state or calls the server): useMembers.ts.
 5. Other files and functions: camelCase, formatDate.ts. Constants: UPPER_SNAKE_CASE, MAX_PAGE_SIZE. Types: PascalCase without a prefix, Member and not IMember.
-6. A test file sits next to the file it tests: MemberCard.test.tsx. Tests in a real browser go in `frontend/e2e/<name>.spec.ts`.
+6. A test file sits next to the file it tests: MemberCard.test.tsx. Tests in a real browser go in `web/e2e/<name>.spec.ts`.
 
-### Folders in frontend/src
+### Folders in web/src
 
 7. pages: one component per page of the site, for example Home.tsx. components: pieces of screen used on more than one page. api: every call to the server, nothing else talks to the server. hooks: hooks used in more than one place. styles: tokens.css with the Young Amstelland colours and fonts as CSS variables.
 
@@ -160,13 +160,13 @@ These rules join the parts above. When an older text disagrees, these win.
 ### Files and folders
 
 11. A record ...Request or ...Response may sit in the endpoint file of its feature (an agreed exception to "one class per file"). A component used on one page only may sit in components under a folder named after the page.
-12. Test folders: backend/Connect.Tests/Features/<Feature>, with a handler test named <UseCase>HandlerTests.cs, backend/Connect.Tests/Domain, backend/Connect.Tests/Infrastructure, with a database test named <Feature>DatabaseTests.cs, backend/Connect.Tests/Presentation, backend/Connect.Tests/Fixtures.
+12. Test folders: api/Connect.Tests/Features/<Feature>, with a handler test named <UseCase>HandlerTests.cs, api/Connect.Tests/Domain, api/Connect.Tests/Infrastructure, with a database test named <Feature>DatabaseTests.cs, api/Connect.Tests/Presentation, api/Connect.Tests/Fixtures.
 
 ### Commands
 
-13. The solution is made with `dotnet new sln --format sln`, so every command can use backend/Connect.sln.
+13. The solution is made with `dotnet new sln --format sln`, so every command can use api/Connect.sln.
 14. docker-compose.yml gives the database service `container_name: database`, so Compose prints "Container database Started". psql is always `psql -U connect -d connect`.
-15. A migration is always added with `dotnet ef migrations add <Name> --project backend/Infrastructure --startup-project backend/Presentation`.
+15. A migration is always added with `dotnet ef migrations add <Name> --project api/Infrastructure --startup-project api/Presentation`.
 16. Going back one migration: `dotnet ef migrations list`, then `dotnet ef database update <the migration just before yours>` with the same --project and --startup-project. Never a fixed old migration name.
 17. The database port is published only on 127.0.0.1: `"127.0.0.1:5432:5432"`.
 

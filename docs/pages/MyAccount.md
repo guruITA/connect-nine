@@ -1,6 +1,6 @@
 # My account
 
-Component: `frontend/src/pages/MyAccount.tsx`, with `MyAccount.module.css` and the parts in `frontend/src/components/myAccount/`.
+Component: `web/src/pages/MyAccount.tsx`, with `MyAccount.module.css` and the parts in `web/src/components/myAccount/`.
 Address in the browser: `/account`. The tab Profile of the frame opens it.
 
 ## What the page is for
@@ -54,7 +54,7 @@ The cards place each part relative to another part. The order below follows thos
 - Heading: My account.
 - "You are logged in as sam@example.org", with the email address of the member.
 - "You stay logged in on this device until 2 October 2026, 11:30", with the end of the session shown in the time zone Europe/Amsterdam through `Intl.DateTimeFormat`. That is one day after logging in, also after closing the browser.
-- Data: `useSession`, which asks `GET /api/sessions/current` once when Connect opens, through `getCurrentSession()` in `frontend/src/api/sessions.ts`. The page itself asks nothing for this part.
+- Data: `useSession`, which asks `GET /api/sessions/current` once when Connect opens, through `getCurrentSession()` in `web/src/api/sessions.ts`. The page itself asks nothing for this part.
 - The title of the browser tab: "Connect, My account" (issue 06 Move between the five tabs of Connect, task 6.3, GitLab #19, sprint 1).
 - Built by: issue 04 Log in with email and password, task 4.6 (GitLab #15, sprint 1).
 
@@ -84,8 +84,8 @@ The cards place each part relative to another part. The order below follows thos
 
 - Heading: Tags of your organisation. Shown below the line with the name, only when `GET /api/organisation-profiles/current` answered 200.
 - What it shows: the shared component `TagInput` of issue 36 with the chosen tags (the list Your tags), the suggested tags and the field Add your own. Below the field the hint "What your organisation does or offers. Never the name of a person."
-- Data: `getSuggestedTags()` asks `GET /api/tags/suggested`. The chosen tags come from `GET /api/organisation-profiles/current`. Every tap calls `addOrganisationProfileTag(name)` in `frontend/src/api/organisationProfileTags.ts`, which sends `POST /api/organisation-profiles/current/tags`.
-- Component: `frontend/src/components/myAccount/OrganisationTagsPart.tsx`, shown on My account below the line with the name of the organisation.
+- Data: `getSuggestedTags()` asks `GET /api/tags/suggested`. The chosen tags come from `GET /api/organisation-profiles/current`. Every tap calls `addOrganisationProfileTag(name)` in `web/src/api/organisationProfileTags.ts`, which sends `POST /api/organisation-profiles/current/tags`.
+- Component: `web/src/components/myAccount/OrganisationTagsPart.tsx`, shown on My account below the line with the name of the organisation.
 - While loading: "Loading your tags...". No tags yet: "You have no tags yet". While a tag is sent, that tag or the button Add is busy and disabled.
 - Saved (201 or 200): the tag appears in the chosen list, the field is emptied, and "Saved" appears in an area with role status.
 - Wrong input (400) or conflict (409): the text of the server below the field Add your own, linked with `aria-describedby`, and the typed text stays. For example "Fill in a tag", "A tag has at most 30 characters" or "Your organisation has 10 tags, the most there is."
@@ -96,7 +96,7 @@ The cards place each part relative to another part. The order below follows thos
 ### Logo of your organisation (only for an organisation profile)
 
 - Heading: Logo of your organisation, below the line with the name.
-- Component: `frontend/src/components/myAccount/OrganisationLogoPart.tsx`.
+- Component: `web/src/components/myAccount/OrganisationLogoPart.tsx`.
 - The logo: an image with the url of `logo` from `GET /api/organisation-profiles/current`, the alt text "Logo of <name>", and the width and height from the answer so the page does not jump. Without a logo: "No logo yet".
 - The button: Add a logo without a logo, Choose a new logo with one. It opens a hidden file field that accepts JPEG and PNG, with the label of the button.
 - The hint below the button: "Use the logo of your organisation, as JPEG or PNG under 5 MB. Never a photo of a person."
@@ -125,12 +125,12 @@ In this order, each a real link:
 - Heading: Change password. Placed below the part that shows the email address.
 - Fields: Current password (autocomplete current-password), New password and New password again (both autocomplete new-password), all of type password with their label above them. The hint "At least fifteen characters" under New password, linked with `aria-describedby`. A button Change password.
 - Before sending: a new password shorter than `MIN_PASSWORD_LENGTH` (fifteen characters, from issue 03b) gives "Use at least fifteen characters for your password" next to New password. Two different new passwords give "The two passwords are not the same" next to New password again. Nothing is sent.
-- Sending: `changePassword(currentPassword, newPassword)` in `frontend/src/api/accounts.ts` calls `PUT /api/accounts/current/password`. New password again never leaves the browser. While waiting the button says "Changing..." and is disabled.
+- Sending: `changePassword(currentPassword, newPassword)` in `web/src/api/accounts.ts` calls `PUT /api/accounts/current/password`. New password again never leaves the browser. While waiting the button says "Changing..." and is disabled.
 - Changed (204): "Your password is changed. You are logged out on your other devices." above the button with role status, and the three fields are emptied. This device stays logged in.
 - Wrong input (400): each message of the server next to its field, the field marked `aria-invalid`, focus on the first field with a message. The fields keep what was typed.
 - Not logged in (401): the member lands on the page Log in.
 - Not reachable: "Connect is not reachable right now, try again later" above the button, and the fields keep what was typed.
-- Component: `frontend/src/components/myAccount/ChangePasswordSection.tsx`.
+- Component: `web/src/components/myAccount/ChangePasswordSection.tsx`.
 - Built by: issue 114 Change my password while I am logged in, task 114.3 (GitLab #34, sprint 2).
 
 ### Change email address
@@ -138,20 +138,20 @@ In this order, each a real link:
 - Heading: Change email address. Placed below the parts the page already has.
 - The line "Your email address now: <current address>", from `useSession`.
 - Fields: New email address (type email, autocomplete email) and Your password (type password, autocomplete current-password). A button Send link.
-- Sending: `requestEmailChange(newEmail, password)` in `frontend/src/api/emailChanges.ts` sends `POST /api/accounts/current/email-changes`. The button says "Sending..." and is disabled.
+- Sending: `requestEmailChange(newEmail, password)` in `web/src/api/emailChanges.ts` sends `POST /api/accounts/current/email-changes`. The button says "Sending..." and is disabled.
 - Sent (202): the fields and the button are replaced, in an area with role status, by "We have sent a link to <the new address>. Your email address changes when you open it within 24 hours. Until then you log in with <the current address>."
 - Wrong input (400): under New email address "Type an email address like name@example.org" or "This is already your email address", under Your password "Type your password" or "The password is not right". The password field is emptied.
 - No password yet (409): below the button, with role alert: "Your account has no password yet. Set a password on Log in methods first, then you can change your email address."
 - Not reachable: below the button, with role alert: "Connect is not reachable right now, try again later". The typed address stays, the password field is emptied.
 - Rules: the password is emptied after every answer and is never kept in state, in local storage or in the address bar.
 - After the link: the page Confirm your email address says "Your email address is changed. Log in with your new address from now on." with a button My account, and My account then shows the new address.
-- Component: `frontend/src/components/myAccount/ChangeEmailSection.tsx`.
+- Component: `web/src/components/myAccount/ChangeEmailSection.tsx`.
 - Built by: issue 115 Change my email address, task 115.4 (GitLab #54, sprint 2).
 
 ### Log out
 
 - A real button element with the text Log out, below the sentence "You are logged in as". Not only an icon, and no question "Are you sure?".
-- Pressing it: `logOut()` in `frontend/src/api/sessions.ts` sends `DELETE /api/sessions/current`. While waiting the button says "Logging out..." and is disabled.
+- Pressing it: `logOut()` in `web/src/api/sessions.ts` sends `DELETE /api/sessions/current`. While waiting the button says "Logging out..." and is disabled.
 - Done (204) or not logged in any more (401): `clear()` of `useSession` forgets who was logged in on every screen at once, and the page goes to `/` with replace, so the back button does not return to My account. A member whose log in already ended in another tab lands on the home page too, without an error.
 - Not reachable: the member stays on My account, still logged in, and reads "Connect is not reachable right now, you are not logged out yet. Try again in a moment." below the button, in an area with role alert.
 - Built by: issue 05 Log out, task 5.3 (GitLab #18, sprint 1).
@@ -159,18 +159,18 @@ In this order, each a real link:
 ### Log out everywhere
 
 - A real button with the text Log out everywhere, under Log out.
-- Pressing it: `countSessions()` in `frontend/src/api/accountSessions.ts` asks `GET /api/accounts/current/sessions`. While waiting it says "Loading...".
+- Pressing it: `countSessions()` in `web/src/api/accountSessions.ts` asks `GET /api/accounts/current/sessions`. While waiting it says "Loading...".
 - The confirm step under the button: "You are logged in on 2 devices. Log out on all of them?" (with one device the text says "1 device"), with the buttons Yes, log out everywhere and Cancel. The focus moves to Yes, log out everywhere, and Cancel puts it back on the button.
 - Yes, log out everywhere: `logOutEverywhere()` sends `DELETE /api/accounts/current/sessions`. The button says "Logging out..." and is disabled. On 204 or 401 the member is logged out on this screen and goes to `/` with replace. The other devices see the page Log in at their next click on a member page. Only the own log ins end, never those of another member.
 - Not reachable: "Connect is not reachable right now, you are not logged out yet. Try again in a moment." under the button, with role alert. The member stays logged in.
-- Component: `frontend/src/components/myAccount/LogOutEverywhere.tsx`.
+- Component: `web/src/components/myAccount/LogOutEverywhere.tsx`.
 - Built by: issue 117 Log out on every device at once, task 117.3 (GitLab #197, sprint 5).
 
 ### Delete my account
 
 - At the bottom of the page, below Log out: the heading Delete my account, the sentence "This deletes your account, your profile and all your data. You cannot undo this." and a button Delete my account.
-- The window: the shared component `frontend/src/components/ConfirmDialog.tsx` on the dialog element, opened with `showModal()`, so the page behind it cannot be used. It holds the question "Delete your account?", the sentence "You cannot undo this. Type your password to confirm.", a field Password with its label, and the buttons Delete for good and Cancel. The focus goes to the field Password. Cancel and the Escape key close it and put the focus back on the button Delete my account.
-- Pressing Delete for good: `deleteAccount(password)` in `frontend/src/api/accounts.ts` sends `POST /api/accounts/current/deletion` with the password. While waiting the button says "Deleting..." and is disabled, and Cancel is disabled too.
+- The window: the shared component `web/src/components/ConfirmDialog.tsx` on the dialog element, opened with `showModal()`, so the page behind it cannot be used. It holds the question "Delete your account?", the sentence "You cannot undo this. Type your password to confirm.", a field Password with its label, and the buttons Delete for good and Cancel. The focus goes to the field Password. Cancel and the Escape key close it and put the focus back on the button Delete my account.
+- Pressing Delete for good: `deleteAccount(password)` in `web/src/api/accounts.ts` sends `POST /api/accounts/current/deletion` with the password. While waiting the button says "Deleting..." and is disabled, and Cancel is disabled too.
 - Deleted (204): `clear()` of `useSession`, then the home page with "Your account and all your data are deleted." at the top in an area with role status. The account is also logged out on every other device.
 - Wrong password (400): "Fill in your password" or "Your password is not right" under the field Password in the window, linked with `aria-describedby`, the field is emptied, and the window stays open.
 - Not logged in (401): the member lands on the page Log in, as on every other member page.
@@ -198,7 +198,7 @@ In this order, each a real link:
 - Passwords are never kept after a request, never in local storage or session storage, and never in the address bar. Nothing about the member is kept in local storage or session storage.
 - A member only ever sees their own account, their own profile and their own sessions.
 
-The design: colours, fonts and spacing come only from the variables in `frontend/src/styles/tokens.css`, following the Figma frame My account on the Figma board. The part Tags of your organisation follows the Figma frame Skills and interests, the logo part the Figma frame Organisation logo.
+The design: colours, fonts and spacing come only from the variables in `web/src/styles/tokens.css`, following the Figma frame My account on the Figma board. The part Tags of your organisation follows the Figma frame Skills and interests, the logo part the Figma frame Organisation logo.
 
 ## Built by
 

@@ -1,7 +1,7 @@
 # Admin news (publish a news item)
 
-- Component: frontend/src/pages/AdminNews.tsx, with AdminNews.module.css and AdminNews.test.tsx
-- Address in the browser: /admin/news (registered in frontend/src/App.tsx inside RequireLogin and RequireAdmin, the same way as /admin/members)
+- Component: web/src/pages/AdminNews.tsx, with AdminNews.module.css and AdminNews.test.tsx
+- Address in the browser: /admin/news (registered in web/src/App.tsx inside RequireLogin and RequireAdmin, the same way as /admin/members)
 
 ## What the page is for
 
@@ -15,7 +15,7 @@ The foundation wants young people and organisations to have a reason to come bac
 
 ## How you get there and where you go next
 
-The admin presses the tab Admin and then News in the admin menu (frontend/src/components/AdminMenu.tsx of issue 32). The link News has aria-current page when you are on this page. The admin stays on this page after publishing, with an empty form. The published item can then be read on the news list /news and on its own page /news/<id>.
+The admin presses the tab Admin and then News in the admin menu (web/src/components/AdminMenu.tsx of issue 32). The link News has aria-current page when you are on this page. The admin stays on this page after publishing, with an empty form. The published item can then be read on the news list /news and on its own page /news/<id>.
 
 ```mermaid
 flowchart LR
@@ -29,9 +29,9 @@ flowchart LR
 
 ## Every element of the page, top to bottom
 
-The page sits inside the admin area of issue 45. Colours, fonts and spacing come only from the variables in frontend/src/styles/tokens.css.
+The page sits inside the admin area of issue 45. Colours, fonts and spacing come only from the variables in web/src/styles/tokens.css.
 
-Data for the whole form: pressing Publish calls publishNewsItem({ title, body, picture, pictureDescription }) in frontend/src/api/newsItems.ts, which sends POST /api/admin/news-items through the shared helper in frontend/src/api/client.ts. Since task 71b.3 the body is a FormData (a multipart form), and the helper does not set the header Content-Type for it, because the browser adds it. The page never sees a status code, only the results published, wrong fields or not reachable. The page does not call fetch itself.
+Data for the whole form: pressing Publish calls publishNewsItem({ title, body, picture, pictureDescription }) in web/src/api/newsItems.ts, which sends POST /api/admin/news-items through the shared helper in web/src/api/client.ts. Since task 71b.3 the body is a FormData (a multipart form), and the helper does not set the header Content-Type for it, because the browser adds it. The page never sees a status code, only the results published, wrong fields or not reachable. The page does not call fetch itself.
 
 The server address (tasks 71.2 and 71b.2, PublishNewsItemService, PublishNewsItemRequestValidator) sits in the group /api/admin with the rule AdminOnly. It saves the item with a new id, published_at from the clock and the calling admin as author (from the session, never from the request). A good answer is 201 with {"data": {"id", "title", "publishedAt"}, "meta": {}} and the header Location /api/news-items/<id>. Wrong input is 400 in the ValidationProblem format with one message per field, and nothing is saved. A request over 6 MB gets 413 before it is read. A database that is down gives 503 with "Connect is not reachable right now". The table news_item (task 71.1) keeps no name or email address of the admin, only a link to the account, which becomes empty when that account is deleted.
 

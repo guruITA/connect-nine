@@ -1,6 +1,6 @@
 # Forgot password (ForgotPassword)
 
-Component: `frontend/src/pages/ForgotPassword.tsx`, with `ForgotPassword.module.css`.
+Component: `web/src/pages/ForgotPassword.tsx`, with `ForgotPassword.module.css`.
 Address in the browser: `/forgot-password`.
 
 ## What the page is for
@@ -50,7 +50,7 @@ flowchart TD
 ### Button Send link
 
 - Text: Send link. While waiting: "Sending..." and disabled, so it cannot be pressed a second time. The wait takes about two seconds on purpose.
-- What happens: `requestPasswordReset(email)` in `frontend/src/api/passwordResets.ts` sends `POST /api/password-resets` through the shared helper in `frontend/src/api/client.ts`. The address is on the open list of the guard. When the address has an account, the server ends the older links of that account, makes a new link that works for one hour, and puts one email in the mail queue. When there is no account it does nothing. Either way the answer is the same, and never before two seconds have passed (task 21.3).
+- What happens: `requestPasswordReset(email)` in `web/src/api/passwordResets.ts` sends `POST /api/password-resets` through the shared helper in `web/src/api/client.ts`. The address is on the open list of the guard. When the address has an account, the server ends the older links of that account, makes a new link that works for one hour, and puts one email in the mail queue. When there is no account it does nothing. Either way the answer is the same, and never before two seconds have passed (task 21.3).
 - The limit: Connect sends at most five reset emails to one address in one hour. The sixth request looks and takes exactly as long as the first, but no email is sent. After an hour a new request sends an email again. Someone who uses up the five emails for another address does not stop the reset email of a member (issue 21b No more than five reset emails in one hour, task 21b.2, GitLab #43, sprint 2).
 - The email: subject "Set a new password for Connect", one link and the sentence that it works for one hour, and nothing else about the member. On a laptop and on the test site every email lands in the test mailbox Mailpit, which on the test site opens only with the team's login (task 21.2).
 
@@ -89,7 +89,7 @@ flowchart TD
 - When a member deletes their account (issue 113), the reset links Connect kept for them are deleted with it.
 - When the mail server cannot be reached, the server writes one log line without the address or the text.
 
-The design: colours, fonts and spacing come only from the variables in `frontend/src/styles/tokens.css`, following the Figma frame Forgot password on the Figma board.
+The design: colours, fonts and spacing come only from the variables in `web/src/styles/tokens.css`, following the Figma frame Forgot password on the Figma board.
 
 ## Built by
 

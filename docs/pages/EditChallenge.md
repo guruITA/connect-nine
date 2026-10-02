@@ -1,6 +1,6 @@
 # The page Edit challenge
 
-Component: `frontend/src/pages/EditChallenge.tsx`, with `frontend/src/components/ChallengeForm.tsx`.
+Component: `web/src/pages/EditChallenge.tsx`, with `web/src/components/ChallengeForm.tsx`.
 Address in the browser: `/challenges/<id>/edit`.
 
 ## What the page is for
@@ -52,7 +52,7 @@ The form loads the challenge with `getChallenge(id)` (`GET /api/challenges/{id}`
 ### Button Save changes
 
 - Label: Save changes. While waiting it says "Saving..." and is disabled, so it cannot be pressed twice.
-- What it does: calls `updateChallenge(id, values)` in `frontend/src/api/challenges.ts`, which sends `PUT /api/challenges/<id>` through `request()` in `frontend/src/api/client.ts`. It returns saved, fieldErrors, notAllowed, closed, notFound or notReachable, so the page never sees a status code.
+- What it does: calls `updateChallenge(id, values)` in `web/src/api/challenges.ts`, which sends `PUT /api/challenges/<id>` through `request()` in `web/src/api/client.ts`. It returns saved, fieldErrors, notAllowed, closed, notFound or notReachable, so the page never sees a status code.
 - Saved (code 204): Connect goes to `/challenges/<id>`, where "Your changes are saved" shows above the challenge in an area with role status, and "Changed on" with the date of today shows under the deadline, for example Changed on 14 October 2026, written as a day in Dutch time. The line Changed on shows for every visitor of the challenge, from the field `updatedAt` of `GET /api/challenges/{id}` (task 167.3).
 - Wrong fields (code 400): each message directly next to its own field, the field marked with `aria-invalid` and linked with `aria-describedby`, and the focus on the first wrong field. What was typed stays.
 - Not allowed (code 403): "Only the organisation that posted this challenge can change it" in place of the form.
@@ -83,7 +83,7 @@ The team check of task 167.6 runs on a phone and on a laptop.
 - The sentences above the form sit in role alert areas. "Your changes are saved" sits in a role status area.
 - The button Edit and the form are only rendered for the owner of an open challenge, not hidden with CSS.
 
-The design: colours, fonts and spacing come only from `frontend/src/styles/tokens.css`, following the Figma frame Post a challenge on the page Design directions of the Figma board.
+The design: colours, fonts and spacing come only from `web/src/styles/tokens.css`, following the Figma frame Post a challenge on the page Design directions of the Figma board.
 
 ## Built by
 

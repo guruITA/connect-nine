@@ -56,7 +56,7 @@ coursework and the product at once. Bad: most of the team does not know React ye
 tooling choices cost early sprint velocity. The board has now made those choices in issue 03 Create
 an account, task 3.5: Vite as the build tool, React Router for the pages, TypeScript in strict mode,
 CSS Modules, ESLint and Prettier, Vitest with React Testing Library, and one shared helper
-`frontend/src/api/client.ts` for every call to the server. Neither React's documentation nor
+`web/src/api/client.ts` for every call to the server. Neither React's documentation nor
 BoKSA's article addresses the platform's security and privacy weight directly. How user-submitted
 content is shown safely is checked by the Security Specialist on top of these sources, through the
 security documents in `docs/security` (issues 12, 13, 18 and 19 of the epic Security analysis).

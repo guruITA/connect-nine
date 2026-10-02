@@ -1,6 +1,6 @@
 # Confirm your email address
 
-- Component: frontend/src/pages/ConfirmEmail.tsx, with ConfirmEmail.module.css and ConfirmEmail.test.tsx
+- Component: web/src/pages/ConfirmEmail.tsx, with ConfirmEmail.module.css and ConfirmEmail.test.tsx
 - Address in the browser: /confirm-email?token=<token>. The page removes the token from the address bar at once, so it then reads /confirm-email.
 - Heading on the page: Confirm your email address
 
@@ -49,7 +49,7 @@ flowchart LR
 3. Button: Confirm my email address
    - Opening the page never calls the server. Only pressing the button confirms, so a mail program that opens links by itself cannot confirm for the person.
    - The page reads the token once when it is first built (a useState initializer), keeps it in memory, and removes it from the address bar with history.replaceState. This keeps working when React runs the page twice in development.
-   - Pressing it calls confirmEmail(token) in frontend/src/api/emailConfirmations.ts. That sends POST /api/email-confirmations/confirm with { "token": "..." } in the body, through the shared helper frontend/src/api/client.ts. The token is never in the address of the request.
+   - Pressing it calls confirmEmail(token) in web/src/api/emailConfirmations.ts. That sends POST /api/email-confirmations/confirm with { "token": "..." } in the body, through the shared helper web/src/api/client.ts. The token is never in the address of the request.
    - While it waits the button says "Confirming..." and is disabled, so it cannot be pressed twice.
    - Rules on the server: the token must be filled in and at most 100 characters (ConfirmEmailRequestValidator, task 27.5). The server first looks for the link in the table email_confirmation (issue 27), and when it is not there, in the table email_change (task 115.3).
    - Built by task 27.6 (page) and task 27.5 (server), issue 27, GitLab #48, sprint 2. Extended by task 115.3 (server) and task 115.5 (page), issue 115 Change my email address, GitLab #54, sprint 2.
@@ -78,7 +78,7 @@ flowchart LR
 - Error: "This link does not work any more. A link works for 24 hours and only once." with the link Ask for a new link.
 - Not reachable: "Connect is not reachable right now, try again later" below the button, in role alert. A tester checks this by switching the phone to airplane mode.
 - Phone (360 pixels wide) and laptop (1280 pixels wide): the page matches the Figma frame Confirm your email address at both widths, with screenshots in the merge request (task 27.6). The team checks of task 27.9 and 115.7 use a phone of 360 pixels wide or close and a laptop.
-- Design: the Figma frame Confirm your email address on the Figma board of Connect, page Design directions. Colours, fonts and spacing come only from the variables in frontend/src/styles/tokens.css.
+- Design: the Figma frame Confirm your email address on the Figma board of Connect, page Design directions. Colours, fonts and spacing come only from the variables in web/src/styles/tokens.css.
 
 - Test data for the error state:
   - Ended confirmation link: ended-link@example.org, token seed-ended-link-token-27, on a laptop http://localhost:5173/confirm-email?token=seed-ended-link-token-27 (task 27.2). docs/testing/testData.md lists it for the test site too.
@@ -93,7 +93,7 @@ flowchart LR
 - No answer of the server holds an email address or an account id. No log line holds the token or an address (task 27.5 and task 115.3).
 - The confirmation email holds only the link and the sentences, no name, no password and no other detail (issue 27 and issue 115).
 - Confirming one link never changes another account.
-- ConfirmEmail.tsx does not call fetch. It only uses frontend/src/api/emailConfirmations.ts.
+- ConfirmEmail.tsx does not call fetch. It only uses web/src/api/emailConfirmations.ts.
 
 ## Built by
 

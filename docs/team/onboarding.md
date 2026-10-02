@@ -48,6 +48,8 @@ The seed accounts and the seed data of the test site are described in the testin
 ## 4. Configuration and secrets
 
 This is the section to get right. Connect keeps every secret out of Git, and there is one way to do that per environment.
+The complete reference is [architecture/configuration.md](../architecture/configuration.md);
+the tables and commands below are the onboarding version of the same rules.
 
 ### How the server reads settings
 
@@ -73,8 +75,8 @@ A value in `appsettings.json` is therefore a default, and an environment variabl
 | User Secrets | no, never | your local passwords, keys and connection strings | local machines |
 | `appsettings.Production.json` | yes | production settings that are not secret | production |
 | Kubernetes Secrets | no, never | production passwords, keys and connection strings | production on k3s |
-| `frontend/.env` | no, never | local frontend settings | local machines |
-| `frontend/.env.example` | yes | the names of the frontend variables, with no real values | documentation |
+| `web/.env` | no, never | local frontend settings | local machines |
+| `web/.env.example` | yes | the names of the frontend variables, with no real values | documentation |
 
 A real password, key, token or connection string that carries credentials never goes in a file whose row says yes.
 
@@ -131,7 +133,7 @@ The ignore rules cover the variants, so `.env.local` and `.env.production` canno
 ## 5. Run Connect
 
 ```
-dotnet run --project backend/Presentation
+dotnet run --project api/Connect/Connect.csproj
 npm install
 npm run dev
 ```

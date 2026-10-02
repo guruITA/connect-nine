@@ -1,6 +1,6 @@
 # Site page (privacy statement, house rules and other fixed pages)
 
-- Component: frontend/src/pages/SitePage.tsx, with SitePage.module.css and SitePage.test.tsx
+- Component: web/src/pages/SitePage.tsx, with SitePage.module.css and SitePage.test.tsx
 - Address in the browser: /privacy (English) and /privacy?language=nl (Dutch). The same component also serves /house-rules (issue 52) and /pages/<web address> for any site page (issue 148).
 - Title of the browser tab: Connect and the title of the page, for example Connect, Privacy statement or Connect, Privacyverklaring.
 
@@ -47,7 +47,7 @@ The page sits inside AppShell of issue 06, under the tabs and above the footer. 
    - The body, stored as markdown, turned into headings and lists by MarkdownView.tsx of task 50b.3, the one component for markdown on Connect. Raw HTML inside the markdown is not shown, and a script tag never reaches the page.
    - The text is wrapped in an element with lang set to the language of the answer, en or nl, so a screen reader reads Dutch with a Dutch voice.
    - The page holds no text of the statement in its code. All text comes from the server.
-   - Data: getSitePage(slug) in frontend/src/api/sitePages.ts asks GET /api/pages/{slug} through request() of frontend/src/api/client.ts and returns the page, not found, or not reachable. The page never calls fetch.
+   - Data: getSitePage(slug) in web/src/api/sitePages.ts asks GET /api/pages/{slug} through request() of web/src/api/client.ts and returns the page, not found, or not reachable. The page never calls fetch.
    - The address is open to everyone and on the open list of the guard of task 4.3. The slug is bound as text and checked by GetSitePageRequestValidator: only lower case letters, digits and -, at most 50 characters.
    - Answer when it works: 200 with {"data": {"slug": "privacy", "title": "Privacy statement", "body": "# Privacy statement ...", "updatedAt": "...", "language": "en", "otherLanguage": {"language": "nl", "slug": "privacy-nl"}}, "meta": {}}. otherLanguage is null when the other version does not exist. The answer never holds who saved the page or the id, because it uses FindBySlugAsync of task 50.1. The second lookup for the other language never sends the body of that version.
    - Answer for an unknown or odd slug: 404 as a ProblemDetails with the title "This page does not exist". Both get the same status and title, so nobody can learn which slugs exist.
@@ -72,7 +72,7 @@ Other addresses that show this same component:
 - Not reachable (fetch failed or an answer of 500 or higher): Connect is not reachable right now, try again later, in place of the text, with no codes or technical words. When the Dutch request fails, the page shows this sentence and never the English text in place of the Dutch one. A tester checks this with airplane mode on the phone.
 - Phone: the statement is visible within two seconds after pressing Privacy, on mobile data. The page shows only the tabs, one title, the statement and the footer, with no pop up, advert or other block.
 - Laptop: the same content inside the shell.
-- Design: the Figma frame of the site page on the Figma board of Connect, page Design directions. Colours, fonts and spacing come only from the variables in frontend/src/styles/tokens.css.
+- Design: the Figma frame of the site page on the Figma board of Connect, page Design directions. Colours, fonts and spacing come only from the variables in web/src/styles/tokens.css.
 
 ## Accessibility and privacy
 
@@ -93,7 +93,7 @@ Other addresses that show this same component:
 | 52 | Read the house rules from every page | #104 | 3 | must |
 | 148 | Add or delete a site page | #209 | 5 | could |
 
-Issue 51 needs issues 06 Move between the five tabs of Connect, 19 GDPR notes on minors' data, 50 Edit a site page without a deploy and 50b See a preview while I edit a site page first. Issue 51b needs issue 51. Issue 52 reuses the page and the switch and only adds the text, two rows, one link and the route /house-rules. Issue 148 adds the route /pages/:slug. Tasks of issues 51 and 51b in build order: 51.1 text, 51.2 database, 51.3 address, 51.4 page and footer, 51.5 end to end test (frontend/e2e/privacy.spec.ts), 51.6 team check, then 51b.1 Dutch text, 51b.2 database, 51b.3 address, 51b.4 switch, 51b.5 end to end test (frontend/e2e/privacyDutch.spec.ts), 51b.6 team check.
+Issue 51 needs issues 06 Move between the five tabs of Connect, 19 GDPR notes on minors' data, 50 Edit a site page without a deploy and 50b See a preview while I edit a site page first. Issue 51b needs issue 51. Issue 52 reuses the page and the switch and only adds the text, two rows, one link and the route /house-rules. Issue 148 adds the route /pages/:slug. Tasks of issues 51 and 51b in build order: 51.1 text, 51.2 database, 51.3 address, 51.4 page and footer, 51.5 end to end test (web/e2e/privacy.spec.ts), 51.6 team check, then 51b.1 Dutch text, 51b.2 database, 51b.3 address, 51b.4 switch, 51b.5 end to end test (web/e2e/privacyDutch.spec.ts), 51b.6 team check.
 
 ## Open points
 

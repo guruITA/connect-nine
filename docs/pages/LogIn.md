@@ -1,6 +1,6 @@
 # Log in
 
-- Component: frontend/src/pages/LogIn.tsx, with LogIn.module.css and LogIn.test.tsx
+- Component: web/src/pages/LogIn.tsx, with LogIn.module.css and LogIn.test.tsx
 - Address in the browser: /login, also /login?next=%2Faccount (the page to go back to, issue 04b) and /login?reason=idle (after an idle log out, issue 118)
 
 ## What the page is for
@@ -52,7 +52,7 @@ flowchart TD
 
 ### 1. Sentence after an idle log out (issue 118)
 - Text: "You were logged out because you did nothing for a while", above the form, in an area with role status.
-- When: reason=idle is in the address. The screen gets the reason from a 401 answer with the type /problems/session-idle, read by request() in frontend/src/api/client.ts and by getCurrentSession() in frontend/src/api/sessions.ts, so a reload after an idle time also shows it. It goes away after a good log in. A normal log out or an unknown session shows the page without it.
+- When: reason=idle is in the address. The screen gets the reason from a 401 answer with the type /problems/session-idle, read by request() in web/src/api/client.ts and by getCurrentSession() in web/src/api/sessions.ts, so a reload after an idle time also shows it. It goes away after a good log in. A normal log out or an unknown session shows the page without it.
 - Rules: the page decides on the type of the answer, never on the words of the title.
 - Built by: issue 118 Logged out after a while of doing nothing (GitLab #196, sprint 5), task 118.3.
 
@@ -75,17 +75,17 @@ flowchart TD
 ### 5. Box I am a person (issue 123)
 - Text: a real checkbox with the label "I am a person", under the password field. After a tick: "Checking that you are a person..." and then "Done", in an area with role status.
 - When: from the moment an answer of POST /api/sessions says puzzleRequired, which the server does from the third wrong password in a row for an email address, until a good log in. There is no box after the first or second wrong password.
-- Data: ticking asks a puzzle from GET /api/log-in-puzzles through getLogInPuzzle() in frontend/src/api/logInPuzzles.ts, and hands it to the widget of the tool chosen in task 123.1. The widget never calls the server itself. The next press on Log in sends the solution with logIn(email, password, puzzle).
+- Data: ticking asks a puzzle from GET /api/log-in-puzzles through getLogInPuzzle() in web/src/api/logInPuzzles.ts, and hands it to the widget of the tool chosen in task 123.1. The widget never calls the server itself. The next press on Log in sends the solution with logIn(email, password, puzzle).
 - Messages next to the box: "Tick the box to show you are a person." when Log in is pressed without a tick (result puzzleNeeded), and "The check could not run. Try again." when the puzzle cannot be fetched or the widget reports an error. After a message the box is unticked and can be ticked again.
 - Rules: a solution is used once. The page clears it after every press on Log in. There is nothing to read, type, hear or recognise, only a tick. The box looks exactly the same for an email address that has no account. The widget is pinned to one version and calls no address outside Connect.
-- Component: frontend/src/components/logIn/PersonCheck.tsx.
+- Component: web/src/components/logIn/PersonCheck.tsx.
 - Built by: issue 123 A puzzle that proves I am a person before I log in (GitLab #200, sprint 5), task 123.4.
 
 ### 6. Button Log in
 - Text: Log in. While Connect checks the password it says "Logging in..." and is disabled, so it cannot be pressed twice.
-- Data: logIn(email, password) in frontend/src/api/sessions.ts sends POST /api/sessions through request() in frontend/src/api/client.ts. The page never sees a status code.
+- Data: logIn(email, password) in web/src/api/sessions.ts sends POST /api/sessions through request() in web/src/api/client.ts. The page never sees a status code.
 - After a good log in (204): the server sets the cookie connect_session for 24 hours. The page calls refresh() of useSession and waits for it, so the tab Profile shows the member's display name at once, then goes to safeNextPath(next) or to the home page.
-- During a wait: disabled with "Try again in `<n>` s", counting down every second with useCountdown (frontend/src/hooks/useCountdown.tsx) from the number in the header Retry-After, or from 60 when it is missing or not a whole number above zero. At zero it says Log in again.
+- During a wait: disabled with "Try again in `<n>` s", counting down every second with useCountdown (web/src/hooks/useCountdown.tsx) from the number in the header Retry-After, or from 60 when it is missing or not a whole number above zero. At zero it says Log in again.
 - During a lock: disabled with "Locked until 14:30", the end time of the lock. At the end time it says Log in again.
 - Rules: the button stays usable while the box I am a person is shown, so a press without a tick gets the message of the server. The countdown text is not a live region and is not kept in local storage. logIn passes the option ownWaitMessage: true to request(), so a 429 on Log in shows only the wait message of this page below the form and never the general sentence "You asked too often. Wait a minute and try again." at the top of the page (issue 105 Connect keeps working under too many requests, task 105.2).
 - Built by: issue 04 task 4.5 (button and busy state), task 4.6 (refresh), issue 04b task 4b.3 (next), issue 30 Wait a minute after five wrong passwords (GitLab #60, sprint 2) task 30.3 (countdown), issue 31 Account locked after fifteen wrong passwords (GitLab #62, sprint 2) task 31.3 (locked).
@@ -99,7 +99,7 @@ One area with role alert, so a screen reader reads each message aloud as soon as
 | Every code from 500 to 599, or no answer | "Connect is not reachable right now, try again later". What was typed in the email field stays. | 04, task 4.5 |
 | 429, wait for one email address | "Too many tries. Wait a minute and try again." It comes after five wrong passwords within one minute for the same address. During the wait even the right password does not get in. | 30, task 30.3 |
 | 429 with "limit": "device" | "Too many tries from this phone or laptop. Wait a minute and try again." with a second line "On a shared wifi, the tries of other people count too." It comes after ten tries within one minute from one phone or laptop, whatever addresses were typed. Another phone or laptop can log in as usual. | 30b, task 30b.3 |
-| 429 with the field lockedUntil | "Too many wrong tries for this email address. You can log in again at 14:30." It comes at the fifteenth wrong password in a row, for fifteen minutes. The time is written by formatTime(date) in frontend/src/utils/formatTime.ts, with Intl.DateTimeFormat, the locale en-GB and timeStyle short, in the time zone of the member's own device, so it reads 14:30 and never 2:30 PM. | 31, task 31.3 |
+| 429 with the field lockedUntil | "Too many wrong tries for this email address. You can log in again at 14:30." It comes at the fifteenth wrong password in a row, for fifteen minutes. The time is written by formatTime(date) in web/src/utils/formatTime.ts, with Intl.DateTimeFormat, the locale en-GB and timeStyle short, in the time zone of the member's own device, so it reads 14:30 and never 2:30 PM. | 31, task 31.3 |
 | The same locked answer | Directly below the locked message: "If this address has an account on Connect, we have sent an email about it." and a link Set a new password to /forgot-password. The link is a real link element with a visible focus outline. | 31b, task 31b.3 |
 | The same locked answer | Below that: "Every phone and laptop that was logged in to this account is now logged out." on its own line, for every locked answer. | 124, task 124.3 |
 | 403, account not active | "Your account is not active, contact the foundation". The password is emptied. Never the wrong password message. | 46, task 46.6 |
@@ -114,7 +114,7 @@ One area with role alert, so a screen reader reads each message aloud as soon as
 
 ### 9. Line "or" and the buttons Continue with Google and Continue with Facebook
 - Text: the line "or" between the form and the buttons, then Continue with Google with the Google icon, and under it Continue with Facebook with the Facebook icon, in the same order as on Make an account.
-- Component: SocialLoginButton (frontend/src/components/SocialLoginButton.tsx) with the property provider, and the icons GoogleIcon.tsx and FacebookIcon.tsx as inline SVG with aria-hidden. There is no separate FacebookButton.
+- Component: SocialLoginButton (web/src/components/SocialLoginButton.tsx) with the property provider, and the icons GoogleIcon.tsx and FacebookIcon.tsx as inline SVG with aria-hidden. There is no separate FacebookButton.
 - Behaviour: the whole browser goes to `/api/auth/google/start?next=<next>` or `/api/auth/facebook/start?next=<next>`. next is the ?next= of this page when it starts with a single / followed by something that is not `/` and not `\`, otherwise /. No script, font or picture is loaded from Google or Facebook in the page.
 - What goes wrong at Google or Facebook is shown on the return page /login/return, not on this page.
 - Built by: issue 23 Register or log in with Google (GitLab #46, sprint 2), task 23.5, and issue 24 Register or log in with Facebook (GitLab #49, sprint 2), task 24.3.
@@ -149,9 +149,9 @@ The wait message and the locked message appear within one second after pressing 
 - The box I am a person is a real checkbox with a visible label, so it works with the keyboard and a screen reader (WCAG 2.2 success criterion 3.3.8).
 - A screen reader reads the social buttons as Continue with Google and Continue with Facebook. The icons are hidden with aria-hidden.
 - The link Set a new password is reachable with Tab and opened with Enter.
-- Colours, fonts and spacing come only from frontend/src/styles/tokens.css, following the Figma frames Log in and Social buttons on the Figma board.
+- Colours, fonts and spacing come only from web/src/styles/tokens.css, following the Figma frames Log in and Social buttons on the Figma board.
 - Privacy: nothing on the page tells a stranger whether an email address has an account on Connect. The wrong password message, the waits, the lock, the sentences below the lock and the box I am a person look the same for every address. The password is hidden, never kept and never shown. The page never shows who tried or from where. No script from Google or Facebook is loaded, so they do not learn that a young person visits Connect. The cookie is HttpOnly, so the screen asks the server who is logged in and never reads the cookie or keeps a logged in flag in local storage.
-- safeNextPath (frontend/src/utils/safeNextPath.ts) only follows next when it is a page of Connect. It refuses `//x`, `/\x`, full addresses, javascript: and /login, so a link can never send a member to a fake copy of Connect after logging in.
+- safeNextPath (web/src/utils/safeNextPath.ts) only follows next when it is a page of Connect. It refuses `//x`, `/\x`, full addresses, javascript: and /login, so a link can never send a member to a fake copy of Connect after logging in.
 
 ## Built by
 

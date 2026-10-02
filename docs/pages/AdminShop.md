@@ -1,8 +1,8 @@
 # Admin shop (the items of the shop)
 
-- Component: frontend/src/pages/AdminShop.tsx, with AdminShop.module.css and AdminShop.test.tsx
-- Address in the browser: /admin/shop (registered in frontend/src/App.tsx inside RequireLogin and RequireAdmin)
-- The form to add or change an item is its own page: frontend/src/pages/AdminProductEdit.tsx with the component frontend/src/components/ProductForm.tsx, at /admin/shop/new and /admin/shop/:id.
+- Component: web/src/pages/AdminShop.tsx, with AdminShop.module.css and AdminShop.test.tsx
+- Address in the browser: /admin/shop (registered in web/src/App.tsx inside RequireLogin and RequireAdmin)
+- The form to add or change an item is its own page: web/src/pages/AdminProductEdit.tsx with the component web/src/components/ProductForm.tsx, at /admin/shop/new and /admin/shop/:id.
 
 ## What the page is for
 
@@ -16,7 +16,7 @@ Connect has a small shop where members buy merchandise of the foundation (issue 
 
 ## How you get there and where you go next
 
-The admin presses Admin and then the item Shop in the admin menu (frontend/src/components/AdminMenu.tsx, made by task 32.4 of issue 32, with the item Projects of task 48.4 of issue 48). Task 150.7 adds the item Shop, which links to /admin/shop. From here the link Add an item goes to the empty form at /admin/shop/new, and the link Change of an item goes to the filled form at /admin/shop/<id>. After a save on the form, the admin comes back to this page, where "The item is saved" is read. Switch off and Switch on work in place and keep the admin on this page.
+The admin presses Admin and then the item Shop in the admin menu (web/src/components/AdminMenu.tsx, made by task 32.4 of issue 32, with the item Projects of task 48.4 of issue 48). Task 150.7 adds the item Shop, which links to /admin/shop. From here the link Add an item goes to the empty form at /admin/shop/new, and the link Change of an item goes to the filled form at /admin/shop/<id>. After a save on the form, the admin comes back to this page, where "The item is saved" is read. Switch off and Switch on work in place and keep the admin on this page.
 
 ```mermaid
 flowchart LR
@@ -34,9 +34,9 @@ flowchart LR
 
 ## Every element of the page, top to bottom
 
-The page sits inside the admin area of issue 45. Colours, fonts and spacing come only from the variables in frontend/src/styles/tokens.css.
+The page sits inside the admin area of issue 45. Colours, fonts and spacing come only from the variables in web/src/styles/tokens.css.
 
-Data for the list: getAdminProducts(page) in frontend/src/api/adminProducts.ts asks GET /api/admin/products?page=<page>&pageSize=20 through the shared helper client.ts. The page never sees a status code. The server (task 150.3, AdminProductListService, AdminProductListRequestValidator) sits in the group /api/admin with the rule AdminOnly. It reads every item, the switched off ones too, sorted by name and then id, paged in the database (ListAllPageAsync and CountAllAsync of task 150.1). The answer is {"data": [{"id", "name", "description", "priceInCents", "vatIncluded", "isActive", "imageUrl"}], "meta": {"page", "pageSize", "total"}}. page starts at 1 and pageSize is 1 to 50. A wrong value gives 400 with "The page must be 1 or higher" or "Choose a page size from 1 to 50". A database that is down gives 503 with "Connect is not reachable right now". Prices come in cents and the screen shows euros.
+Data for the list: getAdminProducts(page) in web/src/api/adminProducts.ts asks GET /api/admin/products?page=<page>&pageSize=20 through the shared helper client.ts. The page never sees a status code. The server (task 150.3, AdminProductListService, AdminProductListRequestValidator) sits in the group /api/admin with the rule AdminOnly. It reads every item, the switched off ones too, sorted by name and then id, paged in the database (ListAllPageAsync and CountAllAsync of task 150.1). The answer is {"data": [{"id", "name", "description", "priceInCents", "vatIncluded", "isActive", "imageUrl"}], "meta": {"page", "pageSize", "total"}}. page starts at 1 and pageSize is 1 to 50. A wrong value gives 400 with "The page must be 1 or higher" or "Choose a page size from 1 to 50". A database that is down gives 503 with "Connect is not reachable right now". Prices come in cents and the screen shows euros.
 
 1. Heading: Shop
    - Built by task 150.7, issue 150 Change the items of the shop through a screen, GitLab #232, sprint 5.
@@ -58,7 +58,7 @@ Data for the list: getAdminProducts(page) in frontend/src/api/adminProducts.ts a
    - Built by task 150.7, issue 150, GitLab #232, sprint 5.
 6. Button per item: Switch off (when for sale) or Switch on (when switched off)
    - Its accessible name holds the name of the item, for example "Switch off Check cap".
-   - Pressing it calls changeProduct(id, values) in frontend/src/api/adminProducts.ts, which sends PUT /api/admin/products/{id} with the current values and isActive changed. The server (task 150.5, ProductAdminService.ChangeAsync) is only for an admin, binds the id as text, and answers 200 with the changed item, 400 on id with "This item is not known" for an id that is not real, 404 with "This item was not found" for an unknown id, and 503 when the database is down.
+   - Pressing it calls changeProduct(id, values) in web/src/api/adminProducts.ts, which sends PUT /api/admin/products/{id} with the current values and isActive changed. The server (task 150.5, ProductAdminService.ChangeAsync) is only for an admin, binds the id as text, and answers 200 with the changed item, 400 on id with "This item is not known" for an id that is not real, 404 with "This item was not found" for an unknown id, and 503 when the database is down.
    - While waiting the button says "Saving..." and is disabled.
    - Success: the status text changes in place, and a status area reads "Check cap is switched off" or "is for sale again". Members no longer see a switched off item on the page Shop, because ListForSaleAsync of issue 81 filters on it.
    - Failure: the status stays and "Connect is not reachable right now, the change is not saved." appears next to the button.

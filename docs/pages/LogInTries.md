@@ -1,6 +1,6 @@
 # Log in tries
 
-- Component: frontend/src/pages/LogInTries.tsx, with LogInTries.module.css and LogInTries.test.tsx
+- Component: web/src/pages/LogInTries.tsx, with LogInTries.module.css and LogInTries.test.tsx
 - Address in the browser: /account/log-in-tries
 - Title of the browser tab: Connect, Log in tries (task 125.4, following the rule of task 6.3 that every page title is Connect and its own name).
 
@@ -28,7 +28,7 @@ flowchart LR
 1. Heading: Log in tries
    - Built by task 125.4, issue 125 See every log in try on my account, GitLab #201, sprint 5.
 2. The list of tries
-   - Data: GET /api/accounts/current/log-in-attempts?page=1&pageSize=20, called by getLogInAttempts(page) in frontend/src/api/logInAttempts.ts through the shared helper. It returns the page with its items and total, notLoggedIn, or notReachable. The page never sees a status code.
+   - Data: GET /api/accounts/current/log-in-attempts?page=1&pageSize=20, called by getLogInAttempts(page) in web/src/api/logInAttempts.ts through the shared helper. It returns the page with its items and total, notLoggedIn, or notReachable. The page never sees a status code.
    - The server gives only the tries of the account in the cookie, newest first. It checks the page numbers of the list and lets only a logged in member ask.
    - Each line is one list item: the date and the time in the member's own time zone (Intl.DateTimeFormat, for example 12 October 2026, 14:30), then "Worked" or "Wrong password", then "Password", "Google" or "Facebook".
    - A try is saved in the table log_in_attempt when a password is wrong or a log in works, for an address that has an account. A try on an address without an account is saved nowhere. Tries during the minute wait of issue 30 or the lock of issue 31 are not listed, because Connect did not check a password then.
@@ -52,7 +52,7 @@ The page My account gets a real link Log in tries to this page (task 125.4, in M
 - Not reachable on the first page: "Connect is not reachable right now, try again later" in an area with role alert, in the place of the list.
 - Not reachable on Load more: the same sentence under the list, and the lines already shown stay.
 - Phone (360 pixels wide) and laptop (1280 pixels wide): the team checks every criterion on both on the test site (task 125.6).
-- Design: follows the Figma frame of My account on the Figma board of Connect (page Design directions). Colours, fonts and spacing only through frontend/src/styles/tokens.css.
+- Design: follows the Figma frame of My account on the Figma board of Connect (page Design directions). Colours, fonts and spacing only through web/src/styles/tokens.css.
 
 ## Accessibility and privacy
 

@@ -1,6 +1,6 @@
 # The page Organisations
 
-Component: `frontend/src/pages/Organisations.tsx`.
+Component: `web/src/pages/Organisations.tsx`.
 Address in the browser: `/organisations`.
 
 ## What the page is for
@@ -15,7 +15,7 @@ The page Organisations lists every organisation on Connect, sorted by name, with
 
 ## How you get there and where you go next
 
-- The link All organisations on the page Discover, near the top. Task 134.3 adds it to frontend/src/pages/Discover.tsx.
+- The link All organisations on the page Discover, near the top. Task 134.3 adds it to web/src/pages/Discover.tsx.
 - From here each name opens the page of that organisation at `/organisations/<id>` (issue 35).
 
 ```mermaid
@@ -37,7 +37,7 @@ flowchart TD
 ### The list of organisations
 
 - What it shows: a `ul` with one `li` per organisation, twenty at first, in the order of the server (by name). Each shows the name as a link to `/organisations/<id>`, and below it the kind from `ORGANISATION_KIND_LABELS` of issue 34.
-- Data: `getOrganisations(page)` in `frontend/src/api/organisationProfiles.ts` asks `GET /api/organisation-profiles?page=1&pageSize=20` through `request()`, with the results ok (items, total) and notReachable. The server checks that the person is logged in, reads page and page size as text and gives a plain message when they are wrong, and leaves out organisations that are not confirmed or are switched off. The answer holds the id, the name and the kind of each organisation, with page, page size and total. A page after the last one gives an empty list, never an error (task 134.2).
+- Data: `getOrganisations(page)` in `web/src/api/organisationProfiles.ts` asks `GET /api/organisation-profiles?page=1&pageSize=20` through `request()`, with the results ok (items, total) and notReachable. The server checks that the person is logged in, reads page and page size as text and gives a plain message when they are wrong, and leaves out organisations that are not confirmed or are switched off. The answer holds the id, the name and the kind of each organisation, with page, page size and total. A page after the last one gives an empty list, never an error (task 134.2).
 - Built by: issue 134, tasks 134.2 and 134.3.
 
 ### Button Load more
@@ -66,7 +66,7 @@ The team check of task 134.5 runs on a phone and on a laptop.
 - The error sits in a role alert area.
 - The list shows only organisations that confirmed their email address and are not switched off. It shows no logo (issue 133 shows the logo on the page of the organisation only).
 
-The design: colours, fonts and spacing come only from `frontend/src/styles/tokens.css`, following the Figma frame Organisations on the page Design directions of the Figma board.
+The design: colours, fonts and spacing come only from `web/src/styles/tokens.css`, following the Figma frame Organisations on the page Design directions of the Figma board.
 
 ## Built by
 

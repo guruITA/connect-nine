@@ -1,7 +1,7 @@
 # News item
 
-- Component: frontend/src/pages/NewsItem.tsx, with NewsItem.module.css and NewsItem.test.tsx. The picture is the shared component frontend/src/components/NewsPicture.tsx.
-- Address in the browser: /news/:id, for example /news/00000000-0000-4000-8000-000000000725 (registered in frontend/src/App.tsx inside the layout route of issue 06 and outside RequireLogin)
+- Component: web/src/pages/NewsItem.tsx, with NewsItem.module.css and NewsItem.test.tsx. The picture is the shared component web/src/components/NewsPicture.tsx.
+- Address in the browser: /news/:id, for example /news/00000000-0000-4000-8000-000000000725 (registered in web/src/App.tsx inside the layout route of issue 06 and outside RequireLogin)
 - Title of the browser tab: Connect, <title of the item>
 
 ## What the page is for
@@ -37,9 +37,9 @@ flowchart LR
 
 ## Every element of the page, top to bottom
 
-The page sits inside the shell of the site. Colours, fonts and spacing come only from the variables in frontend/src/styles/tokens.css.
+The page sits inside the shell of the site. Colours, fonts and spacing come only from the variables in web/src/styles/tokens.css.
 
-Data for the whole page: getNewsItem(id) in frontend/src/api/newsItems.ts asks GET /api/news-items/{id} through the shared helper and returns the item, not found or not reachable. The page never sees a status code. The server (task 73.2, NewsItemReadService, NewsItemIdValidator) is open to everyone (AllowAnonymous). The id is bound as text and checked as a uuid, never with {id:guid} in the route. The answer is {"data": {"id", "title", "body", "publishedAt", "changedAt", "image"}, "meta": {}}. It never holds the author, and the query (task 73.1) does not even read the author. An unknown uuid and a text that is not a uuid give the same NotFoundProblem, so nobody learns which ids exist. A database that is down gives 503 with "Connect is not reachable right now", never 404.
+Data for the whole page: getNewsItem(id) in web/src/api/newsItems.ts asks GET /api/news-items/{id} through the shared helper and returns the item, not found or not reachable. The page never sees a status code. The server (task 73.2, NewsItemReadService, NewsItemIdValidator) is open to everyone (AllowAnonymous). The id is bound as text and checked as a uuid, never with {id:guid} in the route. The answer is {"data": {"id", "title", "body", "publishedAt", "changedAt", "image"}, "meta": {}}. It never holds the author, and the query (task 73.1) does not even read the author. An unknown uuid and a text that is not a uuid give the same NotFoundProblem, so nobody learns which ids exist. A database that is down gives 503 with "Connect is not reachable right now", never 404.
 
 1. Link: Back to news
    - Goes to /news.
@@ -62,7 +62,7 @@ Data for the whole page: getNewsItem(id) in frontend/src/api/newsItems.ts asks G
    - Next to Edit when that exists. A real button element, only rendered when the role in useSession is Admin.
    - Pressing it opens ConfirmDialog of task 113.3 with the question "Remove this news item? Everyone loses it and it cannot be undone.", confirmLabel Remove and cancelLabel Keep (the optional prop cancelLabel of task 70.3), and the focus on Keep when it opens, through the optional prop focusCancel with the default false that task 165.3 adds to ConfirmDialog. Issues 113 and 70 do not pass focusCancel, so their windows stay as they are.
    - Keep or Escape: the window closes, the focus goes back to Remove, nothing is sent.
-   - Remove in the window calls removeNewsItem(id) in frontend/src/api/newsItems.ts, which sends DELETE /api/admin/news-items/{id}. The server (task 165.2, RemoveNewsItemService) removes the row first (task 165.1) and then the picture file. Only an admin may call it. A member gets 403, a visitor 401.
+   - Remove in the window calls removeNewsItem(id) in web/src/api/newsItems.ts, which sends DELETE /api/admin/news-items/{id}. The server (task 165.2, RemoveNewsItemService) removes the row first (task 165.1) and then the picture file. Only an admin may call it. A member gets 403, a visitor 401.
    - While waiting: Remove in the window says "Removing..." and is disabled, so a second press sends nothing.
    - Removed (204): the admin goes to /news, and the list shows "The news item is removed" in an area with role status.
    - Not found (404, for example when another admin removed it first): NotFound of task 53.3 in the place of the item.

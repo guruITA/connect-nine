@@ -1,7 +1,7 @@
 # Admin, Projects
 
-- Component: frontend/src/pages/AdminProjects.tsx, with AdminProjects.module.css and AdminProjects.test.tsx
-- Server helpers: frontend/src/api/adminProjects.ts (listAdminProjects, removeProject, bringBackProject, the constant REMOVAL_REASONS)
+- Component: web/src/pages/AdminProjects.tsx, with AdminProjects.module.css and AdminProjects.test.tsx
+- Server helpers: web/src/api/adminProjects.ts (listAdminProjects, removeProject, bringBackProject, the constant REMOVAL_REASONS)
 - Address in the browser: /admin/projects, the item Projects in the admin menu under the tab Admin
 - Server addresses: GET /api/admin/projects?page=1&pageSize=20, POST /api/admin/projects/{id}/removal, DELETE /api/admin/projects/{id}/removal
 
@@ -39,7 +39,7 @@ flowchart LR
    - Built by task 48.4, issue 48 Remove content that breaks the rules, GitLab #121, sprint 3.
 
 2. The list of projects
-   - Data: listAdminProjects(page) asks GET /api/admin/projects?page=<page>&pageSize=20 through the shared helper frontend/src/api/client.ts and reads data and meta. The page never calls fetch itself.
+   - Data: listAdminProjects(page) asks GET /api/admin/projects?page=<page>&pageSize=20 through the shared helper web/src/api/client.ts and reads data and meta. The page never calls fetch itself.
    - On the server only an admin gets through. The page number and page size are checked, and a wrong page gets a plain message. The table project is read with the query filter switched off on purpose, because the admin must also see removed projects.
    - One article per project, newest first, with:
      - the title as a heading,
@@ -83,7 +83,7 @@ flowchart LR
    - Built by task 48.4, issue 48, GitLab #121, sprint 3.
 
 7. Words on the page Activity (not on this page, but part of the same work)
-   - project.removed shows as "removed a project" and project.restored as "brought back a project" on the page Activity (frontend/src/pages/AdminActivity.tsx). The line on Activity never holds the title or the text of a removed project (AC6 of issue 48).
+   - project.removed shows as "removed a project" and project.restored as "brought back a project" on the page Activity (web/src/pages/AdminActivity.tsx). The line on Activity never holds the title or the text of a removed project (AC6 of issue 48).
    - Built by tasks 48.4 and 141.3.
 
 ## States
@@ -96,7 +96,7 @@ flowchart LR
 - Error, removing a project that is already removed: "This project was already removed", and the project is asked again so the removed line shows.
 - Error, bringing back: "This project is not removed anymore." when another admin brought it back a moment before (the list is loaded again), "This project does not exist." for an unknown project (the list is loaded again), and "Connect is not reachable right now, try again later" in a region with role alert, where the row stays removed. The row never shows as back on an error.
 - A tester checks not reachable by switching the phone to airplane mode before pressing Remove project or Bring back project.
-- Phone (360 pixels wide) and laptop (1280 pixels wide): no scrolling sideways. Colours, fonts and spacing come only from frontend/src/styles/tokens.css. Cards 48.4 and 141.3 point to the Figma frames of the admin pages on the page Design directions. See Open points.
+- Phone (360 pixels wide) and laptop (1280 pixels wide): no scrolling sideways. Colours, fonts and spacing come only from web/src/styles/tokens.css. Cards 48.4 and 141.3 point to the Figma frames of the admin pages on the page Design directions. See Open points.
 
 ## Accessibility and privacy
 

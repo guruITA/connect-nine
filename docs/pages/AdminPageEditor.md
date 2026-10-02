@@ -1,6 +1,6 @@
 # The editor of a site page (admin)
 
-Component: `frontend/src/pages/AdminPageEditor.tsx`, with `frontend/src/components/MarkdownView.tsx` and `frontend/src/components/adminPageEditor/EarlierVersions.tsx`.
+Component: `web/src/pages/AdminPageEditor.tsx`, with `web/src/components/MarkdownView.tsx` and `web/src/components/adminPageEditor/EarlierVersions.tsx`.
 Address in the browser: `/admin/pages/<slug>`, for example `/admin/pages/house-rules`.
 
 ## What the page is for
@@ -53,7 +53,7 @@ flowchart TD
 ### Line Last changed on
 
 - Text: "Last changed on <date> by <email>", or "Last changed on <date>" when no person saved it yet. The date is written in the time zone Europe/Amsterdam.
-- Data: `getSitePageForEdit(slug)` in `frontend/src/api/adminSitePages.ts` asks `GET /api/admin/site-pages/{slug}`, inside the group `/api/admin` of issue 45, so only an admin reaches it. The answer holds the title, the text, the date of the last change and the email address of the admin who made it (task 50.2).
+- Data: `getSitePageForEdit(slug)` in `web/src/api/adminSitePages.ts` asks `GET /api/admin/site-pages/{slug}`, inside the group `/api/admin` of issue 45, so only an admin reaches it. The answer holds the title, the text, the date of the last change and the email address of the admin who made it (task 50.2).
 - Built by: issue 50, tasks 50.2 and 50.5.
 
 ### Field Title
@@ -141,7 +141,7 @@ flowchart TD
 - Nothing the admin types or pastes ever runs as code in a browser, in the preview, in Show or on the public page.
 - The email address of the admin who saved a page is shown only to admins, never to visitors.
 
-The design: colours, fonts and spacing come only from `frontend/src/styles/tokens.css`, following the Figma frame of the editor on the page Design directions of the Figma board.
+The design: colours, fonts and spacing come only from `web/src/styles/tokens.css`, following the Figma frame of the editor on the page Design directions of the Figma board.
 
 ## Built by
 

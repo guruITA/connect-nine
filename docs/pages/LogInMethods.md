@@ -1,6 +1,6 @@
 # Log in methods (LogInMethods)
 
-Component: `frontend/src/pages/LogInMethods.tsx`, with `LogInMethods.module.css`, the row `frontend/src/components/logInMethods/LogInMethodRow.tsx` and the part `frontend/src/components/logInMethods/SetPasswordSection.tsx`.
+Component: `web/src/pages/LogInMethods.tsx`, with `LogInMethods.module.css`, the row `web/src/components/logInMethods/LogInMethodRow.tsx` and the part `web/src/components/logInMethods/SetPasswordSection.tsx`.
 Address in the browser: `/account/logins`.
 
 ## What the page is for
@@ -52,7 +52,7 @@ flowchart TD
 - What it shows: one row per linked account, with the name (Google or Facebook) and the date it was linked, written as for example "linked on 2 October 2026". A screen reader hears for example "Google, linked on 2 October 2026".
 - Empty: "No outside accounts are linked to your account."
 - Loading: "Loading...".
-- Data: `getLogInMethods()` in `frontend/src/api/logInMethods.ts` asks `GET /api/accounts/current/logins` through `frontend/src/api/client.ts` (task 25.2). The answer holds the list and hasPassword. The type LogInMethod has only provider and linkedAt.
+- Data: `getLogInMethods()` in `web/src/api/logInMethods.ts` asks `GET /api/accounts/current/logins` through `web/src/api/client.ts` (task 25.2). The answer holds the list and hasPassword. The type LogInMethod has only provider and linkedAt.
 - Never on the page: a Google or Facebook id, a picture or a name from those companies.
 - Built by: issue 25, task 25.3.
 
@@ -82,7 +82,7 @@ flowchart TD
 - Field New password: type password, autocomplete new-password, with the hint "At least fifteen characters" below its label.
 - Field New password again: the same.
 - Button Save. While waiting: "Saving..." and disabled.
-- What happens: `setPassword(password, passwordAgain)` in `frontend/src/api/accounts.ts` sends `POST /api/accounts/current/password` through `client.ts` (task 26.2). The server uses the same password rules of issue 03b (`PasswordRules.cs`) and the same hasher as Make an account, and writes the password only when the account has none.
+- What happens: `setPassword(password, passwordAgain)` in `web/src/api/accounts.ts` sends `POST /api/accounts/current/password` through `client.ts` (task 26.2). The server uses the same password rules of issue 03b (`PasswordRules.cs`) and the same hasher as Make an account, and writes the password only when the account has none.
 - Code 204: "Your password is set. You can now also log in with your email address and this password." in place of the part. Both fields are emptied and the page asks the log in methods again, so the part stays gone after a reload. From then on the member can log in with email and password, and Google or Facebook keeps working too.
 - Code 400: "Use at least fifteen characters for your password" below New password, "The two passwords are not the same" below New password again, in an area with role alert, and the focus on the first field with a message. Nothing is saved.
 - Code 409: "This account already has a password. Nothing was changed." below the button. The page asks the log in methods again, so the part goes away. A password that already exists is never changed or overwritten, also when two tabs press Save at the same moment.
@@ -111,7 +111,7 @@ flowchart TD
 - The page shows only the name of the provider and the date, never an id, a picture or a name from Google or Facebook.
 - A member can only ever see, remove or set their own log in methods.
 
-The design: colours, fonts and spacing come only from the variables in `frontend/src/styles/tokens.css`, following the Figma frame Log in methods on the Figma board.
+The design: colours, fonts and spacing come only from the variables in `web/src/styles/tokens.css`, following the Figma frame Log in methods on the Figma board.
 
 ## Built by
 
