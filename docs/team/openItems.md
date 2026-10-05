@@ -46,6 +46,7 @@ Decisions the team, or the team with the client, still has to make.
 | The web address of the live version | The client | Issue 10 task 10.6, confirmed in issue 91, client question 113 | `docs/architecture/infrastructure.md` |
 | One line of the Definition of Done is still a proposal to confirm with the client: every button and link on a phone is at least 44 by 44 pixels | Whole team, with the client | Issue 10, no question number yet | `definitionOfDone.md` |
 | Clarify one unreadable entry in the skills inventory, recorded as "lid low" | Bayon Eerhart | Open, no issue | `docs/architecture/techStack.md` |
+| A temporary test address with a padlock before the client's DNS record: a wildcard DNS name such as sslip.io, a free dynamic DNS name, an own domain, or a Let's Encrypt certificate for the bare IP address | Whole team | A stand up in sprint 1, owner Nick Hoebe, inside issue 09 task 9.4 | `docs/architecture/infrastructure.md` |
 
 ## Needs asking
 
@@ -102,10 +103,11 @@ were to be asked by Thursday 24 September 2026. No answer is recorded yet.
 
 Dated items the team has to schedule.
 
-- **Issue 09 Every team member on the client's server is blocked.** It waits for the client to
-  give the first login and to point the test address at the server. Issue 03 Create an account
-  puts Connect on that server for the first time. Owner: the Product Owner of sprint 1, Nick Hoebe, with the
-  client. Date: sprint 1, before 9 October 2026.
+- **Issue 09 Every team member on the client's server waits on the test address.** The first
+  login arrived from the client on 2 October 2026 and the server is prepared. It waits only on
+  the DNS record of the test address. Issue 03 Create an account puts Connect on that server for
+  the first time. Owner: the Product Owner of sprint 1, Nick Hoebe, with the client. Date: sprint
+  1, before 9 October 2026.
 - **Kelvin van Voorst's Security requirements and risk framing datapoint.** The security
   requirements, key assets and main risks of the project. On the board as issue 12 Inventory of
   the personal data per module and issue 13 The role table per module (sprint 1), and issue 18
