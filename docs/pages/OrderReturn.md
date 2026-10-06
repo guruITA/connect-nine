@@ -1,6 +1,6 @@
 # Thank you for your order
 
-- Component: frontend/src/pages/OrderReturn.tsx, with OrderReturn.module.css and OrderReturn.test.tsx
+- Component: web/src/pages/OrderReturn.tsx, with OrderReturn.module.css and OrderReturn.test.tsx
 - Address in the browser: /orders/return?order=<order id>
 
 ## What the page is for
@@ -28,7 +28,7 @@ flowchart LR
 ## Every element of the page, top to bottom
 
 1. Waiting text: "We are checking your payment..."
-   - In role status. The page asks GET /api/orders/{id} through getOrder(id) in frontend/src/api/orders.ts every 2 seconds, at most 15 times. The two numbers are named constants.
+   - In role status. The page asks GET /api/orders/{id} through getOrder(id) in web/src/api/orders.ts every 2 seconds, at most 15 times. The two numbers are named constants.
    - The page never trusts the return address alone. Anyone can type /orders/return without paying. Only the server, after asking the provider, knows the status.
    - On the server, the provider also sends a callback to POST /api/payments/callback. That address is open, and the server hands it on without trusting it. An order only becomes paid after the provider itself confirms the right amount. A repeated or simultaneous message changes nothing, and the basket is emptied once (task 83.3).
    - Built by task 83.5, issue 83 Pay for my basket, GitLab #194, sprint 5.
@@ -60,7 +60,7 @@ flowchart LR
 - Still pending: the sentence to wait for the email, after 15 tries.
 - Not reachable: "Connect is not reachable right now, try again later" with Try again.
 - Phone (360 pixels wide) and laptop (1280 pixels wide): the page matches the Figma frame Thank you at both widths, shown with screenshots in the merge request.
-- Design: the Figma frame Thank you on the Figma board of Connect, page Design directions. Colours and sizes only from frontend/src/styles/tokens.css.
+- Design: the Figma frame Thank you on the Figma board of Connect, page Design directions. Colours and sizes only from web/src/styles/tokens.css.
 
 ## Accessibility and privacy
 

@@ -1,6 +1,6 @@
 # The page of one project
 
-- Component: frontend/src/pages/MyProject.tsx, with MyProject.module.css and MyProject.test.tsx. The picture buttons are frontend/src/components/ProjectImagePicker.tsx.
+- Component: web/src/pages/MyProject.tsx, with MyProject.module.css and MyProject.test.tsx. The picture buttons are web/src/components/ProjectImagePicker.tsx.
 - Address in the browser: /profile/projects/:id (issue 61). From issue 64 on the address is /projects/:id, and /profile/projects/:id sends on to it, so old links keep working. The id is the long code of the project, for example 3f2a9c1e-0b7d-4e5f-8a6b-2c9d1e0f7a3b.
 - Title of the browser tab: the title of the project (task 61.3).
 
@@ -48,7 +48,7 @@ The page sits inside AppShell of issue 06, with the five tabs around it. It load
 
 ### The data behind the page
 
-- getProject(id) in frontend/src/api/projects.ts asks GET /api/projects/{id} through request() in client.ts. Issue 61 named it getOwnProject(id), and issue 64 renames it. It returns found, not found or not reachable. The page never sees a status code.
+- getProject(id) in web/src/api/projects.ts asks GET /api/projects/{id} through request() in client.ts. Issue 61 named it getOwnProject(id), and issue 64 renames it. It returns found, not found or not reachable. The page never sees a status code.
 - GET /api/projects/{id}, issue 61 (tasks 61.1 and 61.2): only for the owner. The answer 200 is { "data": { "id", "title", "description", "createdAt" }, "meta": {} }. Another member, an unknown id, an id that is not an id (abc) and a taken down project all get the same 404 with "This project does not exist". A visitor gets 401 with "Log in to see this page". A stopped database gives 503 with "Connect is not reachable right now".
 - Issue 61b (task 61b.4) adds the field image: { "url": "/api/projects/<id>/image?v=3f2a9c1e", "width", "height" }, or null without a picture. The file name itself never leaves the server.
 - Issue 157 (task 157.2) adds the field updatedAt, empty when the project was never changed.
@@ -131,7 +131,7 @@ The page sits inside AppShell of issue 06, with the five tabs around it. It load
 - Checked by a tester: switch the phone to airplane mode after opening the page, press the button or reload, read the message, and switch airplane mode off. Nobody stops the test server or the database.
 - Phone (360 pixels wide): the page matches the Figma frame at this width, shown with screenshots in the merge request. The picture is never wider than the screen. Add image opens the photos of the phone. A normal phone photo is on the page within five seconds.
 - Laptop (1280 pixels wide): the page matches the Figma frame at this width. Add image opens the file window.
-- Design: the Figma frame My project (issues 61, 61b, 158 and 159) and the Figma frame Project page on the page Design directions (issue 64), on the Figma board of Connect. Colours, fonts and spacing come only from the variables in frontend/src/styles/tokens.css.
+- Design: the Figma frame My project (issues 61, 61b, 158 and 159) and the Figma frame Project page on the page Design directions (issue 64), on the Figma board of Connect. Colours, fonts and spacing come only from the variables in web/src/styles/tokens.css.
 
 ## Accessibility and privacy
 

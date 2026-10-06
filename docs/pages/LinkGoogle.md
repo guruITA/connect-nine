@@ -1,6 +1,6 @@
 # Link Google to my account
 
-- Component: frontend/src/pages/LinkGoogle.tsx, with LinkGoogle.module.css and LinkGoogle.test.tsx
+- Component: web/src/pages/LinkGoogle.tsx, with LinkGoogle.module.css and LinkGoogle.test.tsx
 - Address in the browser: /login/link-google
 
 ## What the page is for
@@ -39,7 +39,7 @@ flowchart LR
    - The password is kept only in the field, never in the address and never in the storage of the browser.
    - Built by task 23b.4.
 3. Button: Link Google
-   - Calls linkExternalLogin(password) in frontend/src/api/externalLoginLinks.ts, which sends POST /api/external-login-links through frontend/src/api/client.ts. The browser adds the cookie connect_pending_link by itself.
+   - Calls linkExternalLogin(password) in web/src/api/externalLoginLinks.ts, which sends POST /api/external-login-links through web/src/api/client.ts. The browser adds the cookie connect_pending_link by itself.
    - While it waits the button says "Linking..." and cannot be pressed again.
    - The server finds the pending link by the hash of its token, checks that it has not ended (ten minutes, five wrong tries), and checks the password with the same hasher as the log in of issue 04. On the right password it writes one row in external_login and one in session, removes the pending row in the same transaction, sets the session cookie connect_session and removes connect_pending_link.
    - Answers and what the page does:
@@ -63,7 +63,7 @@ flowchart LR
 - Not reachable: "Connect is not reachable right now, try again later" below the form, with the password still in the field.
 - Success: the home page opens, logged in.
 - Phone (360 pixels wide) and laptop (1280 pixels wide): the team checks the page on both on the test site (task 23b.6). No scrolling sideways.
-- Design: the Figma board of Connect, page Design directions. Colours, fonts and spacing only through frontend/src/styles/tokens.css.
+- Design: the Figma board of Connect, page Design directions. Colours, fonts and spacing only through web/src/styles/tokens.css.
 
 ## Accessibility and privacy
 

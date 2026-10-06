@@ -1,8 +1,8 @@
 # Admin, Members
 
-- Component: frontend/src/pages/AdminMembers.tsx, with AdminMembers.module.css and AdminMembers.test.tsx
-- Shared parts: frontend/src/components/RequireAdmin.tsx and frontend/src/components/AdminMenu.tsx, the window ConfirmDialog of issue 113
-- Server helpers: frontend/src/api/admin.ts (getMembers, deactivateMember, reactivateMember, makeAdmin, removeAdmin, markOrganisationChecked, unlockMember, removeBio)
+- Component: web/src/pages/AdminMembers.tsx, with AdminMembers.module.css and AdminMembers.test.tsx
+- Shared parts: web/src/components/RequireAdmin.tsx and web/src/components/AdminMenu.tsx, the window ConfirmDialog of issue 113
+- Server helpers: web/src/api/admin.ts (getMembers, deactivateMember, reactivateMember, makeAdmin, removeAdmin, markOrganisationChecked, unlockMember, removeBio)
 - Address in the browser: /admin/members, behind the tab Admin. With a search already filled in: /admin/members?search=<name>
 - Server addresses: GET /api/admin/members?page=1&pageSize=20 (with search=<text> when searching), and the row actions POST /api/admin/members/{id}/deactivate, /reactivate, /make-admin, /remove-admin, /mark-checked, /unlock and /bio-removal
 
@@ -62,7 +62,7 @@ flowchart LR
    - Built by tasks 45.5 and 45b.3.
 
 5. The table of members
-   - Data: getMembers(page) in frontend/src/api/admin.ts asks GET /api/admin/members?page=<page>&pageSize=20 through the shared helper frontend/src/api/client.ts. It returns the page with its total, wrong input, not allowed or not reachable. The page never sees a status code and never calls fetch itself.
+   - Data: getMembers(page) in web/src/api/admin.ts asks GET /api/admin/members?page=<page>&pageSize=20 through the shared helper web/src/api/client.ts. It returns the page with its total, wrong input, not allowed or not reachable. The page never sees a status code and never calls fetch itself.
    - On the server the guard of issue 04 checks the session and reads the role from the table account on every request, so a change of role counts at the next click. AdminOnly lets only an admin through. A validator checks the page number and page size. The answer is {"data": [...], "meta": {"page", "pageSize", "total"}}, newest first.
    - A real HTML table with the caption Members and the column headers Name, Kind and Joined, each a th with scope col. Issue 46 adds the column Status.
    - Name: the display name. Under the name of a young person, the short line of their profile as plain text, never as HTML (issue 142).
@@ -120,7 +120,7 @@ flowchart LR
 
 12. Row button: Remove text (next to the short line of a young person)
    - Only on rows with a short line. Its accessible name is "Remove text of" followed by the display name. On a phone the short line wraps under the name and the button is at least 44 by 44 pixels.
-   - Window: heading "Remove this short line?", the short line in a quote, a radio group with the four reasons from REMOVAL_REASONS of frontend/src/api/adminProjects.ts (the same four as for projects), a button Cancel and a button Remove short line that is disabled until a reason is picked. Escape closes it without removing.
+   - Window: heading "Remove this short line?", the short line in a quote, a radio group with the four reasons from REMOVAL_REASONS of web/src/api/adminProjects.ts (the same four as for projects), a button Cancel and a button Remove short line that is disabled until a reason is picked. Escape closes it without removing.
    - Remove short line calls removeBio(id, reason), which sends POST /api/admin/members/{id}/bio-removal. While waiting the button says "Removing..." and is disabled. The server empties the short line, keeps the date, the reason and the admin, and writes the Activity line member.bio_removed. The removed text itself is not kept.
    - A row with a removed short line shows "Short line removed on <date>. Reason: <reason sentence>." and no button.
    - After it worked: the window closes, the row is drawn from the answer, and a status area says "Short line removed". 409: "This member has no short line." and the list is loaded again. 400: the message under the reasons. 404: "This member has no profile." 503 or no answer: "Connect is not reachable right now, try again later" in role alert, and the row stays.
@@ -144,7 +144,7 @@ Every row action above also shows as a line on the page Activity (issue 32): dea
 - Not allowed: "You are not allowed to see this page", for anyone who is not an admin.
 - Speed: the list shows within two seconds after pressing the tab Admin.
 - Phone (360 pixels wide): one block per member with the values under each other. Laptop (1280 pixels wide): columns. No scrolling sideways.
-- Design: colours, fonts and spacing only through frontend/src/styles/tokens.css. See Open points for the Figma frame.
+- Design: colours, fonts and spacing only through web/src/styles/tokens.css. See Open points for the Figma frame.
 
 ## Accessibility and privacy
 

@@ -63,9 +63,9 @@ React is the library the screens are built with. A component is one piece of scr
 3. Component: PascalCase, and the file has the same name. MemberCard.tsx holds MemberCard.
 4. Hook (a function starting with use that holds state or calls the server): useMembers.ts.
 5. Other files and functions: camelCase, formatDate.ts. Constants: UPPER_SNAKE_CASE, MAX_PAGE_SIZE. Types: PascalCase without a prefix, Member and not IMember.
-6. A test file sits next to the file it tests: MemberCard.test.tsx. Tests in a real browser go in `frontend/e2e/<name>.spec.ts`.
+6. A test file sits next to the file it tests: MemberCard.test.tsx. Tests in a real browser go in `web/e2e/<name>.spec.ts`.
 
-### Folders in frontend/src
+### Folders in web/src
 
 7. pages: one component per page of the site, for example Home.tsx. components: pieces of screen used on more than one page. api: every call to the server, nothing else talks to the server. hooks: hooks used in more than one place. styles: tokens.css with the Young Amstelland colours and fonts as CSS variables.
 
@@ -88,18 +88,18 @@ C# is the language. .NET is the platform it runs on. ASP.NET Core is the part of
 
 ### Names (the Microsoft C# conventions)
 
-4. PascalCase for classes, methods, properties and everything public: StatusService, GetStatusAsync. camelCase for local variables and parameters: memberCount. Private fields: _camelCase, for example _repository.
-5. Interfaces (contracts) start with I: IAccountRepository. A method that waits on something (async) ends in Async.
+4. PascalCase for classes, methods, properties and everything public: StatusService, GetStatusAsync. camelCase for local variables and parameters: memberCount. Private fields: _camelCase, for example _context.
+5. Interfaces (contracts) start with I: IAppDbContext. A method that waits on something (async) ends in Async.
 6. One class per file, and the file has the name of the class. The namespace follows the folder: Connect.Application.Status, written once at the top of the file as a file scoped namespace.
 
 ### Structure
 
-7. Four projects in backend: Presentation, Application, Domain and Infrastructure, plus the test project Connect.Tests. Inside each project, one folder per feature: Application/Status, Application/Accounts.
+7. Four projects in backend: Presentation, Application, Domain and Infrastructure, plus the test project Connect.Tests. Application holds one folder per feature in Features, one feature per epic, and inside it one folder per use case with its command or query and its handler: Features/Account/CreateAccount/CreateAccountCommand.cs with CreateAccountHandler.cs. A write is a command, a read is a query, never both in one handler. There are no repository classes, no IXRepository interfaces and no Repositories folder.
 8. Presentation uses Application and Infrastructure. Application and Infrastructure use Domain. Domain uses nothing. Because they are separate projects, the compiler refuses code that breaks this, so a beginner cannot break the layers by accident.
 
 ### Web addresses (endpoints)
 
-9. Minimal APIs. One static class per feature, for example StatusEndpoints with one method MapStatusEndpoints. An endpoint stays thin: read the request, call the service, return the answer.
+9. Minimal APIs. One static class per feature, for example StatusEndpoints with one method MapStatusEndpoints. An endpoint stays thin: read the request, call the handler, return the answer.
 10. Addresses start with /api, are lower case and use plural nouns: /api/members, /api/members/{id}. Words are joined with a -: /api/member-profiles.
 11. What goes in and out are records named ...Request and ...Response: CreateAccountRequest, StatusResponse. A database class (entity) is never sent straight to the browser.
 12. Errors use the built in ProblemDetails format (web standard RFC 9457): `Results.Problem(...)`, and for a wrong form `Results.ValidationProblem(...)` with one message per field. Status codes: 200 OK, 201 created, 204 done without content, 400 wrong input, 401 not logged in, 403 not allowed, 404 not found, 409 conflict, 503 not available.
@@ -107,7 +107,7 @@ C# is the language. .NET is the platform it runs on. ASP.NET Core is the part of
 
 ### Other
 
-14. A class gets what it needs through its constructor (dependency injection). Each layer registers its classes in one method: AddApplication(), AddInfrastructure().
+14. A class gets what it needs through its constructor (dependency injection). Each layer registers its classes in one method: AddApplication(), AddInfrastructure(). Every handler is also registered in Program.cs, one line per handler.
 15. Logging with ILogger and a message template: `_logger.LogError(ex, "Status failed for {RequestId}", requestId)`. Never glue text together with `$"..."` in a log line, the template keeps the values searchable.
 16. Tests with NUnit. Name: Method_Situation_ExpectedResult, for example GetStatusAsync_DatabaseDown_ReturnsNotReachable. Every test has three parts: Arrange (prepare), Act (do), Assert (check).
 
@@ -160,13 +160,13 @@ These rules join the parts above. When an older text disagrees, these win.
 ### Files and folders
 
 11. A record ...Request or ...Response may sit in the endpoint file of its feature (an agreed exception to "one class per file"). A component used on one page only may sit in components under a folder named after the page.
-12. Test folders: backend/Connect.Tests/Domain, backend/Connect.Tests/Application, backend/Connect.Tests/Infrastructure, backend/Connect.Tests/Presentation, backend/Connect.Tests/Fixtures.
+12. Test folders: api/Connect.Tests/Features/<Feature>, with a handler test named <UseCase>HandlerTests.cs, api/Connect.Tests/Domain, api/Connect.Tests/Infrastructure, with a database test named <Feature>DatabaseTests.cs, api/Connect.Tests/Presentation, api/Connect.Tests/Fixtures.
 
 ### Commands
 
-13. The solution is made with `dotnet new sln --format sln`, so every command can use backend/Connect.sln.
+13. The solution is made with `dotnet new sln --format sln`, so every command can use api/Connect.sln.
 14. docker-compose.yml gives the database service `container_name: database`, so Compose prints "Container database Started". psql is always `psql -U connect -d connect`.
-15. A migration is always added with `dotnet ef migrations add <Name> --project backend/Infrastructure --startup-project backend/Presentation`.
+15. A migration is always added with `dotnet ef migrations add <Name> --project api/Infrastructure --startup-project api/Presentation`.
 16. Going back one migration: `dotnet ef migrations list`, then `dotnet ef database update <the migration just before yours>` with the same --project and --startup-project. Never a fixed old migration name.
 17. The database port is published only on 127.0.0.1: `"127.0.0.1:5432:5432"`.
 

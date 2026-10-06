@@ -1,6 +1,6 @@
 # Page not found
 
-- Component: frontend/src/pages/NotFound.tsx, with NotFound.module.css and NotFound.test.tsx
+- Component: web/src/pages/NotFound.tsx, with NotFound.module.css and NotFound.test.tsx
 - Address in the browser: any address the site does not know (the catch all route `*`), for example /this-does-not-exist. The member page /members/:id also shows this page when the member is not there.
 - Title of the browser tab: Connect, Page not found
 
@@ -37,7 +37,7 @@ The page sits inside AppShell of issue 06, so the tabs and the footer stay in pl
 1. Heading (h1): This page does not exist or is no longer available
    - Shows only this sentence. No error number, no code, no id and no server address.
    - Data: none for an unknown address. The catch all route shows the page at once, without asking the server.
-   - For a member link, the page MemberProfile asks GET /api/member-profiles/{id} through getMemberProfile in frontend/src/api/memberProfiles.ts. When the answer is 404, request() in frontend/src/api/client.ts gives the shared result not found, and MemberProfile shows NotFound in place of the profile. The page never reads a status code itself.
+   - For a member link, the page MemberProfile asks GET /api/member-profiles/{id} through getMemberProfile in web/src/api/memberProfiles.ts. When the answer is 404, request() in web/src/api/client.ts gives the shared result not found, and MemberProfile shows NotFound in place of the profile. The page never reads a status code itself.
    - On the server, an id that is not a uuid, an unknown member, an unknown site page and an unknown address under /api all give the same NotFoundProblem answer (task 53.2). A visitor gets not logged in first.
    - Built by task 53.3 (screen), 53.2 (server) and 53.1 (database check), issue 53 A friendly page for a link that does not exist, GitLab #105, sprint 3.
 2. Link: Go to home
@@ -54,7 +54,7 @@ The page sits inside AppShell of issue 06, so the tabs and the footer stay in pl
 - Error and not reachable: this page is never shown when Connect cannot be reached. The member page then shows Connect is not reachable right now, try again later. A tester checks this by switching the phone to airplane mode.
 - Phone (360 pixels wide): the sentence and the link fit on the screen without scrolling, above the tabs. The page shows within two seconds after opening a wrong link.
 - Laptop (1280 pixels wide): the same content inside the shell, no scrolling sideways.
-- Design: the Figma frame of the not found page on the Figma board of Connect, page Design directions. Colours, fonts and spacing come only from the variables in frontend/src/styles/tokens.css.
+- Design: the Figma frame of the not found page on the Figma board of Connect, page Design directions. Colours, fonts and spacing come only from the variables in web/src/styles/tokens.css.
 
 ## Accessibility and privacy
 

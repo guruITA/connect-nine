@@ -30,8 +30,9 @@ Core on .NET 10 with PostgreSQL 16, rather than onto Next.js.
 
 **Unit tests.** Pure logic, no database, no network, no browser. On the backend, this is the
 Application and Domain layers of the four backend projects that issue 11 The team agrees on the
-layered architecture records: the business rules inside a service, for example whether an event
-still has an open spot, tested against a fake repository rather than a real database. **NUnit**
+layered architecture records: the business rules inside a handler, for example whether an event
+still has an open spot, unit tested with an in-memory SQLite AppDbContext, and a rule in Domain
+unit tested without any database. **NUnit**
 is decided, not xUnit, with `dotnet new nunit -o TestProject1` scaffolding a test project
 directly from the .NET SDK (NUnit, n.d.). The tests live in the project Connect.Tests, in the
 folders Domain, Application, Infrastructure, Presentation and Fixtures, and are named
@@ -48,7 +49,8 @@ components on a broader level than unit tests," using "the actual components tha
 in production," such as the database, and ASP.NET Core supports this "using a unit test
 framework with a test web host and an in-memory test server" (Microsoft, n.d.-a). This is
 `WebApplicationFactory`, run through NUnit, exercising a Minimal API endpoint through the real
-request pipeline against a real PostgreSQL 16 test database rather than a fake repository. In the
+request pipeline against a real PostgreSQL 16 test database rather than an in-memory SQLite
+AppDbContext. In the
 pipeline the job backend-test gets a service postgres:16 under the name database, and the
 factory applies the EF Core migrations before the tests (issue 03 Create an account, task 3.8).
 On the frontend, this is a React component plus a fake server answer, the same shape
@@ -65,7 +67,7 @@ directly: "For testing SPAs, we recommend a tool such as Playwright for .NET, wh
 a browser" (Microsoft, n.d.-a). Second, Playwright drives the browser against whatever is
 running, regardless of which side, React or ASP.NET Core, serves a given request, so one E2E
 suite covers the whole platform end to end the way the workshop's third layer is meant to. The
-tests live in `frontend/e2e/<name>.spec.ts` and run in Chromium against the test site, driving
+tests live in `web/e2e/<name>.spec.ts` and run in Chromium against the test site, driving
 real user flows, for example making an account and seeing "Your account is made". Emails in
 those flows, such as the confirmation link, are read from the test mailbox Mailpit. Playwright
 logs in with `page.request.post` or `context.request.post`, so the page gets the cookie
@@ -122,8 +124,8 @@ Some modules get extra attention on the board:
 
 - **Event capacity and registration (FR6).** Issue 68 Register for an event and issue 68b A full
   event refuses a place fairly: a young person never gets a place when there is none, also when
-  many people register at the same moment. This is concurrency-sensitive logic that a fake
-  repository cannot prove, so it is tested against the real test database. Issue 107 Three ways
+  many people register at the same moment. This is concurrency-sensitive logic that an
+  in-memory SQLite AppDbContext cannot prove, so it is tested against the real test database. Issue 107 Three ways
   to give out the last event place, measured compares three ways to do it.
 - **Matching (FR2).** Issue 37 See suggested matches with the reason: unit tests for the rules
   of the suggestions, and an end to end test that a confirmed member sees suggestions with the

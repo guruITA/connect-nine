@@ -1,8 +1,8 @@
 # Activity (admin)
 
-- Component: frontend/src/pages/AdminActivity.tsx, with AdminActivity.module.css, AdminActivity.test.tsx and AdminActivity.words.test.ts
+- Component: web/src/pages/AdminActivity.tsx, with AdminActivity.module.css, AdminActivity.test.tsx and AdminActivity.words.test.ts
 - Address in the browser: /admin/activity
-- Parts it uses: frontend/src/components/AdminMenu.tsx, frontend/src/components/adminActivity/ActivityFilters.tsx, frontend/src/api/auditEntries.ts
+- Parts it uses: web/src/components/AdminMenu.tsx, web/src/components/adminActivity/ActivityFilters.tsx, web/src/api/auditEntries.ts
 - Server addresses: GET /api/admin/audit-entries and GET /api/admin/audit-entries/export
 
 ## What the page is for
@@ -11,7 +11,7 @@ Connect is a platform where young people from Amstelland, many of them minors, m
 
 ## Who can open it
 
-- Admin of the foundation: sees the whole page. The route sits inside RequireLogin of issue 04 and RequireAdmin of issue 45 in frontend/src/App.tsx.
+- Admin of the foundation: sees the whole page. The route sits inside RequireLogin of issue 04 and RequireAdmin of issue 45 in web/src/App.tsx.
 - Member (young person) or organisation who is not an admin: sees no tab Admin. Typing /admin/activity shows "You are not allowed to see this page" and no line of the list. The server also answers 403 ("not allowed") without lines.
 - Visitor who is not logged in: is sent to Log in. The server answers 401 ("not logged in") without lines.
 - Hiding the menu link is never the only protection. The screen guard stops an empty page, and the server rule AdminOnly on /api/admin stops every line (card 32, watch out).
@@ -70,13 +70,13 @@ flowchart LR
 4. Button Download
    - A real button next to Show and Clear. It uses the filters as they stand in the fields, also when Show was not pressed.
    - While it waits it says "Preparing the file..." and cannot be pressed again.
-   - It calls downloadAuditEntries(filters) in auditEntries.ts, which asks GET /api/admin/audit-entries/export with the same filters through the shared helper in frontend/src/api/client.ts. The browser saves the file under the name the server gives, for example connect-activity-2026-10-01-to-2026-10-31.csv (start when From is empty, today when To is empty).
+   - It calls downloadAuditEntries(filters) in auditEntries.ts, which asks GET /api/admin/audit-entries/export with the same filters through the shared helper in web/src/api/client.ts. The browser saves the file under the name the server gives, for example connect-activity-2026-10-01-to-2026-10-31.csv (start when From is empty, today when To is empty).
    - After a save: "Your file is ready." next to the button in an area with role status.
    - Wrong dates: the message of the server next to its field, the same place as for Show. No file is saved.
    - Not allowed: "You are not allowed to see this page".
    - Not reachable: "Connect is not reachable right now, try again later" next to the button in an area with role alert. No file is saved.
    - The file: UTF-8 with a byte order mark, heading line When (Amsterdam time),Who,What,To whom,Detail, newest first, the same lines and words as the page for the same filters. A period without lines gives a file with only the heading line. A value that starts with =, +, -, @, a tab or a carriage return gets an apostrophe in front, so it is never run as a formula.
-   - The plain words in the file come from backend/Application/Audit/auditActionWords.json. The test AdminActivity.words.test.ts turns red when they differ from ACTION_WORDS on the page.
+   - The plain words in the file come from api/Application/Audit/auditActionWords.json. The test AdminActivity.words.test.ts turns red when they differ from ACTION_WORDS on the page.
    - Only built when the client says yes (issue 10, question 17).
    - Built by task 127.3 (screen), 127.2 (server) and 127.1 (database query), issue 127 Download the activity list as a file, GitLab #206, sprint 5.
 
@@ -84,7 +84,7 @@ flowchart LR
    - Data: GET /api/admin/audit-entries?page=<n>&pageSize=20 through listAuditEntries in auditEntries.ts. The answer is { data: [ { id, occurredAt, actorEmail, action, targetKind, targetEmail, detail } ], meta: { page, pageSize, total, retentionMonths } }, newest first. pageSize is at most 50.
    - On a laptop: a real table element with the caption Activity and the headings When, Who, What, To whom and Detail, each th with scope col.
    - Below 600 pixels wide: every line is a small block with the same facts and their names, and no table.
-   - When: formatDateTime of frontend/src/utils/formatTime.ts, in the admin's own time zone.
+   - When: formatDateTime of web/src/utils/formatTime.ts, in the admin's own time zone.
    - Who: the email address of the actor. "removed member" when that account is gone (for example after issue 113 Delete my account and all my data). "Connect" when there is no actor.
    - What: plain words from the list ACTION_WORDS, exported by AdminActivity.tsx. An unknown action name is shown as it is.
 
@@ -131,7 +131,7 @@ flowchart LR
 - Speed: the page opens within two seconds, also after Load more and after Show.
 - Phone (360 pixels wide or close): every line a small block with the same facts, the fields under each other below 600 pixels.
 - Laptop: a table with column headings, the form above the list.
-- Design: the Figma frame Admin activity on the Figma board of Connect, page Design directions. Colours, fonts and spacing come only from the variables in frontend/src/styles/tokens.css.
+- Design: the Figma frame Admin activity on the Figma board of Connect, page Design directions. Colours, fonts and spacing come only from the variables in web/src/styles/tokens.css.
 
 ## Accessibility and privacy
 

@@ -1,6 +1,6 @@
 # My interests
 
-- Component: frontend/src/pages/MyInterests.tsx, with MyInterests.module.css and MyInterests.test.tsx
+- Component: web/src/pages/MyInterests.tsx, with MyInterests.module.css and MyInterests.test.tsx
 - Address in the browser: /profile/interests
 
 ## What the page is for
@@ -32,7 +32,7 @@ flowchart LR
    - "Removed from your list" right after a line was taken back. A screen reader reads it without moving to it.
    - Built by task 58b.3, issue 58b Take back my interest from my list, GitLab #117, sprint 3.
 3. The list
-   - Data: getMyInterests(page) in frontend/src/api/opportunities.ts sends GET /api/member-profiles/current/interests?page=1&pageSize=20 through request(). It returns the lines with the total, notAllowed, or notReachable. The page never sees a status code. It asks the server on every visit and keeps nothing in local storage.
+   - Data: getMyInterests(page) in web/src/api/opportunities.ts sends GET /api/member-profiles/current/interests?page=1&pageSize=20 through request(). It returns the lines with the total, notAllowed, or notReachable. The page never sees a status code. It asks the server on every visit and keeps nothing in local storage.
    - The server finds the member profile of the account in the cookie connect_session, reads one page of its marks from opportunity_member, opportunity and organisation_profile in one query, newest first, through the index ix_opportunity_member_member_profile_id_created_at. It adds per line whether the opportunity is still open with OpportunityOpenRule of issue 54. Nothing is written. Tasks 58.1 and 58.3.
    - Each line shows:
      - the title, as a link to /opportunities/{id} (the page of issue 55b)
@@ -45,7 +45,7 @@ flowchart LR
    - Built by task 58.4.
 4. Button Take back, on every line
    - Visible label "Take back", accessible name "Take back my interest in <title of the line>".
-   - Calls unmarkInterest(opportunityId) in frontend/src/api/opportunities.ts (issue 57b), which sends DELETE /api/opportunities/{id}/interest. The server removes the one row of this young person and this opportunity from opportunity_member, also when the opportunity is closed. A mark that is already gone is still done.
+   - Calls unmarkInterest(opportunityId) in web/src/api/opportunities.ts (issue 57b), which sends DELETE /api/opportunities/{id}/interest. The server removes the one row of this young person and this opportunity from opportunity_member, also when the opportunity is closed. A mark that is already gone is still done.
    - While it waits the button says "Taking back..." and is disabled.
    - Only after the server said done, the line leaves the list and the status line says "Removed from your list". The focus moves to the next line, or to the heading when it was the last line.
    - When more than one page is loaded, the page asks getMyInterests again for page 1 up to the last page it had loaded and replaces the lines, so no line shows twice or goes missing.
@@ -70,7 +70,7 @@ The page My profile of issue 08 gets a link My interests to this page (MyProfile
 - Not reachable: "Connect is not reachable right now" in place of the list, with a button "Try again" that asks page 1 again and shows the list once Connect is back.
 - Error on Take back: "Taking back did not work, try again later" next to the line.
 - Phone (360 pixels wide) and laptop (1280 pixels wide): screenshots at both widths in the merge requests.
-- Design: the Figma frames of My profile and the frame of My interests on the Figma board of Connect, page Design directions. Colours, fonts and spacing only through frontend/src/styles/tokens.css.
+- Design: the Figma frames of My profile and the frame of My interests on the Figma board of Connect, page Design directions. Colours, fonts and spacing only through web/src/styles/tokens.css.
 
 ## Accessibility and privacy
 

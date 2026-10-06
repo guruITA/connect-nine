@@ -1,6 +1,6 @@
 # Create an organisation profile
 
-- Component: frontend/src/pages/CreateOrganisationProfile.tsx, with CreateOrganisationProfile.module.css and CreateOrganisationProfile.test.tsx. The four fields sit in the shared component frontend/src/components/OrganisationProfileForm.tsx (task 132.3).
+- Component: web/src/pages/CreateOrganisationProfile.tsx, with CreateOrganisationProfile.module.css and CreateOrganisationProfile.test.tsx. The four fields sit in the shared component web/src/components/OrganisationProfileForm.tsx (task 132.3).
 - Address in the browser: /organisation/new
 
 ## What the page is for
@@ -58,7 +58,7 @@ flowchart LR
    - Rules (server, task 34.2): required, at most 100 characters (NameMaxLength). Spaces at the start and end are removed first. Message: "Fill in the name of your organisation".
    - Built by task 34.4, issue 34. Moved into OrganisationProfileForm by task 132.3, issue 132 Edit my organisation profile, GitLab #66, sprint 2.
 5. Field: Kind
-   - A select with exactly five options: Company, School, Municipality, Club and Fund. No option is chosen at the start. The words come from ORGANISATION_KIND_LABELS in frontend/src/api/organisationProfiles.ts, so the page of the organisation shows the same words.
+   - A select with exactly five options: Company, School, Municipality, Club and Fund. No option is chosen at the start. The words come from ORGANISATION_KIND_LABELS in web/src/api/organisationProfiles.ts, so the page of the organisation shows the same words.
    - Rules: exactly one of the five, also refused by the database with ck_organisation_profile_kind. Message: "Choose one of the five kinds".
    - Built by task 34.4 and task 34.1, issue 34.
 6. Field: What you offer young people
@@ -71,7 +71,7 @@ flowchart LR
    - The form has noValidate, so the browser never stops the field with its own bubble and the message of the server is always the one the person reads.
    - Built by task 34.4 and task 34.2, issue 34.
 8. Button: Save
-   - Calls createOrganisationProfile(values) in frontend/src/api/organisationProfiles.ts, which sends POST /api/organisation-profiles through request() with { "name", "kind", "description", "website" }. There is no account id in it, the server takes the account from the session.
+   - Calls createOrganisationProfile(values) in web/src/api/organisationProfiles.ts, which sends POST /api/organisation-profiles through request() with { "name", "kind", "description", "website" }. There is no account id in it, the server takes the account from the session.
    - While waiting the button says "Saving..." and is disabled, so it cannot be pressed a second time.
    - Wrong fields (400): each message appears directly below its field, linked with aria-describedby, and the focus moves to the first wrong field. What was typed stays and nothing is saved.
    - Order on the server: first the field checks, then the check for a young person's profile, then the save (task 34b.2).
@@ -92,7 +92,7 @@ flowchart LR
 - Not reachable on load: "Connect is not reachable right now, try again later" and no form.
 - Not reachable on Save: "Connect is not reachable right now, your text is kept" above the form, and every field keeps its value. A tester checks this with airplane mode on a phone.
 - Phone (360 pixels wide) and laptop (1280 pixels wide): the page matches the Figma frame Create an organisation profile at both widths, shown with screenshots in the merge request (task 34.4).
-- Design: the Figma frame Create an organisation profile on the Figma board of Connect, page Design directions. The page Edit our profile follows the same frame. Colours, fonts and spacing come only from frontend/src/styles/tokens.css.
+- Design: the Figma frame Create an organisation profile on the Figma board of Connect, page Design directions. The page Edit our profile follows the same frame. Colours, fonts and spacing come only from web/src/styles/tokens.css.
 
 ## Accessibility and privacy
 

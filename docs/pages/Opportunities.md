@@ -1,6 +1,6 @@
 # Opportunities, the list of all open opportunities
 
-- Component: frontend/src/pages/Opportunities.tsx, with Opportunities.module.css and Opportunities.test.tsx
+- Component: web/src/pages/Opportunities.tsx, with Opportunities.module.css and Opportunities.test.tsx
 - Address in the browser: /opportunities, and /opportunities?kind=Internship (or Job, Project, Other) with a filter
 - Server address: GET /api/opportunities?page=1&pageSize=20, with &kind=<kind> when a filter is chosen
 
@@ -40,7 +40,7 @@ The page sits inside AppShell of issue 06, so the five tabs stay around it.
    - Built by task 55.4, issue 55 See the open opportunities, GitLab #108, sprint 3.
 
 2. Filter buttons: All, Internship, Job, Project, Other
-   - Five real buttons in a group with the label "Show" (role group with aria-label), above the list. The component is KindFilter in frontend/src/components/opportunities/KindFilter.tsx, used on this page only. The labels of the four kinds come from KIND_LABELS of task 54.3, and the list of buttons is KIND_FILTERS in frontend/src/api/opportunities.ts.
+   - Five real buttons in a group with the label "Show" (role group with aria-label), above the list. The component is KindFilter in web/src/components/opportunities/KindFilter.tsx, used on this page only. The labels of the four kinds come from KIND_LABELS of task 54.3, and the list of buttons is KIND_FILTERS in web/src/api/opportunities.ts.
    - All is chosen when the page opens. The chosen button has aria-pressed="true" and a mark that is not only a colour: a border and bold text.
    - The choice lives in the address. The page reads kind with useSearchParams. Pressing a button makes the address /opportunities?kind=<name>, or /opportunities for All. A reload, a copied link and the Back button of the browser keep the choice.
    - A missing kind or any other word, for example /opportunities?kind=Party, chooses All, and the page then asks without kind. A wrong link never shows an error.
@@ -51,10 +51,10 @@ The page sits inside AppShell of issue 06, so the five tabs stay around it.
 
 3. The list of opportunity cards
    - The cards are in a list (ul with li), in the order of the answer, newest first.
-   - Each card is OpportunityCard (frontend/src/components/OpportunityCard.tsx): the title as a heading, the name of the organisation, the kind from KIND_LABELS and the closing date written out, for example "Closes on 31 December 2030".
+   - Each card is OpportunityCard (web/src/components/OpportunityCard.tsx): the title as a heading, the name of the organisation, the kind from KIND_LABELS and the closing date written out, for example "Closes on 31 December 2030".
    - The closing date is a date without a time, so it is formatted with Intl.DateTimeFormat and timeZone "UTC". A phone in a time zone west of London then still shows the right day.
    - Since task 55b.4 the whole card is one React Router Link to /opportunities/<id>. The readable name of the link is the title. The organisation, the kind and the date are plain text inside it. There is no button or second link inside a card, and the card has a clear focus line from tokens.css.
-   - Data: listOpportunities(page, kind) in frontend/src/api/opportunities.ts asks GET /api/opportunities?page=<n>&pageSize=20 through request() of frontend/src/api/client.ts, and adds kind only for Internship, Job, Project or Other. The page never calls fetch.
+   - Data: listOpportunities(page, kind) in web/src/api/opportunities.ts asks GET /api/opportunities?page=<n>&pageSize=20 through request() of web/src/api/client.ts, and adds kind only for Internship, Job, Project or Other. The page never calls fetch.
    - The server checks the session with the guard of issue 04, reads page and pageSize as text with a validator, takes today in Dutch time from OpportunityOpenRule and asks for one page and the total. It sends back only the fields the screen shows: the items in data, and page, pageSize and total in meta. A wrong page or pageSize gives a plain message per field.
    - In the database the query uses the filter OpenOn of OpportunityOpenRule, so a closed opportunity never gets in, and the rule AccountVisibility of issues 29 and 46, so an unconfirmed or switched off organisation is never listed and not counted. The index ix_opportunity_created_at_id keeps it fast.
    - The seed organisation Seed Organisation has 25 open test opportunities and two hidden ones, listed in docs/testing/testData.md.
@@ -76,7 +76,7 @@ The page sits inside AppShell of issue 06, so the five tabs stay around it.
 - Not reachable on Load more: the same sentence and Try again below the list, in an area with role alert. The cards already shown stay.
 - Not reachable after pressing a filter button: "Connect is not reachable right now" in place of the list, with Try again that asks the same kind again. The buttons stay (task 155.3).
 - Phone and laptop: on a phone the first twenty items show within two seconds (AC7 of issue 55). The screenshots at 360 and 1280 pixels match the Figma frames Opportunities, and axe reports 0 issues.
-- Design: the Figma frames Opportunities on the page Design directions of the Figma board. Colours, fonts and spacing come only from frontend/src/styles/tokens.css.
+- Design: the Figma frames Opportunities on the page Design directions of the Figma board. Colours, fonts and spacing come only from web/src/styles/tokens.css.
 
 ## Accessibility and privacy
 

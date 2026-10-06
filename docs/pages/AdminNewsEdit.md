@@ -1,6 +1,6 @@
 # Edit news item
 
-- Component: frontend/src/pages/AdminNewsEdit.tsx, with AdminNewsEdit.module.css and AdminNewsEdit.test.tsx
+- Component: web/src/pages/AdminNewsEdit.tsx, with AdminNewsEdit.module.css and AdminNewsEdit.test.tsx
 - Address in the browser: /admin/news/:id/edit
 
 ## What the page is for
@@ -41,7 +41,7 @@ On the edit page:
 4. Alert area above the button, in role alert
    - "Could not save, try again" when Connect cannot be reached. Everything typed stays in the form.
 5. Button: Save
-   - Calls changeNewsItem(id, { title, body }) in frontend/src/api/newsItems.ts, which sends PUT /api/admin/news-items/<id> through the shared helper. It returns saved, wrong fields, not found or not reachable. The page never calls fetch.
+   - Calls changeNewsItem(id, { title, body }) in web/src/api/newsItems.ts, which sends PUT /api/admin/news-items/<id> through the shared helper. It returns saved, wrong fields, not found or not reachable. The page never calls fetch.
    - While waiting the button says "Saving..." and is disabled, so a second press sends nothing.
    - On the server, the guard of issue 04 checks the log in, the rule AdminOnly of issue 45 checks that it is an admin, NewsItemIdValidator checks the id and the validator checks the fields. The server loads the item and writes the new title, the new text and the moment of the change in the new column changed_at of news_item. The date of publishing, the author and the picture stay.
    - Built by tasks 164.1 (the column and the rule), 164.2 (the address) and 164.3 (the page and the button), issue 164 Change a news item, GitLab #227, sprint 5.
@@ -56,7 +56,7 @@ On the edit page:
 - Not reachable: "Could not save, try again" in role alert above the button, and what was typed stays.
 - Empty: not used, the form is always filled from the item.
 - Phone (360 pixels wide) and laptop (1280 pixels wide): the team checks the page on both on the test site.
-- Design: follows the page News under Admin of task 71.3 on the Figma board of Connect, page Design directions. Colours, fonts and spacing only through frontend/src/styles/tokens.css.
+- Design: follows the page News under Admin of task 71.3 on the Figma board of Connect, page Design directions. Colours, fonts and spacing only through web/src/styles/tokens.css.
 
 ## Accessibility and privacy
 

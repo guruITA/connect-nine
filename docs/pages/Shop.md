@@ -1,6 +1,6 @@
 # The page Shop
 
-Component: `frontend/src/pages/Shop.tsx`, with `frontend/src/components/ProductCard.tsx`.
+Component: `web/src/pages/Shop.tsx`, with `web/src/components/ProductCard.tsx`.
 Address in the browser: `/shop`.
 
 ## What the page is for
@@ -46,7 +46,7 @@ flowchart TD
 ### The list of items
 
 - What it shows: one card per item for sale, sorted by name from A to Z, twenty at a time.
-- Data: `getProducts(page)` in `frontend/src/api/products.ts` asks `GET /api/products?page=<page>&pageSize=20` through the shared helper `client.ts`. The page never calls fetch itself. The answer holds the items with `meta` (page, page size and total). An empty list is a normal answer, not an error. The answer holds data about items only, never about members (task 81.2).
+- Data: `getProducts(page)` in `web/src/api/products.ts` asks `GET /api/products?page=<page>&pageSize=20` through the shared helper `client.ts`. The page never calls fetch itself. The answer holds the items with `meta` (page, page size and total). An empty list is a normal answer, not an error. The answer holds data about items only, never about members (task 81.2).
 - Layout: one column below 768 pixels wide, a grid of cards from 768 pixels up, with one media query in `Shop.module.css`.
 - Built by: issue 81, tasks 81.2 and 81.3.
 
@@ -55,7 +55,7 @@ flowchart TD
 - The picture: with the name of the item as its alt text. It keeps its shape with `aspect-ratio` and loads with `loading="lazy"`. Its address is `imageUrl` from the answer: `/images/products/<image_file>` for an item of issue 81, and `/api/products/<id>/image?v=<8 characters>` for a picture an admin added with issue 150. That address is only for a logged in member and answers 404 "This picture was not found" for an item that is unknown or switched off (task 150.6, issue 150 Change the items of the shop through a screen, GitLab #232, sprint 5).
 - The name: a heading.
 - The description: one or two sentences.
-- The price: plain text in euros with two decimals, like € 12,50, never 12.5. `formatPrice(cents)` in `frontend/src/utils/formatPrice.ts` uses `Intl.NumberFormat` with nl-NL and EUR. 1250 gives € 12,50 and 0 gives € 0,00. The price arrives in whole cents.
+- The price: plain text in euros with two decimals, like € 12,50, never 12.5. `formatPrice(cents)` in `web/src/utils/formatPrice.ts` uses `Intl.NumberFormat` with nl-NL and EUR. 1250 gives € 12,50 and 0 gives € 0,00. The price arrives in whole cents.
 - The VAT line under the price: "VAT included" or "VAT not included".
 - Rules: the card shows one Product and never calls fetch itself. Issues 82 and 83 reuse `formatPrice` for the basket and the total, never a copy.
 - Built by: issue 81, task 81.3.
@@ -63,7 +63,7 @@ flowchart TD
 ### Button Add to basket, on each item
 
 - Label: Add to basket. For a screen reader its name is "Add <name> to your basket", so the buttons can be told apart.
-- What it does: `addToBasket(productId)` in `frontend/src/api/basket.ts` sends the id of the item to `POST /api/baskets/current/items` through `client.ts`. The page never reloads.
+- What it does: `addToBasket(productId)` in `web/src/api/basket.ts` sends the id of the item to `POST /api/baskets/current/items` through `client.ts`. The page never reloads.
 - Busy: while its request runs the button says "Adding...", is disabled and cannot be pressed again, so a double tap adds one item.
 - After it works: the line "Added to your basket. You have <quantity> of this in your basket." under the item, in an area with role status, with the number from the answer. It stays until the next press on that item. The card then passes `itemCount` of the answer to `setItemCount` of `useBasket`, so the number at the link Basket goes up at once (task 82b.3).
 - Refused with 404: "This item is not for sale any more" under the item. Refused with 400: the message of the server under the item.
@@ -117,7 +117,7 @@ The items are on the screen within two seconds after pressing Shop on a normal p
 - The picture address of issue 150 only works for a logged in member, and a picture an admin added holds no place or phone name.
 - The page shows data about items only. A visitor sees no item and no price.
 
-The design: colours, fonts and spacing come only from the variables in `frontend/src/styles/tokens.css`, following the Figma frame of the page Shop on the page Design directions of the Figma board. When that frame does not exist yet, the builder asks the designer of the team first.
+The design: colours, fonts and spacing come only from the variables in `web/src/styles/tokens.css`, following the Figma frame of the page Shop on the page Design directions of the Figma board. When that frame does not exist yet, the builder asks the designer of the team first.
 
 ## Built by
 

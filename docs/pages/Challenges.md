@@ -1,6 +1,6 @@
 # The page Challenges
 
-Component: `frontend/src/pages/Challenges.tsx`, with `frontend/src/components/ChallengeCard.tsx` and `frontend/src/components/challenges/ClosedChallenges.tsx`.
+Component: `web/src/pages/Challenges.tsx`, with `web/src/components/ChallengeCard.tsx` and `web/src/components/challenges/ClosedChallenges.tsx`.
 Address in the browser: `/challenges`.
 
 ## What the page is for
@@ -47,14 +47,14 @@ flowchart TD
 ### The list of open challenges
 
 - What it shows: a list (`ul`) with one ChallengeCard per open challenge, soonest deadline first, twenty at a time. A challenge stays in the list up to and including its deadline and is gone from the next day, without anyone doing anything.
-- Data: `listChallenges(1)` in `frontend/src/api/challenges.ts` asks `GET /api/challenges?page=1&pageSize=20`. The server lets only a logged in person through, takes the day of today in Dutch time from `OpportunityOpenRule` of issue 54, and answers each challenge with its title, the organisation name and the deadline, with page, page size and total in `meta`. The list never holds the description or anything about a person (task 75.2). A wrong page number or page size gets a plain message.
+- Data: `listChallenges(1)` in `web/src/api/challenges.ts` asks `GET /api/challenges?page=1&pageSize=20`. The server lets only a logged in person through, takes the day of today in Dutch time from `OpportunityOpenRule` of issue 54, and answers each challenge with its title, the organisation name and the deadline, with page, page size and total in `meta`. The list never holds the description or anything about a person (task 75.2). A wrong page number or page size gets a plain message.
 - Built by: issue 75, tasks 75.2 and 75.4.
 
 ### One challenge (ChallengeCard)
 
 - The title: a link to `/challenges/<id>`.
 - The organisation name.
-- "Deadline" with the date, for example 12 October 2026. `formatDeadline(text)` in `frontend/src/utils/formatDeadline.ts` reads "2026-10-12" as a day without a time, so every time zone shows the same day.
+- "Deadline" with the date, for example 12 October 2026. `formatDeadline(text)` in `web/src/utils/formatDeadline.ts` reads "2026-10-12" as a day without a time, so every time zone shows the same day.
 - In the part Closed only: the word Closed next to the deadline, written out, not only a colour (the optional prop `isClosed` of issue 76). The open list does not pass it.
 - Built by: issue 75, task 75.4, and issue 76, task 76.4.
 
@@ -93,7 +93,7 @@ On a phone and on a laptop the first challenges are there within two seconds aft
 - After Load more the focus moves to the first new card.
 - The lists never show a name, an email address or a photo of a person, and nothing about who took part.
 
-The design: colours, fonts and spacing come only from `frontend/src/styles/tokens.css`, following the Figma frames Challenges list and Challenges list with closed section on the page Design directions of the Figma board.
+The design: colours, fonts and spacing come only from `web/src/styles/tokens.css`, following the Figma frames Challenges list and Challenges list with closed section on the page Design directions of the Figma board.
 
 ## Built by
 

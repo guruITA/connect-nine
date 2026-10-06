@@ -1,7 +1,7 @@
 # New opportunity
 
-- Component: frontend/src/pages/NewOpportunity.tsx, with NewOpportunity.module.css and NewOpportunity.test.tsx
-- Address in the browser: /opportunities/new. In frontend/src/App.tsx the route /opportunities/:id of issue 55b comes after this one, so /opportunities/new always opens the form (task 55b.3).
+- Component: web/src/pages/NewOpportunity.tsx, with NewOpportunity.module.css and NewOpportunity.test.tsx
+- Address in the browser: /opportunities/new. In web/src/App.tsx the route /opportunities/:id of issue 55b comes after this one, so /opportunities/new always opens the form (task 55b.3).
 - Shared parts it uses: OpportunityFields.tsx (issue 153), TagInput.tsx (issue 36), NotCheckedNotice.tsx (issue 140)
 
 ## What the page is for
@@ -55,7 +55,7 @@ The page sits inside AppShell of issue 06, so the five tabs stay around it.
 5. The form
    - The form has noValidate, so the messages come from the page and the server and not from the bubble of the browser.
    - Before sending, the page checks the same simple rules in the browser (required fields, no day before today). The server still decides.
-   - Since issue 153 the four fields below live in the shared component OpportunityFields (frontend/src/components/OpportunityFields.tsx), which the page Change opportunity also uses. It gets the values, the messages and onChange and never calls the server. Every label and message stays the same (task 153.5, issue 153 Change my opportunity after publishing, GitLab #212, sprint 5).
+   - Since issue 153 the four fields below live in the shared component OpportunityFields (web/src/components/OpportunityFields.tsx), which the page Change opportunity also uses. It gets the values, the messages and onChange and never calls the server. Every label and message stays the same (task 153.5, issue 153 Change my opportunity after publishing, GitLab #212, sprint 5).
 6. Field Title
    - Label above it: Title. A text field of at most 120 characters. Required.
    - Messages next to the field: "Fill in a title" and "A title has at most 120 characters" (CreateOpportunityRequestValidator, task 54.2).
@@ -67,15 +67,15 @@ The page sits inside AppShell of issue 06, so the five tabs stay around it.
 8. Field Kind
    - Label above it: Kind. A select with Internship, Job, Project and Other, and no option chosen at the start. Required.
    - Message next to the field when no kind or a wrong kind is sent: "Choose a kind" (task 54.2).
-   - The labels live once, in KIND_LABELS in frontend/src/api/opportunities.ts, so every list of opportunities shows the same words.
+   - The labels live once, in KIND_LABELS in web/src/api/opportunities.ts, so every list of opportunities shows the same words.
    - Built by task 54.3, issue 54, GitLab #106, sprint 3.
 9. Field Tags
    - Label above it: Tags. Placed below Kind. It uses TagInput of issue 36, the one tag component of the whole site.
-   - Suggested tags to tap, from getSuggestedTags() in frontend/src/api/tags.ts (issue 36). When only that call fails, a short line says the suggestions could not be loaded, and the field still works with Add your own.
+   - Suggested tags to tap, from getSuggestedTags() in web/src/api/tags.ts (issue 36). When only that call fails, a short line says the suggestions could not be loaded, and the field still works with Add your own.
    - The field Add your own with a button Add. Enter in this field adds the tag and never sends the form.
    - Each chosen tag shows with a Remove button (issue 36b). A counter such as "3 of 10 tags" comes from maxTags with the constant MAX_TAGS.
    - Hint below the field: "Skills and interests only. Never the name of a person."
-   - Rules: at most 10 tags. An eleventh gets "An opportunity has at most 10 tags" below the field and is not added. A name of more than 30 characters gets "A tag has at most 30 characters". A tag with a sign that is not allowed gets a plain message from the server (issue 36d). Each name is made small, with one space between words, by normalizeTag in frontend/src/api/tags.ts, and a double is ignored.
+   - Rules: at most 10 tags. An eleventh gets "An opportunity has at most 10 tags" below the field and is not added. A name of more than 30 characters gets "A tag has at most 30 characters". A tag with a sign that is not allowed gets a plain message from the server (issue 36d). Each name is made small, with one space between words, by normalizeTag in web/src/api/tags.ts, and a double is ignored.
    - The tags follow the one tag model of the board: the shared table tag with the link table opportunity_tag.
    - The field Tags stays on New opportunity only. It is not on Change opportunity.
    - Built by task 54c.3, issue 54c Add tags to my opportunity, GitLab #110, sprint 3.
@@ -84,10 +84,10 @@ The page sits inside AppShell of issue 06, so the five tabs stay around it.
     - Rule: an empty date gets "Fill in a closing date". Today is accepted, a day before today gets "The closing date cannot be in the past". Today follows Dutch time on the server (OpportunityOpenRule, task 54.2).
     - Built by task 54.3, issue 54, GitLab #106, sprint 3.
 11. Button Publish, or the notice about the check
-    - Checked organisation (isCheckedOrganisation true): the button Publish. Pressing it calls createOpportunity(form) in frontend/src/api/opportunities.ts, which sends POST /api/opportunities through request() of client.ts, with the chosen tags in the field tags. While waiting the button says "Publishing..." and is disabled, so the opportunity is published once.
+    - Checked organisation (isCheckedOrganisation true): the button Publish. Pressing it calls createOpportunity(form) in web/src/api/opportunities.ts, which sends POST /api/opportunities through request() of client.ts, with the chosen tags in the field tags. While waiting the button says "Publishing..." and is disabled, so the opportunity is published once.
     - Answer 201: the published message and an empty form. Answer 400: each message directly next to its own field, linked with aria-describedby, and the focus on the first wrong field. What was typed stays. Answer 403 for not an organisation: "Only organisations can post opportunities" in place of the form.
-    - Unchecked organisation (isCheckedOrganisation false): the button is not rendered at all. In its place NotCheckedNotice (frontend/src/components/NotCheckedNotice.tsx), a paragraph with role status: "The foundation checks your organisation first. You can publish after that."
-    - Answer 403 not checked, for example when the check was taken back while the page was open: the same notice replaces the button and every field keeps its value. The page recognises this answer with isNotCheckedProblem in frontend/src/api/client.ts. The server refuses on POST /api/opportunities and saves nothing (task 140.2).
+    - Unchecked organisation (isCheckedOrganisation false): the button is not rendered at all. In its place NotCheckedNotice (web/src/components/NotCheckedNotice.tsx), a paragraph with role status: "The foundation checks your organisation first. You can publish after that."
+    - Answer 403 not checked, for example when the check was taken back while the page was open: the same notice replaces the button and every field keeps its value. The page recognises this answer with isNotCheckedProblem in web/src/api/client.ts. The server refuses on POST /api/opportunities and saves nothing (task 140.2).
     - Built by task 54.3 (issue 54, GitLab #106, sprint 3) and task 140.4 (issue 140, GitLab #139, sprint 3).
 
 ## States
@@ -103,7 +103,7 @@ The page sits inside AppShell of issue 06, so the five tabs stay around it.
 - Not reachable on publish: "Connect is not reachable right now, your text is kept" above the form, every field and tag kept. A tester checks it by switching the phone to airplane mode and pressing Publish.
 - Phone (360 pixels wide): one column. The date field of the browser must work with a thumb (task 54.5).
 - Laptop (1280 pixels wide): the whole form works with only a keyboard (task 54.5).
-- Design: the Figma frame New opportunity on the Figma board of Connect, page Design directions. Colours, fonts and spacing come only from the variables in frontend/src/styles/tokens.css. The screenshots at 360 and 1280 pixels are checked against that frame.
+- Design: the Figma frame New opportunity on the Figma board of Connect, page Design directions. Colours, fonts and spacing come only from the variables in web/src/styles/tokens.css. The screenshots at 360 and 1280 pixels are checked against that frame.
 
 ## Accessibility and privacy
 

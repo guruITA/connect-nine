@@ -21,7 +21,7 @@ The source is section 3 of the page Issue creation on the Figma board. When it c
 - [ ] **No leftover code: nothing commented out, no debug output, and every TODO names an issue.**
   How to check: search the change for commented out code, console.log, Console.WriteLine and TODO. Every TODO names an issue number.
 - [ ] **The server keeps its four layers apart: only the Infrastructure layer talks to the database.**
-  How to check: no file in backend/Presentation or backend/Application uses the database context or SQL. The compiler already refuses Domain code that uses another project.
+  How to check: no file in api/Presentation or api/Application uses the database context or SQL. The compiler already refuses Domain code that uses another project.
 
 ### Tests
 
@@ -63,7 +63,7 @@ The source is section 3 of the page Issue creation on the Figma board. When it c
 - [ ] **The accessibility checker axe finds no problems, and the text contrast is at least 4.5 to 1.**
   How to check: run axe in the browser on every changed screen: zero problems.
 - [ ] **The screen uses the Young Amstelland colours, fonts and spacing, and follows its design.**
-  How to check: colours and fonts come from frontend/src/styles/tokens.css, and the screen matches its drawing on the Figma page Design directions. Every difference is explained in the merge request.
+  How to check: colours and fonts come from web/src/styles/tokens.css, and the screen matches its drawing on the Figma page Design directions. Every difference is explained in the merge request.
 - [ ] **Every text on the screen is plain language, without technical words or codes.**
   How to check: read every text: no technical words, no codes, no developer names, and the same thing has the same name everywhere.
 - [ ] **Every button and link on a phone is at least 44 by 44 pixels.**

@@ -1,7 +1,7 @@
 # My events
 
-- Component: frontend/src/pages/MyEvents.tsx, with MyEvents.module.css and MyEvents.test.tsx. The part Past events is its own component frontend/src/components/myEvents/PastEvents.tsx, with PastEvents.module.css and PastEvents.test.tsx.
-- Address in the browser: /profile/events (registered in frontend/src/App.tsx inside RequireLogin)
+- Component: web/src/pages/MyEvents.tsx, with MyEvents.module.css and MyEvents.test.tsx. The part Past events is its own component web/src/components/myEvents/PastEvents.tsx, with PastEvents.module.css and PastEvents.test.tsx.
+- Address in the browser: /profile/events (registered in web/src/App.tsx inside RequireLogin)
 
 ## What the page is for
 
@@ -35,7 +35,7 @@ flowchart LR
 
 ## Every element of the page, top to bottom
 
-The page sits inside the shell of the site. Colours, fonts and spacing come only from the variables in frontend/src/styles/tokens.css.
+The page sits inside the shell of the site. Colours, fonts and spacing come only from the variables in web/src/styles/tokens.css.
 
 1. Heading (h1 of the page): My events
    - Shown with the list. After a cancel the focus goes to this heading.
@@ -44,7 +44,7 @@ The page sits inside the shell of the site. Colours, fonts and spacing come only
    - Appears after a cancel worked, in an area with role status.
    - Built by task 70.3, issue 70 Cancel my event registration, GitLab #132, sprint 3.
 3. The upcoming list
-   - Data: getMyEvents(page, pageSize) in frontend/src/api/events.ts sends GET /api/accounts/current/events?page=<page>&pageSize=20 through the shared helper request() in frontend/src/api/client.ts. The page never calls fetch itself and never sees a status code.
+   - Data: getMyEvents(page, pageSize) in web/src/api/events.ts sends GET /api/accounts/current/events?page=<page>&pageSize=20 through the shared helper request() in web/src/api/client.ts. The page never calls fetch itself and never sees a status code.
    - The server (task 69.2, GetMyEventsService, MyEventsRequestValidator) reads the account only from the session with User.GetAccountId(). Any other value in the address, such as ?accountId=, is ignored. It returns only events that start later than now, soonest first, then by event id. The answer is {"data": [{"eventId", "title", "startsAt", "place"}], "meta": {"page", "pageSize", "total"}}. No name, email or account id is ever in it.
    - page is a whole number of 1 or more, default 1. pageSize is a whole number from 1 to 50, default 20. A wrong value (0, 51, abc) gives 400 with a message for that field: page "Ask for page 1 or higher", pageSize "Ask for 1 to 50 events".
    - The query (task 69.1) uses the new index ix_event_member_account_id.
@@ -56,7 +56,7 @@ The page sits inside the shell of the site. Colours, fonts and spacing come only
    - Its name for a screen reader is Cancel plus visually hidden text "your place at <title>", for example "Cancel your place at Test event, next week".
    - Pressing it opens ConfirmDialog of issue 113 with the title "Cancel your place?", the title and date of the event as its content, and two buttons: Keep my place and Cancel registration. ConfirmDialog gets one new optional prop cancelLabel with the default "Cancel", so other pages that use it stay the same.
    - Keep my place and the Escape key close the window and send nothing. The focus goes back to the Cancel button of that row.
-   - Cancel registration calls cancelRegistration(id) in frontend/src/api/events.ts, which sends DELETE /api/events/{id}/registrations/current. The server (task 70.2, CancelRegistrationService) reads the account from the session and removes only the own row (a hard delete, task 70.1).
+   - Cancel registration calls cancelRegistration(id) in web/src/api/events.ts, which sends DELETE /api/events/{id}/registrations/current. The server (task 70.2, CancelRegistrationService) reads the account from the session and removes only the own row (a hard delete, task 70.1).
    - While waiting both buttons are disabled and Cancel registration says "Cancelling...". Two clicks send one request.
    - Done (204): the window closes, the row is removed and "Your place is freed" appears above the list. A 404 means the place was already gone, and the page does the same.
    - Started (409): "This event has already started, you can no longer cancel" in the window, and the row stays.
@@ -74,7 +74,7 @@ The page sits inside the shell of the site. Colours, fonts and spacing come only
    - Built by task 69.3, issue 69, GitLab #130, sprint 3.
 8. Heading (h2): Past events
    - A separate part below the upcoming list. It loads on its own, so a slow or failing past list never holds up the upcoming list.
-   - Data: getMyPastEvents(page) in frontend/src/api/events.ts sends GET /api/accounts/current/events/past?page=<page>&pageSize=20. The server (task 160.2, GetMyPastEventsService) uses the same validator MyEventsRequestValidator, with the same messages "Ask for page 1 or higher" and "Ask for 1 to 50 events", and the same answer shape as the upcoming list, and reads the account only from the session.
+   - Data: getMyPastEvents(page) in web/src/api/events.ts sends GET /api/accounts/current/events/past?page=<page>&pageSize=20. The server (task 160.2, GetMyPastEventsService) uses the same validator MyEventsRequestValidator, with the same messages "Ask for page 1 or higher" and "Ask for 1 to 50 events", and the same answer shape as the upcoming list, and reads the account only from the session.
    - The query (task 160.1, GetPastForAccountAsync) returns events whose start time is now or earlier, the most recent first, then by event id. An event is always in exactly one of the two lists.
    - Each row: the title as one link to /events/{id}, the date in Europe/Amsterdam time (for example Saturday 26 September, 19:00) and the place. The name of the link holds the title and the date. A past row has no button Cancel. The event page says "This event has taken place".
    - Empty: "You have no past events yet".
@@ -94,7 +94,7 @@ The page sits inside the shell of the site. Colours, fonts and spacing come only
 - Not logged in (401): RequireLogin sends the person to Log in.
 - Phone (360 pixels wide): nothing scrolls sideways. The team check is done on a phone of 360 pixels wide or close.
 - Laptop: the same content. The team check is also done on a laptop.
-- Design: the Figma frame of My events on the Figma board of Connect, page Design directions. The upcoming list (task 69.3), the button Cancel (task 70.3) and Past events (task 160.3) all follow that one frame. Colours, fonts and spacing come only from frontend/src/styles/tokens.css.
+- Design: the Figma frame of My events on the Figma board of Connect, page Design directions. The upcoming list (task 69.3), the button Cancel (task 70.3) and Past events (task 160.3) all follow that one frame. Colours, fonts and spacing come only from web/src/styles/tokens.css.
 
 ## Accessibility and privacy
 

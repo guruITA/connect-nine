@@ -1,6 +1,6 @@
 # The page News
 
-Component: `frontend/src/pages/News.tsx`, with `frontend/src/components/NewsPicture.tsx`.
+Component: `web/src/pages/News.tsx`, with `web/src/components/NewsPicture.tsx`.
 Address in the browser: `/news`.
 
 ## What the page is for
@@ -45,7 +45,7 @@ flowchart TD
 ### The list of news items
 
 - What it shows: twenty items, newest first.
-- Data: `getNewsItems(page)` in `frontend/src/api/newsItems.ts` asks `GET /api/news-items?page=<page>&pageSize=20` through the shared helper in `client.ts` and returns the items with the total, or not reachable. The page never sees a status code. Anyone may call the address without logging in. The answer holds per item only the id, the title, the date and the picture, with page, page size and total in `meta`. It never holds the text or anything about the author (task 72.3). A wrong page or page size gets a wrong input answer with a message for that field.
+- Data: `getNewsItems(page)` in `web/src/api/newsItems.ts` asks `GET /api/news-items?page=<page>&pageSize=20` through the shared helper in `client.ts` and returns the items with the total, or not reachable. The page never sees a status code. Anyone may call the address without logging in. The answer holds per item only the id, the title, the date and the picture, with page, page size and total in `meta`. It never holds the text or anything about the author (task 72.3). A wrong page or page size gets a wrong input answer with a message for that field.
 - Built by: issue 72, tasks 72.3 and 72.4.
 
 ### One item in the list
@@ -88,7 +88,7 @@ flowchart TD
 - Saving a picture on a phone shows no place where the photo was taken (issue 72b, with the upload of issue 71b).
 - The page never shows the name or the email address of the person at the foundation who wrote an item.
 
-The design: colours, fonts and spacing come only from `frontend/src/styles/tokens.css`, following the Figma frame News on the page Design directions of the Figma board. When there is no frame yet, the builder follows the page Projects of issue 06 and writes that in the merge request.
+The design: colours, fonts and spacing come only from `web/src/styles/tokens.css`, following the Figma frame News on the page Design directions of the Figma board. When there is no frame yet, the builder follows the page Projects of issue 06 and writes that in the merge request.
 
 ## Built by
 

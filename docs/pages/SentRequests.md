@@ -1,6 +1,6 @@
 # Requests I sent, the connection requests a member is waiting on
 
-- Component: frontend/src/pages/SentRequests.tsx, with SentRequests.module.css and SentRequests.test.tsx
+- Component: web/src/pages/SentRequests.tsx, with SentRequests.module.css and SentRequests.test.tsx
 - Address in the browser: /requests/sent
 - Server addresses: GET /api/connection-requests/sent?page=1&pageSize=20, and DELETE /api/connection-requests/{id} for Take back
 
@@ -49,7 +49,7 @@ The page sits inside AppShell of issue 06, so the five tabs stay around it.
      - the region of that member, only when the answer holds it. A member who hides their region on their own page shows no region here, and a row without region shows no empty label.
      - "Sent on" with the date written out, made with Intl.DateTimeFormat and the language of the browser, for example 5 October 2026.
    - A row never shows an email address, a birth date or an age band (AC8 of issue 40).
-   - Data: getSentRequests(page) in frontend/src/api/connectionRequests.ts asks GET /api/connection-requests/sent?page=1&pageSize=20 through request() of frontend/src/api/client.ts. The page never calls fetch.
+   - Data: getSentRequests(page) in web/src/api/connectionRequests.ts asks GET /api/connection-requests/sent?page=1&pageSize=20 through request() of web/src/api/client.ts. The page never calls fetch.
    - The server checks the session with the guard of issue 04, reads page and pageSize as text with the shared PageQueryValidator, finds the profile of the logged in member from the session, and applies ProfileVisibility of issue 14 to every row. The answer holds up to pageSize waiting requests in data, and page, pageSize and total in meta. A wrong value gives code 400 in the ValidationProblem format with "Use a page number of 1 or more" or "Use a page size from 1 to 50" (pageSize is 1 to 50). Any other parameter, such as member, is ignored.
    - In the database the rows come from the table connection_request with the status Requested, with the first name and region from member_profile. The index ix_connection_request_requester_id_status keeps the list fast (task 40.1).
    - A request leaves this list once it is accepted (issue 41b) or declined (issue 41c).
@@ -86,7 +86,7 @@ The page sits inside AppShell of issue 06, so the five tabs stay around it.
 - Take back not reachable: "Not taken back, Connect is not reachable right now" in the window (AC8 of issue 136).
 - Take back too late: "This request was already answered" above the list (AC7 of issue 136).
 - Phone and laptop: at 360 pixels wide nothing scrolls sideways, and axe finds 0 problems at 360 and 1280 pixels, also with the window open. The row leaves the list within one second after Take back (AC11 of issue 136).
-- Design: the Figma frame Requests I sent on the page Design directions of the Figma board. Colours, fonts and spacing come only from frontend/src/styles/tokens.css.
+- Design: the Figma frame Requests I sent on the page Design directions of the Figma board. Colours, fonts and spacing come only from web/src/styles/tokens.css.
 
 ## Accessibility and privacy
 

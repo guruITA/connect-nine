@@ -16,10 +16,6 @@ Relates to #<issue number>
 
 <the proof block of the task: per BoKSA code what you made, with links>
 
-## AI use
-
-<the team declaration from section 9 of the collaboration agreement: which tool, for what, and what you checked yourself>
-
 ## The version to go back to
 
 <the version of the app and the migration to go back to if this breaks>

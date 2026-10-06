@@ -1,7 +1,7 @@
 # My organisation
 
-- Component: frontend/src/pages/MyOrganisation.tsx, with MyOrganisation.module.css and MyOrganisation.test.tsx
-- Parts used on this page only: frontend/src/components/myOrganisation/OwnOpportunities.tsx (Your opportunities) and frontend/src/components/myOrganisation/ClosedOpportunities.tsx (Closed)
+- Component: web/src/pages/MyOrganisation.tsx, with MyOrganisation.module.css and MyOrganisation.test.tsx
+- Parts used on this page only: web/src/components/myOrganisation/OwnOpportunities.tsx (Your opportunities) and web/src/components/myOrganisation/ClosedOpportunities.tsx (Closed)
 - Address in the browser: /organisation
 
 ## What the page is for
@@ -55,12 +55,12 @@ The page sits inside AppShell of issue 06, so the five tabs stay around it.
    - Built by task 54b.3, issue 54b, GitLab #107, sprint 3.
 7. Part Your opportunities (heading h2)
    - Shows every open opportunity of this organisation, the newest at the top, in the order the server sends. The browser never sorts again.
-   - Data: getOwnOpportunities(page) in frontend/src/api/opportunities.ts asks GET /api/organisation-profiles/current/opportunities?page=<page>&pageSize=20 through request() of client.ts. The word current means the organisation of the session, so no organisation can ask for the list of another one. Open means a closing date of today or later, judged by OpportunityOpenRule on the server in Dutch time.
+   - Data: getOwnOpportunities(page) in web/src/api/opportunities.ts asks GET /api/organisation-profiles/current/opportunities?page=<page>&pageSize=20 through request() of client.ts. The word current means the organisation of the session, so no organisation can ask for the list of another one. Open means a closing date of today or later, judged by OpportunityOpenRule on the server in Dutch time.
    - Each line (a list item in a ul): the title, the kind from KIND_LABELS (Internship, Job, Project or Other) and the closing date written out in words, for example "Closes on 31 January 2030", made with Intl.DateTimeFormat with timeZone "UTC".
    - Link Edit on every line, to /opportunities/<id>/edit, with the accessible name "Edit <title of the line>" (task 153.5).
    - Button Remove on every line, with the visible label Remove and the accessible name "Remove <title of the line>" (task 154.3). It is not on the part Closed.
      - A press opens ConfirmDialog of task 113.3 with the title "Remove <title>?", the text "Young people will no longer see it, and the list of who is interested is removed too. This cannot be undone." and the buttons Remove and Keep. Nothing is sent yet. The focus goes into the window. Keep and Escape close it, nothing changes, and the focus goes back to the button that opened it.
-     - Remove in the window calls removeOpportunity(id) in frontend/src/api/opportunities.ts, which sends DELETE /api/opportunities/{id} of task 154.2 through request() of client.ts. While waiting the button in the window says "Removing..." and both buttons are disabled.
+     - Remove in the window calls removeOpportunity(id) in web/src/api/opportunities.ts, which sends DELETE /api/opportunities/{id} of task 154.2 through request() of client.ts. While waiting the button in the window says "Removing..." and both buttons are disabled.
      - Code 204: the window closes, the line is removed, and a status line above the list (role status) says "Your opportunity is removed". The part asks its pages again, from page 1 up to the last page it had loaded, so no line is skipped by Load more. The focus moves to the next line, or to the heading Your opportunities when it was the last line. When it was the only line, "You have no open opportunities yet" with the link New opportunity shows.
      - Code 404: the opportunity was already removed, for example on another device. The window closes, the line is removed as above, and the status line says "This opportunity was already removed".
      - Code 403: cannot happen here, because only an organisation sees this part. The part then shows "Only organisations can remove opportunities" next to the line.
@@ -93,7 +93,7 @@ The page sits inside AppShell of issue 06, so the five tabs stay around it.
 - Not reachable on load: "Connect is not reachable right now" with Try again. A tester checks it by switching the phone to airplane mode, pressing My organisation, switching airplane mode off and pressing Try again.
 - Phone (360 pixels wide): the list shows within two seconds after pressing My organisation (issue 54b AC8).
 - Laptop (1280 pixels wide): the same content inside the shell.
-- Design: the Figma frame My organisation on the Figma board of Connect, page Design directions. Colours, fonts and spacing come only from the variables in frontend/src/styles/tokens.css. The screenshots at 360 and 1280 pixels are checked against that frame.
+- Design: the Figma frame My organisation on the Figma board of Connect, page Design directions. Colours, fonts and spacing come only from the variables in web/src/styles/tokens.css. The screenshots at 360 and 1280 pixels are checked against that frame.
 
 ## Accessibility and privacy
 

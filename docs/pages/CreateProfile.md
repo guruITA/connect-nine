@@ -1,6 +1,6 @@
 # Create your profile
 
-- Component: frontend/src/pages/CreateProfile.tsx, with CreateProfile.module.css and CreateProfile.test.tsx. The four fields, the question younger than 16 and the parent field sit in the shared component frontend/src/components/MemberProfileForm.tsx (issue 33), the question and the parent field shown only when the page sets the prop withParentQuestion, which only this page does.
+- Component: web/src/pages/CreateProfile.tsx, with CreateProfile.module.css and CreateProfile.test.tsx. The four fields, the question younger than 16 and the parent field sit in the shared component web/src/components/MemberProfileForm.tsx (issue 33), the question and the parent field shown only when the page sets the prop withParentQuestion, which only this page does.
 - Address in the browser: /profile/new
 
 ## What the page is for
@@ -38,7 +38,7 @@ flowchart LR
    - A text field, autocomplete given-name, label above it.
    - Required. An empty first name shows the message of the server "Fill in your first name" below the field, and nothing is saved (task 7.2).
 3. Field: Age band
-   - A select with exactly three options: 15 to 17, 18 to 21 and 22 to 30. No option is chosen at the start. The labels come from AGE_BAND_LABELS in frontend/src/api/memberProfiles.ts (From15To17 becomes "15 to 17"), so issues 08 and 14 show the same words.
+   - A select with exactly three options: 15 to 17, 18 to 21 and 22 to 30. No option is chosen at the start. The labels come from AGE_BAND_LABELS in web/src/api/memberProfiles.ts (From15To17 becomes "15 to 17"), so issues 08 and 14 show the same words.
    - Required. No field anywhere asks for a date or an exact age. The database refuses an unknown age band.
 4. Question: "Are you younger than 16?"
    - A fieldset with this legend and two radio buttons Yes and No, directly below Age band. It appears only while the age band is 15 to 17, and nothing is chosen at the start.
@@ -46,7 +46,7 @@ flowchart LR
    - Task 130.5 built it on this page, issue 130 A young person under 16 asks a parent for permission, GitLab #40, sprint 2. Task 33.3 moved it into MemberProfileForm behind the prop withParentQuestion, with a test case and a criterion of its own, without a change of text or behaviour.
 5. Field: Email address of a parent
    - A text field of type email, autocomplete off, shown only after Yes. It goes away again after No.
-   - Hint below it: "We send your parent one email with a link to give permission. We remove this address as soon as your parent answers, or after 14 days." The 14 is PARENT_CONSENT_KEEP_DAYS in frontend/src/api/memberProfiles.ts, which must match the server setting ParentConsent:KeepDays.
+   - Hint below it: "We send your parent one email with a link to give permission. We remove this address as soon as your parent answers, or after 14 days." The 14 is PARENT_CONSENT_KEEP_DAYS in web/src/api/memberProfiles.ts, which must match the server setting ParentConsent:KeepDays.
    - Messages: "Fill in the email address of a parent" when it is empty after Yes, "Fill in a valid email address" when it has no @, "Fill in the address of a parent, not your own" for the address the young person logs in with.
    - Task 130.5, moved into MemberProfileForm by task 33.3, behind the same prop withParentQuestion.
 6. Field: Region
@@ -57,7 +57,7 @@ flowchart LR
    - A textarea, optional, at most 280 characters. Hint: "Do not write your school, address or phone number here." A counter such as "240 characters left" goes down while typing.
    - A line longer than 280 characters shows "Your short line can be at most 280 characters" below the field (task 7.2).
 8. Button: Save
-   - Calls createMemberProfile(...) in frontend/src/api/memberProfiles.ts, which sends POST /api/member-profiles through request() in frontend/src/api/client.ts. It sends isUnder16 true and parentEmail only after Yes, otherwise isUnder16 false and no parentEmail. The browser adds the cookie connect_session by itself. The page never calls fetch.
+   - Calls createMemberProfile(...) in web/src/api/memberProfiles.ts, which sends POST /api/member-profiles through request() in web/src/api/client.ts. It sends isUnder16 true and parentEmail only after Yes, otherwise isUnder16 false and no parentEmail. The browser adds the cookie connect_session by itself. The page never calls fetch.
    - While waiting the button says "Saving..." and is disabled.
    - 400: each message of the server appears directly below its own field, linked with aria-describedby, and the focus moves to the first wrong field. What was typed stays. This works for every field the server names, also isUnder16 below the question and parentEmail below the parent field.
    - On the server, the guard of issue 04 checks the session. The server trims the spaces around every field and checks every field. It refuses an account that already has an organisation profile (task 34b.3). It writes one row in member_profile, linked to the account. The database refuses a second profile for the same account. For a young person under 16 it also writes one row in parent_consent with the parent address, the hash of a token and when it ends, and puts one email for the parent in the mail queue of issue 21. That email holds no name, age band, region or short line of the young person.
@@ -76,7 +76,7 @@ Since issue 33, the four fields with their labels, hints, counter and messages, 
 - Error: a message below each wrong field. "You already have a profile" or "This account already belongs to an organisation" above the form.
 - Not reachable: "Connect is not reachable right now, your text is kept" above the form, every value stays.
 - Phone (360 pixels wide) and laptop (1280 pixels wide): the page matches the Figma frame Create your profile at both widths, shown with screenshots in the merge request.
-- Design: the Figma frame Create your profile on the Figma board of Connect, page Design directions. Colours, fonts and spacing only through frontend/src/styles/tokens.css.
+- Design: the Figma frame Create your profile on the Figma board of Connect, page Design directions. Colours, fonts and spacing only through web/src/styles/tokens.css.
 
 ## Accessibility and privacy
 

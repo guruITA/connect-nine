@@ -1,0 +1,35 @@
+# Pipeline of Connect. Task 1.4 of issue 01 adds the stages build and test.
+workflow:
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+
+stages:
+  - check
+
+# main only takes merge requests from dev (docs/team/codeConventions.md, Branches and merge requests).
+branch-flow:
+  stage: check
+  image: alpine:3.20
+  tags:
+    - hva
+  script:
+    - echo "Merge request from $CI_MERGE_REQUEST_SOURCE_BRANCH_NAME into $CI_MERGE_REQUEST_TARGET_BRANCH_NAME"
+    - |
+      if [ "$CI_MERGE_REQUEST_TARGET_BRANCH_NAME" = "main" ] && [ "$CI_MERGE_REQUEST_SOURCE_BRANCH_NAME" != "dev" ]; then
+        echo "main only takes merge requests from dev. Merge your branch into dev first."
+        exit 1
+      fi
+
+dotenv-check:
+  stage: check
+  image: alpine:3.20
+  tags:
+    - hva
+  script:
+    - |
+      dotenv_files="$(find . -type f \( -name '.env' -o -name '.env.*' \) ! -name '.env.example' -not -path './.git/*' -print)"
+      if [ -n "$dotenv_files" ]; then
+        echo "Dotenv files must not be committed:"
+        printf '%s\n' "$dotenv_files"
+        exit 1
+      fi

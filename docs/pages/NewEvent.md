@@ -1,6 +1,6 @@
 # New event
 
-- Component: frontend/src/pages/NewEvent.tsx, with NewEvent.module.css and NewEvent.test.tsx. The five fields sit in the shared component frontend/src/components/EventForm.tsx (issue 162).
+- Component: web/src/pages/NewEvent.tsx, with NewEvent.module.css and NewEvent.test.tsx. The five fields sit in the shared component web/src/components/EventForm.tsx (issue 162).
 - Address in the browser: /events/new
 
 ## What the page is for
@@ -44,8 +44,8 @@ The page Events gets a link New event, styled as a button, above its heading are
 6. Field: Number of places
    - A field of type number, a whole number from 1 to 10000. Zero places shows "Fill in at least 1 place" below the field, and the database itself refuses zero places (the check ck_event_capacity_positive of task 65.1).
 7. Button: Publish, or the notice of issue 140 in its place
-   - isCheckedOrganisation from useSession() (task 140.3) decides. When it is false, the button Publish is not rendered, and NotCheckedNotice (frontend/src/components/NotCheckedNotice.tsx) stands where it was: a paragraph with role status and the sentence "The foundation checks your organisation first. You can publish after that." The fields stay visible. While the session loads the page shows "Loading...", never a flash of the button. Task 140.4, issue 140 Only a checked organisation can publish, GitLab #139, sprint 3.
-   - Pressing Publish calls createEvent(...) in frontend/src/api/events.ts, which sends POST /api/events through request() in frontend/src/api/client.ts. The browser adds the cookie connect_session by itself. It returns published (with the id), wrong fields, not an organisation, not reachable or not logged in. The page never calls fetch.
+   - isCheckedOrganisation from useSession() (task 140.3) decides. When it is false, the button Publish is not rendered, and NotCheckedNotice (web/src/components/NotCheckedNotice.tsx) stands where it was: a paragraph with role status and the sentence "The foundation checks your organisation first. You can publish after that." The fields stay visible. While the session loads the page shows "Loading...", never a flash of the button. Task 140.4, issue 140 Only a checked organisation can publish, GitLab #139, sprint 3.
+   - Pressing Publish calls createEvent(...) in web/src/api/events.ts, which sends POST /api/events through request() in web/src/api/client.ts. The browser adds the cookie connect_session by itself. It returns published (with the id), wrong fields, not an organisation, not reachable or not logged in. The page never calls fetch.
    - While waiting the button says "Publishing..." and is disabled.
    - 201: the form is replaced by "Your event is published" with the title that was typed, in role status, and a link Back to Events.
    - 400: each message of the server directly below its own field, linked with aria-describedby, the focus on the first wrong field. What was typed stays.
@@ -67,7 +67,7 @@ Since issue 162, the five fields Title, Description, Date and time, Place and Nu
 - Not allowed: "Only organisations can publish events" and no form.
 - Not reachable: "Connect is not reachable right now, your text is kept" above the form, every value stays.
 - Phone (360 pixels wide) and laptop (1280 pixels wide): the team checks the page on both on the test site.
-- Design: the Figma frame New event on the Figma board of Connect, page Design directions. Colours, fonts and spacing only through frontend/src/styles/tokens.css.
+- Design: the Figma frame New event on the Figma board of Connect, page Design directions. Colours, fonts and spacing only through web/src/styles/tokens.css.
 
 ## Accessibility and privacy
 
