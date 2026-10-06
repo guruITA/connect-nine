@@ -1,0 +1,14 @@
+{
+  "Servers": {
+    "1": {
+      "Name": "Connect (EERD)",
+      "Group": "Connect",
+      "Host": "database",
+      "Port": 5432,
+      "MaintenanceDB": "connect",
+      "Username": "connect",
+      "SSLMode": "disable",
+      "Comment": "The EERD of Connect, built from schema.sql and dummydata.sql by docker-compose.yml. Every field of this server is explained in docker-compose.yml. File format: https://www.pgadmin.org/docs/pgadmin4/latest/import_export_servers.html"
+    }
+  }
+}
