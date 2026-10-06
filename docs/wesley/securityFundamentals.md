@@ -80,7 +80,7 @@ With a session, the browser holds a cookie that it sends with every request, and
 
 **My advice is cookie authentication with ASP.NET Core Identity, with an HttpOnly, Secure and SameSite cookie.** The reasons:
 
-- The React app and the API share one origin behind Caddy, so a cookie needs no extra setup.
+- The React app and the API share one origin behind the Traefik ingress of k3s, so a cookie needs no extra setup.
 - A token in browser storage can be read by any script on the page, because local storage is always accessible by JavaScript (OWASP Foundation, n.d.-d). An HttpOnly cookie cannot be read by script, because the attribute tells the browser not to let scripts access it (OWASP Foundation, n.d.-g).
 - Microsoft says the same for single page apps: "We recommend using cookies for browser-based applications, because, by default, the browser automatically handles them without exposing them to JavaScript." (Microsoft, 2026d).
 - Since ASP.NET Core 10, API endpoints no longer redirect to a login page under cookie authentication (Microsoft, 2025b). The API is designed to answer 401, which the acceptance criteria of issue 343 (viewing another member's public profile) ask for.
@@ -89,6 +89,27 @@ With a session, the browser holds a cookie that it sends with every request, and
 A browser includes cookies in its requests automatically, and that is what lets cross-site request forgery work (OWASP Foundation, n.d.-b). The default SameSite mode is Lax (Microsoft, 2025b).
 
 **My advice is Lax, not Strict.** The GitLab issues plan Google login (issue 46) and Facebook login (issue 49), and a person new to Connect returns to Connect through a cross-site redirect after signing in at the provider. In my own reasoning a cookie marked Strict would not travel on a cross-site return of that kind. Microsoft's own guidance confirms that the Lax setting works for most application cookies and that most OAuth (Open Authorization) logins are not affected by the SameSite restrictions that disable the attribute for other protocols such as OpenID Connect and WS-Federation (Microsoft, 2025c). I keep the protection Strict was meant to give with an antiforgery check on every request that changes data, rather than with the cookie's own SameSite value. Kelvin van Voorst decides this in the NFR1 (authentication and authorization) design, due at the sprint 1 review.
+
+This sequence diagram draws my advice above as one flow: signing in, the cookie Identity sets, the antiforgery check on a request that changes data, and the 401 a request without a session gets. My advice, not yet decided by Kelvin van Voorst.
+
+```mermaid
+%%{init: {'sequence': {'actorMargin': 40, 'noteMargin': 10, 'messageMargin': 35, 'mirrorActors': false}, 'themeVariables': {'fontSize': '14px'}}}%%
+sequenceDiagram
+participant browser as Member's browser
+participant api as ASP.NET Core Identity
+browser->>api: Sign in with credentials
+Note over api: ASP.NET Core Identity<br/>checks the credentials.
+api-->>browser: Set-Cookie, HttpOnly,<br/>Secure, SameSite Lax
+browser->>api: A later request that<br/>changes data, with the<br/>cookie and an<br/>antiforgery token
+Note over api: An antiforgery check runs<br/>on every request that<br/>changes data.
+api-->>browser: 200
+browser->>api: A later request,<br/>with the cookie
+api-->>browser: 200 with the data
+browser->>api: A request with no<br/>valid session cookie
+api-->>browser: 401
+```
+
+Key: a solid arrow is a call, a dashed arrow is an answer.
 
 ### 3.3 Hashing and salting passwords
 
@@ -118,6 +139,32 @@ What the rule for minors means for each role, until the team confirms the role t
 - **Organisation.** Not decided. Whether an organisation may open a minor's profile at all is the open question of section 3.8, owned by Kelvin van Voorst.
 - **Admin.** Not decided, and no team document or issue says it yet. In my view it belongs to the same open point of NFR1 (authentication and authorization), owned by Kelvin van Voorst and due at the latest at the sprint 1 review. My proposal is that an admin sees no more of a minor's profile than a member does, unless the role table gives the Admin column more. That follows least privilege.
 
+This flowchart draws the authentication then the authorization of issue 343 (viewing another member's public profile): signed in or 401, the resource check above, and the rule for minors for a profile owner aged 15 to 17. My design.
+
+```mermaid
+%%{init: {'flowchart': {'wrappingWidth': 220, 'padding': 20, 'nodeSpacing': 40, 'rankSpacing': 60, 'subGraphTitleMargin': {'top': 10, 'bottom': 10}}, 'themeVariables': {'fontSize': '14px'}}}%%
+flowchart TD
+    start(["GET /api/member-profiles/{id}"])
+    signedIn{"Signed in?"}
+    unauth["401, not signed in"]
+    resource{"Resource check:<br/>may this user view<br/>this profile?"}
+    refused["Refused"]
+    agecheck{"Profile owner<br/>aged 15 to 17?"}
+    noregion["Region left out.<br/>First name, age<br/>band and bio shown."]
+    withregion["First name, age<br/>band, bio and<br/>region shown."]
+    start --> signedIn
+    signedIn -->|"No"| unauth
+    signedIn -->|"Yes"| resource
+    resource -->|"No"| refused
+    resource -->|"Yes"| agecheck
+    agecheck -->|"Yes"| noregion
+    agecheck -->|"No"| withregion
+    classDef endState fill:#8a8a8a,color:#ffffff,stroke:#5e5e5e
+    class unauth,refused endState
+```
+
+Key: a diamond is a decision, the grey boxes end the request.
+
 ### 3.5 Allow-list validation on the server
 
 OWASP (Open Worldwide Application Security Project) lists deny-listing, or cleaning input, as a common pitfall and asks for an acceptance rule per field instead, such as exact membership of an allowed set for fixed choices (OWASP Foundation, n.d.-e). In my words: a deny-list blocks input known to be bad and misses the case nobody thought of. An allow-list accepts only input known to be good, so it is safer. Validation must happen on the server, even when the browser checks the same fields, because client-side validation can be bypassed (OWASP Foundation, n.d.-e). As I see it, anyone can call the API without our React app.
@@ -138,7 +185,7 @@ In my design all data in Connect goes through EF Core (Entity Framework Core), t
 
 Cross-site scripting lets an attacker place client-side scripts in web pages, and when other users load those pages, the scripts run (Microsoft, 2026f). For Connect that means a bio with a script in it would run in every visitor's browser. Output encoding changes characters such as the less-than sign into a safe form before they are shown (Microsoft, 2026f), so the browser treats them as text and not as code (OWASP Foundation, n.d.-c).
 
-In my reading of the requirements document, Connect shows a lot of user text, from profiles to showcased work. React encodes by default: "By default, React DOM escapes any values embedded in JSX before rendering them." (React, n.d.-b). The way around it is dangerouslySetInnerHTML, and React warns: "If the HTML inside isn't trusted (for example, if it's based on user data), you risk introducing an XSS vulnerability." (React, n.d.-a). My advice is that Connect never uses it for user content and that a reviewer checks for it. The HttpOnly cookie limits the damage of an XSS (cross-site scripting) bug, because a script cannot read the session cookie (OWASP Foundation, n.d.-g). A Content Security Policy header at Caddy is my proposal for one more layer.
+In my reading of the requirements document, Connect shows a lot of user text, from profiles to showcased work. React encodes by default: "By default, React DOM escapes any values embedded in JSX before rendering them." (React, n.d.-b). The way around it is dangerouslySetInnerHTML, and React warns: "If the HTML inside isn't trusted (for example, if it's based on user data), you risk introducing an XSS vulnerability." (React, n.d.-a). My advice is that Connect never uses it for user content and that a reviewer checks for it. The HttpOnly cookie limits the damage of an XSS (cross-site scripting) bug, because a script cannot read the session cookie (OWASP Foundation, n.d.-g). A Content Security Policy header at the Traefik ingress of k3s is my proposal for one more layer.
 
 ### 3.8 A mini threat model for viewing a member's profile
 
@@ -155,6 +202,41 @@ The security workshop asks for a mini threat model: the assets, 3 to 5 threats, 
 | Denial of service | Scraping, or a database that runs out of capacity | A rate limit (my proposal), a plain 503, health checks | One server, one database |
 | Elevation of privilege | A member reaches an admin endpoint, or an organisation sees more of a minor than allowed | Signed in by default, role policies, the resource check of section 6.4 of my architecture document | NFR1 (authentication and authorization) is open and the role table is not confirmed |
 
+This flowchart draws the table above as a data flow, with the browser, the Traefik ingress of k3s, the API and the database as trust boundaries and the parenthesised STRIDE letter from the table on each flow it threatens. My design.
+
+```mermaid
+%%{init: {'flowchart': {'wrappingWidth': 220, 'padding': 20, 'nodeSpacing': 40, 'rankSpacing': 60, 'subGraphTitleMargin': {'top': 10, 'bottom': 10}}, 'themeVariables': {'fontSize': '14px'}}}%%
+flowchart LR
+    subgraph browserTB ["Trust boundary:<br/>Browser"]
+        browser(["Member's browser"])
+    end
+    subgraph ingressTB ["Trust boundary:<br/>Traefik ingress"]
+        ingress["Traefik ingress"]
+    end
+    subgraph apiTB ["Trust boundary: API"]
+        endpoint["Member profile endpoint"]
+        authz["Role policies and<br/>resource check"]
+        admin["Admin endpoint"]
+        logs["Structured logs"]
+    end
+    subgraph dbTB ["Trust boundary:<br/>Database"]
+        db[("PostgreSQL 16")]
+    end
+    browser -->|"Session cookie (S)<br/>stolen cookie reused"| ingress
+    ingress -->|"Forwards /api call<br/>(T) id changed to<br/>collect profiles"| endpoint
+    endpoint --> authz
+    authz -->|"(E) reaches an<br/>admin endpoint"| admin
+    endpoint -->|"SQL with parameters<br/>(D) scraping or<br/>capacity limit"| db
+    db -->|"Public columns only"| endpoint
+    endpoint -->|"JSON answer (I)<br/>region or field leak"| ingress
+    ingress -->|"JSON answer"| browser
+    endpoint -->|"Viewer account id (R)<br/>no record of who looked"| logs
+    classDef boundary fill:none,stroke:#5e5e5e,stroke-dasharray: 4 4
+    class browserTB,ingressTB,apiTB,dbTB boundary
+```
+
+Key: dashed frames are trust boundaries, the parenthesised letter is the STRIDE category from the table above.
+
 **Open question.** May an organisation open a minor's profile at all? This is the open point of NFR1 (authentication and authorization), owned by Kelvin van Voorst. Per the team's delivery plan, his full threat model, a data flow diagram plus STRIDE for at least one feature, lands in the weeks of 19 and 26 October 2026. Issue 21 (a personal data inventory per module) adds his inventory of the personal data per module.
 
 **The rule for minors.** For a member aged 15 to 17, another member never sees the region. The controls in the table hold it for members, and section 3.4 says what it means for the other roles.
@@ -163,13 +245,16 @@ Issue 306 (checking every module's authenticity and resistance) asks for this ki
 
 ### 3.9 Security in the deployment
 
-- **TLS (Transport Layer Security) at the reverse proxy.** In a reverse proxy configuration the proxy handles the connection security (Microsoft, 2026b). In my design Caddy gets a real certificate, and behind it the traffic stays inside the server.
+- **TLS (Transport Layer Security) at the reverse proxy.** In a reverse proxy configuration the proxy handles the connection security (Microsoft, 2026b). In my design the Traefik ingress of k3s gets a real certificate, and behind it the traffic stays inside the server. Record 8.11 of my architecture document puts that ingress in front of the one deployable unit, so TLS ends there before every request reaches the pod, my design for the monitored production deployment the course's own DevOps document asks for (Hogeschool van Amsterdam, 2026a).
 - **Secrets out of the repository.** Connection strings and service credentials never go in the repository. Locally ASP.NET Core's user-secrets hold them, on the server environment variables or a secret store, as the team's infrastructure document proposes.
 - **A least-privilege database user.** My proposal: the API may read and write Connect's tables and nothing else, and migrations run with a separate user during a deploy.
 - **A login per team member.** Issue 10 (a personal server login per team member) gives everyone a personal key and keeps guessed passwords out. Per the server notes, the firewall lets in only the secure login and web traffic, and repeated failed logins are blocked. The personal logins are still open work.
 - **A known-vulnerable dependency stopped.** Issue 22 (stopping building blocks with known security holes) asks for this. My proposal is a scan stage that runs `dotnet package list --vulnerable` and `npm audit` and fails above a severity the team sets, plus the weekly re-check issue 22 (stopping building blocks with known security holes) asks for. This feeds the DevOps & Testing datapoint, which the team's workshop coverage document places in sprint 2. Manual checking is the other option, but no team document compares it with a scan stage. The comparison the infrastructure document does make is with GitLab's own dependency scanning. That lost because it needs GitLab's paid Ultimate tier, while the two commands are free and come with the tools the team already installs.
+- **Runtime secrets as a Kubernetes Secret.** Record 8.11 of my architecture document runs Connect's one image in k3s with a Secret beside the Deployment and the Service, holding the database credentials and the other config the container reads at runtime, rather than in the image or the repository. My design for the production deployment the course's own DevOps document asks for (Hogeschool van Amsterdam, 2026a).
+- **Container scanning in the pipeline.** Record 8.11 of my architecture document plans GitLab CI with a build, test, scan and deploy stage, the container scan running before the image reaches k3s. My proposal for the pipeline the course's own DevOps document asks a monitored production deployment to run (Hogeschool van Amsterdam, 2026a), alongside the dependency scan above.
+- **A rollback.** Record 8.11 of my architecture document asks for a rollback shown live that recovers the previous image when a new one breaks. My proposal for the rolled-back-if-needed deployment the course's own DevOps document asks for (Hogeschool van Amsterdam, 2026a), rehearsed in the sprint 2 live demo.
 
-This shows the security workshop's principles at server level (Hogeschool van Amsterdam, n.d.-e). Server-side authorization holds because Caddy only handles the certificate and the routing, and every check of section 3.4 runs in the API. The deployment adds least privilege in the database user and the logins, secure defaults in the firewall, defense in depth in the extra layers, and design for response in logs, health checks and a rollback path.
+This shows the security workshop's principles at server level (Hogeschool van Amsterdam, n.d.-e). Server-side authorization holds because the Traefik ingress of k3s only handles the certificate and the routing, and every check of section 3.4 runs in the API. The deployment adds least privilege in the database user and the logins, secure defaults in the firewall, defense in depth in the extra layers, and design for response in logs, health checks and a rollback path.
 
 ## 4. OWASP Top 10 against Connect
 
@@ -180,7 +265,7 @@ The table below is my assessment of which categories apply to Connect, the contr
 | Category | Applies | Control in this design | Sprint |
 | --- | --- | --- | --- |
 | A01 Broken Access Control | Yes, the largest risk with minors' data | Signed in by default, role policies, resource checks, ProfileVisibility | 2 |
-| A02 Cryptographic Failures | Yes | TLS at Caddy, Identity's password hashing, secrets out of the repository | 1 and 2 |
+| A02 Cryptographic Failures | Yes | TLS at the Traefik ingress of k3s, Identity's password hashing, secrets out of the repository | 1 and 2 |
 | A03 Injection | Yes | EF Core parameters, no FromSqlRaw with user input, React's encoding | 2 |
 | A04 Insecure Design | Yes | This design, the mini threat model, the role table, Kelvin's threat model | 1 and 2 |
 | A05 Security Misconfiguration | Yes | Default deny firewall, containers closed to the outside, errors without internals | 1 and 2 |
@@ -264,6 +349,8 @@ Hogeschool van Amsterdam. (n.d.-e). *Security for software engineers: An introdu
 
 Hogeschool van Amsterdam. (n.d.-f). *Security threat basics*. BoKSA. Retrieved October 6, 2026, from https://boksa.hbo-ict-hva.nl/profiles/full-stack-developer/analyse-and-advice/security-threat-basics/
 
+Hogeschool van Amsterdam. (2026a). *Full production DevOps: From commit to a monitored, rolled-back-if-needed production deployment* [Course document].
+
 Microsoft. (2017, August 17). *Microsoft Threat Modeling Tool threats*. Microsoft Learn. https://learn.microsoft.com/en-us/azure/security/develop/threat-modeling-tool-threats
 
 Microsoft. (2022, September 19). *SQL queries*. Microsoft Learn. https://learn.microsoft.com/en-us/ef/core/querying/sql-queries
@@ -316,4 +403,4 @@ React. (n.d.-b). *Introducing JSX*. https://legacy.reactjs.org/docs/introducing-
 
 ## AI use declaration
 
-AI was used as a writing support tool while working on this document. I used AI to draft the formulation of sentences, the structure of wording, readability, and clarity from content that I had provided. The content itself, including my experiences, reflections, learning goals, decisions, self-assessments, and conclusions, is my own. I reviewed the drafts and decided which text to include.
+AI was used as a writing support tool while working on this document. I used AI to draft the formulation of sentences, the structure of wording, readability, and clarity from content that I had provided, and to generate the diagrams. The content itself, including my experiences, reflections, learning goals, decisions, self-assessments, and conclusions, is my own. I reviewed the drafts and decided which text to include.

@@ -235,6 +235,19 @@ can reject it.
   systems they studied by 17% on average. The data rejects H3 if projection does not hold the
   budget longest, or if Include is not the first to cross it.
 
+The diagram below shows how the three sub-questions and their hypotheses feed the main
+question.
+
+```mermaid
+flowchart LR
+    SQ1["Sub-question 1:<br/>growth and N+1"] --> H1["H1: N+1 pattern<br/>in the baseline"]
+    SQ2["Sub-question 2:<br/>constant query count"] --> H2["H2: constant<br/>query count"]
+    SQ3["Sub-question 3:<br/>time budget"] --> H3["H3: the time<br/>budget"]
+    H1 --> MQ["Main question:<br/>constant queries,<br/>time budget"]
+    H2 --> MQ
+    H3 --> MQ
+```
+
 ## 6. Research method
 
 I classify this research as a quantitative experiment with desk research for the baseline, and
@@ -275,6 +288,30 @@ The four variants:
 - eager loading with Include (Microsoft, n.d.-b)
 - split queries with AsSplitQuery (Microsoft, n.d.-e)
 - projection with Select into a data transfer object (Microsoft, n.d.-c)
+
+The diagram below shows the experiment set-up. One schema and one seed feed all four
+variants. Both endpoints run against each variant, and the Entity Framework Core SQL log
+and k6 measure both.
+
+```mermaid
+flowchart TD
+    Seed["One schema<br/>and one seed"] --> Lazy["Lazy baseline"]
+    Seed --> Include["Include"]
+    Seed --> Split["AsSplitQuery"]
+    Seed --> Proj["Projection"]
+    Lazy --> Detail["Profile detail<br/>endpoint"]
+    Lazy --> List["Profile list<br/>endpoint"]
+    Include --> Detail
+    Include --> List
+    Split --> Detail
+    Split --> List
+    Proj --> Detail
+    Proj --> List
+    Detail --> SQL["EF Core SQL log:<br/>query count"]
+    Detail --> K6["k6: p50 and p95"]
+    List --> SQL
+    List --> K6
+```
 
 ### Data and ethics
 
@@ -365,6 +402,24 @@ rest fixed: a profiles sweep at 1000 and 100000 profiles, a concurrency sweep at
 users, a list endpoint sweep at page sizes 20 and 100, and a list endpoint stress sweep at page
 size 100 with 1000 related records. That is 48 extended cells, 88 in total, each run three
 times, for 264 runs.
+
+The diagram below shows the core set and the four sweeps around it, with the cell counts
+from this section.
+
+```mermaid
+flowchart TD
+    CoreSetting["Core setting:<br/>10000 profiles,<br/>50 related records,<br/>10 and 50 users"] --> Core["Core set<br/>40 cells"]
+    CoreSetting --> Profiles["Profiles sweep<br/>1000 and 100000<br/>profiles, 16 cells"]
+    CoreSetting --> Concurrency["Concurrency sweep<br/>1 and 200 users,<br/>8 cells"]
+    CoreSetting --> ListSweep["List endpoint sweep<br/>page sizes 20, 100,<br/>16 cells"]
+    CoreSetting --> ListStress["List stress sweep<br/>page size 100,<br/>1000 records, 8 cells"]
+    Core --> Total["Whole matrix<br/>88 cells"]
+    Profiles --> Extended["Extended set<br/>48 cells"]
+    Concurrency --> Extended
+    ListSweep --> Extended
+    ListStress --> Extended
+    Extended --> Total
+```
 
 A full cross product of every step on every dimension would be 720 cells, and its largest cell
 would seed 100000 profiles with 1000 related records each, 100 million rows, which four hours a
@@ -482,6 +537,9 @@ of it or why I did not.
 
 - **One machine and synthetic data.** My runs share one machine and a generated seed. My
   results compare techniques and indicate crossing points. They do not predict test site times.
+  The experiment runs in Docker on one local machine, and its absolute times do not carry
+  over to the k3s deployment that Connect runs on, per *Architecture of Young Amstelland
+  Connect*, which is why I compare the variants with each other.
 - **No interaction between dimensions.** My extended set moves one dimension at a time around
   the core setting, so it does not measure two dimensions moving together, for example a high
   profile count and high concurrency at once.
@@ -672,6 +730,19 @@ My measurement protocol for each cell is:
    endpoint's results file, kept with the experiment code.
 8. Reset the database before the next profile or related record step.
 
+The diagram below shows the eight steps of this protocol in sequence.
+
+```mermaid
+flowchart TD
+    S1["1. Start PostgreSQL 16<br/>in Docker"] --> S2["2. Seed profiles and<br/>related records"]
+    S2 --> S3["3. Start API in<br/>Release mode"]
+    S3 --> S4["4. Warm up with<br/>a k6 run"]
+    S4 --> S5["5. Call endpoint once,<br/>count SQL statements"]
+    S5 --> S6["6. Run k6 three times,<br/>record CPU and memory"]
+    S6 --> S7["7. Write the cell's<br/>results"]
+    S7 --> S8["8. Reset the database"]
+```
+
 ## A.3 Requirement-to-proof traceability
 
 | Sub-question | Acceptance criteria | Measurement | Document that carries the proof |
@@ -686,6 +757,6 @@ My measurement protocol for each cell is:
 
 AI was used as a writing support tool while working on this document. I used AI to draft
 the formulation of sentences, the structure of wording, readability, and clarity from
-content that I had provided. The content itself, including my experiences, reflections,
-learning goals, decisions, self-assessments, and conclusions, is my own. I reviewed the
-drafts and decided which text to include.
+content that I had provided, and to generate the diagrams. The content itself, including
+my experiences, reflections, learning goals, decisions, self-assessments, and
+conclusions, is my own. I reviewed the drafts and decided which text to include.

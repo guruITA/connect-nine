@@ -45,13 +45,34 @@ The datapoint description names five kinds of evidence, taken one by one below.
 | "you have evidence of research about possible architectures" | A sourced comparison of a monolith in layers, a modular monolith and microservices | Measure the profile endpoints per my research plan (Oerlemans, 2026), for NFR4 (responsiveness)'s number | Architecture document, sections 4 and 5 |
 | "you have thoughts about the security requirements for your project" | The seven BoKSA Security & Access Fundamentals key points applied to Connect, a mini threat model and the OWASP Top 10 | Prove the rule for minors with a test, in my demo project and the sprint 2 slice | Security document, sections 3, 4 and 6 |
 | "you have done some design pattern exercises" | No separate exercises. Three patterns designed for Connect, and one that lost | Code the patterns in sprint 2. Strategy waits until the team plans matching | Architecture document, section 7 |
-| "any other reasonable evidence of your progress in these topics" | Ten architecture decision records, and acceptance criteria for both documents | Update the records with the team's decisions, and record the learning group teacher's feedback | Architecture document, sections 8, 10 and 12. Security document, section 5 |
+| "any other reasonable evidence of your progress in these topics" | Eleven architecture decision records, and acceptance criteria for both documents | Update the records with the team's decisions, and record the learning group teacher's feedback | Architecture document, sections 8, 10 and 12. Security document, section 5 |
 
 ## 4. Architecture
 
 ### 4.1 The style and why
 
 Per the team's architecture document, the backend is a layered architecture in four projects: Presentation, Application, Domain and Infrastructure, where layers may only talk to those allowed (Microsoft, 2021). My project references enforce that, meeting issue 12 (one clear structure for new developers), so a forbidden reference does not compile. Inside Application the whole team chose CQRS by feature on 1 October 2026.
+
+The diagram below draws the dependency rule of section 5.1 of the architecture document, for the four projects and the test project Connect.Tests. Every solid arrow points inward, towards Domain.
+
+```mermaid
+%%{init: {'flowchart': {'wrappingWidth': 220, 'padding': 20, 'nodeSpacing': 40, 'rankSpacing': 60}, 'themeVariables': {'fontSize': '14px'}}}%%
+flowchart TB
+presentation["Presentation<br/>Minimal API endpoints and<br/>checks on the shape of<br/>the input."]
+tests["Connect.Tests<br/>Handler tests on an<br/>in-memory SQLite database,<br/>integration tests on a<br/>real PostgreSQL."]
+infrastructure["Infrastructure<br/>The only project that<br/>reaches the database and<br/>the external services,<br/>through AppDbContext."]
+application["Application<br/>The rules of each feature,<br/>CQRS by feature. Owns<br/>the contract IAppDbContext."]
+domain["Domain<br/>What things are and which<br/>rules always hold, such as<br/>ProfileVisibility.<br/>References nothing."]
+presentation -->|"Calls"| application
+presentation -.->|"Registers at<br/>start-up only"| infrastructure
+tests -->|"Tests the handlers"| application
+infrastructure -->|"Implements<br/>IAppDbContext"| application
+application -->|"References"| domain
+classDef component fill:#85bbf0,color:#000000,stroke:#5d82a8
+class presentation,tests,infrastructure,application,domain component
+```
+
+Key: a solid arrow is a project reference, the dotted arrow is a registration at start-up only.
 
 BoKSA asks me to compare a monolith, a modular monolith and microservices against a given context (Hogeschool van Amsterdam, n.d.-e). The team's document weighs microservices, not a modular monolith, so that column is mine.
 
@@ -62,17 +83,19 @@ BoKSA asks me to compare a monolith, a modular monolith and microservices agains
 | Completion in the week of 4 January 2027 | A monolith first lets the first phase prioritise speed (Fowler, 2015b) | Early in development the natural boundaries may not be clear yet (Microsoft, 2021) | A premium that can slow development down considerably (Fowler, 2015a) |
 | One shared database | Layers keep the code organised by responsibility (Microsoft, 2021) | Well-defined modules ease a later move to microservices (Garg, 2023) | Each service owns its data and schema (Microsoft, 2025b) |
 
-Every row points to the monolith in layers: no hosting option on a student budget ran the cluster microservices need. In my assessment the modular monolith is the nearest alternative, once the team draws its boundaries.
+Record 8.11 now runs Connect on single-node k3s, so a missing cluster no longer rules out microservices. Every row still points to the monolith in layers: the team is mostly new to .NET, one server, one shared database, and Fowler (2015a)'s complexity premium against our January deadline, per the requirements document. The modular monolith is the nearest alternative, once the team draws its boundaries.
 
-I draw the architecture with Simon Brown's C4 model (Brown, n.d.-a). The architecture document holds five C4 diagrams, the two below come first.
+The four projects still build into one deployable unit inside k3s, for the course's Level 3 DevOps Advanced Track, which asks for container orchestration verified end to end (Hogeschool van Amsterdam, 2026b).
+
+I draw the architecture with Simon Brown's C4 model (Brown, n.d.-a). The architecture document holds five C4 diagrams. Sections 4.2 to 4.4 show the first three.
 
 ### 4.2 Level 1: System context
 
 A system context diagram shows the system as a box, surrounded by its users and other systems (Brown, n.d.-c).
 
 ```mermaid
-%%{init: {'flowchart': {'wrappingWidth': 220, 'padding': 20, 'nodeSpacing': 40, 'rankSpacing': 60, 'subGraphTitleMargin': {'top': 10, 'bottom': 10}}, 'themeVariables': {'fontSize': '14px'}}}%%
-flowchart TB
+%%{init: {'flowchart': {'wrappingWidth': 220, 'padding': 20, 'nodeSpacing': 40, 'rankSpacing': 120, 'subGraphTitleMargin': {'top': 10, 'bottom': 10}}, 'themeVariables': {'fontSize': '14px'}}}%%
+flowchart LR
     visitor("[Person] Visitor<br/>Not logged in. Sees the<br/>public pages and is<br/>asked to log in.")
     young("[Person] Member<br/>Aged 15 to 30, some are<br/>minors. Makes a profile<br/>and finds others.")
     org("[Person] Organisation<br/>School, municipality,<br/>company or social<br/>organisation.")
@@ -91,7 +114,7 @@ flowchart TB
     connect -->|"Gets maps from"| maps
     connect -->|"Sends usage events to"| analytics
     connect -.->|"Takes payments through,<br/>if confirmed"| pay
-    young -.->|"Logs in through,<br/>if confirmed"| social
+    young -..->|"Logs in through,<br/>if confirmed"| social
     classDef person fill:#08427b,color:#ffffff,stroke:#052e56
     classDef system fill:#1168bd,color:#ffffff,stroke:#0b4884
     classDef external fill:#8a8a8a,color:#ffffff,stroke:#5e5e5e
@@ -113,7 +136,7 @@ In C4 a container is an application or a data store (Brown, n.d.-b).
 flowchart LR
     user("[Person]<br/>Member, organisation<br/>or admin<br/>Uses Connect in a<br/>web browser.")
     subgraph connect ["Young Amstelland Connect"]
-        proxy["[Container: Caddy]<br/>Reverse proxy<br/>Ends TLS. Sends /api<br/>calls to the API and<br/>every other path to<br/>the app files."]
+        proxy["[Container: Traefik]<br/>Ingress, proposal<br/>k3s's own ingress.<br/>Ends TLS. Sends /api<br/>calls to the API and<br/>every other path to<br/>the app files."]
         spa["[Container: React]<br/>Single page app<br/>Runs in the browser.<br/>Shows the pages and<br/>calls the API."]
         api["[Container: ASP.NET Core 10]<br/>API<br/>Minimal API endpoints.<br/>Holds every rule for<br/>access, input and<br/>data."]
         db[("[Container: PostgreSQL 16]<br/>Database<br/>One shared database<br/>for all modules.")]
@@ -135,11 +158,93 @@ flowchart LR
 
 Npgsql is the provider through which EF Core reaches PostgreSQL, per the team's tech stack document.
 
-Caddy ends TLS and routes by path, chosen in the server notes, my proposal for routing. The API holds every rule for access, input and data, sharing one origin with React behind Caddy, which section 3.2 of the security document explains for the session cookie.
+Traefik, k3s's own ingress, ends TLS and routes by path, record 8.8. The API holds every rule for access, input and data, sharing one origin with React behind Traefik, which section 3.2 of the security document explains for the session cookie.
+
+### 4.4 Level 3: Components of the API
+
+This diagram zooms in on the API container. A request passes its components from top to bottom. Section 6.3 of the architecture document gives the status of each component.
+
+```mermaid
+%%{init: {'flowchart': {'wrappingWidth': 220, 'padding': 20, 'nodeSpacing': 40, 'rankSpacing': 60, 'subGraphTitleMargin': {'top': 20, 'bottom': 20}}, 'themeVariables': {'fontSize': '14px'}}}%%
+flowchart TB
+    spa["[Container: React]<br/>Single page app"]
+    db[("[Container: PostgreSQL 16]<br/>Database")]
+    ext["[Software Systems, external]<br/>Mail, maps, analytics"]
+    subgraph apiBox ["[Container: ASP.NET Core 10]<br/>API"]
+apiSpacer["⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀"]
+        authn["[Component: ASP.NET Core<br/>Identity, cookie<br/>authentication]<br/>Authentication<br/>Signs a member in,<br/>issues and checks the<br/>session cookie.<br/>My proposal for the<br/>NFR1 (authentication<br/>and authorization)<br/>design."]
+        authz["[Component: ASP.NET Core<br/>authorization]<br/>Policies and handlers<br/>Signed in by default,<br/>an open list for<br/>public endpoints.<br/>Role policies and<br/>resource checks from<br/>the role table."]
+        endpoints["[Component: Presentation]<br/>Endpoints per feature<br/>Read the request,<br/>check its shape, call<br/>one handler, map the<br/>answer."]
+        handlers["[Component: Application]<br/>Command and query<br/>handlers per feature<br/>One folder per use<br/>case.<br/>Hand written handler<br/>contracts."]
+        matching["[Component: Application]<br/>Matching<br/>MatchingService with<br/>IMatchStrategy.<br/>Proposal for FR2<br/>(community interaction<br/>and matching)."]
+        domain["[Component: Domain]<br/>Entities and rules<br/>For example<br/>ProfileVisibility."]
+        infra["[Component: Infrastructure]<br/>AppDbContext and<br/>adapters<br/>EF Core with Npgsql,<br/>implements<br/>IAppDbContext.<br/>Adapters for the<br/>external services."]
+    end
+    spa -->|"JSON over HTTPS"| authn
+    authn -->|"User with claims"| authz
+    authz -->|"Allowed request"| endpoints
+    endpoints -->|"Command or query"| handlers
+    handlers --> matching
+    handlers -->|"Applies rules"| domain
+    matching --> domain
+    handlers -->|"IAppDbContext,<br/>resolved by DI"| infra
+    infra -->|"SQL with parameters"| db
+    infra -->|"HTTPS"| ext
+    classDef component fill:#85bbf0,color:#000000,stroke:#5d82a8
+    classDef container fill:#438dd5,color:#ffffff,stroke:#2e6295
+    classDef external fill:#8a8a8a,color:#ffffff,stroke:#5e5e5e
+    class authn,authz,endpoints,handlers,matching,domain,infra component
+    class spa,db container
+    class ext external
+apiSpacer ~~~ authn
+style apiSpacer fill:none,stroke:none
+domain ~~~ db
+domain ~~~ ext
+```
+
+Key: the lightest boxes are components of the API, the others are its neighbours. An arrow follows a request.
+
+### 4.5 One request through the layers
+
+Issue 343 (viewing another member's public profile) asks for GET /api/member-profiles/{id}, for logged in members only. The sequence below follows that request through the components of section 4.4. Section 6.4 of the architecture document gives the five steps and the classes behind them.
+
+```mermaid
+%%{init: {'sequence': {'actorMargin': 40, 'noteMargin': 10, 'messageMargin': 35, 'mirrorActors': false}, 'themeVariables': {'fontSize': '14px'}}}%%
+sequenceDiagram
+participant spa as Single page app
+participant traefik as Traefik ingress
+participant authn as Authentication
+participant authz as Policies and handlers
+participant ep as MemberProfileEndpoints
+participant qh as GetPublicMemberProfileHandler
+participant ctx as IAppDbContext
+participant db as PostgreSQL 16
+spa->>traefik: GET /api/member-profiles/{id}
+traefik->>authn: Forwards the /api call
+Note over authn: Step 1. Without a valid<br/>session cookie the<br/>answer is 401.
+authn->>authz: User with claims
+authz->>ep: Allowed request
+Note over ep: Step 2. An id that is not<br/>a uuid gets the same 404<br/>as an unknown member.
+ep->>qh: GetPublicMemberProfileQuery
+qh->>ctx: Selects only the<br/>public columns
+ctx->>db: SQL with parameters
+db-->>ctx: The public columns
+ctx-->>qh: The public columns
+Note over qh: Step 3. Asks ProfileVisibility<br/>whether the region may be<br/>shown. For From15To17 it<br/>is left out.
+qh-->>ep: PublicMemberProfileDto
+ep->>authz: Asks IAuthorizationService<br/>whether this user may<br/>view this profile
+Note over authz: Step 4.<br/>ViewMemberProfileHandler<br/>decides, on the Member<br/>role only.
+authz-->>ep: Allowed or refused
+Note over ep: Step 5. Refused gets 404,<br/>my proposal. Allowed<br/>gets 200.
+ep-->>traefik: 200 with the<br/>public profile
+traefik-->>spa: 200 with the<br/>public profile
+```
+
+Key: a solid arrow is a call, a dashed arrow is an answer.
 
 ## 5. Design patterns
 
-The architecture workshop asks for at least three patterns, where each is used and why (Hogeschool van Amsterdam, 2026). BoKSA warns that "The real skill isn't memorising the pattern catalogue, it's judgment" (Hogeschool van Amsterdam, n.d.-a), so each is weighed against a simpler option. Per the server notes, all three are designed, not yet coded.
+The architecture workshop asks for at least three patterns, where each is used and why (Hogeschool van Amsterdam, 2026a). BoKSA warns that "The real skill isn't memorising the pattern catalogue, it's judgment" (Hogeschool van Amsterdam, n.d.-a), so each is weighed against a simpler option. Per the server notes, all three are designed, not yet coded.
 
 | Pattern | Problem in Connect | Where it lives | Why it fits | The simpler option it beat |
 | --- | --- | --- | --- | --- |
@@ -150,7 +255,7 @@ The architecture workshop asks for at least three patterns, where each is used a
 
 ## 6. Architecture decisions
 
-BoKSA asks for an ADR (architecture decision record): context, decision, consequences (Hogeschool van Amsterdam, n.d.-e). Per Nygard (2011), a record is proposed until stakeholders agree, accepted once they do. The table gives the architecture document's ten records.
+BoKSA asks for an ADR (architecture decision record): context, decision, consequences (Hogeschool van Amsterdam, n.d.-e). Per Nygard (2011), a record is proposed until stakeholders agree, accepted once they do. The table gives the architecture document's eleven records.
 
 | Record | Decision | Chosen | Who and when | Status |
 | --- | --- | --- | --- | --- |
@@ -161,11 +266,12 @@ BoKSA asks for an ADR (architecture decision record): context, decision, consequ
 | 8.5 | Database | PostgreSQL 16, not SQL Server, Microsoft's database | Wesley Oerlemans, 26 September 2026 | Accepted |
 | 8.6 | Pattern inside Application | CQRS by feature, not the repository pattern | The whole team, 1 October 2026 | Accepted |
 | 8.7 | Hosting | The foundation's server | Settled by the foundation's offer, 2 October 2026 | Accepted |
-| 8.8 | Reverse proxy | Caddy | The server notes, 2 October 2026 | Proposed |
+| 8.8 | Ingress | Traefik, not Caddy | Wesley Oerlemans, 6 October 2026 | Proposed |
 | 8.9 | Platform version | .NET 10 | Not decided yet | Proposed |
 | 8.10 | Authentication and authorization in the API | Cookie authentication and policy-based authorization | Proposed by me, decided by Kelvin van Voorst | Proposed |
+| 8.11 | Deployment platform | Single-node k3s, not Docker Compose only or a managed cluster | Wesley Oerlemans, 6 October 2026 | Decided, team confirmation not recorded |
 
-Records 8.1, 8.2 and 8.8 to 8.10 are not accepted yet. Kelvin van Voorst decides 8.10 in the NFR1 design, due at the sprint 1 review. For 8.6, the architecture document records Nick Hoebe's CQRS interest as tipping the balance.
+Records 8.1, 8.2 and 8.8 to 8.11 are not accepted yet. Kelvin van Voorst decides 8.10 in the NFR1 design, due at the sprint 1 review. For 8.6, the architecture document records Nick Hoebe's CQRS interest as tipping the balance.
 
 ## 7. Security
 
@@ -185,7 +291,7 @@ Each row is one BoKSA Security & Access Fundamentals point (Hogeschool van Amste
 | 4. Role-based access control | Roles reflect what a user may do (Microsoft, 2026e), but one role cannot carry the minors rule | Role policies by default, plus a resource check capping an admin at a member's view (Microsoft, 2026d) | The team, issue 337, and Kelvin van Voorst for a minor's profile |
 | 5. Allow-list validation on the server | OWASP asks for a server-side acceptance rule per field, not a deny-list (OWASP Foundation, n.d.-b) | The endpoint checks the shape, the handler checks the rules | The team, for the maximum length of a bio |
 | 6. Parameterised queries against SQL injection | A parameterised query keeps code and data apart (OWASP Foundation, n.d.-e), but FromSqlRaw "can be vulnerable to SQL injection attacks, if improperly used." (Microsoft, 2022) | Raw SQL only through FromSql, never FromSqlRaw, checked in every merge request | No owner recorded yet |
-| 7. XSS (cross-site scripting) and output encoding | XSS runs scripts in pages other users load (Microsoft, 2026c). React escapes JSX values before rendering (React, n.d.) | Never use dangerouslySetInnerHTML for user content, plus a Content Security Policy header at Caddy | No owner recorded yet |
+| 7. XSS (cross-site scripting) and output encoding | XSS runs scripts in pages other users load (Microsoft, 2026c). React escapes JSX values before rendering (React, n.d.) | Never use dangerouslySetInnerHTML for user content, plus a Content Security Policy header at Traefik | No owner recorded yet |
 
 ### 7.3 A mini threat model
 
@@ -209,19 +315,20 @@ Dates come from the course schedule and the team's delivery plan.
 | 1 | Weeks of 21 September to 5 October 2026, review deadline 9 October | Both full documents, in the learning group of 6 October |
 | None | 12 to 17 October 2026 | Autumn break |
 | 2 | Weeks of 19 October to 2 November 2026, review 5 November | The first slice in code, then the first diagram check against it |
+| 2 | Weeks of 19 October to 2 November 2026, review 5 November | The DevOps & Testing datapoint: a container image, k3s on the server, GitLab CI with tests and container scanning, a rollback, and monitoring |
 | 3 | Weeks of 9 to 23 November 2026, review deadline 18 December | The check again, and the R&D report |
 | 4 | Weeks of 7 and 14 December 2026 and 4 January 2027, review deadline 8 January 2027 | The last check before the handover, and the Review of Security & Testing datapoint |
 
 ## 9. Honest status for sprint 1
 
-This table agrees with section 12 of the architecture document and section 6 of the security document. The asks come from the datapoint sheet, the architecture and security workshops (Hogeschool van Amsterdam, 2026, n.d.-d) and BoKSA.
+This table agrees with section 12 of the architecture document and section 6 of the security document. The asks come from the datapoint sheet, the architecture and security workshops (Hogeschool van Amsterdam, 2026a, n.d.-d) and BoKSA.
 
 | Ask | Status | Reason |
 | --- | --- | --- |
 | Understand and explain design patterns | Covered | Three patterns: problem, place, reason, cost and the lost option |
 | Apply design patterns | Partly covered | Designed, not in code. Strategy is still a proposal |
 | A documented style with architecture diagrams | Covered | The style and five C4 diagrams |
-| Decision records with context, decision and consequences | Covered | Ten records. Five are proposed: 8.1, 8.2 and 8.8 to 8.10 |
+| Decision records with context, decision and consequences | Covered | Eleven records. Five are proposed: 8.1, 8.2 and 8.8 to 8.10 |
 | One decision explained to two audiences | Partly covered | Record 8.1 is written. The rest waits for a sprint review |
 | Quality attribute scenarios | Partly covered | Two measures wait for a team target |
 | A UI decomposed into reusable components | Not yet | The React app is one container until the first screens exist |
@@ -229,6 +336,7 @@ This table agrees with section 12 of the architecture document and section 6 of 
 | Understand and explain the security fundamentals | Covered | All seven points in my words, with a Connect example |
 | Apply the security fundamentals | Partly covered | Applied in the design, the threat model and OWASP table, not in code |
 | Authorization design for NFR1 | Not yet, not mine to decide | Owned by Kelvin van Voorst, due at the sprint 1 review |
+| Deployment on Kubernetes | Not yet | Planned for sprint 2 |
 | Feedback from the learning group teacher | Not yet | Comes on 6 October 2026 |
 
 Understanding and explanation are covered. Application waits for code, and the sprint 2 check is where design meets it.
@@ -247,7 +355,7 @@ The full documents are the architecture document and the security document named
 | --- | --- | --- |
 | 2 The project in brief | 1, 3 and 4.1 | 1 |
 | 3 How this evidence meets the datapoint | 10 and Appendix A | 5 |
-| 4 Architecture | 4, 5 and 6 | 3.2 |
+| 4 Architecture | 4, 5, 6.5 and 8.11 | 3.2 |
 | 5 Design patterns | 7 | None |
 | 6 Architecture decisions | 3 and 8 | 3.2 and 3.4 |
 | 7 Security | 4.2 | 3 and 4 |
@@ -278,7 +386,9 @@ Hogeschool van Amsterdam. (n.d.-d). *Security for software engineers: An introdu
 
 Hogeschool van Amsterdam. (n.d.-e). *Technical architecture decision making*. BoKSA. Retrieved October 6, 2026, from https://boksa.hbo-ict-hva.nl/profiles/full-stack-developer/analyse-and-advice/technical-architecture-decision-making/
 
-Hogeschool van Amsterdam. (2026). *Architecture & design patterns: How they fit in your project* [Course document].
+Hogeschool van Amsterdam. (2026a). *Architecture & design patterns: How they fit in your project* [Course document].
+
+Hogeschool van Amsterdam. (2026b). *Full production DevOps: From commit to a monitored, rolled-back-if-needed production deployment* [Course document].
 
 Microsoft. (2017, August 17). *Microsoft Threat Modeling Tool threats*. Microsoft Learn. https://learn.microsoft.com/en-us/azure/security/develop/threat-modeling-tool-threats
 
