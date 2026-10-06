@@ -1,0 +1,13 @@
+using Connect.Application.Users.Services;
+using Microsoft.Extensions.DependencyInjection;
+
+namespace Connect.Application;
+
+public static class DependencyInjection
+{
+    public static IServiceCollection AddApplication(this IServiceCollection services)
+    {
+        services.AddScoped<UserService>();
+        return services;
+    }
+}
