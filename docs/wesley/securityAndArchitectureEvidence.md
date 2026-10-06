@@ -18,7 +18,7 @@
 
 ## 1. Introduction
 
-I am Wesley Oerlemans, student number 500926596, Full Stack Software Developer at level 3 in the Social Impact Apps studio of the HvA (Hogeschool van Amsterdam), and this is my evidence for datapoint 4 of sprint 1, Security & Architecture, under the learning outcome Designing & Realising. The course's level 3 datapoint sheet sets this criterion:
+I am Wesley Oerlemans, student number 500926596, Full Stack Software Developer at level 3 in the Social Impact Apps studio of the HvA. This is my evidence for datapoint 4 of sprint 1, Security & Architecture, under the learning outcome Designing & Realising. The course's level 3 datapoint sheet sets this criterion:
 
 > With reference to the description above, you provide convincing evidence that you have demonstrated or will demonstrate your competency and knowledge.
 
@@ -33,7 +33,7 @@ Per the server notes, Connect has no code yet, so most of my evidence is design 
 
 Per the team's product vision, we build Young Amstelland Connect, where young people from Amstelland, local organisations and the WailSalutem Foundation meet all year. The foundation is a nonprofit, and the business case is impact, not revenue: visibility, motivating young people and HvA collaboration. No funding model or success numbers exist yet. Per the requirements document, our users are 15 to 30, so some are minors.
 
-Per the team's README, we are five: Wesley Oerlemans, Nick Hoebe, Gurpreet Singh and Bayon Eerhart in Full Stack, and Kelvin van Voorst as Security Specialist. Per the tech stack and architecture documents, the stack is React with ASP.NET Core Minimal APIs, EF Core and PostgreSQL 16. Whether Connect uses .NET 10 is still open, in issue 255 (recording the .NET 10 choice). Per the infrastructure document and server notes, the foundation lends us one Strato VPS in Germany, received 2 October 2026, with no containers yet.
+Per the team's README, we are five: Wesley Oerlemans, Nick Hoebe, Gurpreet Singh and Bayon Eerhart in Full Stack, and Kelvin van Voorst as Security Specialist. Per the tech stack and architecture documents, the stack is React with ASP.NET Core Minimal APIs, EF Core and PostgreSQL 16. Whether Connect uses .NET 10 is open, per issue 255. Per the infrastructure document and server notes, the foundation lends us one Strato VPS in Germany, received 2 October 2026, with no containers yet.
 
 ## 3. How this evidence meets the datapoint
 
@@ -83,7 +83,7 @@ BoKSA asks me to compare a monolith, a modular monolith and microservices agains
 | Completion in the week of 4 January 2027 | A monolith first lets the first phase prioritise speed (Fowler, 2015b) | Early in development the natural boundaries may not be clear yet (Microsoft, 2021) | A premium that can slow development down considerably (Fowler, 2015a) |
 | One shared database | Layers keep the code organised by responsibility (Microsoft, 2021) | Well-defined modules ease a later move to microservices (Garg, 2023) | Each service owns its data and schema (Microsoft, 2025b) |
 
-Record 8.11 now runs Connect on single-node k3s, so a missing cluster no longer rules out microservices. Every row still points to the monolith in layers: the team is mostly new to .NET, one server, one shared database, and Fowler (2015a)'s complexity premium against our January deadline, per the requirements document. The modular monolith is the nearest alternative, once the team draws its boundaries.
+Record 8.11, backlog-planned, runs production on single-node k3s, so a missing cluster no longer rules out microservices. Every row points to the monolith in layers: the team is mostly new to .NET, one server, one shared database, and Fowler (2015a)'s complexity premium against our January deadline, per the requirements document. The modular monolith is the nearest alternative, once the team draws its boundaries.
 
 The four projects still build into one deployable unit inside k3s, for the course's Level 3 DevOps Advanced Track, which asks for container orchestration verified end to end (Hogeschool van Amsterdam, 2026b).
 
@@ -125,7 +125,7 @@ flowchart LR
 
 A dotted arrow depends on a decision.
 
-The four people are my proposed starting set for the role table, unconfirmed until issue 337 (confirming the role table). The client's diagram names the mail, maps and analytics services, with no provider chosen. The payment service waits for the webshop, owned by Nick Hoebe. Google and Facebook login are planned per issues 46 and 49, not yet confirmed.
+The four people are my proposed starting set for the role table, unconfirmed until issue 337. The client's diagram names the mail, maps and analytics services, with no provider chosen. The payment service waits for the webshop, owned by Nick Hoebe. Google and Facebook login are planned per issues 46 and 49, not yet confirmed.
 
 ### 4.3 Level 2: Containers
 
@@ -136,29 +136,32 @@ In C4 a container is an application or a data store (Brown, n.d.-b).
 flowchart LR
     user("[Person]<br/>Member, organisation<br/>or admin<br/>Uses Connect in a<br/>web browser.")
     subgraph connect ["Young Amstelland Connect"]
-        proxy["[Container: Traefik]<br/>Ingress, proposal<br/>k3s's own ingress.<br/>Ends TLS. Sends /api<br/>calls to the API and<br/>every other path to<br/>the app files."]
+        caddy["[Container: Caddy]<br/>Front door, record 8.8<br/>Ends TLS with its own<br/>certificate. Sends /api<br/>calls onward and every<br/>other path to the app<br/>files."]
+        traefik["[Container: Traefik]<br/>Ingress, production<br/>only, record 8.8<br/>k3s's own ingress,<br/>behind Caddy. Routes<br/>/api calls by path."]
         spa["[Container: React]<br/>Single page app<br/>Runs in the browser.<br/>Shows the pages and<br/>calls the API."]
         api["[Container: ASP.NET Core 10]<br/>API<br/>Minimal API endpoints.<br/>Holds every rule for<br/>access, input and<br/>data."]
         db[("[Container: PostgreSQL 16]<br/>Database<br/>One shared database<br/>for all modules.")]
     end
     ext["[Software Systems, external]<br/>Mail, maps, analytics<br/>and payments if<br/>confirmed"]
-    user -->|"Visits, HTTPS"| proxy
-    proxy -->|"Delivers the app files"| spa
-    spa -->|"Calls /api, JSON over<br/>HTTPS, same origin,<br/>session cookie"| proxy
-    proxy -->|"Forwards /api calls,<br/>inside the server"| api
+    user -->|"Visits, HTTPS"| caddy
+    caddy -->|"Delivers the app files"| spa
+    spa -->|"Calls /api, JSON over<br/>HTTPS, same origin,<br/>session cookie"| caddy
+    caddy -->|"Forwards /api calls,<br/>test site"| api
+    caddy -.->|"Forwards /api calls,<br/>production"| traefik
+    traefik -.->|"Routes by path"| api
     api -->|"Reads and writes,<br/>EF Core and Npgsql"| db
     api -->|"Calls, HTTPS"| ext
     classDef person fill:#08427b,color:#ffffff,stroke:#052e56
     classDef container fill:#438dd5,color:#ffffff,stroke:#2e6295
     classDef external fill:#8a8a8a,color:#ffffff,stroke:#5e5e5e
     class user person
-    class proxy,spa,api,db container
+    class caddy,traefik,spa,api,db container
     class ext external
 ```
 
 Npgsql is the provider through which EF Core reaches PostgreSQL, per the team's tech stack document.
 
-Traefik, k3s's own ingress, ends TLS and routes by path, record 8.8. The API holds every rule for access, input and data, sharing one origin with React behind Traefik, which section 3.2 of the security document explains for the session cookie.
+Caddy ends TLS for both environments. Traefik, scoped to production, routes by path inside k3s, record 8.8. The API holds every access, input and data rule, sharing one origin with React behind Caddy and with Traefik for production. Section 3.2 of the security document explains the session cookie.
 
 ### 4.4 Level 3: Components of the API
 
@@ -212,15 +215,15 @@ Issue 343 (viewing another member's public profile) asks for GET /api/member-pro
 %%{init: {'sequence': {'actorMargin': 40, 'noteMargin': 10, 'messageMargin': 35, 'mirrorActors': false}, 'themeVariables': {'fontSize': '14px'}}}%%
 sequenceDiagram
 participant spa as Single page app
-participant traefik as Traefik ingress
+participant caddy as Caddy
 participant authn as Authentication
 participant authz as Policies and handlers
 participant ep as MemberProfileEndpoints
 participant qh as GetPublicMemberProfileHandler
 participant ctx as IAppDbContext
 participant db as PostgreSQL 16
-spa->>traefik: GET /api/member-profiles/{id}
-traefik->>authn: Forwards the /api call
+spa->>caddy: GET /api/member-profiles/{id}
+caddy->>authn: Forwards the /api call
 Note over authn: Step 1. Without a valid<br/>session cookie the<br/>answer is 401.
 authn->>authz: User with claims
 authz->>ep: Allowed request
@@ -236,8 +239,8 @@ ep->>authz: Asks IAuthorizationService<br/>whether this user may<br/>view this p
 Note over authz: Step 4.<br/>ViewMemberProfileHandler<br/>decides, on the Member<br/>role only.
 authz-->>ep: Allowed or refused
 Note over ep: Step 5. Refused gets 404,<br/>my proposal. Allowed<br/>gets 200.
-ep-->>traefik: 200 with the<br/>public profile
-traefik-->>spa: 200 with the<br/>public profile
+ep-->>caddy: 200 with the<br/>public profile
+caddy-->>spa: 200 with the<br/>public profile
 ```
 
 Key: a solid arrow is a call, a dashed arrow is an answer.
@@ -266,18 +269,18 @@ BoKSA asks for an ADR (architecture decision record): context, decision, consequ
 | 8.5 | Database | PostgreSQL 16, not SQL Server, Microsoft's database | Wesley Oerlemans, 26 September 2026 | Accepted |
 | 8.6 | Pattern inside Application | CQRS by feature, not the repository pattern | The whole team, 1 October 2026 | Accepted |
 | 8.7 | Hosting | The foundation's server | Settled by the foundation's offer, 2 October 2026 | Accepted |
-| 8.8 | Ingress | Traefik, not Caddy | Wesley Oerlemans, 6 October 2026 | Proposed |
+| 8.8 | Front door and ingress | Caddy as the front door, Traefik inside production k3s | Wesley Oerlemans, 6 October 2026 | Chosen per the server notes (task 9.4, kept for production by task 95.3), Traefik behind it per issues 156, 157 and 159 |
 | 8.9 | Platform version | .NET 10 | Not decided yet | Proposed |
 | 8.10 | Authentication and authorization in the API | Cookie authentication and policy-based authorization | Proposed by me, decided by Kelvin van Voorst | Proposed |
-| 8.11 | Deployment platform | Single-node k3s, not Docker Compose only or a managed cluster | Wesley Oerlemans, 6 October 2026 | Decided, team confirmation not recorded |
+| 8.11 | Production platform | Single-node k3s with Terraform, test on Compose | The team, epic 1460, Sprint 4 | Planned, issue 156 open |
 
-Records 8.1, 8.2 and 8.8 to 8.11 are not accepted yet. Kelvin van Voorst decides 8.10 in the NFR1 design, due at the sprint 1 review. For 8.6, the architecture document records Nick Hoebe's CQRS interest as tipping the balance.
+Records 8.1, 8.2 and 8.9 to 8.11 are not accepted yet. Kelvin van Voorst decides 8.10 in the NFR1 design, due at the sprint 1 review. For 8.6, the architecture document records Nick Hoebe's CQRS interest as tipping the balance.
 
 ## 7. Security
 
 ### 7.1 The security requirements
 
-Per the requirements document, NFR1 asks for an authentication scheme covering every role, with authorization for minors' data. Under the GDPR, NFR2 asks for a lawful basis, data minimisation and consent for minors. Issue 343 (viewing another member's public profile) fixes one rule: a member aged 15 to 17 never has their region seen by others.
+Per the requirements document, NFR1 asks for an authentication scheme covering every role, with authorization for minors' data. Under the GDPR, NFR2 asks for a lawful basis, data minimisation and consent for minors. Issue 343 fixes one rule: a member aged 15 to 17 never has their region seen by others.
 
 ### 7.2 The seven fundamentals applied to Connect
 
@@ -291,11 +294,11 @@ Each row is one BoKSA Security & Access Fundamentals point (Hogeschool van Amste
 | 4. Role-based access control | Roles reflect what a user may do (Microsoft, 2026e), but one role cannot carry the minors rule | Role policies by default, plus a resource check capping an admin at a member's view (Microsoft, 2026d) | The team, issue 337, and Kelvin van Voorst for a minor's profile |
 | 5. Allow-list validation on the server | OWASP asks for a server-side acceptance rule per field, not a deny-list (OWASP Foundation, n.d.-b) | The endpoint checks the shape, the handler checks the rules | The team, for the maximum length of a bio |
 | 6. Parameterised queries against SQL injection | A parameterised query keeps code and data apart (OWASP Foundation, n.d.-e), but FromSqlRaw "can be vulnerable to SQL injection attacks, if improperly used." (Microsoft, 2022) | Raw SQL only through FromSql, never FromSqlRaw, checked in every merge request | No owner recorded yet |
-| 7. XSS (cross-site scripting) and output encoding | XSS runs scripts in pages other users load (Microsoft, 2026c). React escapes JSX values before rendering (React, n.d.) | Never use dangerouslySetInnerHTML for user content, plus a Content Security Policy header at Traefik | No owner recorded yet |
+| 7. XSS (cross-site scripting) and output encoding | XSS runs scripts in pages other users load (Microsoft, 2026c). React escapes JSX values before rendering (React, n.d.) | Never use dangerouslySetInnerHTML for user content, plus a Content Security Policy header at Caddy | No owner recorded yet |
 
 ### 7.3 A mini threat model
 
-Section 3.8 of the security document builds the mini threat model the security workshop asks for (Hogeschool van Amsterdam, n.d.-d), for viewing a member's profile, sorted by STRIDE, Microsoft's model for categorizing threats (Microsoft, 2017), each with a control and a residual risk. The open question, owned by Kelvin van Voorst, is whether an organisation may open a minor's profile at all.
+Section 3.8 of the security document builds the mini threat model the security workshop asks for (Hogeschool van Amsterdam, n.d.-d), for viewing a member's profile, sorted by STRIDE (Microsoft, 2017), each with a control and a residual risk. The open question, owned by Kelvin van Voorst, is whether an organisation may open a minor's profile at all.
 
 ### 7.4 The OWASP Top 10
 
@@ -315,9 +318,9 @@ Dates come from the course schedule and the team's delivery plan.
 | 1 | Weeks of 21 September to 5 October 2026, review deadline 9 October | Both full documents, in the learning group of 6 October |
 | None | 12 to 17 October 2026 | Autumn break |
 | 2 | Weeks of 19 October to 2 November 2026, review 5 November | The first slice in code, then the first diagram check against it |
-| 2 | Weeks of 19 October to 2 November 2026, review 5 November | The DevOps & Testing datapoint: a container image, k3s on the server, GitLab CI with tests and container scanning, a rollback, and monitoring |
+| 2 | Weeks of 19 October to 2 November 2026, review 5 November | The DevOps & Testing datapoint: a Dockerfile, Compose for the test site, GitLab CI with tests and a scan |
 | 3 | Weeks of 9 to 23 November 2026, review deadline 18 December | The check again, and the R&D report |
-| 4 | Weeks of 7 and 14 December 2026 and 4 January 2027, review deadline 8 January 2027 | The last check before the handover, and the Review of Security & Testing datapoint |
+| 4 | Weeks of 7 and 14 December 2026 and 4 January 2027, review deadline 8 January 2027 | The last check, the Review of Security & Testing datapoint, and production on k3s with Terraform, issues 157–167 and 169 |
 
 ## 9. Honest status for sprint 1
 
@@ -328,7 +331,7 @@ This table agrees with section 12 of the architecture document and section 6 of 
 | Understand and explain design patterns | Covered | Three patterns: problem, place, reason, cost and the lost option |
 | Apply design patterns | Partly covered | Designed, not in code. Strategy is still a proposal |
 | A documented style with architecture diagrams | Covered | The style and five C4 diagrams |
-| Decision records with context, decision and consequences | Covered | Eleven records. Five are proposed: 8.1, 8.2 and 8.8 to 8.10 |
+| Decision records with context, decision and consequences | Covered | Eleven records. Four are proposed: 8.1, 8.2, 8.9 and 8.10 |
 | One decision explained to two audiences | Partly covered | Record 8.1 is written. The rest waits for a sprint review |
 | Quality attribute scenarios | Partly covered | Two measures wait for a team target |
 | A UI decomposed into reusable components | Not yet | The React app is one container until the first screens exist |
@@ -336,16 +339,16 @@ This table agrees with section 12 of the architecture document and section 6 of 
 | Understand and explain the security fundamentals | Covered | All seven points in my words, with a Connect example |
 | Apply the security fundamentals | Partly covered | Applied in the design, the threat model and OWASP table, not in code |
 | Authorization design for NFR1 | Not yet, not mine to decide | Owned by Kelvin van Voorst, due at the sprint 1 review |
-| Deployment on Kubernetes | Not yet | Planned for sprint 2 |
+| Deployment on Kubernetes | Not yet | Compose sprint 2, k3s sprint 4, record 8.11 |
 | Feedback from the learning group teacher | Not yet | Comes on 6 October 2026 |
 
 Understanding and explanation are covered. Application waits for code, and the sprint 2 check is where design meets it.
 
 ## 10. Conclusion
 
-Connect is a monolith in layers: four projects, CQRS by feature in Application, Minimal APIs at the top and dependency injection to wire them, with Strategy proposed for matching. Every factor pointed to that style over a modular monolith and microservices. I applied the seven security fundamentals, tied the threats to controls, with every rule designed to run in the API.
+Connect is a monolith in layers, with CQRS by feature, Minimal APIs and dependency injection, plus Strategy proposed for matching. Every factor pointed to that style over a modular monolith and microservices. I applied the seven security fundamentals, tied the threats to controls, with every rule designed to run in the API.
 
-This shows I understand Connect's architecture and security, and can explain both. Five decision records still wait on the team. I will close the gap between design and code with the demo project and the sprint 2 slice, where a test shows whether the rule for minors holds.
+This shows I understand Connect's architecture and security, and can explain both. Five decision records still wait on the team. Section 8 names how I will close that gap, with a test for the rule for minors.
 
 ## 11. Where to read more
 

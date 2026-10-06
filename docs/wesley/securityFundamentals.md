@@ -80,7 +80,7 @@ With a session, the browser holds a cookie that it sends with every request, and
 
 **My advice is cookie authentication with ASP.NET Core Identity, with an HttpOnly, Secure and SameSite cookie.** The reasons:
 
-- The React app and the API share one origin behind the Traefik ingress of k3s, so a cookie needs no extra setup.
+- The React app and the API share one origin behind Caddy, and, for production, behind Traefik inside k3s as well, so a cookie needs no extra setup.
 - A token in browser storage can be read by any script on the page, because local storage is always accessible by JavaScript (OWASP Foundation, n.d.-d). An HttpOnly cookie cannot be read by script, because the attribute tells the browser not to let scripts access it (OWASP Foundation, n.d.-g).
 - Microsoft says the same for single page apps: "We recommend using cookies for browser-based applications, because, by default, the browser automatically handles them without exposing them to JavaScript." (Microsoft, 2026d).
 - Since ASP.NET Core 10, API endpoints no longer redirect to a login page under cookie authentication (Microsoft, 2025b). The API is designed to answer 401, which the acceptance criteria of issue 343 (viewing another member's public profile) ask for.
@@ -185,7 +185,7 @@ In my design all data in Connect goes through EF Core (Entity Framework Core), t
 
 Cross-site scripting lets an attacker place client-side scripts in web pages, and when other users load those pages, the scripts run (Microsoft, 2026f). For Connect that means a bio with a script in it would run in every visitor's browser. Output encoding changes characters such as the less-than sign into a safe form before they are shown (Microsoft, 2026f), so the browser treats them as text and not as code (OWASP Foundation, n.d.-c).
 
-In my reading of the requirements document, Connect shows a lot of user text, from profiles to showcased work. React encodes by default: "By default, React DOM escapes any values embedded in JSX before rendering them." (React, n.d.-b). The way around it is dangerouslySetInnerHTML, and React warns: "If the HTML inside isn't trusted (for example, if it's based on user data), you risk introducing an XSS vulnerability." (React, n.d.-a). My advice is that Connect never uses it for user content and that a reviewer checks for it. The HttpOnly cookie limits the damage of an XSS (cross-site scripting) bug, because a script cannot read the session cookie (OWASP Foundation, n.d.-g). A Content Security Policy header at the Traefik ingress of k3s is my proposal for one more layer.
+In my reading of the requirements document, Connect shows a lot of user text, from profiles to showcased work. React encodes by default: "By default, React DOM escapes any values embedded in JSX before rendering them." (React, n.d.-b). The way around it is dangerouslySetInnerHTML, and React warns: "If the HTML inside isn't trusted (for example, if it's based on user data), you risk introducing an XSS vulnerability." (React, n.d.-a). My advice is that Connect never uses it for user content and that a reviewer checks for it. The HttpOnly cookie limits the damage of an XSS (cross-site scripting) bug, because a script cannot read the session cookie (OWASP Foundation, n.d.-g). A Content Security Policy header at Caddy is my proposal for one more layer.
 
 ### 3.8 A mini threat model for viewing a member's profile
 
@@ -202,7 +202,7 @@ The security workshop asks for a mini threat model: the assets, 3 to 5 threats, 
 | Denial of service | Scraping, or a database that runs out of capacity | A rate limit (my proposal), a plain 503, health checks | One server, one database |
 | Elevation of privilege | A member reaches an admin endpoint, or an organisation sees more of a minor than allowed | Signed in by default, role policies, the resource check of section 6.4 of my architecture document | NFR1 (authentication and authorization) is open and the role table is not confirmed |
 
-This flowchart draws the table above as a data flow, with the browser, the Traefik ingress of k3s, the API and the database as trust boundaries and the parenthesised STRIDE letter from the table on each flow it threatens. My design.
+This flowchart draws the table above as a data flow, with the browser, Caddy, the API and the database as trust boundaries and the parenthesised STRIDE letter from the table on each flow it threatens. My design.
 
 ```mermaid
 %%{init: {'flowchart': {'wrappingWidth': 220, 'padding': 20, 'nodeSpacing': 40, 'rankSpacing': 60, 'subGraphTitleMargin': {'top': 10, 'bottom': 10}}, 'themeVariables': {'fontSize': '14px'}}}%%
@@ -210,8 +210,8 @@ flowchart LR
     subgraph browserTB ["Trust boundary:<br/>Browser"]
         browser(["Member's browser"])
     end
-    subgraph ingressTB ["Trust boundary:<br/>Traefik ingress"]
-        ingress["Traefik ingress"]
+    subgraph caddyTB ["Trust boundary:<br/>Caddy"]
+        caddy["Caddy"]
     end
     subgraph apiTB ["Trust boundary: API"]
         endpoint["Member profile endpoint"]
@@ -222,17 +222,17 @@ flowchart LR
     subgraph dbTB ["Trust boundary:<br/>Database"]
         db[("PostgreSQL 16")]
     end
-    browser -->|"Session cookie (S)<br/>stolen cookie reused"| ingress
-    ingress -->|"Forwards /api call<br/>(T) id changed to<br/>collect profiles"| endpoint
+    browser -->|"Session cookie (S)<br/>stolen cookie reused"| caddy
+    caddy -->|"Forwards /api call<br/>(T) id changed to<br/>collect profiles"| endpoint
     endpoint --> authz
     authz -->|"(E) reaches an<br/>admin endpoint"| admin
     endpoint -->|"SQL with parameters<br/>(D) scraping or<br/>capacity limit"| db
     db -->|"Public columns only"| endpoint
-    endpoint -->|"JSON answer (I)<br/>region or field leak"| ingress
-    ingress -->|"JSON answer"| browser
+    endpoint -->|"JSON answer (I)<br/>region or field leak"| caddy
+    caddy -->|"JSON answer"| browser
     endpoint -->|"Viewer account id (R)<br/>no record of who looked"| logs
     classDef boundary fill:none,stroke:#5e5e5e,stroke-dasharray: 4 4
-    class browserTB,ingressTB,apiTB,dbTB boundary
+    class browserTB,caddyTB,apiTB,dbTB boundary
 ```
 
 Key: dashed frames are trust boundaries, the parenthesised letter is the STRIDE category from the table above.
@@ -245,7 +245,7 @@ Issue 306 (checking every module's authenticity and resistance) asks for this ki
 
 ### 3.9 Security in the deployment
 
-- **TLS (Transport Layer Security) at the reverse proxy.** In a reverse proxy configuration the proxy handles the connection security (Microsoft, 2026b). In my design the Traefik ingress of k3s gets a real certificate, and behind it the traffic stays inside the server. Record 8.11 of my architecture document puts that ingress in front of the one deployable unit, so TLS ends there before every request reaches the pod, my design for the monitored production deployment the course's own DevOps document asks for (Hogeschool van Amsterdam, 2026a).
+- **TLS (Transport Layer Security) at the front door.** In a reverse proxy configuration the proxy handles the connection security (Microsoft, 2026b). In my design the Caddy front door gets a real certificate that renews itself, and TLS ends there for every visit, before the request is forwarded into the server. Records 8.8 and 8.11 of my architecture document add that for production, Caddy forwards the request to Traefik inside k3s, which stays closed to the internet and only routes it to the pod, my design for the monitored production deployment the course's own DevOps document asks for (Hogeschool van Amsterdam, 2026a).
 - **Secrets out of the repository.** Connection strings and service credentials never go in the repository. Locally ASP.NET Core's user-secrets hold them, on the server environment variables or a secret store, as the team's infrastructure document proposes.
 - **A least-privilege database user.** My proposal: the API may read and write Connect's tables and nothing else, and migrations run with a separate user during a deploy.
 - **A login per team member.** Issue 10 (a personal server login per team member) gives everyone a personal key and keeps guessed passwords out. Per the server notes, the firewall lets in only the secure login and web traffic, and repeated failed logins are blocked. The personal logins are still open work.
@@ -254,7 +254,7 @@ Issue 306 (checking every module's authenticity and resistance) asks for this ki
 - **Container scanning in the pipeline.** Record 8.11 of my architecture document plans GitLab CI with a build, test, scan and deploy stage, the container scan running before the image reaches k3s. My proposal for the pipeline the course's own DevOps document asks a monitored production deployment to run (Hogeschool van Amsterdam, 2026a), alongside the dependency scan above.
 - **A rollback.** Record 8.11 of my architecture document asks for a rollback shown live that recovers the previous image when a new one breaks. My proposal for the rolled-back-if-needed deployment the course's own DevOps document asks for (Hogeschool van Amsterdam, 2026a), rehearsed in the sprint 2 live demo.
 
-This shows the security workshop's principles at server level (Hogeschool van Amsterdam, n.d.-e). Server-side authorization holds because the Traefik ingress of k3s only handles the certificate and the routing, and every check of section 3.4 runs in the API. The deployment adds least privilege in the database user and the logins, secure defaults in the firewall, defense in depth in the extra layers, and design for response in logs, health checks and a rollback path.
+This shows the security workshop's principles at server level (Hogeschool van Amsterdam, n.d.-e). Server-side authorization holds because Caddy only handles the certificate and the routing to Traefik and the app, and every check of section 3.4 runs in the API. The deployment adds least privilege in the database user and the logins, secure defaults in the firewall, defense in depth in the extra layers, and design for response in logs, health checks and a rollback path.
 
 ## 4. OWASP Top 10 against Connect
 
@@ -265,7 +265,7 @@ The table below is my assessment of which categories apply to Connect, the contr
 | Category | Applies | Control in this design | Sprint |
 | --- | --- | --- | --- |
 | A01 Broken Access Control | Yes, the largest risk with minors' data | Signed in by default, role policies, resource checks, ProfileVisibility | 2 |
-| A02 Cryptographic Failures | Yes | TLS at the Traefik ingress of k3s, Identity's password hashing, secrets out of the repository | 1 and 2 |
+| A02 Cryptographic Failures | Yes | TLS at Caddy, Identity's password hashing, secrets out of the repository | 1 and 2 |
 | A03 Injection | Yes | EF Core parameters, no FromSqlRaw with user input, React's encoding | 2 |
 | A04 Insecure Design | Yes | This design, the mini threat model, the role table, Kelvin's threat model | 1 and 2 |
 | A05 Security Misconfiguration | Yes | Default deny firewall, containers closed to the outside, errors without internals | 1 and 2 |

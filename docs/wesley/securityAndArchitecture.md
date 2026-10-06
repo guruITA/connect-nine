@@ -65,12 +65,27 @@ This section explains every requirement code, acceptance criterion, GitLab issue
 | AC9 | Feedback recorded with what I changed | This document, section 10 |
 | AC10 | Every statement traceable | This document, section 10 |
 | AC11 | Deployment on Kubernetes verified end to end | This document, section 10 |
+| AC12 | Containerization and CI fundamentals shown | This document, section 10 |
 | Issue 10 | A personal server login per team member | GitLab issues |
 | Issue 12 | One clear structure for new developers | GitLab issues |
 | Issue 22 | Stopping building blocks with known security holes | GitLab issues |
 | Issue 23 | A plain health answer and a clear error diary | GitLab issues |
 | Issue 46 | Google login | GitLab issues |
 | Issue 49 | Facebook login | GitLab issues |
+| Epic 1460 | Production, the epic that plans the live version on k3s, in Terraform, with backups | GitLab issues |
+| Issue 155 | The director agrees where production runs | GitLab issues |
+| Issue 156 | The choice for k3s and Terraform on production, compose on the test site | GitLab issues |
+| Issue 157 | k3s installed on the production server by a written script | GitLab issues |
+| Issue 158 | Every production change shown as a plan in the merge request | GitLab issues |
+| Issue 159 | The server, the database and their secrets described in Terraform | GitLab issues |
+| Issue 161 | A nightly backup of the live database and the pictures | GitLab issues |
+| Issue 162 | Every green merge into main goes to production | GitLab issues |
+| Issue 163 | A broken production version replaced within ten minutes | GitLab issues |
+| Issue 164 | Metrics collected with Prometheus | GitLab issues |
+| Issue 165 | A monitoring dashboard in Grafana | GitLab issues |
+| Issue 166 | Alerts within five minutes through Alertmanager | GitLab issues |
+| Issue 167 | Central logging with Loki | GitLab issues |
+| Issue 169 | The DevOps teacher's live demo with a rollback | GitLab issues |
 | Issue 239 | Caddy at the front door with a self-renewing certificate | GitLab issues |
 | Issue 253 | One real request through the four projects | GitLab issues |
 | Issue 254 | Recording the chosen server structure | GitLab issues |
@@ -127,7 +142,7 @@ The table lists the architecture decisions taken so far, who took them, when, an
 | CQRS (command query responsibility segregation) by functionality over the repository pattern, in four projects | The whole team | 1 October 2026 | The team's architecture document |
 | A Strato VPS (virtual private server) in Germany, lent by the foundation | The foundation | Received 2 October 2026 | The team's infrastructure document and the server notes |
 
-Per the team's architecture document, the backend is layered in four projects, Presentation, Application, Domain and Infrastructure, with the tests in Connect.Tests. Per the server notes, the server runs Ubuntu 24.04 LTS (long-term support) with Docker and Docker Compose and has no containers yet. The server notes record Traefik as k3s's own reverse proxy, record 8.11 and record 8.8, and issue 239 (Caddy at the front door with a self-renewing certificate) asks for a front door with a self-renewing certificate. It is not set up on the server yet.
+Per the team's architecture document, the backend is layered in four projects, Presentation, Application, Domain and Infrastructure, with the tests in Connect.Tests. Per the server notes, the server runs Ubuntu 24.04 LTS (long-term support) with Docker and Docker Compose and has no containers yet. Per the server notes, Caddy is already chosen as the front door for both environments, task 9.4 for the test site and kept for production by task 95.3, and issue 239 (Caddy at the front door with a self-renewing certificate) asks for its self-renewing certificate. Records 8.8 and 8.11 add that production now plans to run Traefik, k3s's own reverse proxy, behind Caddy. Neither is set up on the server yet.
 
 Two points that touch the architecture are open. Per the team's delivery plan, the authorization design for NFR1 (authentication and authorization) is owned by Kelvin van Voorst and due at the latest at the sprint 1 review, week of 5 October 2026. Per the requirements document, it includes whether minors' profiles are restricted differently from adults' profiles. The role table per module still has to be confirmed by the team in issue 337 (confirming the role table). Per the requirements document, our users are 15 to 30, so some of them are minors, and NFR2 (GDPR footing) adds GDPR (General Data Protection Regulation) obligations for their data.
 
@@ -184,7 +199,7 @@ The source column names where each constraint comes from. The last column is my 
 | One server, the foundation's Strato VPS in Germany | The team's infrastructure document and the server notes | One deployable unit next to its database, section 6.5 |
 | One shared database for every module | The team's architecture document, after the client's concept diagram | No database per module |
 | Project completion in the week of 4 January 2027, then handover | The requirements document | A structure a later developer can keep, the other half of issue 12 (one clear structure for new developers) |
-| Container orchestration, verified end to end on a real local cluster, with a rollback and monitoring shown in a screen recording and a live demo | Level 3 DevOps Advanced Track workshop (Hogeschool van Amsterdam, 2026b) | Kubernetes in some form, record 8.11, and the rollback and monitoring sprint 2 plans in section 11 |
+| Container orchestration, verified end to end on a real local cluster, with a rollback and monitoring shown in a screen recording and a live demo | Level 3 DevOps Advanced Track workshop (Hogeschool van Amsterdam, 2026b), the team's GitLab backlog, epic 1460 | Kubernetes in some form, record 8.11, and the rollback and monitoring sprint 4 plans in section 11 |
 
 ### 4.4 Quality attribute scenarios
 
@@ -262,7 +277,7 @@ In my assessment, a modular monolith is the nearest alternative. It deploys as o
 
 ### 5.3 Why microservices lost
 
-Microservices need a management component that schedules and deploys services across nodes, detects failures and scales on demand (Microsoft, 2025c). A container orchestration platform such as Kubernetes typically provides it (Microsoft, 2025c). Record 8.11 runs Connect on single-node k3s, so the team no longer lacks a cluster. What still rules out microservices is the rest of the comparison. Connect has one server, and its modules share the one database the client's concept diagram draws. Fowler (2015a) names the price too: microservices bring a complexity premium of their own, against a team mostly new to .NET and a deadline in January, per the requirements document. In my assessment, with four of five developers new to .NET, one deployable unit with clear layers is what we can build, test and hand over. Kubernetes now runs that one unit. It gives Connect an orchestrator. It does not decide whether what runs inside it is a monolith or a set of services.
+Microservices need a management component that schedules and deploys services across nodes, detects failures and scales on demand (Microsoft, 2025c). A container orchestration platform such as Kubernetes typically provides it (Microsoft, 2025c). Record 8.11 plans Connect on single-node k3s for production, per the team's GitLab backlog, epic 1460, so the team no longer lacks a cluster. What still rules out microservices is the rest of the comparison. Connect has one server, and its modules share the one database the client's concept diagram draws. Fowler (2015a) names the price too: microservices bring a complexity premium of their own, against a team mostly new to .NET and a deadline in January, per the requirements document. In my assessment, with four of five developers new to .NET, one deployable unit with clear layers is what we can build, test and hand over. Kubernetes now runs that one unit. It gives Connect an orchestrator. It does not decide whether what runs inside it is a monolith or a set of services.
 
 ### 5.4 What the style gains and what it gives up
 
@@ -330,43 +345,47 @@ Key: dark blue rounded boxes are people, the blue box is the system in scope, gr
 
 ### 6.2 Level 2: Containers
 
-In C4 a container is an application or a data store (Brown, n.d.-d). Connect has four containers. In my design the React app and the API share one origin behind the reverse proxy. Section 3.2 of my security document explains why that matters for the session cookie.
+In C4 a container is an application or a data store (Brown, n.d.-d). Connect has four containers, plus Traefik inside the production path. In my design the React app and the API share one origin behind Caddy. Section 3.2 of my security document explains why that matters for the session cookie.
 
 ```mermaid
 %%{init: {'flowchart': {'wrappingWidth': 220, 'padding': 20, 'nodeSpacing': 40, 'rankSpacing': 60, 'subGraphTitleMargin': {'top': 10, 'bottom': 25}}, 'themeVariables': {'fontSize': '14px'}}}%%
 flowchart LR
     user("[Person]<br/>Member, organisation<br/>or admin<br/>Uses Connect in a<br/>web browser.")
     subgraph connect ["Young Amstelland Connect"]
-        proxy["[Container: Traefik]<br/>Ingress, proposal<br/>k3s's own ingress.<br/>Ends TLS. Sends /api<br/>calls to the API and<br/>every other path to<br/>the app files."]
+        caddy["[Container: Caddy]<br/>Front door, record 8.8<br/>Ends TLS with its own<br/>certificate. Sends /api<br/>calls onward and every<br/>other path to the app<br/>files."]
+        traefik["[Container: Traefik]<br/>Ingress, production<br/>only, record 8.8<br/>k3s's own ingress,<br/>behind Caddy. Routes<br/>/api calls by path."]
         spa["[Container: React]<br/>Single page app<br/>Runs in the browser.<br/>Shows the pages and<br/>calls the API."]
         api["[Container: ASP.NET Core 10]<br/>API<br/>Minimal API endpoints.<br/>Holds every rule for<br/>access, input and<br/>data."]
         db[("[Container: PostgreSQL 16]<br/>Database<br/>One shared database<br/>for all modules.")]
     end
     ext["[Software Systems, external]<br/>Mail, maps, analytics<br/>and payments if<br/>confirmed"]
-    user -->|"Visits, HTTPS"| proxy
-    proxy -->|"Delivers the app files"| spa
-    spa -->|"Calls /api, JSON over<br/>HTTPS, same origin,<br/>session cookie"| proxy
-    proxy -->|"Forwards /api calls,<br/>inside the server"| api
+    user -->|"Visits, HTTPS"| caddy
+    caddy -->|"Delivers the app files"| spa
+    spa -->|"Calls /api, JSON over<br/>HTTPS, same origin,<br/>session cookie"| caddy
+    caddy -->|"Forwards /api calls,<br/>test site"| api
+    caddy -.->|"Forwards /api calls,<br/>production"| traefik
+    traefik -.->|"Routes by path"| api
     api -->|"Reads and writes,<br/>EF Core and Npgsql"| db
     api -->|"Calls, HTTPS"| ext
     classDef person fill:#08427b,color:#ffffff,stroke:#052e56
     classDef container fill:#438dd5,color:#ffffff,stroke:#2e6295
     classDef external fill:#8a8a8a,color:#ffffff,stroke:#5e5e5e
     class user person
-    class proxy,spa,api,db container
+    class caddy,traefik,spa,api,db container
     class ext external
 ```
 
-Key: light blue boxes are containers, the cylinder is a data store, the grey box stands for the external systems of level 1.
+Key: light blue boxes are containers, the cylinder is a data store, the grey box stands for the external systems of level 1. The dotted arrows are the production-only path through Traefik.
 
 | Container | Responsibility | Status |
 | --- | --- | --- |
-| Traefik | TLS (Transport Layer Security) with a real certificate, routing by path, k3s's own ingress | My proposal, record 8.8 |
+| Caddy | TLS (Transport Layer Security) with a real certificate that renews itself, the front door for both environments | Chosen, record 8.8 |
+| Traefik, production only | Routing by path inside k3s, behind Caddy | Chosen, record 8.8, not set up yet |
 | React app | Pages and forms, convenience checks only | Decided 22 September 2026 |
 | API, ASP.NET Core on .NET 10 | Authentication, authorization, validation, rules, data access | Minimal APIs decided. Issue 255 (recording the .NET 10 choice) writes down .NET 10 |
 | PostgreSQL 16 | All data, one database for every module | Decided 26 September 2026 |
 
-Section 8.5 records why the database is PostgreSQL 16 and not SQL Server. Section 3.9 of my security document describes how the deployment is secured, from TLS at Traefik to the database user.
+Section 8.5 records why the database is PostgreSQL 16 and not SQL Server. Section 3.9 of my security document describes how the deployment is secured, from TLS at Caddy to the database user.
 
 ### 6.3 Level 3: Components of the API
 
@@ -539,15 +558,15 @@ The sequence below follows this request through the components of section 6.3 an
 %%{init: {'sequence': {'actorMargin': 40, 'noteMargin': 10, 'messageMargin': 35, 'mirrorActors': false}, 'themeVariables': {'fontSize': '14px'}}}%%
 sequenceDiagram
 participant spa as Single page app
-participant traefik as Traefik ingress
+participant caddy as Caddy
 participant authn as Authentication
 participant authz as Policies and handlers
 participant ep as MemberProfileEndpoints
 participant qh as GetPublicMemberProfileHandler
 participant ctx as IAppDbContext
 participant db as PostgreSQL 16
-spa->>traefik: GET /api/member-profiles/{id}
-traefik->>authn: Forwards the /api call
+spa->>caddy: GET /api/member-profiles/{id}
+caddy->>authn: Forwards the /api call
 Note over authn: Step 1. Without a valid<br/>session cookie the<br/>answer is 401.
 authn->>authz: User with claims
 authz->>ep: Allowed request
@@ -563,48 +582,46 @@ ep->>authz: Asks IAuthorizationService<br/>whether this user may<br/>view this p
 Note over authz: Step 4.<br/>ViewMemberProfileHandler<br/>decides, on the Member<br/>role only.
 authz-->>ep: Allowed or refused
 Note over ep: Step 5. Refused gets 404,<br/>my proposal. Allowed<br/>gets 200.
-ep-->>traefik: 200 with the<br/>public profile
-traefik-->>spa: 200 with the<br/>public profile
+ep-->>caddy: 200 with the<br/>public profile
+caddy-->>spa: 200 with the<br/>public profile
 ```
 
 Key: a solid arrow is a call, a dashed arrow is an answer.
 
-### 6.5 Deployment on the Strato VPS
+### 6.5 Deployment on the Strato VPS: the test site and production
 
-A deployment diagram shows how containers are deployed on to the infrastructure of one environment (Brown, n.d.-e). Per the server notes, the foundation lends the team one Strato VPS in Germany, with Ubuntu 24.04 LTS, Docker and Docker Compose. Record 8.11 moves the target from Docker Compose to single-node k3s, with Traefik as its own ingress, record 8.8. Per the server notes, neither is set up on the server yet, so this whole diagram is a proposal. Per record 8.11 the four projects of section 5.1 still build into one container image, so k3s runs one Deployment, with a Service and a Secret beside it, not a separate frontend container.
+A deployment diagram shows how containers are deployed on to the infrastructure of one environment (Brown, n.d.-e). Per the server notes, the foundation lends the team one Strato VPS in Germany, with Ubuntu 24.04 LTS, Docker and Docker Compose, and a firewall that lets in only secure login and web traffic. The team's GitLab backlog, epic 1460 Production ("School requirement: the live version on k3s, described in Terraform, with backups."), plans two environments on that one server. The test site keeps the infrastructure document's base path, Docker Compose. Production moves to single-node k3s, described in Terraform, per record 8.11. Per the server notes, Caddy is the front door chosen for the test site, task 9.4, and kept for production, task 95.3, so one front door answers every visit on ports 80 and 443 and passes it on to either environment. Neither environment is set up on the server yet, so both diagrams below are a proposal. Per record 8.11 the four projects of section 5.1 still build into one container image, so the same image runs in both environments.
+
+**Test site, Docker Compose**
 
 ```mermaid
 %%{init: {'flowchart': {'wrappingWidth': 220, 'padding': 20, 'nodeSpacing': 40, 'rankSpacing': 60, 'subGraphTitleMargin': {'top': 10, 'bottom': 25}}, 'themeVariables': {'fontSize': '14px'}}}%%
 flowchart TB
-    browser("[Person] Member's<br/>web browser")
+    browser("[Person] Visitor's<br/>web browser")
     subgraph gitlab ["[Deployment node] GitLab"]
         ci["[Container: GitLab CI]<br/>Pipeline, proposal<br/>Build, test, scan,<br/>deploy."]
     end
     subgraph vps ["[Deployment node] Strato<br/>VPS, Germany, lent by the<br/>WailSalutem Foundation<br/>Ubuntu 24.04 LTS.<br/>Firewall lets in secure<br/>login and web traffic<br/>only."]
-        vpsSpacer["⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀"]
-        subgraph k3s ["[Deployment node]<br/>Single-node k3s,<br/>decided, record 8.11"]
-k3sSpacer["⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀"]
-            traefik["[Container: Traefik]<br/>Ingress, proposal<br/>k3s's own ingress.<br/>Real TLS certificate,<br/>routes by path."]
-            deployment["[Container: Deployment]<br/>Connect, one image<br/>ASP.NET Core 10 API,<br/>serves the built React<br/>app and /api."]
-            service["[Container: Service]<br/>Routes inside the<br/>cluster to the<br/>Connect pod."]
-            secret["[Container: Secret]<br/>Database credentials<br/>and other config."]
+        caddy["[Container: Caddy]<br/>Front door, task 9.4<br/>Real TLS certificate,<br/>renews itself."]
+        vpsSpacerTest["⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀"]
+        subgraph compose ["[Deployment node]<br/>Docker Compose, test<br/>site, infrastructure<br/>document's base path"]
+            composeSpacer["⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀"]
+            app["[Container: App]<br/>Connect, one image<br/>ASP.NET Core 10 API,<br/>serves the built React<br/>app and /api."]
+            db[("[Container: PostgreSQL<br/>16, official image]<br/>Database<br/>Own container, test<br/>data only.")]
         end
-        db[("[Container: PostgreSQL<br/>16, official image]<br/>Database<br/>Inside or beside the<br/>cluster, open.")]
-        vpsSpacer ~~~ k3s
+        vpsSpacerTest ~~~ compose
     end
-    browser -->|"HTTPS"| traefik
-    traefik -->|"Forwards /api and<br/>static files"| service
-    service -->|"Routes to the pod"| deployment
-    deployment -->|"Reads"| secret
-    deployment -->|"Npgsql, own<br/>database user"| db
-    ci -.->|"Deploys a new<br/>image"| deployment
+    browser -->|"HTTPS"| caddy
+    caddy -->|"127.0.0.1:8080,<br/>forwards /api and<br/>static files"| app
+    app -->|"Npgsql, own<br/>database user"| db
+    ci -.->|"Deploys a new<br/>image"| app
     classDef person fill:#08427b,color:#ffffff,stroke:#052e56
     classDef container fill:#438dd5,color:#ffffff,stroke:#2e6295
     class browser person
-    class ci,traefik,deployment,service,secret,db container
-    style vpsSpacer fill:none,stroke:none
-k3sSpacer ~~~ traefik
-style k3sSpacer fill:none,stroke:none
+    class ci,caddy,app,db container
+    style vpsSpacerTest fill:none,stroke:none
+    style composeSpacer fill:none,stroke:none
+    composeSpacer ~~~ app
 ```
 
 Key: frames are deployment nodes, boxes are containers. A solid arrow is runtime traffic, the dotted arrow is a deployment.
@@ -612,14 +629,69 @@ Key: frames are deployment nodes, boxes are containers. A solid arrow is runtime
 | Element | Status |
 | --- | --- |
 | Strato VPS with firewall and protection against guessed logins | Received and rebuilt clean on 2 October 2026, per the server notes |
-| Single-node k3s | Decided, record 8.11, not set up yet |
-| Traefik with TLS, k3s's own ingress | My proposal, record 8.8, not set up yet |
-| The Connect Deployment, one image, with a Service and a Secret | Decided, record 8.11, not set up yet |
-| PostgreSQL 16, inside or beside the cluster | Open, owner the team, decided at sprint 2 planning, per record 8.11 |
-| Ports open on the server itself only, a separate deploy account | Open tasks under issue 10 (a personal server login per team member) |
+| Caddy, the front door | Chosen for the test site, task 9.4, not set up yet |
+| Docker Compose, with the App container and PostgreSQL | Proposal in the team's infrastructure document, not set up yet |
 | GitLab CI (continuous integration) with build, test, scan and deploy | Proposal in the team's infrastructure document |
 
-Records 8.7, 8.8 and 8.11 say why Connect runs on the foundation's server, why Traefik is the front door and why both now run inside k3s. Section 3.9 of my security document describes how the deployment is secured.
+**Production, single-node k3s**
+
+```mermaid
+%%{init: {'flowchart': {'wrappingWidth': 220, 'padding': 20, 'nodeSpacing': 40, 'rankSpacing': 60, 'subGraphTitleMargin': {'top': 10, 'bottom': 25}}, 'themeVariables': {'fontSize': '14px'}}}%%
+flowchart TB
+    browser("[Person] Member's<br/>web browser")
+    subgraph gitlab ["[Deployment node] GitLab"]
+        ci["[Container: GitLab CI]<br/>Pipeline, proposal<br/>Deploys on a green<br/>merge, issue 162."]
+    end
+    subgraph vps ["[Deployment node] Strato<br/>VPS, Germany, lent by the<br/>WailSalutem Foundation<br/>Ubuntu 24.04 LTS.<br/>Firewall lets in secure<br/>login and web traffic<br/>only."]
+        caddy["[Container: Caddy]<br/>Front door, kept for<br/>production, task 95.3<br/>Real TLS certificate."]
+        terraform["[Container: Terraform]<br/>infra/terraform,<br/>proposal<br/>Write, plan, review,<br/>apply, issue 158."]
+        vpsSpacer["⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀"]
+        subgraph k3s ["[Deployment node]<br/>Single-node k3s,<br/>planned, epic 1460,<br/>record 8.11"]
+            k3sSpacer["⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀"]
+            traefik["[Container: Traefik]<br/>Ingress, k3s's own,<br/>production only<br/>Record 8.8. Reads the<br/>Ingress, routes by<br/>path."]
+            service["[Container: Service]<br/>Routes inside the<br/>cluster to the<br/>Connect pod."]
+            deployment["[Container: Deployment]<br/>Connect, one image<br/>ASP.NET Core 10 API,<br/>serves the built React<br/>app and /api."]
+            secret["[Container: Secret]<br/>Database credentials,<br/>filled from GitLab's<br/>protected settings."]
+            dbSts[("[Container: StatefulSet]<br/>PostgreSQL 16,<br/>issue 159<br/>Own persistent volume,<br/>database-data.")]
+            monitoring["[Container: Monitoring<br/>stack]<br/>Prometheus, Grafana,<br/>Loki, Alertmanager<br/>Sprint 4, issues 164<br/>to 167."]
+        end
+        vpsSpacer ~~~ k3s
+    end
+    browser -->|"HTTPS"| caddy
+    caddy -->|"127.0.0.1:8081"| traefik
+    traefik -->|"Reads the Ingress"| service
+    service -->|"Routes to the pod"| deployment
+    deployment -->|"Reads"| secret
+    deployment -->|"Npgsql"| dbSts
+    deployment -.->|"Metrics and logs"| monitoring
+    ci -.->|"Plan, issue 158"| terraform
+    terraform -.->|"Apply"| k3s
+    classDef person fill:#08427b,color:#ffffff,stroke:#052e56
+    classDef container fill:#438dd5,color:#ffffff,stroke:#2e6295
+    class browser person
+    class ci,caddy,terraform,traefik,service,deployment,secret,dbSts,monitoring container
+    style vpsSpacer fill:none,stroke:none
+    style k3sSpacer fill:none,stroke:none
+    k3sSpacer ~~~ traefik
+```
+
+Key: frames are deployment nodes, boxes are containers. A solid arrow is runtime traffic, the dotted arrow is a build or a deploy step.
+
+| Element | Status |
+| --- | --- |
+| Strato VPS with firewall and protection against guessed logins | Received and rebuilt clean on 2 October 2026, per the server notes |
+| Caddy, the front door | Kept for production, task 95.3, not set up yet |
+| Terraform, infra/terraform | Planned, issue 158 (the plan shown in the merge request) and issue 159 (the server, the database and their secrets), not set up yet |
+| Single-node k3s | Planned by the team, epic 1460, Sprint 4, issue 157 installs it by a written script, not set up yet |
+| Traefik, k3s's own ingress | Record 8.8, scoped to production, not set up yet |
+| The Connect Deployment, one image, with a Service and a Secret | Planned, epic 1460, not set up yet |
+| PostgreSQL 16, a StatefulSet with its own persistent volume | Planned, issue 159, not set up yet |
+| A nightly backup of the database and the pictures, locked with a key, kept inside the European Union | Planned, issue 161. The number of days and the exact place inside the EU are open, owner the client, question 117 |
+| A rollback to the previous image within ten minutes | Planned, issue 163, to be rehearsed once per that issue |
+| Monitoring: Prometheus, Grafana, Loki and Alertmanager | Planned, Sprint 4, issues 164 to 167 |
+| GitLab CI deploying every green merge into main | Planned, issue 162 |
+
+Records 8.7, 8.8 and 8.11 say why Connect runs on the foundation's server, why Caddy is the front door for both environments, and why production now plans to run inside k3s, described in Terraform. Section 3.9 of my security document describes how the deployment is secured.
 
 ## 7. Design patterns
 
@@ -709,10 +781,10 @@ The table is the summary, and the records follow it.
 | 8.5 | PostgreSQL 16 | SQL Server | Wesley Oerlemans, 26 September 2026 | Accepted |
 | 8.6 | CQRS by feature | The repository pattern | The whole team, 1 October 2026 | Accepted |
 | 8.7 | The foundation's server | A cloud platform, a single Linux server rented by the team | Settled by the foundation's offer, 2 October 2026 | Accepted |
-| 8.8 | Traefik as the k3s ingress | Caddy, Nginx with certbot, a deploy platform, a tunnel service | Wesley Oerlemans, 6 October 2026 | Proposed |
+| 8.8 | Caddy as the front door, Traefik inside production k3s | Nginx with certbot, a deploy platform, a tunnel service | Wesley Oerlemans, 6 October 2026 | Chosen per the server notes (task 9.4, kept for production by task 95.3), Traefik behind it per issues 156, 157 and 159 |
 | 8.9 | .NET 10 | .NET 8, .NET 9 | Not decided yet | Proposed |
 | 8.10 | Cookie authentication and policy-based authorization | A JWT (JSON Web Token) in the browser, role checks inside each endpoint | Proposed by me, decided by Kelvin van Voorst | Proposed |
-| 8.11 | Single-node k3s on the foundation's server | Docker Compose only, the infrastructure document's base path, a managed cloud cluster | Wesley Oerlemans, 6 October 2026 | Decided by Wesley Oerlemans on 6 October 2026, team confirmation not recorded |
+| 8.11 | Production on single-node k3s with Terraform, the test site on Docker Compose | A managed cloud cluster | The team, GitLab backlog epic 1460, Sprint 4, confirmed by Wesley Oerlemans on 6 October 2026 | Planned by the team, epic 1460, issue 156 still open |
 
 Two neighbouring decisions have no record here. The React and .NET stack, which I confirmed on 22 September 2026, is the frame these records work in. Per the team's tech stack document, it was chosen for learning, not for the fastest route to a working platform. The dependency check of issue 22 (stopping building blocks with known security holes) is a control in the pipeline, not a part of the structure. Section 3.9 of my security document covers it.
 
@@ -726,7 +798,7 @@ Two neighbouring decisions have no record here. The React and .NET stack, which 
 
 **Options that lost.** The team's architecture document weighs the styles the architecture workshop names:
 
-- **Microservices.** Per that document, which cites the infrastructure document here, the modules share one database, and Fowler (2015a) names the complexity premium microservices bring against a team mostly new to .NET and a deadline in January, per the requirements document. Record 8.11 now runs Connect on single-node k3s, so a missing cluster is no longer the reason this option lost. Section 5.3 adds the sources.
+- **Microservices.** Per that document, which cites the infrastructure document here, the modules share one database, and Fowler (2015a) names the complexity premium microservices bring against a team mostly new to .NET and a deadline in January, per the requirements document. Record 8.11, planned in the team's GitLab backlog, epic 1460, runs Connect on single-node k3s for production, so a missing cluster is no longer the reason this option lost. Section 5.3 adds the sources.
 - **Event-driven.** Per that document, nothing in the requirements asks for decoupling through a message broker, and a broker would be one more unfamiliar piece of infrastructure.
 - **MVC on its own.** Per that document, it organises the request handling of one presentation layer and does not describe how a whole system with a separate React frontend divides into layers.
 - **Hexagonal or full Clean Architecture.** Per that document, it was set aside for the discipline it demands across every project boundary, from a team where four of five members have never built an ASP.NET Core app. It stays an option to revisit.
@@ -808,22 +880,23 @@ Two neighbouring decisions have no record here. The React and .NET stack, which 
 
 **Consequences.** Per the server notes, one server carries Connect's containers, rebuilt clean on 2 October 2026. The personal logins of issue 10 (a personal server login per team member) are still open.
 
-### 8.8 Traefik as the k3s ingress
+### 8.8 Caddy as the front door, Traefik inside production k3s
 
-**Status.** Proposed by me on 6 October 2026. Record 8.11 puts Connect on k3s, which deploys Traefik by default when a server node starts (K3s, n.d.-b), so I propose Traefik as the front door in Caddy's place. It is not set up on the server yet, so I keep it proposed until the team has set it up.
+**Status.** Chosen per the server notes (task 9.4, kept for production by task 95.3), Traefik behind it per issues 156, 157 and 159. Per the server notes, Caddy is the front door on ports 80 and 443 for both environments, chosen for the test site at task 9.4 and kept for production at task 95.3. Issues 156, 157 and 159 each describe Traefik, k3s's own ingress, running behind Caddy and reachable only from the server itself, so Traefik never faces the internet directly. Record 8.11 plans Connect on k3s for production, per the team's GitLab backlog, epic 1460, and k3s deploys Traefik by default when a server node starts (K3s, n.d.-b). Neither environment is set up on the server yet.
 
-**Context.** In my design of section 6.2, one server needs one front door that ends TLS and routes by path. Record 8.11 adds that the front door now runs inside k3s, as the cluster's Ingress.
+**Context.** In my design of section 6.2, one server needs one front door that ends TLS and routes by path. Record 8.11 adds that production now plans to run inside k3s, with Traefik as the cluster's own Ingress, behind Caddy. Issues 156 and 157 give the same shape: Caddy passes the visit to Traefik inside k3s, which only listens on the server itself. Per issue 159, Caddy passes a production visit to Traefik on 127.0.0.1:8081, where Traefik reads the Ingress and passes it to the Service.
 
-**Decision.** Traefik, the ingress controller k3s deploys by default (K3s, n.d.-b), with a real certificate that renews itself, the ask of issue 239 (Caddy at the front door with a self-renewing certificate).
+**Decision.** Caddy is the front door for both environments and keeps the real certificate that renews itself, the ask of issue 239 (Caddy at the front door with a self-renewing certificate). For production, Traefik, the ingress controller k3s deploys by default (K3s, n.d.-b), reads the Ingress inside the cluster and routes to the Service, per issues 156, 157 and 159. The test site has no Traefik in its path.
 
-**Options that lost.** Per the server notes of 2 October 2026, the team compared four front doors before k3s was part of the plan:
+**Options that lost.** Per the server notes of 2 October 2026, the team compared four front doors for the server as a whole, before k3s was part of the plan:
 
-- **Caddy.** Chosen in the server notes of 2 October 2026, for getting and renewing its own certificate without a tool such as certbot beside it, per issue 10 (a personal server login per team member). My reasoning now: k3s already ships Traefik as its own ingress, deployed by default when a server node starts (K3s, n.d.-b), so a second proxy in front of it adds a layer to keep with no gain over the one k3s already runs.
-- **Nginx with certbot.** The notes give no reason it lost. My reasoning: it needs certbot beside it for a certificate that renews itself, where Traefik does the same job inside k3s already.
+- **Nginx with certbot.** The notes give no reason it lost. My reasoning: it needs certbot beside it for a certificate that renews itself, where Caddy gets and renews its own.
 - **A deploy platform such as Dokploy or Coolify.** Per the notes, that is what was wiped from this server, and it hides the pipeline.
 - **A tunnel service such as Cloudflare Tunnel.** Per the notes, it puts a third party in the data path, a GDPR concern.
 
-**Consequences.** TLS ends at Traefik and the traffic behind it stays inside the k3s cluster, as section 3.9 of my security document describes.
+Caddy itself is not an option that lost. Per the server notes, it is chosen for the test site at task 9.4 and kept for production at task 95.3. What issues 156, 157 and 159 add inside the k3s cluster is Traefik, which the server notes and the K3s documentation both name as k3s's own default ingress (K3s, n.d.-b).
+
+**Consequences.** TLS ends at Caddy for every visit. For production, Caddy forwards to Traefik on 127.0.0.1:8081, which stays closed to the internet and only reads the cluster's Ingress, as section 3.9 of my security document describes. For the test site, Caddy forwards straight to the compose containers, with no Traefik in that path.
 
 ### 8.9 .NET 10 as the platform version
 
@@ -847,24 +920,23 @@ Two neighbouring decisions have no record here. The React and .NET stack, which 
 
 **Options that lost.** A token kept in the browser, against the cookie, and role checks inside each endpoint, against policies with resource checks. Sections 3.2 and 3.4 of my security document give the reasons.
 
-**Consequences.** The authentication and authorization components of section 6.3 run before every endpoint, and the rule for minors lives in one handler, as section 6.4 shows. The React app and the API share one origin behind Traefik, and section 3.2 of my security document explains why.
+**Consequences.** The authentication and authorization components of section 6.3 run before every endpoint, and the rule for minors lives in one handler, as section 6.4 shows. The React app and the API share one origin behind Caddy, and behind Traefik as well for the production path, and section 3.2 of my security document explains why.
 
-### 8.11 Connect runs on single-node k3s on the foundation's server
+### 8.11 Production on single-node k3s with Terraform, the test site on Docker Compose
 
-**Status.** Decided by Wesley Oerlemans on 6 October 2026, team confirmation not recorded.
+**Status.** Planned by the team in the GitLab backlog, epic 1460, Sprint 4. The written choice, issue 156 (the choice for k3s and Terraform on production, and docker compose on the test site, written down with the options), is still open. On 6 October 2026 I confirmed that Kubernetes is part of the project.
 
-**Context.** The course's Level 3 DevOps Advanced Track asks for container orchestration, verified end to end on a real local cluster, with a rollback and monitoring shown in a screen recording and a live demo (Hogeschool van Amsterdam, 2026b). Per the team's infrastructure document, Docker Compose on its own is the complete answer that document sizes to a team our shape, and single-node k3s is its optional demonstration step for the team that wants the Advanced Track's own evidence. That document also names Kubernetes and k3s manifests as new to the whole team, a cost this record accepts for the course's DevOps evidence. k3s calls itself "Lightweight Kubernetes. Easy to install, half the memory, all in a binary of less than 100 MB," and names homelabs, single-board computers, and development machines among what it is built for, not only multi-node production clusters (K3s, n.d.-a).
+**Context.** The course's Level 3 DevOps Advanced Track asks for container orchestration, verified end to end on a real local cluster, with a rollback and monitoring shown in a screen recording and a live demo (Hogeschool van Amsterdam, 2026b). The team's GitLab backlog plans this in epic 1460, Production, whose own description reads: "School requirement: the live version on k3s, described in Terraform, with backups." The epic links issue 155 (the director agrees where production runs), issue 156, issue 157 (k3s installed on the production server by a written script), issue 158 (every production change shown as a plan in the merge request), issue 159 (the server, the database and their secrets of the production version described in Terraform), issue 161 (a copy of the live database and the pictures made every night), issue 162 (every merge into main puts that version on production after every gate is green) and issue 163 (a broken production version replaced by the previous one within ten minutes), all on the Sprint 4 milestone. Issue 169, the DevOps teacher's live demo, names the same split: production running on k3s with Terraform, while the test site stays simpler. Per the team's infrastructure document, Docker Compose on its own is the complete answer that document sizes to a team our shape, and single-node k3s is its optional demonstration step for the team that wants the Advanced Track's own evidence, and the same document names Kubernetes and k3s manifests as new to the whole team. k3s calls itself "Lightweight Kubernetes. Easy to install, half the memory, all in a binary of less than 100 MB," and names homelabs, single-board computers, and development machines among what it is built for, not only multi-node production clusters (K3s, n.d.-a). Per `openItems.md`, confirming or declining that optional path, and which of the two steps the team commits to, was listed under Needs deciding at sprint 1 planning.
 
-**Decision.** Connect runs on single-node k3s on the foundation's server. The monolith stays one container image: section 5.1's four projects still build into one deployable unit, and Kubernetes does not turn Connect into microservices. k3s runs that one unit with a Deployment, a Service and a Secret, with Traefik as the Ingress. Where PostgreSQL 16 runs, inside the cluster or beside it, is open, owner the team, decided at sprint 2 planning, unless the team's own documents settle it first.
+**Decision.** Two environments on the one server. The test site runs on Docker Compose, the infrastructure document's base path. Production runs on single-node k3s on the foundation's server, described in Terraform, as the backlog's epic 1460 plans. The monolith stays one container image: section 5.1's four projects still build into one deployable unit, and Kubernetes does not turn Connect into microservices. k3s runs that one unit with a Deployment, a Service and a Secret, with Traefik as the Ingress, record 8.8. Issue 159 describes the server, the database and their secrets of production in Terraform, with PostgreSQL 16 running inside the cluster as the connect-database StatefulSet, on its own persistent volume.
 
 **Options that lost.**
 
-- **Docker Compose only, the infrastructure document's own base path.** Per that document, Compose on the VPS is a complete answer for one server on its own, and its applicability check calls container orchestration a multi-node answer to a problem Connect does not have yet. It would give Connect no rollout, rollback or monitoring vocabulary the course's DevOps track asks for.
 - **A managed cloud cluster.** The team's infrastructure document's hosting comparison never considered a managed cluster. My reasoning is cost: a managed Kubernetes cluster is priced on top of the budget the team already keeps to, so I ruled it out without asking the team to price it.
 
-**Consequences.** Kubernetes and k3s are new to the whole team, per the team's infrastructure document, on top of a stack four of five members are already learning from zero. The course's own DevOps demo needs a rollback shown live and some monitoring, which sprint 2's planning in section 11 now carries. Record 8.8 changes with it: Traefik, k3s's own ingress, replaces Caddy as the front door.
+**Consequences.** Kubernetes, k3s and Terraform are new to the whole team, per the team's infrastructure document, on top of a stack four of five members are already learning from zero. Sprint 4's own issues build the rest of the epic: issue 157 installs k3s by a written script, issue 158 shows every production change as a plan in the merge request first, issue 159 describes the server, the database and their secrets in Terraform, issue 161 backs up the database and the pictures every night inside the European Union, issue 162 deploys every green merge into main to production, and issue 163 rehearses a rollback that replaces a broken version with the previous one within ten minutes. The same milestone adds the monitoring stack: Prometheus (issue 164), Grafana (issue 165), Alertmanager (issue 166) and Loki (issue 167), and issue 169 is the DevOps teacher's live demo of the pipeline with a rollback. Record 8.8 changes with it, scoped to production: Traefik is k3s's own ingress inside the cluster, behind Caddy, which stays the front door for both environments.
 
-**In plain words, for the foundation.** Connect still runs as one program. It now runs inside a small tool, k3s, that can restart it if it crashes and can switch back to the last working version if a new one breaks.
+**In plain words, for the foundation.** Connect still runs as one program. The test version the team shows while building runs the simple way, in Docker. The live version for visitors runs inside a small tool, k3s, that can restart it if it crashes and can switch back to the last working version within ten minutes if a new one breaks, with a nightly copy of its data kept safe inside the European Union.
 
 ## 9. Keeping the architecture in sync with the code
 
@@ -895,7 +967,8 @@ These are my acceptance criteria for the architecture half of this datapoint, an
 | AC8 | **Diagrams compared with the code.** From sprint 2 on, at the end of every sprint, the diagrams of 6.2 to 6.5 and the records of section 8 match the code. Every difference is fixed in the code or corrected in this document. | I run the check of section 9 and note every difference with what I changed. | OR4, systematic validation | Architecture and design patterns (Hogeschool van Amsterdam, n.d.-b): implement a solution that follows a chosen architecture style, with consistent layering and separation of concerns |
 | AC9 | **Feedback recorded with what I changed.** The feedback of the learning group teacher on 6 October 2026, and of the team at the sprint reviews, is recorded with what I changed because of it. | The feedback I register with this datapoint in Portflow names who gave it, when, what they said, and what I changed or why I did not. | OR3, stakeholders involved and feedback weighed | Architecture and design patterns (Hogeschool van Amsterdam, n.d.-b): communicate architectural decisions and pattern choices to technical and non-technical stakeholders, including trade-offs and risks |
 | AC10 | **Every statement traceable.** Every fact cites a source I read or names the team document, server notes, course document or issue it comes from. Every decision names who and when, and Appendix A links each ask and each sprint 1 issue to a section. | I follow every citation to its entry in the references and every entry back to a citation, open each link, and check that each row of A.1 and A.2 points to a section that holds what it claims. | AA2, critical attitude | Technical architecture decision making (Hogeschool van Amsterdam, n.d.-h): justify an architectural choice using structured argumentation, not just preference |
-| AC11 | **Deployment on Kubernetes verified end to end.** Record 8.11's k3s cluster runs the image the pipeline built, a rollback is shown and recovers the previous image, and the deployment diagram of section 6.5 matches the cluster. | I compare `kubectl get pods,svc,ingress` on the server against section 6.5, confirm the running pod is built from the image GitLab CI produced, and trigger a rollback in the live demo to confirm the previous image comes back. | OR4, systematic validation | CI/CD & containerization fundamentals (Hogeschool van Amsterdam, n.d.-c): explain what CI/CD means and name the typical pipeline stages in order (lint, test, build, deploy) |
+| AC11 | **Deployment on Kubernetes verified end to end, sprint 4.** Record 8.11's single-node k3s cluster runs the image the pipeline built, Terraform's applied plan matches issue 159, a rollback within ten minutes recovers the previous image per issue 163, and the production deployment diagram of section 6.5 matches the cluster. | I compare `kubectl get pods,svc,ingress` on the server against section 6.5, confirm the running pod is built from the image GitLab CI produced, and trigger the rollback of issue 163 in the live demo of issue 169 to confirm the previous image comes back within ten minutes. | OR4, systematic validation | CI/CD & containerization fundamentals (Hogeschool van Amsterdam, n.d.-c): explain what CI/CD means and name the typical pipeline stages in order (lint, test, build, deploy) |
+| AC12 | **Containerization and CI fundamentals shown, sprint 2.** The API and the frontend each build from a Dockerfile, the test site runs from the `docker-compose.yml` of record 8.11, and GitLab CI runs tests and a container scan on every merge. | I confirm each image builds locally, `docker compose up` starts the test site, and the pipeline's test and scan stages both run and gate the merge. | OR1, systematic design and implementation | CI/CD & containerization fundamentals (Hogeschool van Amsterdam, n.d.-c): explain what CI/CD means and name the typical pipeline stages in order (lint, test, build, deploy) |
 
 ### How this document covers the level 3 outcomes
 
@@ -927,8 +1000,9 @@ The dates come from the course schedule and the team's delivery plan.
 | 1 | Sprint 1 | The decision files of issues 254 (recording the chosen server structure) and 255 (recording the .NET 10 choice), which decide records 8.2 and 8.9 | The issue owners the team assigns |
 | None | 12 to 17 October 2026 | Autumn break | None |
 | 2 | Weeks of 19 October to 2 November 2026, review 5 November | The first slice in code, then the first sync check of section 9 at the end of the sprint. The records updated with the decisions the team took | Wesley Oerlemans |
-| 2 | Weeks of 19 October to 2 November 2026, review 5 November | The DevOps & Testing datapoint: a Dockerfile, the k3s deployment of record 8.11 on the foundation's server, GitLab CI with tests and a container scan, a rollback rehearsed live, and monitoring, shown in the screen recording and the live demo the course asks for (Hogeschool van Amsterdam, 2026b) | Wesley Oerlemans |
+| 2 | Weeks of 19 October to 2 November 2026, review 5 November | The DevOps & Testing datapoint's containerization and CI fundamentals (Hogeschool van Amsterdam, 2026b): a Dockerfile for the API and one for the frontend, the test site on Docker Compose, and a GitLab CI pipeline with tests and a container scan | Wesley Oerlemans |
 | 3 | Weeks of 9 to 23 November 2026, review deadline 18 December | The sync check again, and the R&D (research and development) report, whose results can give NFR4 (responsiveness) its number | Wesley Oerlemans |
+| 4 | Weeks of 7 and 14 December 2026 and 4 January 2027, review deadline 8 January 2027 | Production on single-node k3s with Terraform, record 8.11: the install script of issue 157, the plan-then-apply flow of issue 158, the server, database and secrets of issue 159, the nightly backup of issue 161, the deploy-on-green-merge of issue 162, the ten-minute rollback of issue 163, the monitoring stack (Prometheus issue 164, Grafana issue 165, Alertmanager issue 166, Loki issue 167) and the live demo for the DevOps teacher, issue 169 | Wesley Oerlemans |
 | 4 | Weeks of 7 and 14 December 2026 and 4 January 2027, review deadline 8 January 2027 | The last sync check before the handover issue 12 (one clear structure for new developers) prepares for | Wesley Oerlemans |
 
 ## 12. Is this enough for sprint 1
@@ -944,12 +1018,13 @@ The asks come from the datapoint sheet, the Architecture & Design Patterns works
 | Workshop: at least one architecture diagram | Covered | Five C4 diagrams, section 6 |
 | Workshop: at least three patterns, where each is used and why | Covered | Section 7 |
 | Workshop: the architecture roughly in sync with the code | Not yet | Per the server notes there is no code yet. The check starts in sprint 2, section 9 |
-| BoKSA, technical architecture decision making: ADRs with context, decision and consequences | Covered | Eleven records in section 8, five of them proposed: 8.1, 8.2 and 8.8 to 8.10 |
+| BoKSA, technical architecture decision making: ADRs with context, decision and consequences | Covered | Eleven records in section 8, four of them proposed: 8.1, 8.2, 8.9 and 8.10 |
 | BoKSA, technical architecture decision making: monolith, modular monolith and microservices compared | Covered | Section 5.2 |
 | BoKSA, technical architecture decision making: one decision explained to two audiences | Partly covered | Record 8.1 has a plain version in writing. The spoken part waits for a sprint review |
 | BoKSA, non-functional requirements: quality attribute scenarios | Partly covered | Section 4.4. Two measures wait for a team target |
 | BoKSA, component architecture: a UI decomposed into reusable components (Hogeschool van Amsterdam, n.d.-d) | Not yet | Section 6.2 draws the React app as one container. Its components get designed with the first screens |
-| Deployment on Kubernetes | Not yet | Planned for sprint 2, the k3s deployment of record 8.11 |
+| Containerization and CI fundamentals | Not yet | Planned for sprint 2, record 8.11 |
+| Deployment on Kubernetes, production with Terraform | Not yet | Planned for sprint 4, record 8.11, epic 1460 |
 | Feedback from the learning group teacher | Not yet | Comes on 6 October 2026 |
 
 Understanding and explanation are covered. Application is designed but not yet realised in code, because per the server notes no code exists yet. The first sync check at the end of sprint 2 is where the design meets the code.
