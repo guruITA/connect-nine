@@ -1,0 +1,7 @@
+<Solution>
+  <Project Path="Connect.Application/Connect.Application.csproj" />
+  <Project Path="Connect.Domain/Connect.Domain.csproj" />
+  <Project Path="Connect.Infrastructure/Connect.Infrastructure.csproj" />
+  <Project Path="Connect.Presentation/Connect.Presentation.csproj" />
+  <Project Path="Connect/Connect.csproj" />
+</Solution>
