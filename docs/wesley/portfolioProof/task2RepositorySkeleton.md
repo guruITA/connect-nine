@@ -42,4 +42,4 @@ School asks: "You ensure that your work aligns with that of others and contribut
 
 ## AI use
 
-Tool: Claude Code with an Anthropic Claude model. What I asked: check task 1.1 against the repository, then write the three files and this proof from the task, the code conventions and the repository history. What came back: README.md, .editorconfig, the new .gitignore lines, the merge request description and this file. What I did with it: I read every line against task #2 and rule 2 of the code conventions, ran the git status check myself, and decided what went in. AI was used as a writing support tool; the decisions and the checks are mine.
+AI was used as a writing support tool while working on this document. We used AI to improve the formulation of sentences, the structure of wording, readability, and clarity of text that we had written. The content itself, including our experiences, reflections, learning goals, decisions, self-assessments, and conclusions, is our own. We reviewed the suggested changes and decided as a team which improvements to include.
