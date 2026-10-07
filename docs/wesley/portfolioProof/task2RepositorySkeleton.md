@@ -35,10 +35,13 @@ School asks: "You ensure that your work aligns with that of others and contribut
 
 3. **Lines that exist for later tasks.** `api/**/wwwroot/` is for task 3.9 (#267), where the pipeline copies the built screen into the server; the task names `backend/Presentation/wwwroot`, the folder is now under `api`. `test-results/` and `playwright-report/` are for task 3.7 (#265), the Playwright test that makes an account in a real browser.
 
-## Still open before this proof is complete
+## TODO
 
-- TODO reviewer of !13: make a `.env` in your own clone, run `git status`, and write in the review that it is skipped (Done means of the task).
-- TODO reviewer and me: point MS1.3 after the review.
+What is still needed before this proof is complete. Tick a line when it is done.
+
+- [ ] Reviewer of !13: in your own clone, make a `.env`, run `git status`, and write in the review that it is not listed (Done means of the task).
+- [ ] Reviewer of !13: write in the review what was unclear in the README on the first read.
+- [ ] Me: after the review, fill in MS1.3 with what I changed because of it.
 
 ## AI use
 
