@@ -20,8 +20,7 @@ School asks: "You anticipate risks and bottlenecks in the process before they be
 
    `!!` means Git ignores the file, and the normal `git status` does not offer it for a commit. `web/.env.example` stays in Git, so every setting still has an example value (rule 3 of the code conventions).
 
-2. **Where the rules come from, and why a short file.** Nick Hoebe wrote the first `.gitignore` on 2 October 2026 (commit 061ce7f, merge request !6), with blocks for .NET, Visual Studio, VS Code, JetBrains, Node.js and Docker. This merge request adds only the five lines later tasks need. A short file that every team member can explain line by line fits a team of five that is mostly new to .NET and React better than a full template of hundreds of lines nobody reads.
-   - TODO Nick Hoebe: say which template the first version came from (the GitHub gitignore templates for Node and Visual Studio, or his own list), so this point names the source instead of only the result.
+2. **Where my rules come from, and why a short file.** I added five lines, each with its source: `test-results/` and `playwright-report/` are the folders Playwright writes by default for task 3.7 (#265), and `api/**/wwwroot/` is the folder task 3.9 (#267) fills with the built screen, so only the pipeline makes it. The existing blocks for .NET, editors, Node.js and Docker I left as they were. A short file that every team member can explain line by line fits a team of five that is mostly new to .NET and React better than a full template of hundreds of lines nobody reads.
 
 3. **What the reviewer could not follow in the README on the first try, and what I changed.**
    - TODO reviewer of !13: write in the merge request what was unclear in the README on the first read. Then I write here what I changed because of it.
@@ -39,7 +38,6 @@ School asks: "You ensure that your work aligns with that of others and contribut
 ## Still open before this proof is complete
 
 - TODO reviewer of !13: make a `.env` in your own clone, run `git status`, and write in the review that it is skipped (Done means of the task).
-- TODO Nick Hoebe: point MS1.2.
 - TODO reviewer and me: point MS1.3 after the review.
 
 ## AI use
