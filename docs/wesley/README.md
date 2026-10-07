@@ -10,6 +10,14 @@ This folder holds my research plan and my evidence for two sprint 1 datapoints o
 | `topicProposalForm.md` | Datapoint 3 | The same content in Markdown, so it reads in GitLab without opening Word. The Word file is built from it, so the two match. |
 | `securityAndArchitectureEvidence.md` | Datapoint 4, Teacher Review of Progress in Security and Architecture (Designing & Realising) | A summary of about 2,800 words that the teacher can read on its own. It answers each example the datapoint names: an architecture, research into possible architectures, security requirements and design patterns. It shows the two key diagrams, the patterns, the decision records with their real status, the security fundamentals, what comes next and an honest status table. Each claim points to the section of the full document that holds the detail. |
 
+## Proof per task, for Portflow
+
+One file per task I did, with the proof block of the task filled in. A point that needs someone else is marked TODO with who and what.
+
+| File | Task | Portflow |
+| --- | --- | --- |
+| `portfolioProof/task2RepositorySkeleton.md` | Task 1.1 The starting structure (#2), merge request !13 | Managing and Collaborating MS1 and MS4 |
+
 ## The full documents behind them
 
 | File | What it is for |
