@@ -32,6 +32,13 @@ yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
 
+# Test reports
+test-results/
+playwright-report/
+
+# Built frontend copied into the server
+api/**/wwwroot/
+
 # Docker and local data
 docker-compose.override.yml
 *.sqlite

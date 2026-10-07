@@ -1,0 +1,19 @@
+# Layout for every editor, rule 2 of docs/team/codeConventions.md.
+root = true
+
+[*]
+charset = utf-8
+end_of_line = lf
+indent_style = space
+insert_final_newline = true
+trim_trailing_whitespace = true
+
+[*.{ts,tsx,js,jsx,json,yml,yaml,md}]
+indent_size = 2
+
+[*.cs]
+indent_size = 4
+
+# EF Core writes migrations itself, with a byte order mark; dotnet format leaves generated code alone.
+[**/Migrations/*.cs]
+generated_code = true
