@@ -1,0 +1,171 @@
+# =================================================================================================
+# The EERD of Connect as a local PostgreSQL 16 database, with pgAdmin to look around in it.
+# =================================================================================================
+#
+# How to use it, from this folder:
+#
+#   docker compose up -d     start both containers; the database is built from schema.sql and
+#                            filled with dummydata.sql
+#   docker compose ps        see whether both are running ("healthy" for the database)
+#   docker compose down      stop both; every row is thrown away
+#
+# Where to look once it runs:
+#
+#   http://localhost:5050    pgAdmin in the browser, no login; the server "Connect (EERD)" is there
+#   localhost:55432          the database itself, for DBeaver, DataGrip or psql
+#                            (database "connect", user "connect", no password)
+#
+# For a laptop only. The database lets every connection in without a password, and both ports
+# listen on 127.0.0.1 only, so nothing outside this computer can reach them. Never use these
+# settings on a server.
+#
+# Every setting below says what it does and links to the documentation that says so.
+# Reference for the whole file format: https://docs.docker.com/reference/compose-file/
+# =================================================================================================
+
+# The project name. Docker uses it as the first part of every container name
+# (connect-eerd-database-1, connect-eerd-pgadmin-1), so these containers never mix with those of
+# another project on the same laptop.
+# Source: https://docs.docker.com/reference/compose-file/version-and-name/
+name: connect-eerd
+
+# The containers this file starts. Each entry under services is one container.
+# Source: https://docs.docker.com/reference/compose-file/services/
+services:
+
+  # -----------------------------------------------------------------------------------------------
+  # database: PostgreSQL 16, the version Connect uses
+  # -----------------------------------------------------------------------------------------------
+  database:
+    # The official PostgreSQL image, version 16, on the small Alpine Linux base.
+    # Source: https://hub.docker.com/_/postgres
+    image: postgres:16-alpine
+
+    # Settings the postgres image reads when it creates the database for the first time.
+    # Source: https://hub.docker.com/_/postgres  (section "Environment Variables")
+    environment:
+      # The name of the user that is created and owns the database.
+      POSTGRES_USER: connect
+      # The name of the database that is created. Without it, it would get the name of the user.
+      POSTGRES_DB: connect
+      # "trust" lets every connection in without a password. The image docs say: "If you set
+      # POSTGRES_HOST_AUTH_METHOD to trust, then POSTGRES_PASSWORD is not required."
+      # What trust means in PostgreSQL itself: https://www.postgresql.org/docs/16/auth-trust.html
+      # Safe here only because the port below listens on 127.0.0.1.
+      POSTGRES_HOST_AUTH_METHOD: trust
+
+    # "127.0.0.1:55432:5432" means: port 5432 inside the container is reachable on this computer
+    # as port 55432, and only from this computer (127.0.0.1), never from the network.
+    # 55432 instead of the usual 5432, so it does not clash with another PostgreSQL on the laptop.
+    # Source: https://docs.docker.com/reference/compose-file/services/#ports
+    ports:
+      - "127.0.0.1:55432:5432"
+
+    # Files from this folder, made visible inside the container (bind mounts). ":ro" means read
+    # only: the container can read them but never change them.
+    # Source: https://docs.docker.com/reference/compose-file/services/#volumes
+    #         https://docs.docker.com/engine/storage/bind-mounts/
+    volumes:
+      # Every *.sql file in /docker-entrypoint-initdb.d is run once when the database is created,
+      # "in sorted name order", so 01 (the tables) always runs before 02 (the rows).
+      # Source: https://hub.docker.com/_/postgres  (section "Initialization scripts")
+      - ./schema.sql:/docker-entrypoint-initdb.d/01-schema.sql:ro
+      # Remove this line to start with empty tables.
+      - ./dummydata.sql:/docker-entrypoint-initdb.d/02-dummydata.sql:ro
+
+    # The folder where PostgreSQL keeps its data lives in memory (tmpfs), not on the disk, so it is
+    # gone when the container stops. The init scripts above only run "if you start the container
+    # with a data directory that is empty", and with tmpfs it is empty at every start. That is why
+    # every start builds the database fresh from schema.sql and dummydata.sql.
+    # /var/lib/postgresql/data is the data folder of the image for PostgreSQL 17 and below.
+    # Source: https://docs.docker.com/reference/compose-file/services/#tmpfs
+    #         https://docs.docker.com/engine/storage/tmpfs/
+    #         https://hub.docker.com/_/postgres  (sections "Initialization scripts" and "PGDATA")
+    tmpfs:
+      - /var/lib/postgresql/data
+
+    # Docker asks every 2 seconds whether the database accepts connections, with the PostgreSQL
+    # tool pg_isready. Only when it answers yes is the container "healthy". pgAdmin below waits for
+    # that, so it never starts against a database that is still loading the scripts.
+    # Source: https://docs.docker.com/reference/compose-file/services/#healthcheck
+    #         https://www.postgresql.org/docs/16/app-pg-isready.html
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U connect -d connect"]
+      interval: 2s    # ask every 2 seconds
+      timeout: 3s     # one question may take at most 3 seconds
+      retries: 30     # after 30 wrong answers in a row the container is "unhealthy"
+
+  # -----------------------------------------------------------------------------------------------
+  # pgadmin: a web page to look inside the database
+  # -----------------------------------------------------------------------------------------------
+  pgadmin:
+    # The official pgAdmin 4 image, major version 9.
+    # Source: https://hub.docker.com/r/dpage/pgadmin4
+    image: dpage/pgadmin4:9
+
+    # Start pgAdmin only once the database is "healthy", see the healthcheck above.
+    # Source: https://docs.docker.com/reference/compose-file/services/#depends_on
+    #         https://docs.docker.com/compose/how-tos/startup-order/
+    depends_on:
+      database:
+        condition: service_healthy
+
+    # Settings the pgAdmin image reads at start.
+    # Source: https://www.pgadmin.org/docs/pgadmin4/latest/container_deployment.html
+    #         (section "Environment Variables")
+    environment:
+      # The image refuses to start without these two, even when no login is asked. They are
+      # the first pgAdmin user. Made up and for this laptop only.
+      PGADMIN_DEFAULT_EMAIL: connect@example.org
+      PGADMIN_DEFAULT_PASSWORD: local-only
+      # Every variable that starts with PGADMIN_CONFIG_ sets the pgAdmin setting with the same
+      # name. SERVER_MODE False is desktop mode: one user and no login page.
+      # Source: https://www.pgadmin.org/docs/pgadmin4/latest/config_py.html
+      PGADMIN_CONFIG_SERVER_MODE: "False"
+      # Do not ask for an extra master password to unlock saved connections. Its default is True.
+      # Source: https://www.pgadmin.org/docs/pgadmin4/latest/config_py.html
+      PGADMIN_CONFIG_MASTER_PASSWORD_REQUIRED: "False"
+
+    # pgAdmin, which listens on port 80 inside the container, opens in the browser at
+    # http://localhost:5050, and again only from this computer.
+    # Source: https://docs.docker.com/reference/compose-file/services/#ports
+    ports:
+      - "127.0.0.1:5050:80"
+
+    # The list of servers pgAdmin shows on the left. The image reads /pgadmin4/servers.json at
+    # its first start, so "Connect (EERD)" is already there and nobody has to type the host, port
+    # or user.
+    # Source: https://www.pgadmin.org/docs/pgadmin4/latest/container_deployment.html
+    #         (section "Mapped Files and Directories", /pgadmin4/servers.json)
+    #
+    # Changed servers.json? The docs say "server definitions are only loaded on first launch", and
+    # pgAdmin keeps its settings in an anonymous volume that survives a restart. To make it read the
+    # file again: docker compose down, then docker compose up -d. Or recreate pgAdmin alone with a
+    # fresh volume: docker compose up -d --force-recreate --renew-anon-volumes pgadmin
+    # Source: https://docs.docker.com/reference/cli/docker/compose/up/  (-V, --renew-anon-volumes)
+    #
+    # servers.json is JSON, and JSON has no comments, so its fields are explained here. The format
+    # says every server needs Name, Group, Port, Username, SSLMode, MaintenanceDB and one of Host,
+    # HostAddr or Service; Comment is optional and shows in pgAdmin under Properties > General.
+    # Source: https://www.pgadmin.org/docs/pgadmin4/latest/import_export_servers.html
+    #
+    #   "Servers": { "1": {...} }   the list of servers; "1" is just a number for this entry
+    #   "Name": "Connect (EERD)"     the name shown in the tree on the left
+    #   "Group": "Connect"           the folder in the tree the server sits in
+    #   "Host": "database"           where the database is. Inside Docker, Compose lets every
+    #                               container reach another one by its service name, so pgAdmin
+    #                               finds PostgreSQL at "database", not at localhost.
+    #                               Source: https://docs.docker.com/compose/how-tos/networking/
+    #   "Port": 5432                the port inside the container network; 55432 is only the
+    #                               port on this computer, see ports under database above
+    #   "MaintenanceDB": "connect"   the database pgAdmin connects to first, the POSTGRES_DB above
+    #   "Username": "connect"        the user it logs in as, the POSTGRES_USER above; no password
+    #                               is needed because of POSTGRES_HOST_AUTH_METHOD: trust
+    #   "SSLMode": "disable"         no encryption on the connection. Both containers talk on
+    #                               the private network Compose made for them, and the postgres
+    #                               image does not switch SSL on by itself.
+    #                               What each SSLMode means:
+    #                               https://www.postgresql.org/docs/16/libpq-ssl.html#LIBPQ-SSL-PROTECTION
+    #   "Comment": "..."             a short note with a link to the format, shown in pgAdmin
+    volumes:
+      - ./pgadmin/servers.json:/pgadmin4/servers.json:ro
