@@ -138,6 +138,12 @@ npm install
 npm run dev
 ```
 
+The backend has four layers: Presentation handles HTTP, Application holds use
+cases and business rules, Domain holds core contracts and entities, and
+Infrastructure handles external systems such as the database. Start the server
+with `dotnet run --project api/Connect/Connect.csproj`; it listens on
+`http://localhost:5000`.
+
 ## 6. Run the checks before you push
 
 ```
