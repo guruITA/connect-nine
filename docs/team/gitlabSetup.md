@@ -113,6 +113,12 @@ flowchart TD
 - Every "is blocked by" of the board is a linked item, so each issue also shows "blocks" on the other side.
 - New issues start from the templates in .gitlab/issue_templates, one per type.
 
+## Templates
+
+- Issue templates live in .gitlab/issue_templates on dev: slice, setup, research, decision and client for an issue, and task for a task. New issue, Description, Choose a template offers all six. The Definition of Done in each template copies only the bold sentences of docs/team/definitionOfDone.md, and the two change in the same merge request.
+- The merge request template is .gitlab/merge_request_templates/Default.md. Because it is named Default, GitLab fills it in by itself on every new merge request made in the browser. A merge request made through the API or glab starts empty, so paste the template there by hand.
+- Settings, General, Default description template for issues: GitLab offers this setting only in Premium and Ultimate (GitLab Docs, Description templates). The project API shows the field issues_template, empty on 8 October 2026, but a field in the API does not prove the HvA licence has the setting. The team does not need it: an issue has five types and no single default fits all of them, and the merge request default comes from the name Default.md.
+
 ## AI use declaration
 
 AI was used as a writing support tool while working on this document. We used AI to draft
