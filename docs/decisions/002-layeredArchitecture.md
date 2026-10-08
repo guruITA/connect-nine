@@ -1,6 +1,6 @@
 # 002 The structure of the server: four layer projects and CQRS by feature
 
-**Status.** Decided by the team on 1 October 2026, per `docs/team/openItems.md` and `docs/architecture/architecture.md`. Written down here on 8 October 2026. Who was there is not recorded in the team documents, so the part Agreed by is still open.
+**Status.** Decided by the team on 1 October 2026 (rule 8 adjusted to the code by Wesley Oerlemans on 8 October 2026), per `docs/team/openItems.md` and `docs/architecture/architecture.md`. Written down here on 8 October 2026. Who was there is not recorded in the team documents, so the part Agreed by is still open.
 **Issue.** 11 The team agrees on the layered architecture (#12), tasks 11.1 (#253) and 11.2 (#254).
 **Who decided.** The whole team. Drafted by Wesley Oerlemans.
 
@@ -32,26 +32,35 @@ Making an account, `POST /api/accounts`, the first slice (#14):
 
 | | The repository pattern: one repository per kind of data behind an interface | CQRS by feature: one handler per use case, data through `IAppDbContext` |
 |---|---|---|
-| Files for one new feature | One method on an existing repository plus a service | A command or query and a handler, in their own folder |
+| Files for one new feature | One method on an existing repository plus a service that calls it | A command or query and a handler, in their own folder |
 | What a beginner must learn | One shape | Two shapes, command and query |
-| How a rule is unit tested without the database | Stub the repository. Microsoft calls this the recommended way to test without the production database (Microsoft, n.d.-b) | The handler gets an `AppDbContext` on SQLite in memory. Microsoft names this as the other way, and strongly advises against the EF Core in-memory provider (Microsoft, n.d.-b) |
-| What catches a mistake | A reviewer, a repository can grow into a class that does everything | The folder per use case keeps a use case in one place. Opinion, no source |
-| Fit with Connect | Fits simple read and write screens. Microsoft says CQRS "might not be suitable when the domain or the business rules are simple" (Microsoft, n.d.-c) | Fits when reads and writes differ, as in matching and the event places later. Opinion, no source |
+| How a rule is unit tested without PostgreSQL | Stub the repository. The EF Core team names this its advice when a test double is really needed, with the warning that it "can incur significant cost to implement and maintain", because every query needs its own method (Microsoft, n.d.-b) | The handler gets an `AppDbContext` on SQLite in memory. The EF Core team allows this, but warns that "testing against SQLite does not guarantee the same results" as the real database (Microsoft, n.d.-b) |
+| What catches a mistake | A reviewer: a repository or service can grow into one class that does everything | The folder per use case keeps one use case in one place. A reviewer still has to spot a handler that grows too big |
+| Where it fits | Many screens that read and write the same data in the same way (CRUD) | Reads and writes that differ, for example a list of suggestions against saving a profile |
 
-**What the sources changed.** The team assumed that CQRS makes testing easier than a repository. The EF Core documentation says the opposite: the repository pattern is its recommended way to test without the database, and SQLite in memory is the alternative. Both ways test a rule without PostgreSQL, so this is no reason against CQRS, but also no reason for it.
+### What each option is for, and what the sources warn about
 
-**Recommendation in two lines.** Four projects, because the compiler guards the layers for a team that is new to .NET. CQRS by feature, because the code then splits by feature, with the extra files per feature as the risk the team accepts.
+- **The repository pattern** is for hiding the database behind one interface per kind of data, so code above it can be tested without EF Core. That is its real strength (Microsoft, n.d.-b). The price is a method per query and a layer the team must keep in step, and EF Core's `DbContext` already does much of the work of a repository.
+- **CQRS** is for separating the code that changes data from the code that only reads it. Fowler warns that "for most systems CQRS adds risky complexity", and that many systems fit a simple read and write model better (Fowler, 2011). Microsoft says the same: it "might not be suitable when the domain or the business rules are simple" (Microsoft, n.d.-c). Both warnings are mostly about the heavy form, with a separate read database, messaging and data that is only up to date later.
+- **What Connect actually uses is the light form.** One database, one handler per use case, no separate read database, no messaging and no extra library. Microsoft describes this as simplified CQRS: "a single data source or database, but two logical models" (Microsoft, n.d.-d). Bogard calls the matching way of organising code vertical slices: code grouped per feature, with as few shared layers such as repositories and services as possible (Bogard, 2018).
+- **The risk that stays.** Bogard adds that vertical slices assume a team that recognises when a handler does too much and knows how to refactor (Bogard, 2018). Four of the five students are new to .NET, so that is the real risk for Connect, not the heavy CQRS that Fowler warns about. The review checks it: one handler does one use case.
+- **Testing.** The EF Core team's first advice is to test against the real database, and to use a test double only where that is not possible (Microsoft, n.d.-b). SQLite is not PostgreSQL: Connect uses citext, uuid ids, unique indexes and ExecuteDeleteAsync, which SQLite handles differently or not at all. So a handler is unit tested with SQLite in memory for its logic, and every rule that depends on PostgreSQL itself gets a database test against a real PostgreSQL (`<Feature>DatabaseTests`, the postgres service of the pipeline of #266).
+
+**What the sources changed.** The team assumed that CQRS makes testing easier than a repository. The EF Core documentation does not support that: it advises the real database first and a repository second, and calls SQLite a fake with limits. Testing is no reason for CQRS. The reasons that stay are the split per feature and the fact that Connect uses the light form, which avoids most of the complexity the sources warn about.
+
+**Recommendation in two lines.** Four projects, because the compiler guards the layers for a team that is new to .NET. CQRS by feature in its light form, because the code splits per use case, with more files per feature and a reviewer watching for handlers that grow too big as the risks the team accepts.
 
 ## Decision
 
 Four layer projects and CQRS by feature, decided by the team on 1 October 2026, over one project with four folders and over the repository pattern. Per `docs/architecture/architecture.md`, the reason is that the code splits by feature instead of by one class per kind of data.
 
-The structure, as `docs/team/codeConventions.md` backend rules 7 and 8 state it:
+The structure, as the code on dev and task 3.1 (#259) have it, and as `docs/team/codeConventions.md` backend rules 7 and 8 now state it:
 
-- Presentation, Application, Domain and Infrastructure are four projects, plus the test project Connect.Tests.
-- Domain uses nothing. Application uses Domain. Infrastructure uses Domain. Presentation uses Application and Infrastructure. Connect.Tests uses all four.
-- One folder per use case in Application, with its command or query and its handler. No repository classes, no `IXRepository` contracts, no Repositories folder.
-- A handler is unit tested with an in-memory SQLite `AppDbContext`, a rule in Domain without any database.
+- Four layer projects, `api/Connect.Presentation`, `api/Connect.Application`, `api/Connect.Domain` and `api/Connect.Infrastructure`, and the start project `api/Connect`, which starts the server and connects the layers.
+- References point inward: Connect uses Presentation and Infrastructure. Presentation uses Application. Infrastructure uses Application, because it implements contracts of Application such as `IAppDbContext`. Application uses Domain. Domain uses nothing.
+- Test projects per layer: `Connect.Application.Tests`, `Connect.Infrastructure.Tests` and `Connect.Presentation.Tests`, each using only the project it tests, plus `Connect.Tests` for tests across projects.
+- One folder per use case in `api/Connect.Application/Features/<Feature>/<UseCase>/`, with its command or query and its handler. The handler reaches the data through `IAppDbContext` in `api/Connect.Application/Abstractions`, implemented by `AppDbContext` in Infrastructure. No repository classes, no `IXRepository` contracts, no Repositories folder, no use case written as a Service class.
+- A handler is unit tested with an in-memory SQLite `AppDbContext` in `Connect.Application.Tests`. A rule that depends on PostgreSQL is tested against a real PostgreSQL in `Connect.Infrastructure.Tests` (`<Feature>DatabaseTests`). A rule in Domain is tested without any database.
 
 ### Proof that the compiler guards the layers
 
@@ -77,18 +86,21 @@ Build succeeded.
     0 Error(s)
 ```
 
-### Open point: the code and rule 8 differ
+### Rule 8 follows the code
 
-The code on dev on 8 October 2026 has a fifth project, `api/Connect`, which starts the server and references the four layers. Infrastructure references Application, not only Domain, and Presentation references only Application. Microsoft's Clean Architecture does the same: Infrastructure implements contracts of the core, "and so Infrastructure should have a reference to the Application Core project" (Microsoft, n.d.-a). `IAppDbContext` lives in Application, so `AppDbContext` in Infrastructure needs that reference.
+The first text of rule 8 said Infrastructure uses only Domain and Presentation uses Infrastructure. The code on dev, the open merge request !22 and task 3.1 (#259) all have Infrastructure using Application and a start project Connect that connects Presentation and Infrastructure. Microsoft's Clean Architecture does the same: Infrastructure implements contracts of the core, "and so Infrastructure should have a reference to the Application Core project" (Microsoft, n.d.-a). Wesley Oerlemans decided on 8 October 2026 that the code leads here, so rule 8 now follows it.
 
-- TODO the team: choose whether rule 8 changes to the code (a start project Connect, Infrastructure uses Application), or the code changes to rule 8. The owner of #259 (merge request !22) builds the projects.
+### Nick Hoebe's create user example
+
+The example on dev (merge request !11) puts the handler `CreateUserCommandHandler` in Infrastructure, using `ConnectDbContext` directly, with a contract `ICreateUserHandler` and a `UserService` in Application in front of it. It was written before the decision of 1 October. Two parts of it stay: the start project and the registration per layer (`AddApplication`, `AddInfrastructure`, `AddPresentation`). Two parts do not fit the decision: a use case as a Service class, and a handler outside Application. Merge request !22 replaces the example with the empty structure, and the first real feature (#14, tasks 3.3 and 3.4) builds in the shape above.
 
 ## Consequences
 
 - **For the team new to .NET.** More files per feature and two shapes to learn. The compiler refuses a wrong reference, so a beginner cannot break the layers without noticing.
 - **For the maintainer after January 2027.** Every use case is one folder with a name that says what it does, so a change starts in one place.
 - **For the foundation.** The consequence weighed heaviest is a platform that is switched off because nobody can change it. A structure the compiler checks lowers that risk more than a rule only a reviewer checks.
-- Task 11.4 (#1465) rewords the tasks of every next sprint that still use the repository wording.
+- Task 11.4 (#1465) rewords the tasks of every next sprint that still use the repository or service wording.
+- The Definition of Done line on the layers and the slice template say the same as this file: a handler reaches the data only through `IAppDbContext`.
 - `docs/team/codeConventions.md` links this file under backend rules 7 and 8.
 
 ## Agreed by
@@ -103,11 +115,17 @@ The code on dev on 8 October 2026 has a fifth project, `api/Connect`, which star
 
 ## References
 
+Bogard, J. (2018, April 19). *Vertical slice architecture*. Retrieved October 8, 2026, from https://www.jimmybogard.com/vertical-slice-architecture/
+
+Fowler, M. (2011, July 14). *CQRS*. Retrieved October 8, 2026, from https://martinfowler.com/bliki/CQRS.html
+
 Microsoft. (n.d.-a). *Common web application architectures*. Microsoft Learn. Retrieved October 8, 2026, from https://learn.microsoft.com/en-us/dotnet/architecture/modern-web-apps-azure/common-web-application-architectures
 
-Microsoft. (n.d.-b). *Testing without your production database system*. EF Core, Microsoft Learn. Retrieved October 8, 2026, from https://learn.microsoft.com/en-us/ef/core/testing/testing-without-the-database
+Microsoft. (n.d.-b). *Choosing a testing strategy*. EF Core, Microsoft Learn. Retrieved October 8, 2026, from https://learn.microsoft.com/en-us/ef/core/testing/choosing-a-testing-strategy
 
 Microsoft. (n.d.-c). *CQRS pattern*. Azure Architecture Center, Microsoft Learn. Retrieved October 8, 2026, from https://learn.microsoft.com/en-us/azure/architecture/patterns/cqrs
+
+Microsoft. (n.d.-d). *Applying simplified CQRS and DDD patterns in a microservice*. .NET Microservices Architecture, Microsoft Learn. Retrieved October 8, 2026, from https://learn.microsoft.com/en-us/dotnet/architecture/microservices/microservice-ddd-cqrs-patterns/apply-simplified-microservice-cqrs-ddd-patterns
 
 ## AI use declaration
 

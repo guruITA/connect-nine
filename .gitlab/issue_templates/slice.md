@@ -32,7 +32,7 @@ Non functional
 
 ## Definition of done
 Details per line: docs/team/definitionOfDone.md
-- [ ] Code: own branch and approved MR, commit format, code conventions, linter and build green, no secrets, no leftover code, only Infrastructure talks to the database
+- [ ] Code: own branch and approved MR, commit format, code conventions, linter and build green, no secrets, no leftover code, handlers reach the data only through IAppDbContext
 - [ ] Tests: a unit test per rule, integration tests per server address (correct, wrong input, not allowed), screen states (loading, empty, filled, error), one browser test of the story, one test shown to fail without its rule, all green and none skipped
 - [ ] Peer test: a teammate who did not build it ticked every AC on the test site, with name and date
 - [ ] Security: every server address says who may use it, no technical details in errors, no secrets or personal data in logs

@@ -9,9 +9,9 @@ A point that needs someone else is marked TODO with who and what.
 
 School asks: "You show an inquisitive and critical attitude by questioning sources, AI results, the problem statement and your own assumptions."
 
-1. **CQRS makes testing easier.** The team assumed this. The EF Core documentation says the repository pattern is its recommended way to test without the production database, and SQLite in memory is the other way (Microsoft, n.d.-b). The decision file says so in the part What the sources changed: both ways test a rule without PostgreSQL, so testing is no reason for or against CQRS.
-2. **CQRS fits Connect.** Microsoft writes that CQRS "might not be suitable when the domain or the business rules are simple" (Microsoft, n.d.-c). That row is in the table, next to the reason the team gives.
-3. **The structure of rule 8.** Rule 8 of the code conventions says Infrastructure uses only Domain. The code on dev has Infrastructure using Application, and Microsoft's Clean Architecture says Infrastructure "should have a reference to the Application Core project" (Microsoft, n.d.-a). Written as an open point for the team, not decided by me.
+1. **CQRS makes testing easier.** The team assumed this. The EF Core team's own page on choosing a testing strategy advises the real database first, a repository second, and calls SQLite a fake whose results are not guaranteed to match (Microsoft, n.d.-b). The decision file now says that testing is no reason for CQRS, and that rules which depend on PostgreSQL get a database test against a real PostgreSQL.
+2. **CQRS fits Connect.** Fowler writes that "for most systems CQRS adds risky complexity" and Microsoft that it "might not be suitable when the domain or the business rules are simple". Checked further: both warnings are mostly about the heavy form with a separate read database and messaging. Microsoft's simplified CQRS (one database, two logical models) and Bogard's vertical slices describe the light form Connect uses. The risk that stays is the one Bogard names: a team that must recognise a handler that does too much. All four sources are in the decision file, per option, with what each option is for.
+3. **The structure of rule 8.** Rule 8 of the code conventions said Infrastructure uses only Domain. The code on dev, merge request !22 and task 3.1 (#259) have Infrastructure using Application and a start project Connect, and Microsoft's Clean Architecture says Infrastructure "should have a reference to the Application Core project" (Microsoft, n.d.-a). On 8 October 2026 I decided the code leads, and rule 8, the test projects, the solution file and the migration command now follow the code.
 4. **The support dates.** The code conventions said .NET 10 is supported "until November 2028" and .NET 8 stops on 10 November 2026. The Microsoft page, read on 8 October 2026, says 14 November 2028 and 10 November 2026, and adds that .NET 9 stops on the same day as .NET 8. Rule 1 now has the exact date and names .NET 9.
 
 ## AA3 Weighing the issue from several sides
@@ -41,14 +41,17 @@ School asks: "You adapt your communication to different target groups in form an
 
 - [ ] Whole team: confirm both files at a stand up and fill in Agreed by. Write in #12 the date and who was there.
 - [ ] Whole team: each writes the line of `dotnet --list-sdks` that starts with 10 in `003-dotnet10.md` and in #12.
-- [ ] Whole team: choose the answer to the open point of rule 8 in `002-layeredArchitecture.md`.
 - [ ] Owner of #259: link both decision files from `docs/architecture/architecture.md`.
 
 ## References
 
+Bogard, J. (2018, April 19). *Vertical slice architecture*. Retrieved October 8, 2026, from https://www.jimmybogard.com/vertical-slice-architecture/
+
+Fowler, M. (2011, July 14). *CQRS*. Retrieved October 8, 2026, from https://martinfowler.com/bliki/CQRS.html
+
 Microsoft. (n.d.-a). *Common web application architectures*. Microsoft Learn. Retrieved October 8, 2026, from https://learn.microsoft.com/en-us/dotnet/architecture/modern-web-apps-azure/common-web-application-architectures
 
-Microsoft. (n.d.-b). *Testing without your production database system*. EF Core, Microsoft Learn. Retrieved October 8, 2026, from https://learn.microsoft.com/en-us/ef/core/testing/testing-without-the-database
+Microsoft. (n.d.-b). *Choosing a testing strategy*. EF Core, Microsoft Learn. Retrieved October 8, 2026, from https://learn.microsoft.com/en-us/ef/core/testing/choosing-a-testing-strategy
 
 Microsoft. (n.d.-c). *CQRS pattern*. Azure Architecture Center, Microsoft Learn. Retrieved October 8, 2026, from https://learn.microsoft.com/en-us/azure/architecture/patterns/cqrs
 
