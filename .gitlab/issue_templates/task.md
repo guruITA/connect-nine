@@ -1,5 +1,7 @@
 <!-- Title: "As a developer, I want <the thing you make>, so that <goal of the issue>." A task has no acceptance criteria and no definition of done: those live on the issue. -->
 
+Task <issue number>.<n> · <LAYER> · of board issue <number>
+
 ## What
 <!-- 1 or 2 sentences: what has to exist when you are done, not how. -->
 

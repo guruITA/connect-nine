@@ -105,7 +105,7 @@ The unit tests and integration tests belong to the task that writes the code the
 
 ### D3
 
-A task has exactly these parts, in this order, each with its heading: What, Checklist, BoKSA proof. The title is the story (rule B3). The template is .gitlab/issue_templates/task.md.
+A task starts with its task line, "Task &lt;issue number>.&lt;n> · &lt;LAYER> · of board issue &lt;number>", then has exactly these parts, in this order, each with its heading: What, Checklist, BoKSA proof. The title is the story (rule B3). Refer to another task by its GitLab number. The template is .gitlab/issue_templates/task.md.
 
 ### D4
 
