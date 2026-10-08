@@ -1,14 +1,14 @@
 # Rulebook: how to write an issue and its tasks
 
-The source is section 1 of the page Issue creation on the Figma board. When the board changes, this file changes in the same merge request.
+This file is the source. The compact form was set by Wesley on 8 October 2026, after feedback from the team that issues and tasks were too long. The page Issue creation on the Figma board still shows the older, longer form.
 
-The complete rule set, set by Wesley on 25 and 26 September 2026. A person or an AI that follows these rules, and nothing else, writes issues and tasks exactly like the example in section 2. Nothing here depends on another page: section 2 shows the result, section 3 holds the Definition of Done that rule C10 copies, section 3b the code conventions that rule F6 points to. Group H says how the issues stand on a feature page, as a pyramid. When anything else on this board disagrees with this rulebook, the rulebook wins.
+A person or an AI that follows these rules and the templates in .gitlab/issue_templates writes issues and tasks the same way. Issue #25 and its task #320 are the worked example. Group H says how the issues stand on a feature page, as a pyramid. When anything else disagrees with this rulebook, the rulebook wins.
 
 ## What an issue is
 
 ### A1
 
-Every issue is written for someone outside the team. The reader is a second year student who joins in week 10, has never used React, .NET, EF Core, PostgreSQL, Docker or the test tools, and must be able to do the work without asking anyone. The client and a teacher must understand the description and the acceptance criteria.
+Every issue is short and written for someone outside the team: the client and a teacher must understand the description and the acceptance criteria. A card says what and why, not how. Explanations for newcomers (words, setup, the four layers) live once in docs, not on every card.
 
 ### A2
 
@@ -52,65 +52,46 @@ The title of a task uses the same form with the developer as the role, and its "
 
 ### C1
 
-An issue has exactly these parts, in this order, each with its heading in capitals, and a blank line between parts and between paragraphs: the RANK line, STORY, DESCRIPTION, OUT OF SCOPE, RELATES TO, HOW IT WORKS (for developers), TASKS, ONE LAYER EACH, TESTING, WHAT PROVES THIS ISSUE, ACCEPTANCE CRITERIA, DEFINITION OF DONE, LABELS. The acceptance criteria always sit directly above the Definition of Done. An issue with the label school::required has one more part, SCHOOL REQUIREMENT, directly under STORY.
-
-The picture below shows the parts of an issue in their order, with the one extra part of a school issue.
+An issue has exactly these parts, in this order, each with its heading: the board line, Description, Paths (for developers), Acceptance criteria, Out of scope, Definition of done. An issue with the label school::required has one more part, School requirement, directly under the board line. Only a slice has Paths. The templates in .gitlab/issue_templates hold the parts, one template per type. Short wins: every line carries information, and nothing is repeated that is already in GitLab or in docs.
 
 ```mermaid
 flowchart TD
-    R[RANK line] --> S[STORY]
-    S -.->|only with school::required| SR[SCHOOL REQUIREMENT]
+    R[Board line] -.->|only with school::required| SR[School requirement]
     SR -.-> D
-    S --> D[DESCRIPTION]
-    D --> O[OUT OF SCOPE]
-    O --> L[RELATES TO]
-    L --> H[HOW IT WORKS]
-    H --> T[TASKS, ONE LAYER EACH]
-    T --> TE[TESTING, WHAT PROVES THIS ISSUE]
-    TE --> AC[ACCEPTANCE CRITERIA]
-    AC --> DOD[DEFINITION OF DONE]
-    DOD --> LB[LABELS]
+    R --> D[Description]
+    D --> P[Paths, only for a slice]
+    P --> AC[Acceptance criteria]
+    AC --> O[Out of scope]
+    O --> DOD[Definition of done]
 ```
 
 ### C2
 
-The RANK line: "RANK &lt;number> · &lt;EPIC> · weight &lt;n>". The rank is the build order on the board.
+The board line: "Board number &lt;number> · rank &lt;number> · &lt;epic> · weight &lt;n>", and for a type that is not a slice also "· &lt;type>, not a slice". The rank is the build order on the board.
 
 ### C3
 
-DESCRIPTION: plain language without technical words, for someone outside the team. Short paragraphs with a blank line between them. One paragraph on what Connect is: the online platform of the WailSalutem Foundation where young people from Amstelland, the organisations around them and the foundation find each other all year, not only at the Young Amstelland Awards gala. One paragraph on who this issue is for. One paragraph on what that person can do when it is done, including what they see when something goes wrong. When it applies, one paragraph on why this issue is special, for example the first slice or its weight. Length follows the content, and every sentence carries information.
+Description: 2 to 4 plain sentences without technical words, for someone outside the team: who it is for, what they can do when it is done, and why. Refer to another issue by its GitLab number, for example #24.
 
 ### C4
 
-OUT OF SCOPE: a list of what a reader might expect here but is not part of this issue, each with the number and title of the issue where it is done.
+Paths (for developers), only on a slice. It opens with the line "Each unhappy path has the number of the happy path step where it goes another way." Happy path: numbered steps in the order the data travels, from what the person does on the screen, through the server address, what the server checks and the table it reads or writes, back to what the person sees. Unhappy paths: one line per thing that can go wrong, numbered with the step where it branches off and a letter (1a, 3a, 3b), each saying what happens and what the person sees. Together they cover wrong input, a person who is not allowed, a value that is taken, a double submit and a server or database that is not reachable, where they apply. Technical words are allowed here, because the reader is a developer.
 
 ### C5
 
-RELATES TO: "Relates to (docs/project/requirements.md)": the requirements this issue serves or prepares, each as code, name, epic and, when useful, the first issue of that epic. "Quality rules this issue follows (docs/project/requirements.md)": the NFRs, each as code, name, epic and, when there is one, the issue that holds the rule. The issues this one waits for and the issues that wait for it are never written in the text: they are the linked items "is blocked by" and "blocks" in GitLab, set both ways (Wesley, 28 September 2026).
+Acceptance criteria: two parts, Functional and Non functional. Every criterion is "[ ] As a &lt;role>, I ..." with the role of the story, or a second real role when the issue touches two. It says what that person notices, in plain words, so a teammate without technical knowledge can tick it on the test site. Never a file, a server address, a table, a status code, a command or an issue number. No separate How to check: a good criterion can be checked as it is written. A rule that holds for every slice is not repeated here, it is in the Definition of done. No criterion needs a developer to change the database by hand.
 
 ### C6
 
-HOW IT WORKS (for developers): first "Words on this card", a list that explains every technical word the card uses in one plain sentence, for a team that is new to React and .NET. Then "The road the data travels": the screen, the server with its four layers, and the database, in the order the data travels, with what happens in each for this issue. The four layers are always explained with the same picture: Presentation is the waiter, Application is the chef, Domain is the menu, Infrastructure is the storeroom. End with where to read more: docs/team/onboarding.md for words and setup, docs/team/codeConventions.md for names and layout.
+Out of scope: one short list of what a reader might expect here, each with the GitLab number of the issue where it is done.
 
 ### C7
 
-TASKS, ONE LAYER EACH: one line per task with its number, its layer in capitals (BACKEND, DATABASE, FRONTEND, TEST, DEPLOY, DOCS) and a short name. Tasks are numbered &lt;issue number>.&lt;n> in build order.
+Definition of done: the line "Details per line: docs/team/definitionOfDone.md", then the list for the type of the issue. For a slice: one checkbox per category (Code, Tests, Peer test, Security, Screen, Review, Deploy, Docs) with the lines of that category in short. For setup, research, decision and client: the short list of that type in full. Never on a task.
 
 ### C8
 
-TESTING, WHAT PROVES THIS ISSUE: a checklist with one line per test: what it proves in plain words, the kind of test, and the task that writes it.
-
-### C9
-
-ACCEPTANCE CRITERIA: first the line "Checked on the test site by a team member who did not build this issue." Then two parts, each with its own heading: Functional and Non functional. Every criterion starts with "[ ] AC&lt;n> As a &lt;role>, I ..." with the role of the story, or a second real role when the issue touches two. It describes what that person sees or can do on the screen, in plain words, never a status code, a table, a name from the code or an NFR code. When a text appears, it says where: on the page in place of what, next to which field, as a popup or not. It is followed by "How to check:" with the page, the button, what to type and what you see, so a person without technical knowledge can do it on the test site. The tester has no technical knowledge, so neither the criterion nor How to check names files, server addresses, the database, commands, branches, merge requests or issue numbers. There is no role "data protection contact": use the client at the foundation. Together the criteria cover the normal path, every error the person can meet (wrong input, a value that is taken, the server not reachable) and every privacy or security rule that is special to this issue. There are as many as the issue needs. A rule that holds for every slice is not repeated here, it is in the Definition of Done. No criterion needs a developer to change the database by hand: when a check needs known data, the pipeline puts it there (seed data) and docs/testing/testData.md lists it.
-
-### C10
-
-DEFINITION OF DONE: the list for the type of the issue, copied in full from section 3, with a checkbox on every line, the category names between two asterisks. Never on a task.
-
-### C11
-
-LABELS: type, epic, priority, sprint, and blocked with its reason when it applies. The portfolio labels (outcome, level, direction) are never on the issue. An issue that exists because of a school workshop also gets school::required.
+Not in the text, because GitLab already holds it: the tasks (child items), is blocked by and blocks (linked items, set both ways), and the labels. Labels on an issue: type, epic, priority, sprint, and blocked with its reason when it applies. The portfolio labels (outcome, level, direction) are never on the issue. An issue that exists because of a school workshop also gets school::required.
 
 ## The parts of a task, in this order
 
@@ -124,79 +105,47 @@ The unit tests and integration tests belong to the task that writes the code the
 
 ### D3
 
-A task has exactly these parts, in this order, each with its heading and a blank line between parts: the TASK line, STORY, LABELS, DESCRIPTION, BEFORE YOU START, a context block when the task works inside a structure (for a backend task: THE FOUR FOLDERS YOU WORK IN), FILES, BUILD THEM IN THIS ORDER, WATCH OUT, CHECK IT ON YOUR OWN MACHINE, DONE MEANS, ACCEPTANCE CRITERIA, REVIEWER CHECKS, and PROOF FOR THE PORTFOLIO (BoKSA).
+A task has exactly these parts, in this order, each with its heading: What, Checklist, BoKSA proof. The title is the story (rule B3). The template is .gitlab/issue_templates/task.md.
 
 ### D4
 
-The TASK line: "TASK &lt;n.m> · &lt;LAYER> · own assignee, own status".
+What: 1 or 2 sentences on what has to exist when the task is done, not how to build it.
 
 ### D5
 
-LABELS: one outcome label for every learning outcome the proof block covers (outcome::analysing-and-advising, outcome::designing-and-realising, outcome::managing-and-collaborating), one level label for every level that can do the task (level::2, level::3), and one direction (direction::full-stack, or direction::security-specialist for a task of the security specialist).
+Checklist: one checkbox per thing that must be in the result: the parts, the rules it must keep, the place in the code, the test that proves it, and the docs it updates. This is also what the reviewer checks. Technical words are allowed.
 
 ### D6
 
-DESCRIPTION has two parts. "In short": one complete paragraph that says what you build, why, where it sits on the road of the data, what the result is when it works and when it fails, which tests and docs you write, and which task can start after it. Someone who reads only this paragraph knows the task without reading the issue. "In detail": a list with the exact behaviour: the address and method, what comes in, every answer with its code and an example, the rules, and who may use it. Every code gets its meaning in words, for example 409 ("conflict").
+A task has no acceptance criteria and no Definition of done. Those belong to the issue.
 
 ### D7
 
-BEFORE YOU START has three headings of its own. "Needs first": the task or issue that must be done, with what it made. "Issue": number, title, epic and page. "New to .NET, React, the four layers or the tests?": read docs/team/onboarding.md first, which explains every word and how to get the code, make the branch &lt;type>/&lt;issue number>-&lt;short name> and start the database.
-
-### D8
-
-The context block explains the structure the task works in, for a beginner: what each folder is for, that the names are standard names and where the team chose them, with the same picture of the waiter, the chef, the menu and the storeroom.
-
-### D9
-
-FILES, BUILD THEM IN THIS ORDER: a numbered list of every file with its full path from the root of the repository, in the order to build them. Under each file, bullets in plain words: what it is, what it does, and for a test file every case it proves.
-
-### D10
-
-WATCH OUT: every rule that is easy to break, each followed by a line "Why:" with the reason in plain words, so a beginner understands the rule instead of only obeying it.
-
-### D11
-
-CHECK IT ON YOUR OWN MACHINE: numbered steps. Each step says what to do, the exact command on its own line, and "You see:" with what appears when it works. The steps start what is needed, run the tests, walk the normal path and every error path, check that nothing secret is stored or shown, and end by putting the machine back in its normal state.
-
-### D12
-
-DONE MEANS: a short list: the merge request is open, the pipeline is green, what the reviewer ran and saw, which docs are updated, and that the proof is in the merge request.
-
-### D13
-
-ACCEPTANCE CRITERIA: 1 to 3 criteria "[ ] As a <role of the issue>, I ..." with "How to check:", in the same plain words as the criteria of the issue: what that role notices once this task is done, checked on the test site by a person without technical knowledge. REVIEWER CHECKS: a checklist of what the reviewer checks for this task. Technical words are allowed there, because the reader is a developer.
-
-### D14
-
-A task never carries the Definition of Done. That belongs to the issue.
+LABELS: one outcome label for every learning outcome the proof block covers (outcome::analysing-and-advising, outcome::designing-and-realising, outcome::managing-and-collaborating), one level label for every level that can do the task (level::2, level::3), and one direction (direction::full-stack, or direction::security-specialist for a task of the security specialist).
 
 ## The proof block of a task (boksa)
 
 ### E1
 
-For the grade the proof block counts more than the code. Never shorten it. It is complete enough that a student knows exactly what to make, how and why, without opening another document.
+The proof block is short and clear. It opens with: "This task can count as proof for the codes below. Write the proof in your merge request description and link that MR in Portflow under the code."
 
 ### E2
 
-It starts with three lines. "Why this matters": the block counts more than the code, and a high score comes from showing your thinking, not from showing that it works. "Where it goes": everything goes in the description of the merge request, which is linked in Portflow under the code named. "What makes it level 3": at level 2 you show your plan and that it works, at level 3 you also name the alternative you rejected and why, name the standard you followed, and say what you changed after testing.
+Then one block per code and level: a bold heading "&lt;code> &lt;name>" with the level and direction in brackets, for example "(Level 3, full-stack)", and three lines. "School wants to see:" the success criterion of that level in one plain sentence. "Show from this task:" the artefact and what it shows. "For level 3 also:" the alternative you did not choose, the standard you followed or what you changed after testing. A level 2 block has no "For level 3 also".
 
 ### E3
 
-Then one heading per level: "LEVEL 3, FULL-STACK DEVELOPER" always, and "LEVEL 2, FULL-STACK DEVELOPER" when a level 2 student can do the task. Level 2 is left out when the core of the task is choosing and justifying (decide, choose, compare, weigh). A task of the security specialist uses the heading "SECURITY SPECIALIST" and the wording of that profile.
+Level 3 is always there. Level 2 only when a level 2 student can do the task, and never when the core of the task is choosing and justifying (decide, choose, compare, weigh). A task of the security specialist uses that profile and its wording.
 
 ### E4
 
-Under each level, per BoKSA code, a heading "&lt;code> &lt;what it means in plain words>" and these lines. "What school asks:" the success criterion of that level, quoted word for word from the BoKSA site. "Why this task proves it:" one or two sentences. "What you make:" a numbered list of the concrete things to write or paste. At level 3 with OR1 also "After testing, add:" what to add after the tests. "Hand in:" merge request description, Portflow under &lt;outcome> &lt;code>.
+Which codes fit which task: a table or seed data OR1 and OR4. An endpoint OR1, OR2, OR4 and OR5. A screen OR1, OR3, OR4 and OR5. A test task OR4. Research AA1, AA2 and AA4. A decision AA4 and AA5. Process and pipeline work MS1 and MS4. PL never comes from a task, it comes from reflection at the sprint review.
 
 ### E5
 
-Which codes fit which task: a table or seed data OR1 and OR4. An endpoint OR1, OR2, OR4 and OR5. A screen OR1, OR3, OR4 and OR5. A test task OR4. Research AA1, AA2 and AA4. A decision AA4 and AA5. Process and pipeline work MS1 and MS4. PL never comes from a task, it comes from reflection at the sprint review.
-
-### E6
-
 The standards named under OR2 are real and specific, for example RFC 9110 for status codes, RFC 9457 for ProblemDetails, the OWASP Password Storage Cheat Sheet, WCAG 2.2 for accessibility, and the BoKSA article that fits.
 
-### E7
+### E6
 
 OR5 at level 3 always asks for the student’s own judgment on a real trade-off in this task, named concretely.
 
@@ -212,7 +161,7 @@ No em dashes and no semicolons in written text.
 
 ### F3
 
-Plain words first. A technical word is explained where the reader meets it: in "Words on this card" on the issue, in the context block of a task, or in brackets.
+Plain words first. Technical words only in Paths (for developers) and in the checklist of a task.
 
 ### F4
 
@@ -220,7 +169,7 @@ Every part has a heading, and a blank line separates parts and paragraphs, so a 
 
 ### F5
 
-A reference to another card always names its number, its title and its epic, and where needed its page on this board.
+A reference to another card uses its GitLab number, for example #24. GitLab shows the title when you hover over it.
 
 ### F6
 
@@ -228,7 +177,7 @@ One set of names for the whole project, the same on every card: the folders fron
 
 ### F7
 
-Everything a reader needs is in the issue and the task themselves. Documents in docs may explain more, but never replace what the card must say.
+A card holds what is special to this piece of work. What is the same for every card (the full Definition of done, the BoKSA school text, explanations of words and setup) lives once in docs and is not copied onto the card.
 
 ## How the issues stand on a feature page (the pyramid)
 
@@ -284,15 +233,14 @@ The rank number is the build order over the whole board and follows the layers: 
 - [ ] The issue is one path, and a person using Connect notices it.
 - [ ] It exists because of a requirement, or because a required slice needs it first.
 - [ ] Every part is there, in the order of C1 for an issue and D3 for a task, with its heading.
-- [ ] The description has no technical word.
-- [ ] Out of scope names the issues where the rest is done.
+- [ ] The description is 2 to 4 sentences without technical words.
+- [ ] A slice has Paths, and every unhappy path carries the number of its happy path step.
+- [ ] Every acceptance criterion starts with "As a &lt;role>" and can be checked without technical knowledge.
+- [ ] Out of scope uses GitLab numbers.
 - [ ] Every link under Linked items is also set on the other issue.
-- [ ] Every acceptance criterion starts with "As a &lt;role>", says where things appear on the screen, and has How to check.
-- [ ] No acceptance criterion needs hand work in the database.
 - [ ] Every slice has a database, a backend and a frontend task, and the unit and integration tests are inside the task that writes the code.
-- [ ] Every task description has In short and In detail, every file has its bullets, every Watch out has its Why, every check step has You see.
-- [ ] The proof block has Level 3, Level 2 when a level 2 student can do it, and every code has What school asks, Why this task proves it, What you make and Hand in.
-- [ ] The Definition of Done of the right type is on the issue, and on no task.
+- [ ] Every task has What, Checklist and a BoKSA proof block, and no acceptance criteria or Definition of done.
+- [ ] The Definition of done of the right type is on the issue, and on no task.
 - [ ] The issue stands in the right layer of its feature page, and its box in the pyramid map, its Linked items and GitLab say the same.
 - [ ] No em dashes and no semicolons.
 

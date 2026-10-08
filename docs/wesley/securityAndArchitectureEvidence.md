@@ -18,9 +18,7 @@
 
 ## 1. Introduction
 
-I am Wesley Oerlemans, student number 500926596, Full Stack Software Developer at level 3 in the Social Impact Apps studio of the HvA. This is my evidence for datapoint 4 of sprint 1, Security & Architecture, under the learning outcome Designing & Realising. The course's level 3 datapoint sheet sets this criterion:
-
-> With reference to the description above, you provide convincing evidence that you have demonstrated or will demonstrate your competency and knowledge.
+I am Wesley Oerlemans, student number 500926596, Full Stack Software Developer at level 3 in the Social Impact Apps studio of the HvA. This is my evidence for datapoint 4 of sprint 1, Security & Architecture, under the learning outcome Designing & Realising.
 
 The evidence sits in two documents, which this one connects:
 
@@ -41,11 +39,11 @@ The datapoint description names five kinds of evidence, taken one by one below.
 
 | What the datapoint names | What I have done | What I propose to do next | Where in the full documents |
 | --- | --- | --- | --- |
-| "you have developed and/or begun to implement an architecture for the project you will be working on" | A monolith in layers with CQRS (command query responsibility segregation) by feature, drawn in the C4 model | Build the first slice in sprint 2 and check the diagrams against the code | Architecture document, sections 5, 6 and 9 |
-| "you have evidence of research about possible architectures" | A sourced comparison of a monolith in layers, a modular monolith and microservices | Measure the profile endpoints per my research plan (Oerlemans, 2026), for NFR4 (responsiveness)'s number | Architecture document, sections 4 and 5 |
-| "you have thoughts about the security requirements for your project" | The seven BoKSA Security & Access Fundamentals key points applied to Connect, a mini threat model and the OWASP Top 10 | Prove the rule for minors with a test, in my demo project and the sprint 2 slice | Security document, sections 3, 4 and 6 |
-| "you have done some design pattern exercises" | No separate exercises. Three patterns designed for Connect, and one that lost | Code the patterns in sprint 2. Strategy waits until the team plans matching | Architecture document, section 7 |
-| "any other reasonable evidence of your progress in these topics" | Eleven architecture decision records, and acceptance criteria for both documents | Update the records with the team's decisions, and record the learning group teacher's feedback | Architecture document, sections 8, 10 and 12. Security document, section 5 |
+| An architecture developed or begun for the project | A monolith in layers with CQRS (command query responsibility segregation) by feature, drawn in the C4 model | Build the first slice in sprint 2 and check the diagrams against the code | Architecture document, sections 5, 6 and 9 |
+| Research into possible architectures | A sourced comparison of a monolith in layers, a modular monolith and microservices | Measure the profile endpoints per my research plan (Oerlemans, 2026), for NFR4 (responsiveness)'s number | Architecture document, sections 4 and 5 |
+| Thoughts on the security requirements of the project | The seven BoKSA Security & Access Fundamentals key points applied to Connect, a mini threat model and the OWASP Top 10 | Prove the rule for minors with a test, in my demo project and the sprint 2 slice | Security document, sections 3, 4 and 6 |
+| Design pattern exercises | No separate exercises. Three patterns designed for Connect, and one that lost | Code the patterns in sprint 2. Strategy waits until the team plans matching | Architecture document, section 7 |
+| Other reasonable evidence of progress in these topics | Eleven architecture decision records, and acceptance criteria for both documents | Update the records with the team's decisions, and record the learning group teacher's feedback | Architecture document, sections 8, 10 and 12. Security document, section 5 |
 
 ## 4. Architecture
 

@@ -28,7 +28,7 @@ flowchart LR
 - Settings, Merge requests: All threads must be resolved on, and Delete source branch on by default.
 - Settings, Merge requests, Merge request approvals: one approval required from any member, the author may not approve their own merge request, and people who added commits may not approve it either. Approvals are removed when new commits are pushed.
 - The team rule holds on top of the setting: nobody merges without an approval of someone else, and the reviewer of the Definition of Done checks it on every issue.
-- The template .gitlab/merge_request_templates/Default.md fills the description of every new merge request.
+- The template .gitlab/merge_request_templates/Default.md fills the description of every new merge request. Its parts: Relates to, What changed, How to check it, The test that fails when its rule is removed, Proof for the portfolio, The version to go back to, TODO (rule 10 of the code conventions) and AI use (section 9.1 of the collaboration agreement).
 
 ## Labels
 

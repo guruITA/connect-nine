@@ -66,16 +66,16 @@ own and not only next to its full definition.
 | H1 | Hypothesis for sub-question 1: the N+1 pattern in the baseline | this document |
 | H2 | Hypothesis for sub-question 2: a constant query count | this document |
 | H3 | Hypothesis for sub-question 3: the time budget | this document |
-| AA1 | Analysing & Advising, level 3: independently determine a research approach that suits the issue and adapt it based on what you encounter | BoKSA |
-| AA2 | Analysing & Advising, level 3: a critical attitude that questions sources, AI results, the problem statement and your own assumptions | BoKSA |
+| AA1 | Analysing & Advising, level 3: independently determine a research approach that suits the issue and adapt it based on what comes up | BoKSA |
+| AA2 | Analysing & Advising, level 3: a critical attitude that questions sources, AI results, the problem statement and one's own assumptions | BoKSA |
 | AA3 | Analysing & Advising, level 3: analyse issues from multiple perspectives and weigh the societal and ethical consequences | BoKSA |
 | AA4 | Analysing & Advising, level 3: well-founded advice that weighs alternatives, identifies risks and makes a substantiated recommendation | BoKSA |
-| AA5 | Analysing & Advising, level 3: adapt your communication to different target groups in form and language | BoKSA |
+| AA5 | Analysing & Advising, level 3: adapt communication to different target groups in form and language | BoKSA |
 | OR1 | Designing & Realising, level 3: design and implement systematically, justify choices against alternatives and adapt on new insights | BoKSA |
 | OR2 | Designing & Realising, level 3: select relevant standards and methods and substantiate why they fit the context | BoKSA |
-| OR3 | Designing & Realising, level 3: involve multiple stakeholders and weigh their feedback in your choices | BoKSA |
+| OR3 | Designing & Realising, level 3: involve multiple stakeholders and weigh their feedback in the choices | BoKSA |
 | OR4 | Designing & Realising, level 3: systematically validate the solution, evaluate its quality and draw conclusions for improvement | BoKSA |
-| OR5 | Designing & Realising, level 3: take the broader impact on end users and society into account and form your own ethical judgement | BoKSA |
+| OR5 | Designing & Realising, level 3: take the broader impact on end users and society into account and form a personal ethical judgement | BoKSA |
 | BoKSA | Body of Knowledge, Skills & Attitude: the shared knowledge base of the studio profiles, which gives the learning outcomes per level | BoKSA |
 | N+1 | The query pattern where one query loads a record and a separate query runs for each related record | this document |
 | ORM | Object-relational mapping: a library that maps program objects to database tables, Entity Framework Core here | this document |
@@ -452,7 +452,7 @@ done.
 | AC8 | **Validity controls applied and logged.** Every control in section 7 is applied in every measured cell and noted in its run record. | I check each cell's run record for the warm-up, the versions, the CPU and memory readings and the three runs. A cell that misses one is rerun or marked. | OR4, systematic validation | Scalability & performance advisory (Hogeschool van Amsterdam, n.d.-g): diagnose which layer (app, database, network) is the likely bottleneck for a given performance problem |
 | AC9 | **Synthetic data only.** The seed holds only generated values and no personal data of real users. | I read the seed script before the first run and check a sample of seeded rows against it. | OR5, impact on end users and society, and AA3, societal and ethical consequences | Secure coding practices (Hogeschool van Amsterdam, n.d.-h): apply Privacy by Design, minimising data collection |
 | AC10 | **Advice in two forms.** The advice exists as a technical version for the team and a plain version for the WailSalutem Foundation. | The team version holds the numbers and the code pattern. The plain version has no Entity Framework Core terms, and I ask a reader outside the team to tell me what it means for users. | AA5, communication adapted to target groups | Stakeholder engagement & presentation (Hogeschool van Amsterdam, n.d.-i): adjust the level of detail to the audience, technical or non-technical |
-| AC11 | **Stakeholder feedback recorded.** Each feedback step in section 12 happened, and its feedback is recorded with what I changed because of it. | The feedback log in the report names who, when, what they said, and what I changed or why I did not. | OR3, stakeholders involved and feedback weighed | R&D: Technology exploration & validation (Hogeschool van Amsterdam, n.d.-f): your research topic is reviewed by a teacher, who advises you on whether it's suitable |
+| AC11 | **Stakeholder feedback recorded.** Each feedback step in section 12 happened, and its feedback is recorded with what I changed because of it. | The feedback log in the report names who, when, what they said, and what I changed or why I did not. | OR3, stakeholders involved and feedback weighed | R&D: Technology exploration & validation (Hogeschool van Amsterdam, n.d.-f): the research topic is reviewed by a teacher, who advises on whether it is suitable |
 | AC12 | **Changes of approach recorded.** Every change of approach during the research is recorded with its date and its reason. | I check the change log in the report against the decision points in section 6 and against this plan. | AA1, research approach determined and adapted | Technical architecture decision making (Hogeschool van Amsterdam, n.d.-j): write a decision record with a clear context, decision and consequences section |
 
 ### How this plan covers the level 3 outcomes

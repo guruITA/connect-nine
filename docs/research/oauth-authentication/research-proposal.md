@@ -90,10 +90,16 @@ The research should produce:
 
 ### Sub-questions
 
-1. How do Google OAuth and email-password registration differ in completion time,
-   required input and registration completion rate?
-2. Which registration method do adult test participants prefer after trying both
-   variants, and why?
+1. What does existing literature and official OAuth/OIDC guidance say about
+   authentication usability, registration friction and the security
+   characteristics of social login?
+2. What personal data, permissions and security risks are involved when Connect
+   uses Google OAuth, and which data should Connect request and retain?
+3. How do Google OAuth registration and email-password registration differ in
+   completion rate, completion time and required manual input in a Connect
+   prototype?
+4. How do participants experience and assess both registration methods,
+   including trust, privacy concerns and preference?
 
 ## 5. Scope
 
@@ -166,8 +172,34 @@ prototype is an experiment and not a production security review.
 
 ## 8. Research method
 
-The research uses a controlled prototype experiment. Each participant performs
-the same registration task with both variants:
+The research combines desk research with a controlled prototype experiment.
+Desk research answers what is already known about usability, registration
+friction, OAuth/OIDC security and the data exchanged with an identity provider.
+The experiment then measures how the two registration variants behave in the
+Connect context.
+
+### Desk research
+
+The desk research consists of:
+
+- reviewing peer-reviewed literature about authentication usability,
+  registration friction and social login;
+- reviewing OAuth/OIDC standards and official Google documentation;
+- mapping the data flow between the participant, Google, the React frontend,
+  the .NET backend and the Connect database;
+- recording the data Google may receive, the claims Connect may receive and the
+  data Connect needs to retain;
+- identifying security controls and privacy risks relevant to the prototype.
+
+Facts about protocols and provider behaviour are taken from standards and
+official provider documentation. Claims about usability or business effects
+are taken from peer-reviewed literature where possible. The research keeps
+technical facts, participant observations and the team's interpretation
+separate.
+
+### Prototype experiment
+
+Each participant performs the same registration task with both variants:
 
 1. email-password registration;
 2. Google social login registration.
@@ -236,6 +268,16 @@ The results should not be presented as statistically representative of all
 report should distinguish measured results, participant opinions and business
 interpretation.
 
+The conclusion combines the four sub-questions. The preference result is
+therefore evidence from sub-question 4, not a replacement for the conclusion:
+
+| Sub-question | Evidence |
+|---|---|
+| 1. Literature and guidance | Source analysis of usability, registration friction and OAuth/OIDC security |
+| 2. Privacy and security | Data-flow map, data-minimisation analysis and security-control analysis |
+| 3. Prototype comparison | Completion rate, completion time and required manual input |
+| 4. Participant assessment | Trust, privacy concerns, preference and reasons after both tasks |
+
 ## 9. Provider context
 
 The broader research may compare Google, Microsoft, Facebook, Instagram,
@@ -256,10 +298,61 @@ availability and technical suitability.
 
 ## 10. Privacy, security and ethics
 
-OAuth authentication does not remove the need to make independent privacy
-decisions. Connect should request only the identity data needed to create an
-account: provider ID, name and email, subject to validation of the final
-requirements.
+OAuth authentication does not remove the need to make independent privacy and
+security decisions. The research must investigate the data flow behind the
+login button, including what Google receives, what Google sends to Connect and
+what Connect stores afterwards.
+
+Depending on the requested scopes and the provider response, Connect may
+receive:
+
+- a stable provider identifier for the Google account;
+- the user's name;
+- the user's email address;
+- whether the email address is verified;
+- a profile picture or other profile claims, if requested;
+- an authorization code and tokens during the authentication process.
+
+Connect should request only the identity data needed to create an account:
+provider ID, name and email, subject to validation of the final requirements.
+It should not request profile pictures, birthdays, contacts, calendars or other
+Google data merely because those data are available.
+
+Google may process the fact that the user authenticated with Connect, the
+technical details of the login request, the requested permissions and security
+information according to its policies. Connect may store the provider ID,
+local Connect user ID, name, email, account timestamps, session information
+and application-specific profile data. The research must distinguish data
+needed for authentication from data that belongs in the Connect profile.
+
+The privacy analysis must consider:
+
+- overcollection of identity data or permissions;
+- whether users understand what Google shares with Connect;
+- linking a Google identity to activity on Connect;
+- using an email address incorrectly as the only account identifier;
+- the fact that Google login does not prove age or parental consent;
+- deletion of Connect data without assuming that the Google account is deleted;
+- loss of Connect access if the user loses access to Google;
+- dependency on Google's availability and policies.
+
+OAuth can improve security because Connect does not need to collect or store a
+Google password. Google can handle authentication, password recovery and
+additional account-security controls. OAuth does not remove security work,
+however. The implementation must still consider:
+
+- state and nonce validation to prevent forged or replayed login responses;
+- strict redirect URI validation;
+- protection of authorization codes, tokens and application sessions;
+- validation of the issuer, audience, signature and subject of identity claims;
+- avoiding an untrusted email claim as the sole account identity;
+- session theft, logout and session invalidation;
+- account-creation errors and provider outages.
+
+The research therefore treats OAuth as a different security model, not as
+automatically secure. The conclusion must weigh the benefit of not storing
+Google passwords against data-sharing, provider-dependency and implementation
+risks.
 
 The experiment:
 
@@ -316,7 +409,7 @@ The proposal contains the five required elements:
 
 1. title;
 2. problem statement;
-3. main question and two sub-questions;
+3. main question and four sub-questions;
 4. planned method;
 5. initial sources.
 
@@ -338,11 +431,14 @@ academic quality and current versions before the proposal is submitted.
 3. Google. (n.d.). *OpenID Connect*. Google Identity.
    https://developers.google.com/identity/openid-connect/openid-connect
 
-The final version should add or substitute a peer-reviewed source about
-authentication usability, registration friction or user behaviour if the HvA
-topic rubric requires an academic source. Official technical documentation is
-used for implementation facts; it is not treated as evidence that OAuth will
-improve business outcomes.
+4. A peer-reviewed source about authentication usability, registration friction
+   or social login will be selected through the HvA library or Google Scholar
+   and verified before the final proposal is submitted.
+
+The final reference list should contain the selected academic source and any
+additional official privacy or security sources needed for the data-flow
+analysis. Official technical documentation is used for implementation facts;
+it is not treated as evidence that OAuth will improve business outcomes.
 
 ## 15. AI use declaration
 
@@ -351,4 +447,3 @@ research question, experimental decisions, participant safeguards, analysis,
 source assessment and conclusions remain the responsibility of the student.
 AI output is not treated as a scientific, legal or technical source without
 verification against the original source.
-
