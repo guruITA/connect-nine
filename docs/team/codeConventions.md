@@ -166,7 +166,7 @@ These rules join the parts above. When an older text disagrees, these win.
 ### Commands
 
 13. The solution is made with `dotnet new sln --format sln`, so every command can use api/Connect.sln.
-14. docker-compose.yml gives the database service `container_name: database`, so Compose prints "Container database Started". psql is always `psql -U connect -d connect`.
+14. docker-compose.yml names the database service `database` and gives it no fixed `container_name`, so two checkouts never clash on the container name. Commands reach it by the service name: `docker compose exec database psql -U connect -d connect`.
 15. A migration is always added with `dotnet ef migrations add <Name> --project api/Infrastructure --startup-project api/Presentation`.
 16. Going back one migration: `dotnet ef migrations list`, then `dotnet ef database update <the migration just before yours>` with the same --project and --startup-project. Never a fixed old migration name.
 17. The database port is published only on 127.0.0.1: `"127.0.0.1:5432:5432"`.
