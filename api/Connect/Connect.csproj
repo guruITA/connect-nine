@@ -14,7 +14,6 @@
   <ItemGroup>
     <ProjectReference Include="..\Connect.Presentation\Connect.Presentation.csproj" />
     <ProjectReference Include="..\Connect.Infrastructure\Connect.Infrastructure.csproj" />
-    <ProjectReference Include="..\Connect.Domain\Connect.Domain.csproj" />
   </ItemGroup>
 
 </Project>
