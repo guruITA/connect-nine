@@ -19,6 +19,7 @@ This page is the way in. Start with the part that fits your question.
 | [client](client/) | The client, his brief and every open question for him | [clientBrief.md](client/clientBrief.md), [clientBriefConcept.jpeg](client/clientBriefConcept.jpeg), [clientQuestions.md](client/clientQuestions.md) |
 | [architecture](architecture/) | How Connect is built and where it runs | [architecture.md](architecture/architecture.md), [techStack.md](architecture/techStack.md), [stackResearch.md](architecture/stackResearch.md), [infrastructure.md](architecture/infrastructure.md), [configuration.md](architecture/configuration.md) |
 | [team](team/) | How the team works and the rules for every change | [collaborationAgreement.md](team/collaborationAgreement.md), [codeConventions.md](team/codeConventions.md), [definitionOfDone.md](team/definitionOfDone.md), [gitlabSetup.md](team/gitlabSetup.md), [issueRules.md](team/issueRules.md), [boardNumbers.md](team/boardNumbers.md), [openItems.md](team/openItems.md), [actionOverview.md](team/actionOverview.md), [onboarding.md](team/onboarding.md) |
+| [decisions](decisions/) | One file per choice, `<number>-<shortName>.md`, with the date, who decided, the options and why | [001-codeConventions.md](decisions/001-codeConventions.md) |
 | [testing](testing/) | How Connect is tested | [testingStrategy.md](testing/testingStrategy.md) |
 | [pages](pages/) | Every page of the website, one document per page with every element | [pages/README.md](pages/README.md), the overview with a link to each of the 66 page documents |
 | [school](school/) | What the HvA asks and how the issues prove it | [workshopCoverage.md](school/workshopCoverage.md), [issueMapping.md](school/issueMapping.md), [documentGuide.md](school/documentGuide.md), [datapointPlan.md](school/datapointPlan.md) |
@@ -31,7 +32,6 @@ These folders and files do not exist yet. The issue that makes them says so on i
 
 | Place | What |
 |---|---|
-| docs/decisions | One file per choice, `<number>-<shortName>.md`, with the date, who decided, the options and why |
 | docs/security | The security analysis of Kelvin: threat models, the role table, GDPR notes, the privacy statement |
 | docs/research | The research reports of the experiments (issues 106 to 112) |
 | docs/school | Also the school evidence the workshop issues ask for |
