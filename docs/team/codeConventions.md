@@ -83,7 +83,7 @@ C# is the language. .NET is the platform it runs on. ASP.NET Core is the part of
 
 ### Version and tools
 
-1. .NET 10, the long term support version, supported until 14 November 2028. .NET 8 and .NET 9 stop getting security fixes on 10 November 2026, in the middle of this project. Why, with the source: docs/decisions/003-dotnet10.md.
+1. .NET 10, the long term support version, supported until 14 November 2028. .NET 8 and .NET 9 stop getting security fixes on 10 November 2026, in the middle of this project. Why, with the source: docs/decisions/003-dotnet10.md. (tool: net10.0 in every project file, dotnet build of #259)
 2. In every project file: `<Nullable>enable</Nullable>` (the compiler warns when a value can be empty) and `<TreatWarningsAsErrors>true</TreatWarningsAsErrors>` (a warning stops the build, so "zero warnings" checks itself).
 3. The built in .NET analyzers and dotnet format, with the rules in .editorconfig. `dotnet build` and `dotnet format --verify-no-changes` must report nothing. Nothing extra to install.
 
@@ -96,7 +96,7 @@ C# is the language. .NET is the platform it runs on. ASP.NET Core is the part of
 ### Structure
 
 7. Four projects in backend: Presentation, Application, Domain and Infrastructure, plus the test project Connect.Tests. Application holds one folder per feature in Features, one feature per epic, and inside it one folder per use case with its command or query and its handler: Features/Account/CreateAccount/CreateAccountCommand.cs with CreateAccountHandler.cs. A write is a command, a read is a query, never both in one handler. There are no repository classes, no IXRepository interfaces and no Repositories folder.
-8. Presentation uses Application and Infrastructure. Application and Infrastructure use Domain. Domain uses nothing. Because they are separate projects, the compiler refuses code that breaks this, so a beginner cannot break the layers by accident. The decision, the options that lost and the compiler proof: docs/decisions/002-layeredArchitecture.md.
+8. Presentation uses Application and Infrastructure. Application and Infrastructure use Domain. Domain uses nothing. Because they are separate projects, the compiler refuses code that breaks this, so a beginner cannot break the layers by accident. The decision, the options that lost and the compiler proof: docs/decisions/002-layeredArchitecture.md. (tool: the compiler, through the project references)
 
 ### Web addresses (endpoints)
 
