@@ -173,28 +173,46 @@ The ignore rules cover the variants, so `.env.local` and `.env.production` canno
 
 ## 5. Run Connect
 
+The backend has four layers: Presentation handles HTTP, Application holds use
+cases and business rules, Domain holds core contracts and entities, and
+Infrastructure handles external systems such as the database. The start project
+`api/Connect` connects them, see `docs/decisions/002-layeredArchitecture.md`.
+
 ```
 dotnet run --project api/Connect/Connect.csproj
+```
+
+You should see `Now listening on: http://localhost:5000`. Open http://localhost:5000/api/health in a browser: you should see `{"status":"healthy"}`. Stop the server with Ctrl+C.
+
+The screen in `web` comes with task 3.5 (#263). From then on, in a second terminal:
+
+```
+cd web
 npm install
 npm run dev
 ```
 
-The backend has four layers: Presentation handles HTTP, Application holds use
-cases and business rules, Domain holds core contracts and entities, and
-Infrastructure handles external systems such as the database. Start the server
-with `dotnet run --project api/Connect/Connect.csproj`; it listens on
-`http://localhost:5000`.
+You should see a line with `Local:` and an address such as http://localhost:5173.
 
 ## 6. Run the checks before you push
 
 ```
-dotnet build
-dotnet format --verify-no-changes
-dotnet test
+dotnet build api/Connect.slnx
+dotnet format api/Connect.slnx --verify-no-changes
+dotnet test api/Connect.slnx
+```
+
+You should see `Build succeeded` with `0 Warning(s)` and `0 Error(s)`, no output from the format check, and `Passed!` with `Failed: 0` for the tests.
+
+Once `web` holds the screen (#263), also run these in `web`:
+
+```
 npm run lint
 npx prettier --check .
 npm test
 ```
+
+You should see no lint errors, `All matched files use Prettier code style!` and every test passed.
 
 The pipeline runs the same checks. A merge request cannot be accepted while any of them is red.
 

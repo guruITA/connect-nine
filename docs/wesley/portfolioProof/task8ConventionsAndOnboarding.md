@@ -21,7 +21,7 @@ School asks: "You anticipate risks and bottlenecks in the process before they be
 School asks: "You ensure that your work aligns with that of others and contributes to the joint result."
 
 1. **Which tool enforces which rule.** TypeScript, ESLint and Prettier from #263, dotnet build and dotnet format from #259, the pipeline jobs of #266, env-file-check and branch-flow of #5. Until a tool exists, the reviewer checks the rule.
-2. **Left out on purpose, to avoid clashing with open merge requests.** Rule 2 of For all code got its mark in !23, backend rules 1 and 8 in !27. Audit rule 14 is changed by !21 of a teammate and gets its mark after that merge. Parts 3, 5 and 6 of the guide are left to the open merge requests !21 (the database) and !22 (the server).
+2. **Left out on purpose, to avoid clashing with open merge requests.** Rule 2 of For all code got its mark in !23, backend rules 1 and 8 in !27. Audit rule 14 got its mark after !21 of a teammate was merged on 9 October 2026. After !21 and !22 were merged, parts 5 and 6 got the commands that work today (`api/Connect.slnx`, the health address) and what you should see, and the npm steps say they start with #263.
 3. **The decision of #7.** The conventions say what `docs/decisions/001-codeConventions.md` proposes. Once the team agrees, any difference is changed here.
    - TODO teammate who did not write the guide: write in the review what you think of the examples.
 
@@ -29,7 +29,6 @@ School asks: "You ensure that your work aligns with that of others and contribut
 
 - [ ] Wesley: plan the walkthrough in #1.
 - [ ] Teammate: do the walkthrough and write the result in #1.
-- [ ] Wesley: add the mark to audit rule 14 after !21 is merged.
 
 ## AI use
 
