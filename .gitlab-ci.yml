@@ -11,10 +11,18 @@ workflow:
       when: never
     # After a merge, dev and main run once more on the merged result.
     - if: $CI_COMMIT_BRANCH == "dev" || $CI_COMMIT_BRANCH == "main"
+    # The weekly scan of dev (Build, Pipeline schedules). Only the two scan jobs run then.
+    - if: $CI_PIPELINE_SOURCE == "schedule"
 
+# Every job except the two scan jobs starts with the rule
+#   - if: $CI_PIPELINE_SOURCE == "schedule"
+#     when: never
+# so the weekly scheduled pipeline runs only the scan and never deploys. A job added later copies that rule.
 stages:
   - build
   - test
+  - scan
+  - deploy
 
 # Fails on any committed .env file and names it, so no password reaches Git (rule 3 of the code conventions).
 env-file-check:
@@ -22,6 +30,10 @@ env-file-check:
   image: alpine:3.20
   tags:
     - hva
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "schedule"
+      when: never
+    - when: on_success
   script:
     - |
       env_files="$(find . -type f \( -name '.env' -o -name '.env.*' \) ! -name '.env.example' -not -path './.git/*' -print)"
@@ -39,6 +51,8 @@ branch-flow:
   tags:
     - hva
   rules:
+    - if: $CI_PIPELINE_SOURCE == "schedule"
+      when: never
     - if: $CI_PIPELINE_SOURCE == "merge_request_event"
   script:
     - echo "Merge request from $CI_MERGE_REQUEST_SOURCE_BRANCH_NAME into $CI_MERGE_REQUEST_TARGET_BRANCH_NAME"
@@ -47,3 +61,54 @@ branch-flow:
         echo "main only takes merge requests from dev. Merge your branch into dev first."
         exit 1
       fi
+
+# Stops a package of the server with a known high or critical advisory (#22).
+# NuGet audit in api/Directory.Build.props turns such a package into error NU1903 or NU1904 during the restore,
+# and dotnet list package names every vulnerable package, also the ones that come in through another package.
+# The job decides from the text of both, not from an exit code.
+backend-scan:
+  stage: scan
+  image: mcr.microsoft.com/dotnet/sdk:10.0
+  tags:
+    - hva
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "schedule"
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+    - if: $CI_COMMIT_BRANCH == "dev" || $CI_COMMIT_BRANCH == "main"
+  script:
+    - cd api
+    - dotnet restore > restore.txt 2>&1 || restore_failed=1
+    - cat restore.txt
+    - dotnet list package --vulnerable --include-transitive > scan.txt 2>&1 || true
+    - cat scan.txt
+    - |
+      if grep -E -q "NU1903|NU1904" restore.txt || grep -E -q "\b(High|Critical)\b" scan.txt; then
+        echo "A package has a known high or critical advisory. Update it, or see docs/security/securityExceptions.md."
+        exit 1
+      fi
+      if [ -n "$restore_failed" ]; then
+        echo "dotnet restore failed for another reason, see the log above."
+        exit 1
+      fi
+      echo "No package with a known high or critical advisory."
+
+# The same for the packages of the screen. Runs once web/package.json exists (#263).
+frontend-scan:
+  stage: scan
+  image: node:22-alpine
+  tags:
+    - hva
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "schedule"
+      exists:
+        - web/package.json
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+      exists:
+        - web/package.json
+    - if: $CI_COMMIT_BRANCH == "dev" || $CI_COMMIT_BRANCH == "main"
+      exists:
+        - web/package.json
+  script:
+    - cd web
+    - npm ci
+    - npm audit --audit-level=high
