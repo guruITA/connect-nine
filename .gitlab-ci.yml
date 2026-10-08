@@ -1,35 +1,49 @@
-# Pipeline of Connect. Task 1.4 of issue 01 adds the stages build and test.
+# Pipeline of Connect (task 1.4 of issue 01).
+# build: compiles the server and the screen. Empty for now, task 3.8 (#266) adds backend-build and frontend-build.
+# test:  checks every change. env-file-check and branch-flow run here now, #266 adds the tests of the server and the screen.
+# A red job blocks the merge: a reviewer never approves a merge request with a red pipeline (docs/team/codeConventions.md).
 workflow:
   rules:
+    # Every merge request gets one pipeline.
     - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+    # A push to a branch with an open merge request already has the pipeline above, so no second one.
+    - if: $CI_COMMIT_BRANCH && $CI_OPEN_MERGE_REQUESTS
+      when: never
+    # After a merge, dev and main run once more on the merged result.
+    - if: $CI_COMMIT_BRANCH == "dev" || $CI_COMMIT_BRANCH == "main"
 
 stages:
-  - check
+  - build
+  - test
 
-# main only takes merge requests from dev (docs/team/codeConventions.md, Branches and merge requests).
-branch-flow:
-  stage: check
+# Fails on any committed .env file and names it, so no password reaches Git (rule 3 of the code conventions).
+env-file-check:
+  stage: test
   image: alpine:3.20
   tags:
     - hva
+  script:
+    - |
+      env_files="$(find . -type f \( -name '.env' -o -name '.env.*' \) ! -name '.env.example' -not -path './.git/*' -print)"
+      if [ -n "$env_files" ]; then
+        echo "Env files must not be committed:"
+        printf '%s\n' "$env_files"
+        exit 1
+      fi
+      echo "No env file committed."
+
+# main only takes merge requests from dev (docs/team/codeConventions.md, Branches and merge requests).
+branch-flow:
+  stage: test
+  image: alpine:3.20
+  tags:
+    - hva
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
   script:
     - echo "Merge request from $CI_MERGE_REQUEST_SOURCE_BRANCH_NAME into $CI_MERGE_REQUEST_TARGET_BRANCH_NAME"
     - |
       if [ "$CI_MERGE_REQUEST_TARGET_BRANCH_NAME" = "main" ] && [ "$CI_MERGE_REQUEST_SOURCE_BRANCH_NAME" != "dev" ]; then
         echo "main only takes merge requests from dev. Merge your branch into dev first."
-        exit 1
-      fi
-
-dotenv-check:
-  stage: check
-  image: alpine:3.20
-  tags:
-    - hva
-  script:
-    - |
-      dotenv_files="$(find . -type f \( -name '.env' -o -name '.env.*' \) ! -name '.env.example' -not -path './.git/*' -print)"
-      if [ -n "$dotenv_files" ]; then
-        echo "Dotenv files must not be committed:"
-        printf '%s\n' "$dotenv_files"
         exit 1
       fi

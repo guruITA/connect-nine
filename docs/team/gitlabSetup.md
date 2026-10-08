@@ -24,7 +24,7 @@ what the client answers, so every student can follow the same information.
 - Settings, Repository, Branch defaults: dev is the default branch, so every clone and every new merge request starts from dev, and GitLab offers the templates of .gitlab from dev.
 - Settings, Repository, Protected branches, for main and for dev: Allowed to push and merge set to No one, Allowed to merge set to Maintainers, Allowed to force push off. Nobody can push to dev or main, every change goes through a merge request.
 - main only takes merge requests from dev. The pipeline job branch-flow in .gitlab-ci.yml checks it: a merge request into main from any other branch fails that job. The job runs on the HvA runners with the tag hva.
-- Settings, Merge requests: Pipelines must succeed is switched on after the job branch-flow is merged. From then on a red branch-flow blocks the Merge button.
+- Settings, Merge requests: Pipelines must succeed. Checked on 8 October 2026: it is off, and only a Maintainer can switch it on, while the five students are Developer (part Members). Until a teacher switches it on, the Merge button still works on a red pipeline, and only the reviewer rule stops a red change: a reviewer never approves a merge request with a red pipeline (rule 11 of the code conventions).
 - A working branch is `<type>/<issue number>-<short name>`, made from dev. An urgent repair of the live site is `hotfix/<short name>`. It also goes through dev, because main only takes merge requests from dev. See docs/team/codeConventions.md.
 - History: the first set of templates and docs went onto main directly on 27 September 2026, before the protection existed. Every change after that goes through a merge request.
 
@@ -43,6 +43,22 @@ flowchart LR
 - Settings, Merge requests, Merge request approvals: one approval required from any member, the author may not approve their own merge request, and people who added commits may not approve it either. Approvals are removed when new commits are pushed.
 - The team rule holds on top of the setting: nobody merges without an approval of someone else, and the reviewer of the Definition of Done checks it on every issue.
 - The template .gitlab/merge_request_templates/Default.md fills the description of every new merge request. Its parts: Relates to, What changed, How to check it, The test that fails when its rule is removed, Proof for the portfolio, The version to go back to, TODO (rule 10 of the code conventions) and AI use (section 9.1 of the collaboration agreement).
+
+## Pipeline
+
+The file is .gitlab-ci.yml in the root. It runs on the HvA runners with the tag hva.
+
+- When it runs: once on every merge request, and once more on dev and on main after a merge. A push to a branch that already has an open merge request does not start a second pipeline.
+- Stage build: compiles the server and the screen. Still empty, task 3.8 (#266) adds backend-build and frontend-build.
+- Stage test, job env-file-check: fails when a .env file is in Git, and names the file in its log. Only .env.example may be committed.
+- Stage test, job branch-flow: only on a merge request. Fails when the target is main and the source branch is not dev.
+- The reviewer rule: a reviewer never approves a merge request with a red pipeline. While Pipelines must succeed is off (part Branches and protection), this rule is the only thing that stops a red change.
+
+When it is red:
+
+1. Open the merge request, tab Pipelines, and click the red run.
+2. Click the red job. The last lines of the log say what failed: env-file-check lists the .env file, branch-flow says which branch must go into dev first.
+3. Fix it on your branch and push. The pipeline starts again by itself. A .env you committed by accident: `git rm --cached <file>`, then commit and push. The password in it counts as leaked, so change it.
 
 ## Labels
 
