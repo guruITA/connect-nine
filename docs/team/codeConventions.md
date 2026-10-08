@@ -31,7 +31,7 @@ Nobody pushes directly to dev or main: both are protected, and the pipeline job 
 ### For all code
 
 1. Everything in English: names, comments, commit messages and documents.
-2. One file .editorconfig in the root sets the layout for every editor: UTF-8, line ending LF, 2 spaces for TypeScript, JSON, YAML and Markdown, 4 spaces for C#.
+2. One file .editorconfig in the root sets the layout for every editor: UTF-8, line ending LF, 2 spaces for TypeScript, JavaScript, JSON, YAML, Markdown and CSS, 4 spaces for C#.
 3. Secrets only in the file .env on your own machine, never in Git. Every setting has an example value in .env.example.
 4. Documents live in docs, with file names in camelCase, for example docs/team/codeConventions.md. One decision per file in the folder docs/decisions, for example docs/decisions/003-minimalApis.md.
 
