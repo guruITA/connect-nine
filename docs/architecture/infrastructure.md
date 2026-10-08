@@ -85,7 +85,7 @@ role a separate staging environment would, and no fourth environment is added, s
 environment is one more thing to patch, back up and keep credentials for.
 
 - **A laptop.** `docker-compose.yml` in the root starts the service `database` (the image
-  `postgres:16`, `container_name: database`, a named volume, the port only on
+  `postgres:16`, no fixed container name, a named volume, the port only on
   `127.0.0.1:5432`), pgAdmin to look inside the database (`dpage/pgadmin4:9` on `127.0.0.1:5050`,
   no login page), the test mailbox Mailpit (ports `127.0.0.1:1025` and `127.0.0.1:8025`), and the
   log in stand in `oidc` (`ghcr.io/soluto/oidc-server-mock`, pinned, on `127.0.0.1:8081`). The server

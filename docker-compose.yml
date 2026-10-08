@@ -45,10 +45,11 @@ services:
     # Source: https://hub.docker.com/_/postgres
     image: postgres:16
 
-    # A fixed container name, so Compose prints "Container database Started" and every command in
-    # the docs can say docker exec -it database (docs/team/codeConventions.md, rule 14).
-    # Source: https://docs.docker.com/reference/compose-file/services/#container_name
-    container_name: database
+    # No fixed container_name: Compose names the container after the project (connect-database-1),
+    # so two checkouts can each run their own copy, one at a time on these ports. Commands reach it
+    # by its service name instead: docker compose exec database ...
+    # Sources: https://docs.docker.com/reference/compose-file/services/#container_name
+    #          https://docs.docker.com/reference/cli/docker/compose/exec/
 
     # Settings the postgres image reads when it creates the database for the first time. The
     # values come from the file .env in this folder, which Compose reads by itself and which Git
@@ -78,10 +79,14 @@ services:
     # Docker asks every 2 seconds whether the database accepts connections, with the PostgreSQL
     # tool pg_isready. Only when it answers yes is the container "healthy". pgAdmin below waits for
     # that, so it never starts against a database that is not ready yet.
+    # The user and database come from the environment of the container, the same values as .env,
+    # so a check with a user that does not exist never fills the log with FATAL lines. "$$" tells
+    # Compose to leave ${...} alone, so the shell inside the container fills it in.
     # Sources: https://docs.docker.com/reference/compose-file/services/#healthcheck
+    #          https://docs.docker.com/compose/how-tos/environment-variables/variable-interpolation/
     #          https://www.postgresql.org/docs/16/app-pg-isready.html
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U connect -d connect"]
+      test: ["CMD-SHELL", "pg_isready -U \"$${POSTGRES_USER}\" -d \"$${POSTGRES_DB}\""]
       interval: 2s    # ask every 2 seconds
       timeout: 3s     # one question may take at most 3 seconds
       retries: 30     # after 30 wrong answers in a row the container is "unhealthy"
@@ -125,37 +130,61 @@ services:
 
     # The list of servers pgAdmin shows on the left. The image reads /pgadmin4/servers.json at its
     # first start, so "Connect (local)" is already there and nobody types the host, port or user.
-    # Source: https://www.pgadmin.org/docs/pgadmin4/latest/container_deployment.html
-    #         (section "Mapped Files and Directories", /pgadmin4/servers.json)
+    # The file is the config pgadmin-servers at the bottom of this file, built from .env.
+    # Sources: https://www.pgadmin.org/docs/pgadmin4/latest/container_deployment.html
+    #          (section "Mapped Files and Directories", /pgadmin4/servers.json)
+    #          https://docs.docker.com/reference/compose-file/services/#configs
     #
-    # Changed servers.json? The docs say "server definitions are only loaded on first launch", and
-    # pgAdmin keeps its settings in an anonymous volume that survives a restart. To make it read the
-    # file again: docker compose up -d --force-recreate --renew-anon-volumes pgadmin
+    # Changed POSTGRES_USER or POSTGRES_DB in .env? The docs say "server definitions are only
+    # loaded on first launch", and pgAdmin keeps its settings in an anonymous volume that survives
+    # a restart. To make it read the list again:
+    # docker compose up -d --force-recreate --renew-anon-volumes pgadmin
     # Source: https://docs.docker.com/reference/cli/docker/compose/up/  (-V, --renew-anon-volumes)
-    #
-    # servers.json is JSON, and JSON has no comments, so its fields are explained here. The format
-    # says every server needs Name, Group, Port, Username, SSLMode, MaintenanceDB and one of Host,
-    # HostAddr or Service; Comment is optional and shows in pgAdmin under Properties > General.
-    # Source: https://www.pgadmin.org/docs/pgadmin4/latest/import_export_servers.html
-    #
-    #   "Name": "Connect (local)"    the name shown in the tree on the left
-    #   "Group": "Connect"           the folder in the tree the server sits in
-    #   "Host": "database"           where the database is. Inside Docker, Compose lets every
-    #                               container reach another one by its service name, so pgAdmin
-    #                               finds PostgreSQL at "database", not at localhost.
-    #                               Source: https://docs.docker.com/compose/how-tos/networking/
-    #   "Port": 5432                the port inside the container network
-    #   "MaintenanceDB": "connect"   the database pgAdmin connects to first, POSTGRES_DB in .env
-    #   "Username": "connect"        the user it logs in as, POSTGRES_USER in .env. The password is
-    #                               not in the file: pgAdmin asks for it once and can save it.
-    #   "SSLMode": "disable"         no encryption on the connection. Both containers talk on the
-    #                               private network Compose made for them, and the postgres image
-    #                               does not switch SSL on by itself.
-    #                               https://www.postgresql.org/docs/16/libpq-ssl.html#LIBPQ-SSL-PROTECTION
-    volumes:
-      - ./pgadmin/servers.json:/pgadmin4/servers.json:ro
+    configs:
+      - source: pgadmin-servers
+        target: /pgadmin4/servers.json
 
 # The named volume that holds the data. Docker keeps it until someone runs docker compose down -v.
 # Source: https://docs.docker.com/reference/compose-file/volumes/
 volumes:
   connect-data:
+
+# The server list of pgAdmin. Compose writes this text into the container as a file and fills in
+# ${POSTGRES_USER} and ${POSTGRES_DB} from .env first, so pgAdmin always connects with the same
+# user and database as the database service.
+# Source: https://docs.docker.com/reference/compose-file/configs/  (attribute content)
+#
+# The format says every server needs Name, Group, Port, Username, SSLMode, MaintenanceDB and one of
+# Host, HostAddr or Service.
+# Source: https://www.pgadmin.org/docs/pgadmin4/latest/import_export_servers.html
+#
+#   "Name": "Connect (local)"   the name shown in the tree on the left
+#   "Group": "Connect"          the folder in the tree the server sits in
+#   "Host": "database"          where the database is. Inside Docker, Compose lets every container
+#                              reach another one by its service name, so pgAdmin finds PostgreSQL
+#                              at "database", not at localhost.
+#                              Source: https://docs.docker.com/compose/how-tos/networking/
+#   "Port": 5432               the port inside the container network
+#   "MaintenanceDB"            the database pgAdmin connects to first, POSTGRES_DB in .env
+#   "Username"                 the user it logs in as, POSTGRES_USER in .env. The password is not
+#                              in the list: pgAdmin asks for it once and can save it.
+#   "SSLMode": "disable"        no encryption on the connection. Both containers talk on the private
+#                              network Compose made for them, and the postgres image does not
+#                              switch SSL on by itself.
+#                              https://www.postgresql.org/docs/16/libpq-ssl.html#LIBPQ-SSL-PROTECTION
+configs:
+  pgadmin-servers:
+    content: |
+      {
+        "Servers": {
+          "1": {
+            "Name": "Connect (local)",
+            "Group": "Connect",
+            "Host": "database",
+            "Port": 5432,
+            "MaintenanceDB": "${POSTGRES_DB}",
+            "Username": "${POSTGRES_USER}",
+            "SSLMode": "disable"
+          }
+        }
+      }

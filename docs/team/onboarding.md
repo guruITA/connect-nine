@@ -58,7 +58,7 @@ docker compose stop               # stop both; your data stays
 Look inside in one of two ways:
 
 - **pgAdmin:** open http://localhost:5050. No login. The server Connect (local) is already on the left. The first time it asks for a password: that is `POSTGRES_PASSWORD` from your `.env`. Tick Save password.
-- **psql:** `docker exec -it database psql -U connect -d connect`, and `\q` to leave.
+- **psql:** `docker compose exec database psql -U connect -d connect`, and `\q` to leave. Use your own `POSTGRES_USER` and `POSTGRES_DB` if you changed them in `.env`.
 
 The data lives in the volume `connect-data`, so a table you made is still there after `docker compose down` and `docker compose up -d`.
 
