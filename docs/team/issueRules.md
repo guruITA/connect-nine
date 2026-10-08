@@ -121,7 +121,7 @@ A task has no acceptance criteria and no Definition of done. Those belong to the
 
 ### D7
 
-LABELS: one outcome label for every learning outcome the proof block covers (outcome::analysing-and-advising, outcome::designing-and-realising, outcome::managing-and-collaborating), one level label for every level that can do the task (level::2, level::3), and one direction (direction::full-stack, or direction::security-specialist for a task of the security specialist).
+LABELS: one outcome label for every learning outcome the proof block covers (outcome::analysing-and-advising, outcome::designing-and-realising, outcome::managing-and-collaborating), one level label for the lowest level that can do the task (level::2 when a level 2 student can do it, otherwise level::3, because a level 3 student can always do it), and one direction (direction::full-stack, or direction::security-specialist for a task of the security specialist). GitLab allows one label per scope, so a task never carries two level labels.
 
 ## The proof block of a task (boksa)
 
