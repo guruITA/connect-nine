@@ -23,15 +23,19 @@ docker --version
 git --version
 ```
 
+You should see four version numbers. `dotnet --version` starts with 10. `node --version` starts with v and the number of the current LTS. The other two print a line that starts with `Docker version` and `git version`. A line such as `command not found` means the tool is not installed or not on your path.
+
 ## 2. Get the code
 
 Clone the project and stay on `dev`, which is the default branch.
 
 ```
-git clone <the project address on GitLab>
+git clone https://gitlab.fdmci.hva.nl/studio/social-impact-apps/onderwijs/projects/2026-2027-semester-1/projects/project-9-wail-salutem-foundation-project-2/connect-nine.git
 cd connect-nine
 git switch dev
 ```
+
+You should see `Cloning into 'connect-nine'...`, and after the last command `Already on 'dev'`.
 
 Nobody pushes to `dev` or `main`. Both are protected. Every change starts on its own branch and reaches `dev` through a merge request that a teammate approves.
 
@@ -156,8 +160,10 @@ The pipeline runs the same checks. A merge request cannot be accepted while any 
 1. Take an issue from the board of the sprint and put it in Doing.
 2. Branch from `dev`, named `<type>/<issue number>-<short name>`.
 3. Commit as `<type>(<scope>): <what changed> (#<issue number>)`.
-4. Open a merge request into `dev` and ask a teammate who did not write it to approve.
-5. Walk the Definition of Done of the type of the issue, line by line.
+4. Push the branch with `git push -u origin <your branch>`. You should see a line with a link to make a merge request.
+5. Open the link, choose `dev` as the target and ask a teammate who did not write it to approve. The template fills the description: start it with `Relates to #<issue number>`.
+6. Wait for the pipeline of the merge request. Green means you can ask for the review. Red: click the red run, then the red job, and read the last lines of its log. They say what failed. The part Pipeline of [gitlabSetup.md](gitlabSetup.md) explains each job.
+7. Walk the Definition of Done of the type of the issue, line by line.
 
 ## 8. Check that no secret leaked
 
