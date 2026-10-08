@@ -29,10 +29,11 @@
 # Reference for the whole file format: https://docs.docker.com/reference/compose-file/
 # =================================================================================================
 
-# The project name. Docker uses it for the network and the volume (connect_connect-data), so they
-# never mix with those of another project on the same laptop.
-# Source: https://docs.docker.com/reference/compose-file/version-and-name/
-name: connect
+# No fixed project name. Compose takes the name of the folder of the checkout (connect-nine), and
+# puts it in front of the containers, the network and the volume (connect-nine_connect-data). So
+# every checkout in its own folder gets its own containers and its own database, and never takes
+# over the data of another checkout.
+# Source: https://docs.docker.com/compose/how-tos/project-name/
 
 # The containers this file starts. Each entry under services is one container.
 # Source: https://docs.docker.com/reference/compose-file/services/
@@ -45,9 +46,10 @@ services:
     # Source: https://hub.docker.com/_/postgres
     image: postgres:16
 
-    # No fixed container_name: Compose names the container after the project (connect-database-1),
-    # so two checkouts can each run their own copy, one at a time on these ports. Commands reach it
-    # by its service name instead: docker compose exec database ...
+    # No fixed container_name: Compose names the container after the project, for example
+    # connect-nine-database-1, so two checkouts in two folders each have their own copy. They run
+    # one at a time, because both use the ports below. Commands reach the container by its service
+    # name instead: docker compose exec database ...
     # Sources: https://docs.docker.com/reference/compose-file/services/#container_name
     #          https://docs.docker.com/reference/cli/docker/compose/exec/
 
