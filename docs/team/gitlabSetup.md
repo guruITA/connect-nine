@@ -82,7 +82,7 @@ The picture below shows the four lists an issue moves through on a sprint board.
 
 ```mermaid
 flowchart LR
-    O[Open] --> D["Doing<br/>at most 3 per person"] --> V[Verify] --> C[Closed]
+    O[Open] --> D["Doing<br/>max 3 issues per person at a time"] --> V[Verify] --> C[Closed]
 ```
 
 Two limits of the Free tier:
