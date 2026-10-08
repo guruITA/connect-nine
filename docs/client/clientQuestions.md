@@ -7,11 +7,11 @@ Questions 1 to 8 are written in full by the tasks of issue 10. Questions 9 and u
 | Nr | Card | Question | Answer | Date |
 |---|---|---|---|---|
 | 1 | 10 | The order of the epics: which epics the foundation wants first, in plain words. | | |
-| 2 | 10 | Does Connect get a webshop this semester, and which of the three alternatives. | | |
-| 3 | 10 | Real data of young people on the test site or only made up data. | | |
-| 4 | 10 | Who owns the showcases and projects, how they may be shown, and what always stays out. | | |
+| 2 | 10 | Does Connect get a webshop this semester, and which of the three alternatives. | No webshop is required. It would be nice to have, and a static version or a few images would be enough for now. | 24 September 2026 |
+| 3 | 10 | Real data of young people on the test site or only made up data. | Only made-up test data may be used. | 24 September 2026 |
+| 4 | 10 | Who owns the showcases and projects, how they may be shown, and what always stays out. | The team may use the code to show the project, like on GitHub. The project may also be used for school evidence and showing the work. | 24 September 2026 |
 | 5 | 10 | The proposal for page speed and uptime. | | |
-| 6 | 10 | Who runs and pays for Connect after January, and the grant of Microsoft for Nonprofits. | | |
+| 6 | 10 | Who runs and pays for Connect after January, and the grant of Microsoft for Nonprofits. | The app is hosted on Strato by the client, and future maintenance is not decided yet. WailSalutem is a nonprofit. | 24 September 2026 |
 | 7 | 10 | What the foundation must set up for log in with Google and Facebook, and who owns it. | | |
 | 8 | 10 | Three questions about accounts: changing the password while logged in, logging out after a while, and logging out on every device. | | |
 | 9 | 36 Add skills and interests as tags | Does the client approve the starter list of about twenty suggested skill and interest tags, and is any tag on it one that could hurt a young person? | | |
@@ -148,14 +148,14 @@ September 2026 from the requirements, the infrastructure plan, the product visio
 delivery plan. Every one of them is now part of questions 1 to 8 above. The reason each one
 matters is kept here, so it is not lost.
 
-| Old nr | Question of 24 September | Why it matters | Now |
-|---|---|---|---|
-| 1 | Who owns the code and the intellectual property in Young Amstelland Connect once the project ends? | The team cannot state what it is allowed to keep, reuse or reference afterward without an answer, and it affects every member's own portfolio claim on the work. | Question 4, issue 10 task 10.5 |
-| 2 | Does development, and later production, use real personal user data or test data only, given that the user base spans ages 15 to 30 and so includes minors? | It bounds how far the GDPR obligations of Connect reach in practice (NFR2 GDPR footing in `docs/project/requirements.md`), and whether the rules for where data is kept apply to the test site as well as the live version. | Question 3 for the test site, issue 10 task 10.4. Question 114 for the live version, issue 91 |
-| 3 | May the team show the work in a portfolio, in Portflow and in an R&D report? | Every team member's own individually assessed evidence depends on being allowed to reference and display the platform they built. | Question 4, issue 10 task 10.5 |
-| 4 | Is the webshop (T-shirts, caps, agendas), drawn in the client's concept diagram but not named in the client's text, in scope for this semester, and if so where does it sit in the prioritization? | It decides whether a payment provider and its secrets belong in this semester's work at all. FR10 Webshop is marked not confirmed by the client. | Question 2, issue 10 task 10.3 |
-| 5 | What happens to the hosting and the platform itself after the project ends in January 2027? | Nobody has named who keeps paying for or looking after Connect once the team leaves, and the answer changes how the team sets up hosting. | Question 6, issue 10 task 10.7 |
-| 6 | Is the WailSalutem Foundation a formally registered nonprofit in the Netherlands, with legal status recognized for that purpose? | The hosting grant of Microsoft for Nonprofits is only for registered charities and only activates through the foundation's own account, not the team's. Added by Wesley Oerlemans on 24 September 2026. | Question 6, issue 10 task 10.7 asks whether the foundation is a registered nonprofit and wants to register |
+| Old nr | Question of 24 September | Answer from the client | Why it matters | Now |
+|---|---|---|---|---|
+| 1 | Who owns the code and the intellectual property in Young Amstelland Connect once the project ends? | The team may use the code to show the project, like on GitHub. | The team cannot state what it is allowed to keep, reuse or reference afterward without an answer, and it affects every member's own portfolio claim on the work. | Question 4, issue 10 task 10.5 |
+| 2 | Does development, and later production, use real personal user data or test data only, given that the user base spans ages 15 to 30 and so includes minors? | Only made-up test data may be used. | It bounds how far the GDPR obligations of Connect reach in practice (NFR2 GDPR footing in `docs/project/requirements.md`), and whether the rules for where data is kept apply to the test site as well as the live version. | Question 3 for the test site, issue 10 task 10.4. Question 114 for the live version, issue 91 |
+| 3 | May the team show the work in a portfolio, in Portflow and in an R&D report? | The project may be used for school evidence and showing the work. | Every team member's own individually assessed evidence depends on being allowed to reference and display the platform they built. | Question 4, issue 10 task 10.5 |
+| 4 | Is the webshop (T-shirts, caps, agendas), drawn in the client's concept diagram but not named in the client's text, in scope for this semester, and if so where does it sit in the prioritization? | No webshop is required. It would be nice to have, and a static version or a few images would be enough for now. | It decides whether a payment provider and its secrets belong in this semester's work at all. FR10 Webshop is marked not confirmed by the client. | Question 2, issue 10 task 10.3 |
+| 5 | What happens to the hosting and the platform itself after the project ends in January 2027? | The app is hosted on Strato by the client. Future maintenance is not decided yet. | Nobody has named who keeps paying for or looking after Connect once the team leaves, and the answer changes how the team sets up hosting. | Question 6, issue 10 task 10.7 |
+| 6 | Is the WailSalutem Foundation a formally registered nonprofit in the Netherlands, with legal status recognized for that purpose? | Yes, WailSalutem is a nonprofit. | The hosting grant of Microsoft for Nonprofits is only for registered charities and only activates through the foundation's own account, not the team's. Added by Wesley Oerlemans on 24 September 2026. | Question 6, issue 10 task 10.7 asks whether the foundation is a registered nonprofit and wants to register |
 
 The old list asked Nick Hoebe, as Product Owner of sprint 1, to have the answers by the sprint 1
 review. That still holds: issue 10 has the meeting before the first sprint review on 9 October

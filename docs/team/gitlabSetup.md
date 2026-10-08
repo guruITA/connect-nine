@@ -4,6 +4,20 @@ How the project Connect Nine on gitlab.fdmci.hva.nl is set up, written so someon
 
 The HvA GitLab runs GitLab 19.4 in the Free tier. Where a setting of section 8 needs a paid tier, this file says what the team does instead.
 
+## Members
+
+The five students are Developers on the project: Bayon Eerhart, Nick Hoebe,
+Wesley Oerlemans, Gurpreet Singh and Kelvin van Voorst. Their individual
+profiles and levels are listed in the collaboration agreement. Teachers and
+coaches only watch the work; they do not take part in making changes.
+
+The client, Rachid Kherrazi of the WailSalutem Foundation, has no GitLab
+account.
+The school accounts cannot add members, so the client cannot be added to the
+project. He follows the work through the sprint review and the client contact
+log in `docs/client/clientContact.md`. The log records what the team asks and
+what the client answers, so every student can follow the same information.
+
 ## Branches and protection
 
 - Code, Branches, New branch: dev, made from main.
