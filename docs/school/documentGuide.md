@@ -158,7 +158,7 @@ For the team, it is the list to check a merge request against.
 
 ### definitionOfDone.md
 
-The Definition of Done, one list per issue type (slice, setup, research, decision, client). Every issue carries the list of its type in full, with a checkbox on every line. The "How to check" under each line lives only here.
+The Definition of Done, one list per issue type (slice, setup, research, decision, client). A slice carries it in short, one checkbox per category, and the other types carry their short list in full. The "How to check" under each line lives only here.
 
 For the studio, it serves **MS** and **OR**: it is the shared quality agreement, and its tests, security and docs lines are what make every slice verified evidence. The line "The BoKSA proof that each task asks for is in the merge request, ready for Portflow" is what feeds the portfolio.
 
