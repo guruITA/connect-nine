@@ -86,7 +86,8 @@ environment is one more thing to patch, back up and keep credentials for.
 
 - **A laptop.** `docker-compose.yml` in the root starts the service `database` (the image
   `postgres:16`, `container_name: database`, a named volume, the port only on
-  `127.0.0.1:5432`), the test mailbox Mailpit (ports `127.0.0.1:1025` and `127.0.0.1:8025`), and the
+  `127.0.0.1:5432`), pgAdmin to look inside the database (`dpage/pgadmin4:9` on `127.0.0.1:5050`,
+  no login page), the test mailbox Mailpit (ports `127.0.0.1:1025` and `127.0.0.1:8025`), and the
   log in stand in `oidc` (`ghcr.io/soluto/oidc-server-mock`, pinned, on `127.0.0.1:8081`). The server
   runs with `dotnet run` on `http://localhost:5000` and the screen with the Vite dev server, whose
   proxy sends `/api` to the server. With `docker compose --profile app up -d --build` all of Connect
@@ -115,6 +116,7 @@ flowchart TB
     subgraph Laptop["A laptop"]
         LFE["Vite dev server"] -->|"/api proxy"| LBE["dotnet run, port 5000"]
         LBE --> LDB[("database: postgres:16, 127.0.0.1:5432")]
+        LPg["pgAdmin, 127.0.0.1:5050"] --> LDB
         LBE --> LMail["Mailpit"]
         LBE --> LOidc["oidc stand in, 127.0.0.1:8081"]
     end

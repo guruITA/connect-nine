@@ -37,11 +37,48 @@ Nobody pushes to `dev` or `main`. Both are protected. Every change starts on its
 
 ## 3. Start the database
 
-Connect uses PostgreSQL 16 in a container.
+Connect uses PostgreSQL 16 in a container. `docker-compose.yml` in the root starts it together with pgAdmin, a web page to look inside it, with the same settings on every laptop. The database starts empty: the tables come from the migrations of the server, not from the compose file.
+
+### Once per laptop
+
+1. Install [Docker Desktop](https://docs.docker.com/desktop/) on your device and start it.
+2. In the root of the repository, copy `.env.example` and name the copy `.env`. Already have a `.env`? Keep it, so you keep your passwords.
+3. Open `.env` and replace `change-me` with a password of your own. `.env` is ignored by Git, so it stays on your laptop. Only Docker Compose reads it. Pick a password that is not an ordinary word, so `git grep "<your password>"` in section 8 finds nothing.
+
+The database and pgAdmin only read the password at their very first start. Changed it in `.env` afterwards? Run `docker compose down -v` and `docker compose up -d`. That empties your local database, see the warning below.
+
+### Start, check and stop
 
 ```
-docker compose up -d database
+docker compose up -d              # start the database and pgAdmin
+docker compose ps                 # wait until the database says (healthy)
+docker compose stop               # stop both; your data stays
 ```
+
+Look inside in one of two ways:
+
+- **pgAdmin:** open http://localhost:5050. No login. The server Connect (local) is already on the left. The first time it asks for a password: that is `POSTGRES_PASSWORD` from your `.env`. Tick Save password.
+- **psql:** `docker exec -it database psql -U connect -d connect`, and `\q` to leave.
+
+The data lives in the volume `connect-data`, so a table you made is still there after `docker compose down` and `docker compose up -d`.
+
+> **Careful with `docker compose down -v`.** The `-v` also removes the volume `connect-data`, and with it every row in your local database. Use it only when you want to start from an empty database on purpose. Afterwards the migrations build the tables again.
+
+### Port 5432 or 5050 is busy
+
+When `docker compose up` says `port is already allocated` or `address already in use`, another program already listens on that port of your laptop: another PostgreSQL on 5432, or another pgAdmin on 5050, for example the one of the database design in `docs/Gurpreet/dataModel/postgres`. Find it:
+
+```
+docker ps --filter publish=5432   # another container, for example of another project
+docker ps --filter publish=5050
+```
+
+On Windows, `netstat -ano | findstr :5432` shows the process id, and Task Manager shows which program it is. On macOS and Linux, use `lsof -i :5432`.
+
+There are two fixes:
+
+1. **Stop the other one.** Stop that container with `docker stop <name>`, or stop the locally installed PostgreSQL service, and run `docker compose up -d` again. A container that has a restart policy starts again with Docker Desktop, so stop it again after a restart, or switch its restart policy off with `docker update --restart no <name>`.
+2. **Use another port.** Need the other PostgreSQL to keep running? In `docker-compose.yml`, change `"127.0.0.1:5432:5432"` into `"127.0.0.1:5433:5432"` and run `docker compose up -d` again. The database is then on `localhost:5433`, so use `Port=5433` in your own connection string. Keep this change on your laptop and do not commit it: the rest of the team uses 5432.
 
 The seed accounts and the seed data of the test site are described in the testing folder.
 
