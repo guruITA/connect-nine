@@ -1,5 +1,8 @@
 Relates to #<issue number>
 
+Reviewers: all five students, Bayon, Gurpreet, Nick, Kelvin and Wesley.
+/assign_reviewer @eerharb @singhg11 @hoebenj @voorstk2 @oerlemw
+
 ## What changed
 
 <one or two sentences in plain words>
