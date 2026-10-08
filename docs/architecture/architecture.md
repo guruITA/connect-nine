@@ -124,6 +124,9 @@ support version, supported until November 2028, because .NET 8 stops getting sec
 
 ## Layers
 
+The two decisions behind this structure are [layered architecture](../decisions/12-layeredArchitecture.md)
+and [the .NET 10 target](../decisions/12-dotnet10.md).
+
 The server has four layers, each one project in `backend`, plus the test project
 `api/Connect.Tests`. The solution file is `api/Connect.sln`. The cards explain the layers
 with a restaurant.
