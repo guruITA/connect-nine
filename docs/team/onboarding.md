@@ -209,17 +209,15 @@ Issue 09 Every team member on the client's server (task 9.2) prepares the founda
 
 The server is IPv4 only today. The client's sheet names an IPv6 address, 2a01:239:4b8:db00::1, but it is not configured on the interface yet.
 
-### How to log in
+### Logging in
 
-For now, every team member logs in as root:
+Every team member has a user of their own, named after their first name in lower case, reachable only with their own ssh key. The keys came from each member's GitLab profile (User settings, SSH keys) on 9 October 2026, so a key you added on GitLab is a key that works here.
 
 ```
-ssh root@31.70.66.186
+ssh <your first name>@31.70.66.186
 ```
 
-Send your public ed25519 key to Wesley Oerlemans. Task 9.2 gives every member their own user with their own key, and after that root login and password login go off.
-
-On your first login, check the host key fingerprint against these three:
+You should see a prompt such as `nick@connect:~$`. On your first login, check the host key fingerprint against these three:
 
 ```
 ED25519 SHA256:jZUye4ZjNvmKksJkDOtlQ94+O/jKnpsfWvzAhqj2Nbk
@@ -227,44 +225,87 @@ ECDSA SHA256:jFBiJlKA3mGbIo0c5qv3sqeLa3xRRGyXRuGp9mSYLCI
 RSA SHA256:CmuGqwCHzubotlbA2rp/Ocg/P4yHMlochwTAXRxr35U
 ```
 
-### What runs on it today
+- Password login is off for everyone: `/etc/ssh/sshd_config.d/10-connect.conf` sets `PasswordAuthentication no` and `KbdInteractiveAuthentication no`. A try with a password answers `Permission denied (publickey)` (tried on 9 October 2026).
+- Root may still log in, but only with a key (`PermitRootLogin prohibit-password`), until a member of the group sudo has a sudo password. Then the same file gets `PermitRootLogin no`, checked with `sudo sshd -t` before `sudo systemctl reload ssh`.
+- The group sudo holds wesley. The second member of the group sudo is still to be chosen by the team. Each of the two sets their own sudo password in person on the server, never in a chat or a file.
 
-- Docker 29.8.2, Compose v5.5.1, buildx. `hello-world` ran. No containers, no volumes.
-- ufw is active, default deny incoming, and allows only 22/tcp, 80/tcp and 443/tcp, on IPv4 and IPv6.
-- fail2ban guards sshd: five failures bans an address for one hour.
-- unattended-upgrades is enabled.
-- Nothing of Connect is deployed yet.
+### New team member
 
-### How it was received and rebuilt on 2 October 2026
+On the server, as a member of the group sudo, with the new member's first name and their public key from their GitLab profile:
 
-The server had been used before, by an earlier iteration of this project built by other people. It carried Dokploy as a Docker Swarm stack with Traefik, PostgreSQL and Redis, a leftover Strapi volume, container images named sonarqube, young-amstelland-frontend and young-amstelland-backend, six ssh keys that were not the team's, and root logins from six different addresses since May 2026. Ports 3000, 8080 and 8081 were open to the internet.
+```
+sudo adduser --disabled-password --gecos "" <name>
+sudo install -d -m 700 -o <name> -g <name> /home/<name>/.ssh
+sudo nano /home/<name>/.ssh/authorized_keys   # paste only their public key
+sudo chown <name>:<name> /home/<name>/.ssh/authorized_keys
+sudo chmod 600 /home/<name>/.ssh/authorized_keys
+```
 
-On 2 October 2026 Wesley Oerlemans removed all of it: left the Docker swarm, removed every container, image and volume, purged and reinstalled Docker, deleted the old Dokploy files and home directories, removed every foreign key from root's authorized_keys, fully upgraded every package, removed old kernels, vacuumed the journal, reset the firewall to 22, 80 and 443, added fail2ban, set the hostname and the time zone, and rebooted. Disk use dropped from 21 GB to 2.9 GB. A copy of the old authorized_keys file stays on the server, in case a key belonged to someone who should keep access. The scripts and the log of the rebuild stay on the server too.
+You should see no output from the last two commands. The new member then logs in with `ssh <name>@31.70.66.186`.
+
+### Someone leaves
+
+```
+sudo deluser --remove-home <name>
+```
+
+You should see `Removing user '<name>'`. Their key and home folder are gone, and a login with their name answers `Permission denied (publickey)`.
 
 ### Who logged in
 
-Run `last` or `journalctl -u ssh` on the server to see every login.
-
-Today every login is root, because personal users come with task 9.2. The list cannot yet show names. Once every member has their own user, this part lists each member by name instead.
+`sudo journalctl -u ssh --since "7 days ago" | grep Accepted` lists every login with the user name, the key type and the time. `last` only lists logins with a terminal. Since 9 October 2026 the list shows personal first names instead of root.
 
 ### First login per team member
 
-| Name | First login |
+Each member writes their own line after their first login with their own user.
+
+| Name | First login with own user |
 |---|---|
-| Wesley Oerlemans | 2 October 2026 |
+| Wesley Oerlemans | 9 October 2026 |
 | Bayon Eerhart | |
 | Nick Hoebe | |
 | Gurpreet Singh | |
 | Kelvin van Voorst | |
 
-### What is still to do
+### Open ports
 
-- Task 9.1: the client points the DNS record of the test address at the server.
-- Task 9.2: every team member gets a personal user with their own key, two members get sudo, then password login and root login go off.
-- Task 9.3: check that every container listens on the server itself, not past the firewall.
-- Task 9.4: Caddy makes the padlock on the test address.
-- Task 9.5: a deploy user and `/srv/connect-test`, with the pipeline's own ssh key.
-- Task 9.6: the whole team and the client confirm access and the padlock.
+```
+sudo ufw status verbose
+```
+
+You should see `Default: deny (incoming), allow (outgoing)` and only these, for IPv4 and IPv6:
+
+| Port | Why |
+|---|---|
+| 22/tcp | The secure login (ssh) |
+| 80/tcp | Web visits, which Caddy sends on to https |
+| 443/tcp | Web visits with the padlock |
+
+- A scan from outside on 9 October 2026 found only 22 answering. 80 and 443 answer since Caddy runs.
+- Docker 29.8.2 with Compose 5.5.1 comes from Docker's own package source (download.docker.com).
+- Docker opens ports past ufw. So every container publishes its port only on 127.0.0.1, for example `"127.0.0.1:8080:8080"`. That holds for the database and the test mailbox of #39 as well, which are reached only through Caddy with a login.
+- The group docker equals full administrator rights on the server. Only the user deploy is in it, a team member only when needed.
+- `/srv/connect-test` holds the test site, owned by deploy.
+
+### The test address
+
+The test site is at https://31-70-66-186.sslip.io until the foundation sets the DNS record of the real test address (task 9.1, #236). sslip.io is a free name service that points a name with the IP address in it at that address. When the real address comes, only the first line of `deploy/Caddyfile` changes.
+
+- Caddy 2.11.7 runs as a system service, installed from its own package source on 9 October 2026. Its settings file is `deploy/Caddyfile` in Git and `/etc/caddy/Caddyfile` on the server.
+- The certificate comes from Let's Encrypt and Caddy renews it by itself. http answers with a redirect to https.
+- Change the file in Git first. After the merge: `scp deploy/Caddyfile <your name>@31.70.66.186:/tmp/Caddyfile`, then `sudo cp /tmp/Caddyfile /etc/caddy/Caddyfile`, `caddy validate --config /etc/caddy/Caddyfile` (you should see `Valid configuration`) and `sudo systemctl reload caddy`.
+- The log: `sudo journalctl -u caddy`. The end date of the certificate: `echo | openssl s_client -connect 31-70-66-186.sslip.io:443 -servername 31-70-66-186.sslip.io 2>/dev/null | openssl x509 -noout -enddate`.
+- Caddy writes no log of every visit, because the Caddyfile has no log directive.
+- Until the Connect server runs on 127.0.0.1:8080 (task 3.9, #267), the address answers 502 with the padlock. See the Caddy documentation on automatic https: https://caddyserver.com/docs/automatic-https
+
+### The pipeline on the server
+
+- The user deploy has no password, is in the group docker, owns `/srv/connect-test` and accepts only the deploy key of the pipeline. Nobody logs in as deploy by hand.
+- Three protected GitLab variables, under Settings, CI/CD, Variables: SSH_PRIVATE_KEY (the private deploy key, base64 on one line, masked), SSH_KNOWN_HOSTS (the host keys above) and TEST_SERVER_HOST. Protected means only dev and main get them, so a run on another branch gets no key.
+- The job ssh-check in `.gitlab-ci.yml` starts by hand on dev, or in a pipeline started with the variable RUN_SSH_CHECK set to yes. It logs in as deploy and prints the name of the server, `connect`.
+- The secret settings of the test site are in `/srv/connect-test/.env` on the server, rights 600, owner deploy. The database password was made on the server with `openssl rand -hex 24` and is not written anywhere else. `deploy/.env.example` lists every name.
+- **A new deploy key after a leak.** Make a new pair with `ssh-keygen -t ed25519`, put the public part in `/home/deploy/.ssh/authorized_keys` instead of the old one, the private part base64 encoded in SSH_PRIVATE_KEY, delete the private part from your laptop, and run ssh-check.
+- **Change the database password.** Change POSTGRES_PASSWORD and the password inside ConnectionStrings__Connect in `/srv/connect-test/.env` together. The database keeps its first password on its volume, so also change it in PostgreSQL itself, or start the test database over.
 
 ## 11. The security scan
 

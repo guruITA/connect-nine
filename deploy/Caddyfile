@@ -1,0 +1,10 @@
+# Caddy at the front door of the test site on the foundation's server (task 9.4, #239).
+# Caddy gets a Let's Encrypt certificate for the address by itself, renews it, and sends http to https.
+# Every visit goes to the Connect server, which listens only on the server itself (127.0.0.1:8080, #267).
+# No log of every visit: Caddy writes access logs only with a log directive, and this file has none.
+# The address is the interim name of sslip.io, which points at the server's IPv4 address,
+# until the foundation sets the DNS record of the real test address (task 9.1, #236).
+# Change this file in Git first, copy it to /etc/caddy/Caddyfile after the merge, then: sudo systemctl reload caddy
+31-70-66-186.sslip.io {
+	reverse_proxy 127.0.0.1:8080
+}
