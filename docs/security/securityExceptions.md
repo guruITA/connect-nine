@@ -7,7 +7,7 @@ A package with a known high or critical advisory stops the pipeline (job backend
 1. The team writes to the client which package, which advisory, what an attacker could do with it in Connect, and why there is no fix yet.
 2. The client answers in writing. That answer goes into `docs/client/clientContact.md`.
 3. One row below, with an end date no later than 30 days after the answer.
-4. The server: one line `<NuGetAuditSuppress Include="<advisory address>" />` in `api/Directory.Build.props`. The screen: `allow_failure: true` on frontend-scan, with a comment naming the advisory and the end date.
+4. The server: one line `<NuGetAuditSuppress Include="<advisory address>" />` in `api/Directory.Build.props`. The restore and backend-scan then skip only that advisory, and the log of backend-scan names it under "Skipped, accepted by the client". Any other high or critical advisory still turns the pipeline red. The screen: `allow_failure: true` on frontend-scan, with a comment naming the advisory and the end date.
 5. On the end date the line is removed. The pipeline turns red again if the advisory is still open, and the steps start over.
 
 ## Accepted risks

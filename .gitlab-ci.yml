@@ -68,6 +68,8 @@ branch-flow:
 # NuGet audit in api/Directory.Build.props turns such a package into error NU1903 or NU1904 during the restore,
 # and dotnet list package names every vulnerable package, also the ones that come in through another package.
 # The job decides from the text of both, not from an exit code.
+# An advisory the client accepted has a NuGetAuditSuppress line in api/Directory.Build.props. The restore skips it,
+# dotnet list package does not, so the job takes the lines with that advisory address out of the list before the check.
 backend-scan:
   stage: scan
   image: mcr.microsoft.com/dotnet/sdk:10.0
@@ -83,14 +85,20 @@ backend-scan:
     - cat restore.txt
     - dotnet list package --vulnerable --include-transitive > scan.txt 2>&1 || true
     - cat scan.txt
+    - grep -o 'NuGetAuditSuppress Include="https://[^"]*"' Directory.Build.props | cut -d '"' -f 2 > accepted.txt || true
+    - grep -v -F -f accepted.txt scan.txt > open.txt || true
     - |
-      if grep -E -q "NU1903|NU1904" restore.txt || grep -E -q "\b(High|Critical)\b" scan.txt; then
+      if grep -E -q "NU1903|NU1904" restore.txt || grep -E -q "\b(High|Critical)\b" open.txt; then
         echo "A package has a known high or critical advisory. Update it, or see docs/security/securityExceptions.md."
         exit 1
       fi
       if [ -n "$restore_failed" ]; then
         echo "dotnet restore failed for another reason, see the log above."
         exit 1
+      fi
+      if grep -F -q -f accepted.txt scan.txt; then
+        echo "Skipped, accepted by the client in docs/security/securityExceptions.md:"
+        grep -F -f accepted.txt scan.txt
       fi
       echo "No package with a known high or critical advisory."
 
