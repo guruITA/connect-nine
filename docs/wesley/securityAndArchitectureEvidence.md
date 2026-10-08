@@ -25,13 +25,13 @@ The evidence sits in two documents, which this one connects:
 - *Architecture of Young Amstelland Connect: structure, C4 model, patterns and decisions*, from here on the architecture document
 - *Security and access fundamentals: applied to Young Amstelland Connect*, from here on the security document
 
-Per the server notes, Connect has no code yet, so most of my evidence is design and research. Section 8 says what I will demonstrate next.
+On 6 October 2026 the repository holds only an example solution structure for authentication in `api/`, added on 2 October, and no slice of Connect yet, so most of my evidence is design and research. Section 8 says what I will demonstrate next.
 
 ## 2. The project in brief
 
 Per the team's product vision, we build Young Amstelland Connect, where young people from Amstelland, local organisations and the WailSalutem Foundation meet all year. The foundation is a nonprofit, and the business case is impact, not revenue: visibility, motivating young people and HvA collaboration. No funding model or success numbers exist yet. Per the requirements document, our users are 15 to 30, so some are minors.
 
-Per the team's README, we are five: Wesley Oerlemans, Nick Hoebe, Gurpreet Singh and Bayon Eerhart in Full Stack, and Kelvin van Voorst as Security Specialist. Per the tech stack and architecture documents, the stack is React with ASP.NET Core Minimal APIs, EF Core and PostgreSQL 16. Whether Connect uses .NET 10 is open, per issue 255. Per the infrastructure document and server notes, the foundation lends us one Strato VPS in Germany, received 2 October 2026, with no containers yet.
+Per the team's README, we are five: Wesley Oerlemans, Nick Hoebe, Gurpreet Singh and Bayon Eerhart in Full Stack, and Kelvin van Voorst as Security Specialist. Per the tech stack and architecture documents, the stack is React with ASP.NET Core Minimal APIs, EF Core and PostgreSQL 16. Whether Connect uses .NET 10 is open, per issue 255. Per the team's infrastructure document (`docs/architecture/infrastructure.md`) and onboarding guide (`docs/team/onboarding.md`, section 10), the foundation lends us one Strato VPS in Germany, received 2 October 2026, with no containers yet.
 
 ## 3. How this evidence meets the datapoint
 
@@ -245,7 +245,7 @@ Key: a solid arrow is a call, a dashed arrow is an answer.
 
 ## 5. Design patterns
 
-The architecture workshop asks for at least three patterns, where each is used and why (Hogeschool van Amsterdam, 2026a). BoKSA warns that "The real skill isn't memorising the pattern catalogue, it's judgment" (Hogeschool van Amsterdam, n.d.-a), so each is weighed against a simpler option. Per the server notes, all three are designed, not yet coded.
+The architecture workshop asks for at least three patterns, where each is used and why (Hogeschool van Amsterdam, 2026a). BoKSA warns that "The real skill isn't memorising the pattern catalogue, it's judgment" (Hogeschool van Amsterdam, n.d.-a), so each is weighed against a simpler option. All three are designed, not yet coded, because the repository holds no slice of Connect yet.
 
 | Pattern | Problem in Connect | Where it lives | Why it fits | The simpler option it beat |
 | --- | --- | --- | --- | --- |
@@ -267,7 +267,7 @@ BoKSA asks for an ADR (architecture decision record): context, decision, consequ
 | 8.5 | Database | PostgreSQL 16, not SQL Server, Microsoft's database | Wesley Oerlemans, 26 September 2026 | Accepted |
 | 8.6 | Pattern inside Application | CQRS by feature, not the repository pattern | The whole team, 1 October 2026 | Accepted |
 | 8.7 | Hosting | The foundation's server | Settled by the foundation's offer, 2 October 2026 | Accepted |
-| 8.8 | Front door and ingress | Caddy as the front door, Traefik inside production k3s | Wesley Oerlemans, 6 October 2026 | Chosen per the server notes (task 9.4, kept for production by task 95.3), Traefik behind it per issues 156, 157 and 159 |
+| 8.8 | Front door and ingress | Caddy as the front door, Traefik inside production k3s | Wesley Oerlemans, 6 October 2026 | Chosen per the team's infrastructure document (task 9.4, kept for production by task 95.3), Traefik behind it per issues 156, 157 and 159 |
 | 8.9 | Platform version | .NET 10 | Not decided yet | Proposed |
 | 8.10 | Authentication and authorization in the API | Cookie authentication and policy-based authorization | Proposed by me, decided by Kelvin van Voorst | Proposed |
 | 8.11 | Production platform | Single-node k3s with Terraform, test on Compose | The team, epic 1460, Sprint 4 | Planned, issue 156 open |

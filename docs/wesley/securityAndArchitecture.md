@@ -33,7 +33,7 @@ The learning group teacher's message to our group asked us to show that we under
 - three design patterns, where they live in Connect and why
 - a decision record for every architecture decision, in the form BoKSA (Body of Knowledge, Skills and Attitudes) asks for
 
-Per the server notes, Connect has no application code yet, so this document is design. A team decision names who took it, when, and the team document that records it. Anything the team has not decided is written as my advice or my proposal, with its owner and the moment it gets decided. Section 12 says plainly what is covered and what is not.
+On 6 October 2026 the repository holds only an example solution structure for authentication in `api/`, added on 2 October, and no slice of Connect yet, so this document is design. A team decision names who took it, when, and the team document that records it. Anything the team has not decided is written as my advice or my proposal, with its owner and the moment it gets decided. Section 12 says plainly what is covered and what is not.
 
 ## 2. Terms and identifiers used
 
@@ -140,9 +140,9 @@ The table lists the architecture decisions taken so far, who took them, when, an
 | EF Core (Entity Framework Core) for data access | Wesley Oerlemans | 24 September 2026 | The team's tech stack document |
 | PostgreSQL 16 through Npgsql in Docker, replacing SQL Server, Microsoft's SQL (Structured Query Language) database | Wesley Oerlemans | 26 September 2026 | The team's tech stack and stack research documents |
 | CQRS (command query responsibility segregation) by functionality over the repository pattern, in four projects | The whole team | 1 October 2026 | The team's architecture document |
-| A Strato VPS (virtual private server) in Germany, lent by the foundation | The foundation | Received 2 October 2026 | The team's infrastructure document and the server notes |
+| A Strato VPS (virtual private server) in Germany, lent by the foundation | The foundation | Received 2 October 2026 | The team's infrastructure and onboarding documents |
 
-Per the team's architecture document, the backend is layered in four projects, Presentation, Application, Domain and Infrastructure, with the tests in Connect.Tests. Per the server notes, the server runs Ubuntu 24.04 LTS (long-term support) with Docker and Docker Compose and has no containers yet. Per the server notes, Caddy is already chosen as the front door for both environments, task 9.4 for the test site and kept for production by task 95.3, and issue 239 (Caddy at the front door with a self-renewing certificate) asks for its self-renewing certificate. Records 8.8 and 8.11 add that production now plans to run Traefik, k3s's own reverse proxy, behind Caddy. Neither is set up on the server yet.
+Per the team's architecture document, the backend is layered in four projects, Presentation, Application, Domain and Infrastructure, with the tests in Connect.Tests. Per the team's onboarding guide (`docs/team/onboarding.md`, section 10), the server runs Ubuntu 24.04 LTS (long-term support) with Docker and Docker Compose and has no containers yet. Per the team's infrastructure document (`docs/architecture/infrastructure.md`), Caddy is already chosen as the front door for both environments, task 9.4 for the test site and kept for production by task 95.3, and issue 239 (Caddy at the front door with a self-renewing certificate) asks for its self-renewing certificate. Records 8.8 and 8.11 add that production now plans to run Traefik, k3s's own reverse proxy, behind Caddy. Neither is set up on the server yet.
 
 Two points that touch the architecture are open. Per the team's delivery plan, the authorization design for NFR1 (authentication and authorization) is owned by Kelvin van Voorst and due at the latest at the sprint 1 review, week of 5 October 2026. Per the requirements document, it includes whether minors' profiles are restricted differently from adults' profiles. The role table per module still has to be confirmed by the team in issue 337 (confirming the role table). Per the requirements document, our users are 15 to 30, so some of them are minors, and NFR2 (GDPR footing) adds GDPR (General Data Protection Regulation) obligations for their data.
 
@@ -196,7 +196,7 @@ The source column names where each constraint comes from. The last column is my 
 | A team of five students | The team's README | One codebase the whole team can review |
 | Four of five developers new to .NET | The team's architecture document | A structure a beginner can follow, the ask of issue 12 (one clear structure for new developers) |
 | No client budget, hosting on a student budget | The team's infrastructure document | Free software and no paid platform, records 8.5 and 8.7 |
-| One server, the foundation's Strato VPS in Germany | The team's infrastructure document and the server notes | One deployable unit next to its database, section 6.5 |
+| One server, the foundation's Strato VPS in Germany | The team's infrastructure and onboarding documents | One deployable unit next to its database, section 6.5 |
 | One shared database for every module | The team's architecture document, after the client's concept diagram | No database per module |
 | Project completion in the week of 4 January 2027, then handover | The requirements document | A structure a later developer can keep, the other half of issue 12 (one clear structure for new developers) |
 | Container orchestration, verified end to end on a real local cluster, with a rollback and monitoring shown in a screen recording and a live demo | Level 3 DevOps Advanced Track workshop (Hogeschool van Amsterdam, 2026b), the team's GitLab backlog, epic 1460 | Kubernetes in some form, record 8.11, and the rollback and monitoring sprint 4 plans in section 11 |
@@ -267,7 +267,7 @@ BoKSA asks me to compare a monolith, a modular monolith and microservices agains
 | Factor | Connect's context | Monolith in layers | Modular monolith | Microservices |
 | --- | --- | --- | --- | --- |
 | Team size and skill | Five students, four of them new to .NET, per the team's README and architecture document | One codebase, deployed as a single unit (Microsoft, 2021) | Modules developed and tested independently, while the application deploys as a single unit (Garg, 2023). In my assessment that adds module boundaries for a team still learning the layers | Microservices are highly distributed systems, so a team should check that it has the skills and experience (Microsoft, 2025c). Fowler (2015b) advises against starting with them without reasonable experience of building them in the team |
-| Scale | One server lent by the foundation, per the server notes. Per the requirements document, no recorded document gives a response time or uptime target | To scale out, the whole application is typically duplicated across servers (Microsoft, 2021) | Deployed as a single unit (Garg, 2023), so in my assessment it scales the way the monolith does | Services scale independently, with an orchestrator such as Kubernetes (Microsoft, 2025c) |
+| Scale | One server lent by the foundation, per the team's onboarding guide. Per the requirements document, no recorded document gives a response time or uptime target | To scale out, the whole application is typically duplicated across servers (Microsoft, 2021) | Deployed as a single unit (Garg, 2023), so in my assessment it scales the way the monolith does | Services scale independently, with an orchestrator such as Kubernetes (Microsoft, 2025c) |
 | Deadline | Project completion in the week of 4 January 2027, per the requirements document, and the sprint 4 review on 8 January 2027, per the team's delivery plan | Fowler (2015b) argues for building a new application as a monolith first, so the first phase can prioritise speed | Early in development the natural functional boundaries may not be clear yet (Microsoft, 2021). In my assessment, module boundaries drawn now would be guesses | Microservices bring a premium that can slow development down considerably (Fowler, 2015a) |
 | Complexity | Nine prioritised functional requirements and a webshop that waits for the client, per the requirements document, on one shared database, per the team's architecture document | Layers keep a growing codebase organised by responsibility, so developers can find where functionality lives (Microsoft, 2021) | Well-defined modules make a later move to microservices easier once modules grow (Garg, 2023) | Each service is simpler, but the system as a whole is more complex, and each service owns its data and schema (Microsoft, 2025c) |
 
@@ -295,7 +295,7 @@ It gives up:
 
 ## 6. The C4 model of Connect
 
-I draw the architecture with the C4 model of Simon Brown: the system context, the containers, the components of one container and the code of one component, plus a deployment diagram (Brown, n.d.-a). C4 prescribes no notation, but it asks for a key on every diagram (Brown, n.d.-f). I write the C4 type in each box, for example [Person] or [Container: PostgreSQL 16], and put a key under each diagram. Per the server notes, none of this exists as code yet.
+I draw the architecture with the C4 model of Simon Brown: the system context, the containers, the components of one container and the code of one component, plus a deployment diagram (Brown, n.d.-a). C4 prescribes no notation, but it asks for a key on every diagram (Brown, n.d.-f). I write the C4 type in each box, for example [Person] or [Container: PostgreSQL 16], and put a key under each diagram. None of this exists as code yet. The repository holds only an example solution structure for authentication.
 
 BoKSA's article on system and data modeling lists the C4 model among its starting points, and asks that I can explain why I made a particular modelling choice (Hogeschool van Amsterdam, n.d.-g). I chose C4 because its levels let one model serve two kinds of reader. The system context is for anyone, the foundation included, and the components and the code are for the team.
 
@@ -590,7 +590,7 @@ Key: a solid arrow is a call, a dashed arrow is an answer.
 
 ### 6.5 Deployment on the Strato VPS: the test site and production
 
-A deployment diagram shows how containers are deployed on to the infrastructure of one environment (Brown, n.d.-e). Per the server notes, the foundation lends the team one Strato VPS in Germany, with Ubuntu 24.04 LTS, Docker and Docker Compose, and a firewall that lets in only secure login and web traffic. The team's GitLab backlog, epic 1460 Production ("School requirement: the live version on k3s, described in Terraform, with backups."), plans two environments on that one server. The test site keeps the infrastructure document's base path, Docker Compose. Production moves to single-node k3s, described in Terraform, per record 8.11. Per the server notes, Caddy is the front door chosen for the test site, task 9.4, and kept for production, task 95.3, so one front door answers every visit on ports 80 and 443 and passes it on to either environment. Neither environment is set up on the server yet, so both diagrams below are a proposal. Per record 8.11 the four projects of section 5.1 still build into one container image, so the same image runs in both environments.
+A deployment diagram shows how containers are deployed on to the infrastructure of one environment (Brown, n.d.-e). Per the team's onboarding guide, the foundation lends the team one Strato VPS in Germany, with Ubuntu 24.04 LTS, Docker and Docker Compose, and a firewall that lets in only secure login and web traffic. The team's GitLab backlog, epic 1460 Production ("School requirement: the live version on k3s, described in Terraform, with backups."), plans two environments on that one server. The test site keeps the infrastructure document's base path, Docker Compose. Production moves to single-node k3s, described in Terraform, per record 8.11. Per the team's infrastructure document, Caddy is the front door chosen for the test site, task 9.4, and kept for production, task 95.3, so one front door answers every visit on ports 80 and 443 and passes it on to either environment. Neither environment is set up on the server yet, so both diagrams below are a proposal. Per record 8.11 the four projects of section 5.1 still build into one container image, so the same image runs in both environments.
 
 **Test site, Docker Compose**
 
@@ -628,7 +628,7 @@ Key: frames are deployment nodes, boxes are containers. A solid arrow is runtime
 
 | Element | Status |
 | --- | --- |
-| Strato VPS with firewall and protection against guessed logins | Received and rebuilt clean on 2 October 2026, per the server notes |
+| Strato VPS with firewall and protection against guessed logins | Received and rebuilt clean on 2 October 2026, per the team's onboarding guide |
 | Caddy, the front door | Chosen for the test site, task 9.4, not set up yet |
 | Docker Compose, with the App container and PostgreSQL | Proposal in the team's infrastructure document, not set up yet |
 | GitLab CI (continuous integration) with build, test, scan and deploy | Proposal in the team's infrastructure document |
@@ -679,7 +679,7 @@ Key: frames are deployment nodes, boxes are containers. A solid arrow is runtime
 
 | Element | Status |
 | --- | --- |
-| Strato VPS with firewall and protection against guessed logins | Received and rebuilt clean on 2 October 2026, per the server notes |
+| Strato VPS with firewall and protection against guessed logins | Received and rebuilt clean on 2 October 2026, per the team's onboarding guide |
 | Caddy, the front door | Kept for production, task 95.3, not set up yet |
 | Terraform, infra/terraform | Planned, issue 158 (the plan shown in the merge request) and issue 159 (the server, the database and their secrets), not set up yet |
 | Single-node k3s | Planned by the team, epic 1460, Sprint 4, issue 157 installs it by a written script, not set up yet |
@@ -695,7 +695,7 @@ Records 8.7, 8.8 and 8.11 say why Connect runs on the foundation's server, why C
 
 ## 7. Design patterns
 
-The architecture workshop asks for at least three meaningful patterns, with where each is used and why it fits (Hogeschool van Amsterdam, 2026a). BoKSA adds a warning I take seriously: "The real skill isn't memorising the pattern catalogue, it's judgment: recognising when a pattern actually improves coupling and testability, and when it's over-engineering a problem that didn't need it." (Hogeschool van Amsterdam, n.d.-b). So for each pattern I give the problem in Connect, where it lives, why it fits and what it costs. Per the server notes there is no application code yet, so all three are designed, not built.
+The architecture workshop asks for at least three meaningful patterns, with where each is used and why it fits (Hogeschool van Amsterdam, 2026a). BoKSA adds a warning I take seriously: "The real skill isn't memorising the pattern catalogue, it's judgment: recognising when a pattern actually improves coupling and testability, and when it's over-engineering a problem that didn't need it." (Hogeschool van Amsterdam, n.d.-b). So for each pattern I give the problem in Connect, where it lives, why it fits and what it costs. The repository holds no slice of Connect yet, only an example solution structure for authentication, so all three are designed, not built.
 
 ### 7.1 CQRS by feature
 
@@ -781,7 +781,7 @@ The table is the summary, and the records follow it.
 | 8.5 | PostgreSQL 16 | SQL Server | Wesley Oerlemans, 26 September 2026 | Accepted |
 | 8.6 | CQRS by feature | The repository pattern | The whole team, 1 October 2026 | Accepted |
 | 8.7 | The foundation's server | A cloud platform, a single Linux server rented by the team | Settled by the foundation's offer, 2 October 2026 | Accepted |
-| 8.8 | Caddy as the front door, Traefik inside production k3s | Nginx with certbot, a deploy platform, a tunnel service | Wesley Oerlemans, 6 October 2026 | Chosen per the server notes (task 9.4, kept for production by task 95.3), Traefik behind it per issues 156, 157 and 159 |
+| 8.8 | Caddy as the front door, Traefik inside production k3s | Nginx with certbot, a deploy platform, a tunnel service | Wesley Oerlemans, 6 October 2026 | Chosen per the team's infrastructure document (task 9.4, kept for production by task 95.3), Traefik behind it per issues 156, 157 and 159 |
 | 8.9 | .NET 10 | .NET 8, .NET 9 | Not decided yet | Proposed |
 | 8.10 | Cookie authentication and policy-based authorization | A JWT (JSON Web Token) in the browser, role checks inside each endpoint | Proposed by me, decided by Kelvin van Voorst | Proposed |
 | 8.11 | Production on single-node k3s with Terraform, the test site on Docker Compose | A managed cloud cluster | The team, GitLab backlog epic 1460, Sprint 4, confirmed by Wesley Oerlemans on 6 October 2026 | Planned by the team, epic 1460, issue 156 still open |
@@ -878,23 +878,23 @@ Two neighbouring decisions have no record here. The React and .NET stack, which 
 
 **Options that lost.** Per the team's infrastructure document, events settled the question, not the comparison. Before the offer, that document weighed a cloud platform against a single Linux server the team would rent itself. It proposed the single server, because it asks the least of a team whose hosting experience was still unknown. The cloud route depended on one member's personal student credit, or on a grant the foundation first had to register and be validated for. The team could not schedule that work.
 
-**Consequences.** Per the server notes, one server carries Connect's containers, rebuilt clean on 2 October 2026. The personal logins of issue 10 (a personal server login per team member) are still open.
+**Consequences.** Per the team's onboarding guide, one server carries Connect's containers, rebuilt clean on 2 October 2026. The personal logins of issue 10 (a personal server login per team member) are still open.
 
 ### 8.8 Caddy as the front door, Traefik inside production k3s
 
-**Status.** Chosen per the server notes (task 9.4, kept for production by task 95.3), Traefik behind it per issues 156, 157 and 159. Per the server notes, Caddy is the front door on ports 80 and 443 for both environments, chosen for the test site at task 9.4 and kept for production at task 95.3. Issues 156, 157 and 159 each describe Traefik, k3s's own ingress, running behind Caddy and reachable only from the server itself, so Traefik never faces the internet directly. Record 8.11 plans Connect on k3s for production, per the team's GitLab backlog, epic 1460, and k3s deploys Traefik by default when a server node starts (K3s, n.d.-b). Neither environment is set up on the server yet.
+**Status.** Chosen per the team's infrastructure document (task 9.4, kept for production by task 95.3), Traefik behind it per issues 156, 157 and 159. Per the team's infrastructure document, Caddy is the front door on ports 80 and 443 for both environments, chosen for the test site at task 9.4 and kept for production at task 95.3. Issues 156, 157 and 159 each describe Traefik, k3s's own ingress, running behind Caddy and reachable only from the server itself, so Traefik never faces the internet directly. Record 8.11 plans Connect on k3s for production, per the team's GitLab backlog, epic 1460, and k3s deploys Traefik by default when a server node starts (K3s, n.d.-b). Neither environment is set up on the server yet.
 
 **Context.** In my design of section 6.2, one server needs one front door that ends TLS and routes by path. Record 8.11 adds that production now plans to run inside k3s, with Traefik as the cluster's own Ingress, behind Caddy. Issues 156 and 157 give the same shape: Caddy passes the visit to Traefik inside k3s, which only listens on the server itself. Per issue 159, Caddy passes a production visit to Traefik on 127.0.0.1:8081, where Traefik reads the Ingress and passes it to the Service.
 
 **Decision.** Caddy is the front door for both environments and keeps the real certificate that renews itself, the ask of issue 239 (Caddy at the front door with a self-renewing certificate). For production, Traefik, the ingress controller k3s deploys by default (K3s, n.d.-b), reads the Ingress inside the cluster and routes to the Service, per issues 156, 157 and 159. The test site has no Traefik in its path.
 
-**Options that lost.** Per the server notes of 2 October 2026, the team compared four front doors for the server as a whole, before k3s was part of the plan:
+**Options that lost.** Per the team's infrastructure document (`docs/architecture/infrastructure.md`), section The front door and the test address, the team compared the front doors for the test server. Three lost:
 
-- **Nginx with certbot.** The notes give no reason it lost. My reasoning: it needs certbot beside it for a certificate that renews itself, where Caddy gets and renews its own.
-- **A deploy platform such as Dokploy or Coolify.** Per the notes, that is what was wiped from this server, and it hides the pipeline.
-- **A tunnel service such as Cloudflare Tunnel.** Per the notes, it puts a third party in the data path, a GDPR concern.
+- **Nginx with certbot.** Per the infrastructure document, the certificate needs a second tool and a timer, one more thing that can break quietly, and the team already runs Caddy.
+- **A deploy platform such as Dokploy or Coolify.** Per the infrastructure document, that is what was wiped from this server, and it hides the pipeline.
+- **A tunnel service such as Cloudflare Tunnel.** Per the infrastructure document, it puts a third party in the data path, a GDPR concern.
 
-Caddy itself is not an option that lost. Per the server notes, it is chosen for the test site at task 9.4 and kept for production at task 95.3. What issues 156, 157 and 159 add inside the k3s cluster is Traefik, which the server notes and the K3s documentation both name as k3s's own default ingress (K3s, n.d.-b).
+Caddy itself is not an option that lost. Per the infrastructure document, it is chosen for the test site at task 9.4 and kept for production at task 95.3. What issues 156, 157 and 159 add inside the k3s cluster is Traefik, which the infrastructure document already places inside k3s for production and the K3s documentation names as k3s's own default ingress (K3s, n.d.-b).
 
 **Consequences.** TLS ends at Caddy for every visit. For production, Caddy forwards to Traefik on 127.0.0.1:8081, which stays closed to the internet and only reads the cluster's Ingress, as section 3.9 of my security document describes. For the test site, Caddy forwards straight to the compose containers, with no Traefik in that path.
 
@@ -940,7 +940,7 @@ Caddy itself is not an option that lost. Per the server notes, it is chosen for 
 
 ## 9. Keeping the architecture in sync with the code
 
-The architecture workshop asks that the architecture stays roughly in sync with the code (Hogeschool van Amsterdam, 2026a). The team's architecture document plans the same for its own diagram, once the code exists. Per the server notes, there is no code to be in sync with yet. Per the GitLab issues, the first code comes from two sprint 1 issues. Issue 259 (an empty server with the four layers) builds the empty projects, and issue 262 (saving a new account) sends the first request through them.
+The architecture workshop asks that the architecture stays roughly in sync with the code (Hogeschool van Amsterdam, 2026a). The team's architecture document plans the same for its own diagram, once the code exists. The repository holds no slice of Connect to be in sync with yet, only an example solution structure for authentication. Per the GitLab issues, the first code comes from two sprint 1 issues. Issue 259 (an empty server with the four layers) builds the empty projects, and issue 262 (saving a new account) sends the first request through them.
 
 From sprint 2 on, I will hold this document against the code at the end of each sprint and fix whichever is wrong. The check covers four things:
 
@@ -966,7 +966,7 @@ These are my acceptance criteria for the architecture half of this datapoint, an
 | AC7 | **Design explained to two audiences.** The choice for one application in layers is explained in plain words for the WailSalutem Foundation and in technical terms for the team. | Record 8.1 has the plain version in writing. The spoken part waits for a sprint review. I explain the choice to someone at the foundation with the level 1 diagram and no framework terms, and ask them to tell it back in their own words. I explain the same choice to the team with the level 3 diagram and records 8.1 and 8.2. | AA5, communication adapted to target groups | Technical architecture decision making (Hogeschool van Amsterdam, n.d.-h): explain the same architectural decision differently for a technical and a non-technical audience |
 | AC8 | **Diagrams compared with the code.** From sprint 2 on, at the end of every sprint, the diagrams of 6.2 to 6.5 and the records of section 8 match the code. Every difference is fixed in the code or corrected in this document. | I run the check of section 9 and note every difference with what I changed. | OR4, systematic validation | Architecture and design patterns (Hogeschool van Amsterdam, n.d.-b): implement a solution that follows a chosen architecture style, with consistent layering and separation of concerns |
 | AC9 | **Feedback recorded with what I changed.** The feedback of the learning group teacher on 6 October 2026, and of the team at the sprint reviews, is recorded with what I changed because of it. | The feedback I register with this datapoint in Portflow names who gave it, when, what they said, and what I changed or why I did not. | OR3, stakeholders involved and feedback weighed | Architecture and design patterns (Hogeschool van Amsterdam, n.d.-b): communicate architectural decisions and pattern choices to technical and non-technical stakeholders, including trade-offs and risks |
-| AC10 | **Every statement traceable.** Every fact cites a source I read or names the team document, server notes, course document or issue it comes from. Every decision names who and when, and Appendix A links each ask and each sprint 1 issue to a section. | I follow every citation to its entry in the references and every entry back to a citation, open each link, and check that each row of A.1 and A.2 points to a section that holds what it claims. | AA2, critical attitude | Technical architecture decision making (Hogeschool van Amsterdam, n.d.-h): justify an architectural choice using structured argumentation, not just preference |
+| AC10 | **Every statement traceable.** Every fact cites a source I read or names the team document, course document or issue it comes from. Every decision names who and when, and Appendix A links each ask and each sprint 1 issue to a section. | I follow every citation to its entry in the references and every entry back to a citation, open each link, and check that each row of A.1 and A.2 points to a section that holds what it claims. | AA2, critical attitude | Technical architecture decision making (Hogeschool van Amsterdam, n.d.-h): justify an architectural choice using structured argumentation, not just preference |
 | AC11 | **Deployment on Kubernetes verified end to end, sprint 4.** Record 8.11's single-node k3s cluster runs the image the pipeline built, Terraform's applied plan matches issue 159, a rollback within ten minutes recovers the previous image per issue 163, and the production deployment diagram of section 6.5 matches the cluster. | I compare `kubectl get pods,svc,ingress` on the server against section 6.5, confirm the running pod is built from the image GitLab CI produced, and trigger the rollback of issue 163 in the live demo of issue 169 to confirm the previous image comes back within ten minutes. | OR4, systematic validation | CI/CD & containerization fundamentals (Hogeschool van Amsterdam, n.d.-c): explain what CI/CD means and name the typical pipeline stages in order (lint, test, build, deploy) |
 | AC12 | **Containerization and CI fundamentals shown, sprint 2.** The API and the frontend each build from a Dockerfile, the test site runs from the `docker-compose.yml` of record 8.11, and GitLab CI runs tests and a container scan on every merge. | I confirm each image builds locally, `docker compose up` starts the test site, and the pipeline's test and scan stages both run and gate the merge. | OR1, systematic design and implementation | CI/CD & containerization fundamentals (Hogeschool van Amsterdam, n.d.-c): explain what CI/CD means and name the typical pipeline stages in order (lint, test, build, deploy) |
 
@@ -1012,12 +1012,12 @@ The asks come from the datapoint sheet, the Architecture & Design Patterns works
 | Ask | Status | Reason |
 | --- | --- | --- |
 | Sheet: understand and explain design patterns | Covered | Three patterns with problem, place, reason and cost, plus the option that lost, section 7 |
-| Sheet: apply design patterns | Partly covered | Designed with project, folder and class names, not in code, because per the server notes no code exists yet. Strategy is still a proposal |
+| Sheet: apply design patterns | Partly covered | Designed with project, folder and class names, not in code, because no slice of Connect exists in the repository yet. Strategy is still a proposal |
 | Sheet: Security & Access Fundamentals | In my security document | That document says what it covers |
 | Workshop: a clear, documented style that separates UI (user interface), logic and persistence | Covered | Section 5 |
 | Workshop: at least one architecture diagram | Covered | Five C4 diagrams, section 6 |
 | Workshop: at least three patterns, where each is used and why | Covered | Section 7 |
-| Workshop: the architecture roughly in sync with the code | Not yet | Per the server notes there is no code yet. The check starts in sprint 2, section 9 |
+| Workshop: the architecture roughly in sync with the code | Not yet | The repository holds no slice of Connect yet. The check starts in sprint 2, section 9 |
 | BoKSA, technical architecture decision making: ADRs with context, decision and consequences | Covered | Eleven records in section 8, four of them proposed: 8.1, 8.2, 8.9 and 8.10 |
 | BoKSA, technical architecture decision making: monolith, modular monolith and microservices compared | Covered | Section 5.2 |
 | BoKSA, technical architecture decision making: one decision explained to two audiences | Partly covered | Record 8.1 has a plain version in writing. The spoken part waits for a sprint review |
@@ -1027,7 +1027,7 @@ The asks come from the datapoint sheet, the Architecture & Design Patterns works
 | Deployment on Kubernetes, production with Terraform | Not yet | Planned for sprint 4, record 8.11, epic 1460 |
 | Feedback from the learning group teacher | Not yet | Comes on 6 October 2026 |
 
-Understanding and explanation are covered. Application is designed but not yet realised in code, because per the server notes no code exists yet. The first sync check at the end of sprint 2 is where the design meets the code.
+Understanding and explanation are covered. Application is designed but not yet realised in code, because no slice of Connect exists in the repository yet. The first sync check at the end of sprint 2 is where the design meets the code.
 
 ## 13. Conclusion
 
