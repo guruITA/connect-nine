@@ -30,10 +30,10 @@ School asks: "You systematically validate that the solution does what it should,
 
 1. **Expected before the push.** env-file-check red with `./.env` in its log, branch-flow green, no approval, then green after `git rm --cached .env`.
 2. **What happened.** Pipeline 583863: env-file-check failed after 4 seconds with "Env files must not be committed:" and `./.env`, branch-flow green. Pipeline 583865: green. No approval on !25. The merge request was closed without merging and the branch deleted.
-3. **The difference.** The task expects to see the merge blocked. The merge request was a draft, and Pipelines must succeed was still off, so this run does not prove that GitLab locks the button on red. It proves the check finds the file.
+3. **The difference.** The task expects to see the merge blocked. The merge request was a draft, and Pipelines must succeed was still off, so this run does not prove that GitLab locks the button on red. It proves the check finds the file. A second red run on 9 October 2026, after the setting was on, closes that gap: merge request !32 (pipeline #583882, dotenv-check red on ./.env) shows "Merge blocked: 2 checks failed" with "Pipeline must succeed." first, and no Merge button. The merge checks of the API list CI_MUST_PASS as FAILED apart from NOT_APPROVED, so the red pipeline alone blocks the merge. The screenshot is in the description of !32, which was closed without merging.
 4. **Not covered yet.** The builds and tests of the server and the screen (#266).
 5. **Improvement made.** Pipelines must succeed is switched on since 8 October 2026, written in `docs/team/gitlabSetup.md`.
-   - TODO Wesley: one more red run on a throwaway merge request, now that the setting is on, with a screenshot of the locked Merge button in it.
+   - TODO reviewer of !32, who did not do #5: confirm in a comment on !32 that the red run could not be merged and got no approval.
    - TODO Wesley: add the screenshots of the red run with the log open and of the green run to !25.
    - TODO reviewer of !25, who did not do #5: confirm in a comment on !25 that the red run got no approval.
 
@@ -44,7 +44,8 @@ School asks: "You systematically validate that the solution does what it should,
 - [ ] Wesley: screenshots in !25.
 - [ ] Reviewer of !25: confirm that the red run got no approval.
 - [x] Wesley: switch on Pipelines must succeed (done 8 October 2026).
-- [ ] Wesley: one more red run with a screenshot of the locked Merge button.
+- [x] Wesley: one more red run with a screenshot of the locked Merge button (!32, 9 October 2026).
+- [ ] Reviewer of !32: confirm that the red run could not be merged and got no approval.
 
 ## AI use
 
