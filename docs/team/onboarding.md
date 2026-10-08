@@ -45,7 +45,7 @@ Connect uses PostgreSQL 16 in a container. `docker-compose.yml` in the root star
 2. In the root of the repository, copy `.env.example` and name the copy `.env`. Already have a `.env`? Keep it, so you keep your passwords.
 3. Open `.env` and replace `change-me` with a password of your own. `.env` is ignored by Git, so it stays on your laptop. Only Docker Compose reads it. Pick a password that is not an ordinary word, so `git grep "<your password>"` in section 8 finds nothing.
 
-The database and pgAdmin only read the password at their very first start. Changed it in `.env` afterwards? Run `docker compose down -v` and `docker compose up -d`. That empties your local database, see the warning below.
+The database and pgAdmin only read the values in `.env` at their very first start. Changed one afterwards? Run `docker compose down -v` and `docker compose up -d`. That empties your local database, see the warning below.
 
 ### Start, check and stop
 
