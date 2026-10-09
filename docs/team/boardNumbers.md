@@ -231,7 +231,12 @@ The cards name each other by their board number. GitLab gives its own numbers.
 | 133 | #233 | Add a logo to my organisation profile |
 | 159 | #234 | Remove the picture of my project |
 | 152 | #235 | See the reports about members |
+| 175 | #1466 | Gurpreet Singh's own design of the data, built and tested |
+| 177 | #1475 | Four ways of loading a profile compared |
+| 176 | #1483 | Gurpreet Singh's work as Scrum Master in sprint 2 |
 | 178 | #1496 | The page descriptions point to the screens of the prototype |
+| 179 | #1498 | The team rules describe the Figma board as it is now |
+| 180 | #1516 | Sprints 2 to 5 planned again after sprint 1 |
 
 ## AI use declaration
 
