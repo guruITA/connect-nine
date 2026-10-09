@@ -13,6 +13,8 @@ workflow:
     - if: $CI_COMMIT_BRANCH == "dev" || $CI_COMMIT_BRANCH == "main"
     # The weekly scan of dev (Build, Pipeline schedules). Only the two scan jobs run then.
     - if: $CI_PIPELINE_SOURCE == "schedule"
+    # A pipeline started by hand with RUN_SSH_CHECK=yes, to try the way to the test server (job ssh-check).
+    - if: $RUN_SSH_CHECK == "yes"
 
 # Every job except the two scan jobs starts with the rule
 #   - if: $CI_PIPELINE_SOURCE == "schedule"
@@ -120,3 +122,31 @@ frontend-scan:
     - cd web
     - npm ci
     - npm audit --audit-level=high
+
+# Proves the pipeline can reach the test server as the user deploy, without a secret in Git or in a log (task 9.5, #240).
+# Started by hand on dev, or in a pipeline started with RUN_SSH_CHECK=yes. The three variables are protected,
+# so a run on a branch that is not protected gets no key and ends red. Task 3.9 (#267) replaces it with deploy-test.
+ssh-check:
+  stage: deploy
+  image: alpine:3.20
+  tags:
+    - hva
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "schedule"
+      when: never
+    - if: $RUN_SSH_CHECK == "yes"
+    - if: $CI_COMMIT_BRANCH == "dev"
+      when: manual
+      allow_failure: true
+  script:
+    - |
+      if [ -z "$SSH_PRIVATE_KEY" ]; then
+        echo "No deploy key. This branch is not protected, or the variable is missing."
+        exit 1
+      fi
+    - apk add --no-cache openssh-client >/dev/null
+    - install -d -m 700 ~/.ssh
+    - printf '%s' "$SSH_PRIVATE_KEY" | base64 -d > ~/.ssh/id_ed25519
+    - chmod 600 ~/.ssh/id_ed25519
+    - printf '%s\n' "$SSH_KNOWN_HOSTS" > ~/.ssh/known_hosts
+    - ssh -o BatchMode=yes -o IdentitiesOnly=yes -i ~/.ssh/id_ed25519 "deploy@$TEST_SERVER_HOST" hostname

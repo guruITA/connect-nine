@@ -207,9 +207,11 @@ and the client's DNS record for the test address is not there yet (task 9.1).
   addresses, generally available since 15 January 2026 (Let's Encrypt, 2026). New, and whether
   Caddy can request one on this server is not checked yet.
 
-Proposal: Caddy on the sslip.io name until the client's DNS record arrives, so the test site has
-a padlock from its first deploy. Decided by the whole team at a stand up, owner the Product Owner
-of sprint 1, Nick Hoebe, inside task 9.4.
+In use since 9 October 2026: Caddy on the sslip.io name until the client's DNS record arrives, so
+the test site has a padlock from its first deploy. https://31-70-66-186.sslip.io has a Let's Encrypt
+certificate and http redirects to https, see `deploy/Caddyfile` and `docs/team/onboarding.md`, part The
+test address. The whole team confirms the choice at a stand up, owner the Product Owner of sprint
+1, Nick Hoebe, inside task 9.4.
 
 ## Production in detail
 
