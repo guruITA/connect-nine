@@ -1,0 +1,29 @@
+.eyebrow {
+  display: flex;
+  gap: var(--space-hatch-gap);
+  align-items: center;
+  margin: 0;
+  font-family: var(--font-label);
+  font-size: var(--text-label-size);
+  font-weight: var(--font-weight-bold);
+  line-height: var(--text-label-line);
+  letter-spacing: var(--text-label-tracking-wide);
+  text-transform: uppercase;
+}
+
+.hatch {
+  /* The hatch is drawn a little past its 28 by 4 frame in Figma, as the SVG itself says. */
+  margin: var(--hatch-bleed);
+}
+
+.onLight {
+  color: var(--color-green-text);
+}
+
+.onNavy {
+  color: var(--color-mint);
+}
+
+.onGreen {
+  color: var(--color-mint-light);
+}

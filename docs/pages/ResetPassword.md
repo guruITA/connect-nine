@@ -90,6 +90,9 @@ The page sits inside the frame AppShell, so the tabs stay in place around it. Th
 - Not reachable: "Connect is not reachable right now, try again later" below the form. Nobody is logged out anywhere and the password stays the old one. A tester checks this with airplane mode on the phone.
 - Phone and laptop: the page matches the Figma frame Choose a new password at 360 and 1280 pixels wide, shown with screenshots in the merge request.
 - Design: the Figma frame Choose a new password on the Figma board of Connect, page Design directions. Colours, fonts and spacing come only from the variables in web/src/styles/tokens.css.
+- Clickable prototype (laptop, sprint 1 and 2), on the Figma page Prototype sprint 1 and 2 (desktop). The line above each screen names its GitLab issues.
+  - [C09 Choose a new password](https://www.figma.com/design/SAVxDf3rlsWz22qlzTEYte/Young-Amstelland-Connect--team-workspace?node-id=1018-833)
+  - [C10 New password saved](https://www.figma.com/design/SAVxDf3rlsWz22qlzTEYte/Young-Amstelland-Connect--team-workspace?node-id=1018-950)
 
 ## Accessibility and privacy
 

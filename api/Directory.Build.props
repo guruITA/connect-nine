@@ -1,0 +1,22 @@
+<!--
+  Settings for every project under api (#22).
+  NuGet audit checks every package, also the ones that come in through another package,
+  against the GitHub Advisory Database, and warns at high or critical.
+  With TreatWarningsAsErrors in the projects, such a warning stops the build.
+  Source: https://learn.microsoft.com/en-us/nuget/concepts/auditing-packages
+-->
+<Project>
+  <PropertyGroup>
+    <NuGetAudit>true</NuGetAudit>
+    <NuGetAuditMode>all</NuGetAuditMode>
+    <NuGetAuditLevel>high</NuGetAuditLevel>
+  </PropertyGroup>
+  <!--
+    A risk the client accepted: one line per advisory, with its address, the reason and the end date
+    from docs/security/securityExceptions.md. Remove the line on the end date.
+    The restore and the job backend-scan in .gitlab-ci.yml both skip only the advisory with that exact address.
+    <ItemGroup>
+      <NuGetAuditSuppress Include="https://github.com/advisories/GHSA-xxxx-xxxx-xxxx" />
+    </ItemGroup>
+  -->
+</Project>

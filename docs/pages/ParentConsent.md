@@ -67,6 +67,10 @@ All screen elements are built by task 131.4, issue 131 A parent gives permission
 - Empty: not used. The page has no list.
 - Phone (360 pixels wide or close) and laptop: the team check of task 131.6 goes through every criterion on both.
 - Design: the Figma frame Parent permission on the Figma board of Connect, page Design directions. Colours, fonts and spacing come only from the variables in web/src/styles/tokens.css.
+- Clickable prototype (laptop, sprint 1 and 2), on the Figma page Prototype sprint 1 and 2 (desktop). The line above each screen names its GitLab issues.
+  - [H03 Email to a parent](https://www.figma.com/design/SAVxDf3rlsWz22qlzTEYte/Young-Amstelland-Connect--team-workspace?node-id=1019-4119)
+  - [H04 Parent permission](https://www.figma.com/design/SAVxDf3rlsWz22qlzTEYte/Young-Amstelland-Connect--team-workspace?node-id=1019-4154)
+  - [H05 Permission given](https://www.figma.com/design/SAVxDf3rlsWz22qlzTEYte/Young-Amstelland-Connect--team-workspace?node-id=1019-4276)
 
 ## Accessibility and privacy
 

@@ -33,7 +33,9 @@ School asks: "You ensure that your work aligns with that of others and contribut
 
 2. **The folders for the screen and the server.** The task says to leave them to issue 03. They exist already: Nick Hoebe renamed them to `web` and `api` in merge request !6 and put the server solution in `api` in merge request !11. For the teammate who picks up issue 03: `api/Connect.slnx` is the server with four layers and a first create user endpoint, and `web` holds only `.env.example`, so task 3.5 starts the React app in `web`.
 
-3. **Lines that exist for later tasks.** `api/**/wwwroot/` is for task 3.9 (#267), where the pipeline copies the built screen into the server; the task names `backend/Presentation/wwwroot`, the folder is now under `api`. `test-results/` and `playwright-report/` are for task 3.7 (#265), the Playwright test that makes an account in a real browser.
+3. **The missing CSS line, fixed in a second merge request.** The checklist of task 1.1 asks for 2 spaces in CSS files as well, and the first `.editorconfig` and rule 2 both left CSS out. Branch `chore/2-editorconfig-css` adds `css` to the block for 2 spaces and adds JavaScript and CSS to rule 2, so the file and the rule say the same thing before the React app of task 3.5 (#263) adds its first `.module.css`.
+
+4. **Lines that exist for later tasks.** `api/**/wwwroot/` is for task 3.9 (#267), where the pipeline copies the built screen into the server; the task names `backend/Presentation/wwwroot`, the folder is now under `api`. `test-results/` and `playwright-report/` are for task 3.7 (#265), the Playwright test that makes an account in a real browser.
 
 ## TODO
 

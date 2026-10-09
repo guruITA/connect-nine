@@ -79,6 +79,12 @@ flowchart LR
 - Not reachable: "Connect is not reachable right now, try again later" below the button, in role alert. A tester checks this by switching the phone to airplane mode.
 - Phone (360 pixels wide) and laptop (1280 pixels wide): the page matches the Figma frame Confirm your email address at both widths, with screenshots in the merge request (task 27.6). The team checks of task 27.9 and 115.7 use a phone of 360 pixels wide or close and a laptop.
 - Design: the Figma frame Confirm your email address on the Figma board of Connect, page Design directions. Colours, fonts and spacing come only from the variables in web/src/styles/tokens.css.
+- Clickable prototype (laptop, sprint 1 and 2), on the Figma page Prototype sprint 1 and 2 (desktop). The line above each screen names its GitLab issues.
+  - [A06 Email: confirm your email address](https://www.figma.com/design/SAVxDf3rlsWz22qlzTEYte/Young-Amstelland-Connect--team-workspace?node-id=1017-1304)
+  - [A07 Confirm your email address](https://www.figma.com/design/SAVxDf3rlsWz22qlzTEYte/Young-Amstelland-Connect--team-workspace?node-id=1017-1338)
+  - [A08 Email address confirmed](https://www.figma.com/design/SAVxDf3rlsWz22qlzTEYte/Young-Amstelland-Connect--team-workspace?node-id=1017-1444)
+  - [E06 Email: confirm your new email address](https://www.figma.com/design/SAVxDf3rlsWz22qlzTEYte/Young-Amstelland-Connect--team-workspace?node-id=1018-2243)
+  - [E07 Email address changed](https://www.figma.com/design/SAVxDf3rlsWz22qlzTEYte/Young-Amstelland-Connect--team-workspace?node-id=1018-2277)
 
 - Test data for the error state:
   - Ended confirmation link: ended-link@example.org, token seed-ended-link-token-27, on a laptop http://localhost:5173/confirm-email?token=seed-ended-link-token-27 (task 27.2). docs/testing/testData.md lists it for the test site too.

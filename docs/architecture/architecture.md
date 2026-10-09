@@ -116,50 +116,58 @@ in-memory SQLite database (Microsoft, n.d.-a). Wesley Oerlemans decided on 24 Se
 top layer uses ASP.NET Core Minimal APIs, not controllers. That choice is now part of the code
 conventions (backend rule 9).
 
-The team takes the decision in a team moment of the first week of sprint 1 and writes it in
-`docs/decisions/<number>-layeredArchitecture.md` (issue 11, tasks 11.1 and 11.2). The version of
-.NET gets its own file, `docs/decisions/<number>-dotnet10.md` (task 11.3): .NET 10, the long term
-support version, supported until November 2028, because .NET 8 stops getting security fixes on
+The team took the decision on 1 October 2026. It is written in
+[`docs/decisions/002-layeredArchitecture.md`](../decisions/002-layeredArchitecture.md) (issue 11, tasks 11.1 and 11.2), with
+the options that lost, the sources and the compiler proof. The version of .NET has its own file,
+[`docs/decisions/003-dotnet10.md`](../decisions/003-dotnet10.md) (task 11.3): .NET 10, the long term support version,
+supported until 14 November 2028, because .NET 8 and .NET 9 stop getting security fixes on
 10 November 2026, in the middle of this project.
 
 ## Layers
 
-The two decisions behind this structure are [layered architecture](../decisions/12-layeredArchitecture.md)
-and [the .NET 10 target](../decisions/12-dotnet10.md).
+The two decisions behind this structure are [layered architecture](../decisions/002-layeredArchitecture.md)
+and [the .NET 10 target](../decisions/003-dotnet10.md).
 
-The server has four layers, each one project in `backend`, plus the test project
-`api/Connect.Tests`. The solution file is `api/Connect.sln`. The cards explain the layers
-with a restaurant.
+The server has four layers, each one project in `api`, plus the start project `api/Connect`, which
+starts the server and connects the layers. The tests sit in one test project per layer,
+`api/Connect.Application.Tests`, `api/Connect.Infrastructure.Tests` and `api/Connect.Presentation.Tests`,
+and `api/Connect.Tests` for tests across projects. The solution file is `api/Connect.slnx`. The cards
+explain the layers with a restaurant.
 
 | Layer | On the cards | What it holds | Folders |
 | --- | --- | --- | --- |
 | Presentation | the waiter | The endpoints, the validators of what comes in, the session guard, the rate limit, the health address. It reads a request, calls a handler and returns the answer. | `Program.cs`, `Features/<Feature>/<Feature>Endpoints.cs`, `Validators/<Name>RequestValidator.cs`, `Authentication/`, `RateLimiting/` |
 | Application | the chef | The commands, queries and handlers with the business rules, for example that an email address must still be free. | `DependencyInjection.cs`, `Abstractions/ICommandHandler.cs`, `IQueryHandler.cs`, `IAppDbContext.cs`, `Features/<Feature>/<UseCase>/<UseCase>Command.cs` or `Query.cs` with `<UseCase>Handler.cs` |
 | Domain | the menu | The entities and the contracts that are not about data access, for example `IMailSender`. It uses nothing. | `Entities/<Entity>.cs`, `Accounts/PasswordRules.cs` |
-| Infrastructure | the storeroom | Holds the database connection, the table settings, the migrations and the mail sender. The chef reaches the data through the hatch IAppDbContext. | `Persistence/AppDbContext.cs`, `Persistence/Configurations/`, `Migrations/`, `Mail/` |
+| Infrastructure | the storeroom | Holds the database connection, the table settings, the migrations and the mail sender. The chef reaches the data through the hatch IAppDbContext. | `Persistence/ConnectDbContext.cs`, `Persistence/Migrations/`, `Mail/` |
 
 Which project may use which (the `ProjectReference` lines, issue 03 task 3.1):
 
-- Presentation uses Application and Infrastructure. It needs Infrastructure only to register its
-  classes at the start (`AddInfrastructure()`).
+- Connect, the start project, uses Presentation and Infrastructure. `Program.cs` only calls
+  `AddApplication()`, `AddInfrastructure(configuration)` and `AddPresentation()`.
+- Presentation uses Application.
+- Infrastructure uses Application, because it implements contracts of Application such as
+  `IAppDbContext`.
 - Application uses Domain.
-- Infrastructure uses Domain.
 - Domain uses nothing.
+- Each test project uses only the project it tests.
 
 The diagram below shows the four layers and the direction in which each may use another.
 
 ```mermaid
 flowchart TB
     Browser["Browser: the React screen"] -->|"HTTP request to /api"| P
-    subgraph Server["Connect server, api/Connect.sln"]
+    subgraph Server["Connect server, api/Connect.slnx"]
+        C["Connect, the start project: Program.cs"]
         P["Presentation, the waiter: endpoints and validators"]
         A["Application, the chef: handlers and business rules"]
         D["Domain, the menu: entities and contracts"]
         I["Infrastructure, the storeroom: AppDbContext, EF Core, mail"]
+        C -->|"uses"| P
+        C -->|"uses, to register classes"| I
         P -->|"uses"| A
-        P -->|"uses, only to register classes"| I
         A -->|"uses"| D
-        I -->|"uses, implements the contracts"| D
+        I -->|"uses, implements the contracts"| A
     end
     I -->|"EF Core with Npgsql"| DB[("PostgreSQL 16")]
     I -->|"SMTP"| Mail["Mail server"]
@@ -172,7 +180,9 @@ project reference, so the compiler refuses any other direction.*
 Infrastructure holds the connection, the mappings and the migrations. That already happened once
 on paper, when SQL Server became PostgreSQL on 26 September 2026 before any code existed.
 Testability: the chef depends on the contract `IAppDbContext`, so a handler is unit tested with an
-in-memory SQLite database instead of the real one. Safety for beginners: a wrong reference does
+in-memory SQLite database instead of the real one. SQLite is not PostgreSQL, so a rule that
+depends on PostgreSQL itself, such as a unique index or citext, gets a database test against a
+real PostgreSQL (`docs/decisions/002-layeredArchitecture.md`, part Testing). Safety for beginners: a wrong reference does
 not build.
 
 ### The road of one request
@@ -186,7 +196,7 @@ slice copies it:
    wrong input with one message per field.
 3. Application: the handler checks that the email address is still free and turns the password
    into a hash.
-4. Infrastructure: `AppDbContext` saves one row in the table `account`.
+4. Infrastructure: `ConnectDbContext` saves one row in the Identity table `AspNetUsers`.
 5. The answer goes back the same way and the page shows "Your account is made".
 
 The diagram below shows the same request as messages between the screen, the layers and the database.
@@ -359,6 +369,14 @@ through a new issue.
 - No secret is ever in Git, in a log or in the Terraform state. In production the secrets are
   GitLab variables that `infra/k3s/applySecrets.sh` turns into Kubernetes Secrets (issue 95
   Connect and its database described in Terraform).
+
+The first migration is `AddAccountTable` in
+`api/Connect.Infrastructure/Persistence/Migrations/`. It creates the ASP.NET Identity tables,
+the `profile` table and the indexes and constraints used by accounts. The
+`ux_account_email` unique index makes normalized email addresses case-insensitive for uniqueness.
+The `AspNetUsers.password_hash` check allows `NULL` but rejects an empty string. The database
+constraints are covered by PostgreSQL integration tests in
+`api/Connect.Infrastructure.Tests/Persistence/AccountTableTests.cs`.
 
 ## Security in the architecture
 

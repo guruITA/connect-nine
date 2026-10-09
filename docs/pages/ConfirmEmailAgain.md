@@ -60,6 +60,10 @@ Changes on other pages made by task 28.3: CreateAccount.tsx gets the link "send 
 - Not reachable: "Connect is not reachable right now, try again later" below the button, the address stays in the field. A tester checks this with airplane mode.
 - Phone (360 pixels wide) and laptop (1280 pixels wide): the page matches the Figma frame Send the confirmation email again at both widths, shown with screenshots in the merge request.
 - Design: the Figma frame Send the confirmation email again on the Figma board of Connect. Colours, fonts and spacing only through web/src/styles/tokens.css.
+- Clickable prototype (laptop, sprint 1 and 2), on the Figma page Prototype sprint 1 and 2 (desktop). The line above each screen names its GitLab issues.
+  - [A09 Send the confirmation email again](https://www.figma.com/design/SAVxDf3rlsWz22qlzTEYte/Young-Amstelland-Connect--team-workspace?node-id=1017-1554)
+  - [A10 Confirmation email sent again](https://www.figma.com/design/SAVxDf3rlsWz22qlzTEYte/Young-Amstelland-Connect--team-workspace?node-id=1017-1667)
+  - [A11 Send again, wait a minute](https://www.figma.com/design/SAVxDf3rlsWz22qlzTEYte/Young-Amstelland-Connect--team-workspace?node-id=1017-1786)
 
 ## Accessibility and privacy
 

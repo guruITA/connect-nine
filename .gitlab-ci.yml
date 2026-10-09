@@ -1,17 +1,61 @@
-# Pipeline of Connect. Task 1.4 of issue 01 adds the stages build and test.
+# Pipeline of Connect (task 1.4 of issue 01).
+# build: compiles the server and the screen. Empty for now, task 3.8 (#266) adds backend-build and frontend-build.
+# test:  checks every change. env-file-check and branch-flow run here now, #266 adds the tests of the server and the screen.
+# A red job blocks the merge: a reviewer never approves a merge request with a red pipeline (docs/team/codeConventions.md).
 workflow:
   rules:
+    # Every merge request gets one pipeline.
     - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+    # A push to a branch with an open merge request already has the pipeline above, so no second one.
+    - if: $CI_COMMIT_BRANCH && $CI_OPEN_MERGE_REQUESTS
+      when: never
+    # After a merge, dev and main run once more on the merged result.
+    - if: $CI_COMMIT_BRANCH == "dev" || $CI_COMMIT_BRANCH == "main"
+    # The weekly scan of dev (Build, Pipeline schedules). Only the two scan jobs run then.
+    - if: $CI_PIPELINE_SOURCE == "schedule"
+    # A pipeline started by hand with RUN_SSH_CHECK=yes, to try the way to the test server (job ssh-check).
+    - if: $RUN_SSH_CHECK == "yes"
 
+# Every job except the two scan jobs starts with the rule
+#   - if: $CI_PIPELINE_SOURCE == "schedule"
+#     when: never
+# so the weekly scheduled pipeline runs only the scan and never deploys. A job added later copies that rule.
 stages:
-  - check
+  - build
+  - test
+  - scan
+  - deploy
 
-# main only takes merge requests from dev (docs/team/codeConventions.md, Branches and merge requests).
-branch-flow:
-  stage: check
+# Fails on any committed .env file and names it, so no password reaches Git (rule 3 of the code conventions).
+env-file-check:
+  stage: test
   image: alpine:3.20
   tags:
     - hva
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "schedule"
+      when: never
+    - when: on_success
+  script:
+    - |
+      env_files="$(find . -type f \( -name '.env' -o -name '.env.*' \) ! -name '.env.example' -not -path './.git/*' -print)"
+      if [ -n "$env_files" ]; then
+        echo "Env files must not be committed:"
+        printf '%s\n' "$env_files"
+        exit 1
+      fi
+      echo "No env file committed."
+
+# main only takes merge requests from dev (docs/team/codeConventions.md, Branches and merge requests).
+branch-flow:
+  stage: test
+  image: alpine:3.20
+  tags:
+    - hva
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "schedule"
+      when: never
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
   script:
     - echo "Merge request from $CI_MERGE_REQUEST_SOURCE_BRANCH_NAME into $CI_MERGE_REQUEST_TARGET_BRANCH_NAME"
     - |
@@ -20,16 +64,89 @@ branch-flow:
         exit 1
       fi
 
-dotenv-check:
-  stage: check
+# Stops a package of the server with a known high or critical advisory (#22).
+# NuGet audit in api/Directory.Build.props turns such a package into error NU1903 or NU1904 during the restore,
+# and dotnet list package names every vulnerable package, also the ones that come in through another package.
+# The job decides from the text of both, not from an exit code.
+# An advisory the client accepted has a NuGetAuditSuppress line in api/Directory.Build.props. The restore skips it,
+# dotnet list package does not, so the job takes the lines with that advisory address out of the list before the check.
+backend-scan:
+  stage: scan
+  image: mcr.microsoft.com/dotnet/sdk:10.0
+  tags:
+    - hva
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "schedule"
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+    - if: $CI_COMMIT_BRANCH == "dev" || $CI_COMMIT_BRANCH == "main"
+  script:
+    - cd api
+    - dotnet restore > restore.txt 2>&1 || restore_failed=1
+    - cat restore.txt
+    - dotnet list package --vulnerable --include-transitive > scan.txt 2>&1 || true
+    - cat scan.txt
+    - grep -o 'NuGetAuditSuppress Include="https://[^"]*"' Directory.Build.props | cut -d '"' -f 2 > accepted.txt || true
+    - grep -v -F -f accepted.txt scan.txt > open.txt || true
+    - |
+      if grep -E -q "NU1903|NU1904" restore.txt || grep -E -q "\b(High|Critical)\b" open.txt; then
+        echo "A package has a known high or critical advisory. Update it, or see docs/security/securityExceptions.md."
+        exit 1
+      fi
+      if [ -n "$restore_failed" ]; then
+        echo "dotnet restore failed for another reason, see the log above."
+        exit 1
+      fi
+      if grep -F -q -f accepted.txt scan.txt; then
+        echo "Skipped, accepted by the client in docs/security/securityExceptions.md:"
+        grep -F -f accepted.txt scan.txt
+      fi
+      echo "No package with a known high or critical advisory."
+
+# The same for the packages of the screen. Runs once web/package.json exists (#263).
+frontend-scan:
+  stage: scan
+  image: node:22-alpine
+  tags:
+    - hva
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "schedule"
+      exists:
+        - web/package.json
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+      exists:
+        - web/package.json
+    - if: $CI_COMMIT_BRANCH == "dev" || $CI_COMMIT_BRANCH == "main"
+      exists:
+        - web/package.json
+  script:
+    - cd web
+    - npm ci
+    - npm audit --audit-level=high
+
+# Proves the pipeline can reach the test server as the user deploy, without a secret in Git or in a log (task 9.5, #240).
+# Started by hand on dev, or in a pipeline started with RUN_SSH_CHECK=yes. The three variables are protected,
+# so a run on a branch that is not protected gets no key and ends red. Task 3.9 (#267) replaces it with deploy-test.
+ssh-check:
+  stage: deploy
   image: alpine:3.20
   tags:
     - hva
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "schedule"
+      when: never
+    - if: $RUN_SSH_CHECK == "yes"
+    - if: $CI_COMMIT_BRANCH == "dev"
+      when: manual
+      allow_failure: true
   script:
     - |
-      dotenv_files="$(find . -type f \( -name '.env' -o -name '.env.*' \) ! -name '.env.example' -not -path './.git/*' -print)"
-      if [ -n "$dotenv_files" ]; then
-        echo "Dotenv files must not be committed:"
-        printf '%s\n' "$dotenv_files"
+      if [ -z "$SSH_PRIVATE_KEY" ]; then
+        echo "No deploy key. This branch is not protected, or the variable is missing."
         exit 1
       fi
+    - apk add --no-cache openssh-client >/dev/null
+    - install -d -m 700 ~/.ssh
+    - printf '%s' "$SSH_PRIVATE_KEY" | base64 -d > ~/.ssh/id_ed25519
+    - chmod 600 ~/.ssh/id_ed25519
+    - printf '%s\n' "$SSH_KNOWN_HOSTS" > ~/.ssh/known_hosts
+    - ssh -o BatchMode=yes -o IdentitiesOnly=yes -i ~/.ssh/id_ed25519 "deploy@$TEST_SERVER_HOST" hostname

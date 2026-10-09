@@ -26,15 +26,19 @@ through a merge request.
 **Still to do, in order.**
 
 1. The rest of issue 01 The repository, the pipeline and the team rules: the pipeline file with
-   its stages, `docs/team/onboarding.md` and the decision on the code conventions. Owner: whole
-   team. Date: sprint 1, before 9 October 2026.
-2. Issue 09 Every team member on the client's server: the test site with docker compose on the
-   client's server. It is blocked until the client gives the first login and points the test
-   address at the server. Owner: whole team, with the client. Date: sprint 1, before 9 October
-   2026.
-3. Issue 11 The team agrees on the layered architecture: the four backend projects and the way
-   data is read and written, agreed before anyone writes them. Owner: whole team. Date: first
-   week of sprint 1.
+   its stages (merge request !24), the onboarding and the conventions with examples (!29), the
+   templates part (!28), and the decision on the code conventions (!26). Pipelines must succeed is
+   on since 8 October 2026. Still open: the team confirms `docs/decisions/001-codeConventions.md`
+   at a stand up, and a teammate times the onboarding. Owner: whole team.
+2. Issue 09 Every team member on the client's server: personal users, the firewall, Caddy with a
+   padlock on https://31-70-66-186.sslip.io and the user deploy were set up on 9 October 2026
+   (merge request !34). Still open: the DNS record of the real test address from the client, the
+   GitLab variables of the pipeline, the first login of each member and the check with the client.
+   Owner: whole team, with the client.
+3. Issue 11 The team agrees on the layered architecture: decided on 1 October 2026 and written in
+   `docs/decisions/002-layeredArchitecture.md` and `docs/decisions/003-dotnet10.md` (merge request
+   !27), with the four layer projects of task 3.1 (#259) on dev. Still open: every member signs
+   Agreed by in both files. Owner: whole team.
 4. One thin end-to-end slice: issue 03 Create an account, from the database through to the
    screen, with its build and test jobs in the pipeline and its first deploy to the test site.
    Then issues 04, 05, 06, 07 and 08 of sprint 1. Owner: whole team. Date: sprint 1, before 9

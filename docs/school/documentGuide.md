@@ -184,7 +184,7 @@ For the team, it is what a new issue must follow. When anything else disagrees w
 
 The board number of every issue next to its GitLab number. The cards name each other by board number, GitLab gives its own numbers.
 
-For the studio, it supports **MS**: it keeps the planning on the Figma board traceable to GitLab.
+For the studio, it supports **MS**: it keeps the board numbers that the issues use traceable to their GitLab numbers.
 
 For the team, it is the lookup when an issue says "issue 92" and you need #156.
 

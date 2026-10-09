@@ -1,20 +1,21 @@
 # How the GitLab project is set up
 
-How the project Connect Nine on gitlab.fdmci.hva.nl is set up, written so someone outside the team can repeat it on a new project. It follows section 8 of the page Issue creation on the Figma board and tasks 1.2, 1.3 and 1.8 of issue 01. Set on 27 September 2026.
+How the project Connect Nine on gitlab.fdmci.hva.nl is set up, written so someone outside the team can repeat it on a new project. It follows tasks 1.2, 1.3 and 1.8 of issue 01. Set on 27 September 2026.
 
-The HvA GitLab runs GitLab 19.4 in the Free tier. Where a setting of section 8 needs a paid tier, this file says what the team does instead.
+The HvA GitLab runs GitLab 19.4 in the Free tier. Where a setting needs a paid tier, this file says what the team does instead.
 
 ## Members
 
-The five students are Developers on the project: Bayon Eerhart, Nick Hoebe,
+The five students are Maintainers on the project, through the HvA group (access
+level 40, checked through the GitLab API on 8 October 2026): Bayon Eerhart, Nick Hoebe,
 Wesley Oerlemans, Gurpreet Singh and Kelvin van Voorst. Their individual
 profiles and levels are listed in the collaboration agreement. Teachers and
 coaches only watch the work; they do not take part in making changes.
 
 The client, Rachid Kherrazi of the WailSalutem Foundation, has no GitLab
 account.
-The school accounts cannot add members, so the client cannot be added to the
-project. He follows the work through the sprint review and the client contact
+The HvA GitLab only has school accounts (login through the school, no sign up),
+so the client cannot get an account and cannot be added to the project. He follows the work through the sprint review and the client contact
 log in `docs/client/clientContact.md`. The log records what the team asks and
 what the client answers, so every student can follow the same information.
 
@@ -24,7 +25,7 @@ what the client answers, so every student can follow the same information.
 - Settings, Repository, Branch defaults: dev is the default branch, so every clone and every new merge request starts from dev, and GitLab offers the templates of .gitlab from dev.
 - Settings, Repository, Protected branches, for main and for dev: Allowed to push and merge set to No one, Allowed to merge set to Maintainers, Allowed to force push off. Nobody can push to dev or main, every change goes through a merge request.
 - main only takes merge requests from dev. The pipeline job branch-flow in .gitlab-ci.yml checks it: a merge request into main from any other branch fails that job. The job runs on the HvA runners with the tag hva.
-- Settings, Merge requests: Pipelines must succeed is switched on after the job branch-flow is merged. From then on a red branch-flow blocks the Merge button.
+- Settings, Merge requests: Pipelines must succeed is on, switched on by Wesley Oerlemans on 8 October 2026. A merge request with a red or running pipeline cannot be merged. On top of that, a reviewer never approves a merge request with a red pipeline (rule 11 of the code conventions).
 - A working branch is `<type>/<issue number>-<short name>`, made from dev. An urgent repair of the live site is `hotfix/<short name>`. It also goes through dev, because main only takes merge requests from dev. See docs/team/codeConventions.md.
 - History: the first set of templates and docs went onto main directly on 27 September 2026, before the protection existed. Every change after that goes through a merge request.
 
@@ -42,11 +43,28 @@ flowchart LR
 - Settings, Merge requests: All threads must be resolved on, and Delete source branch on by default.
 - Settings, Merge requests, Merge request approvals: one approval required from any member, the author may not approve their own merge request, and people who added commits may not approve it either. Approvals are removed when new commits are pushed.
 - The team rule holds on top of the setting: nobody merges without an approval of someone else, and the reviewer of the Definition of Done checks it on every issue.
-- The template .gitlab/merge_request_templates/Default.md fills the description of every new merge request. Its parts: Relates to, What changed, How to check it, The test that fails when its rule is removed, Proof for the portfolio, The version to go back to, TODO (rule 10 of the code conventions) and AI use (section 9.1 of the collaboration agreement).
+- Every merge request has all five students as reviewer: Bayon Eerhart, Gurpreet Singh, Nick Hoebe, Kelvin van Voorst and Wesley Oerlemans (team rule since 9 October 2026), so everyone sees every change. One approval of someone who is not the author is still enough to merge. The template Default.md holds the quick action `/assign_reviewer` with the five names. A merge request made through the API or glab gets them with `reviewer_ids`.
+- The template .gitlab/merge_request_templates/Default.md fills the description of every new merge request. Its parts: Relates to, the reviewers line, What changed, How to check it, The test that fails when its rule is removed, Proof for the portfolio, The version to go back to, TODO (rule 10 of the code conventions) and AI use (section 9.1 of the collaboration agreement).
+
+## Pipeline
+
+The file is .gitlab-ci.yml in the root. It runs on the HvA runners with the tag hva.
+
+- When it runs: once on every merge request, and once more on dev and on main after a merge. A push to a branch that already has an open merge request does not start a second pipeline.
+- Stage build: compiles the server and the screen. Still empty, task 3.8 (#266) adds backend-build and frontend-build.
+- Stage test, job env-file-check: fails when a .env file is in Git, and names the file in its log. Only .env.example may be committed.
+- Stage test, job branch-flow: only on a merge request. Fails when the target is main and the source branch is not dev.
+- A red pipeline locks the Merge button through Pipelines must succeed (part Branches and protection). On top of that, a reviewer never approves a merge request with a red pipeline.
+
+When it is red:
+
+1. Open the merge request, tab Pipelines, and click the red run.
+2. Click the red job. The last lines of the log say what failed: env-file-check lists the .env file, branch-flow says which branch must go into dev first.
+3. Fix it on your branch and push. The pipeline starts again by itself. A .env you committed by accident: `git rm --cached <file>`, then commit and push. The password in it counts as leaked, so change it.
 
 ## Labels
 
-Settings, Labels. Scoped labels use two colons. The colours follow section 8 step 1.
+Settings, Labels. Scoped labels use two colons. The colours, as set in GitLab on 9 October 2026: prio::must FFD6D1, prio::should FFE9A8, prio::could D6F2DC, prio::nice-to-have EDEDED, type::slice CFE8FF and the other types E6DDFB, sprint::1 111111, sprint::1-stretch FFFFFF, sprint::2 to sprint::5 6B6B6B, blocked 111111, epic::&lt;name> 6699CC, EPIC FFDDC2, school::required FFE9A8, outcome and level F3F3F1, direction::full-stack CFE8FF, direction::security-specialist FFE9A8, Doing and Verify E6E6E6. The page Epics and features on the Figma board uses the four prio colours.
 
 - prio::must, prio::should, prio::could, prio::nice-to-have, starred in that order (label priority) so lists sort by them.
 - type::slice, type::setup, type::research, type::decision, type::client.
@@ -120,6 +138,13 @@ flowchart TD
 - Every task is a child item of its issue, in the order of the board, with its portfolio labels and the milestone of its issue.
 - Every "is blocked by" of the board is a linked item, so each issue also shows "blocks" on the other side.
 - New issues start from the templates in .gitlab/issue_templates, one per type.
+
+## Templates
+
+- Issue templates live in .gitlab/issue_templates on dev: slice, setup, research, decision and client for an issue, and task for a task. New issue, Description, Choose a template offers all six. The Definition of Done in each template copies only the bold sentences of docs/team/definitionOfDone.md, and the two change in the same merge request.
+- The merge request template is .gitlab/merge_request_templates/Default.md. Because it is named Default, GitLab fills it in by itself on every new merge request made in the browser. A merge request made through the API or glab starts empty, so paste the template there by hand.
+- The line `/assign_reviewer @eerharb @singhg11 @hoebenj @voorstk2 @oerlemw` in the template adds the five reviewers when the merge request is saved. Still to confirm on the first merge request made in the browser after this merge: the five names show under Reviewers and the line is gone from the description. If the line stays, add the reviewers by hand.
+- Settings, General, Default description template for issues: GitLab offers this setting only in Premium and Ultimate (GitLab Docs, Description templates). The project API shows the field issues_template, empty on 8 October 2026, but a field in the API does not prove the HvA licence has the setting. The team does not need it: an issue has five types and no single default fits all of them, and the merge request default comes from the name Default.md.
 
 ## AI use declaration
 

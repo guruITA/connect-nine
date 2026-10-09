@@ -9,7 +9,7 @@ Read three documents first, in this order: [collaborationAgreement.md](collabora
 | Tool | Version | Why |
 |---|---|---|
 | .NET SDK | 10 | The backend of Connect |
-| Node.js | current LTS | The frontend of Connect |
+| Node.js | 22, at least 22.13 | The frontend of Connect. Vite needs 22.12 or newer, ESLint and the test tools need 22.13 |
 | Docker | current | The database and the test site run in containers |
 | Git | current | Every change reaches dev through a merge request |
 | An editor | Visual Studio, Rider or Visual Studio Code | Any of the three is fine |
@@ -23,15 +23,19 @@ docker --version
 git --version
 ```
 
+You should see four version numbers. `dotnet --version` starts with 10. `node --version` starts with v and the number of the current LTS. The other two print a line that starts with `Docker version` and `git version`. A line such as `command not found` means the tool is not installed or not on your path.
+
 ## 2. Get the code
 
 Clone the project and stay on `dev`, which is the default branch.
 
 ```
-git clone <the project address on GitLab>
+git clone https://gitlab.fdmci.hva.nl/studio/social-impact-apps/onderwijs/projects/2026-2027-semester-1/projects/project-9-wail-salutem-foundation-project-2/connect-nine.git
 cd connect-nine
 git switch dev
 ```
+
+You should see `Cloning into 'connect-nine'...`, and after the last command `Already on 'dev'`.
 
 Nobody pushes to `dev` or `main`. Both are protected. Every change starts on its own branch and reaches `dev` through a merge request that a teammate approves.
 
@@ -119,23 +123,74 @@ A real password, key, token or connection string that carries credentials never 
 
 ### Set up your local secrets
 
-Once per clone, in the startup project of the backend:
+Once per clone, in the startup project of the backend (`api/Connect/Connect.csproj`):
 
 ```
 dotnet user-secrets init
 ```
 
-That writes a `<UserSecretsId>` into the project file. Then set a value:
+That writes a `<UserSecretsId>` into the project file. Then set a value. The server reads the
+`ConnectionStrings:DefaultConnection` setting:
 
 ```
 dotnet user-secrets set "ConnectionStrings:Default" "Host=localhost;Port=5432;Database=connect;Username=connect;Password=<your local password>"
 dotnet user-secrets list
 ```
 
+For this repository, the complete command is:
+
+```
+dotnet user-secrets set "ConnectionStrings:DefaultConnection" "Host=localhost;Port=5432;Database=connect;Username=connect;Password=your-local-password"
+```
+
+Use `ConnectionStrings:DefaultConnection` for this repository; older examples using
+`ConnectionStrings:Default` are obsolete.
+
 Two things to know about User Secrets:
 
 - The file lives outside the repository, at `~/.microsoft/usersecrets/<UserSecretsId>/secrets.json` on Linux and macOS, and at `%APPDATA%\Microsoft\UserSecrets\<UserSecretsId>\secrets.json` on Windows.
 - It is plain text. User Secrets keeps a secret out of Git. It does not protect the value on your disk, and it is only read when the environment is Development.
+
+### Create and apply migrations
+
+The database context is in `api/Connect.Infrastructure`, while `api/Connect` is the startup
+project that loads the connection string. Create a migration with both projects specified:
+
+```
+dotnet ef migrations add <MigrationName> \
+  --project api/Connect.Infrastructure/Connect.Infrastructure.csproj \
+  --startup-project api/Connect/Connect.csproj \
+  --output-dir Persistence/Migrations
+```
+
+Apply all pending migrations to the local PostgreSQL database:
+
+```
+dotnet ef database update \
+  --project api/Connect.Infrastructure/Connect.Infrastructure.csproj \
+  --startup-project api/Connect/Connect.csproj
+```
+
+List migrations before changing database state:
+
+```
+dotnet ef migrations list \
+  --project api/Connect.Infrastructure/Connect.Infrastructure.csproj \
+  --startup-project api/Connect/Connect.csproj
+```
+
+To go back one migration, use the migration immediately before the current one from that list.
+Never put a fixed old migration name in a shared command:
+
+```
+dotnet ef database update <MigrationBeforeYours> \
+  --project api/Connect.Infrastructure/Connect.Infrastructure.csproj \
+  --startup-project api/Connect/Connect.csproj
+```
+
+Do not edit a migration already on `dev`; add a new migration instead. The local test factory
+runs `Database.Migrate()` once when its host starts. Infrastructure table tests use PostgreSQL,
+because InMemory cannot enforce PostgreSQL indexes, check constraints or PostgreSQL error codes.
 
 ### Production secrets
 
@@ -169,28 +224,71 @@ The ignore rules cover the variants, so `.env.local` and `.env.production` canno
 
 ## 5. Run Connect
 
+### Start the server
+
+The backend has four layers: Presentation handles HTTP, Application holds use
+cases and business rules, Domain holds core contracts and entities, and
+Infrastructure handles external systems such as the database. The start project
+`api/Connect` connects them, see `docs/decisions/002-layeredArchitecture.md`.
+
 ```
 dotnet run --project api/Connect/Connect.csproj
+```
+
+You should see `Now listening on: http://localhost:5000`. Open http://localhost:5000/api/health in a browser: you should see `{"status":"healthy"}`. Stop the server with Ctrl+C.
+
+### Start the frontend
+
+The frontend is a React app in the folder `web`, built and served by Vite. It needs Node.js 22, at least 22.13. `web/.nvmrc` says 22, so with nvm you run `nvm use` in that folder.
+
+```
+cd web
 npm install
 npm run dev
 ```
 
-The backend has four layers: Presentation handles HTTP, Application holds use
-cases and business rules, Domain holds core contracts and entities, and
-Infrastructure handles external systems such as the database. Start the server
-with `dotnet run --project api/Connect/Connect.csproj`; it listens on
-`http://localhost:5000`.
+You should see a line with `Local:` and an address such as http://localhost:5173. Open it. Run `npm install` again after a pull that changed `package.json`.
+
+The frontend never names the address of the server. Every call to `/api` goes to Vite, and Vite passes it on to `http://localhost:5000` (the proxy in `web/vite.config.ts`). The browser only sees one address, so the server needs no CORS settings. Start the server as well when a page needs data. Check the proxy with:
+
+```
+curl http://localhost:5173/api/health
+```
+
+It answers `{"status":"healthy"}` when the server runs.
+
+The scripts in `web/package.json`:
+
+| Script | What it does |
+|---|---|
+| `npm run dev` | Starts Vite on http://localhost:5173 and reloads the page on every change |
+| `npm run build` | Checks the types and builds the site into `web/dist` |
+| `npm run lint` | ESLint with the rules for TypeScript, React hooks and accessibility |
+| `npm run format` | Prettier puts every file in the team layout |
+| `npm test` | Runs every Vitest test once |
 
 ## 6. Run the checks before you push
 
+In the root of the repository:
+
 ```
-dotnet build
-dotnet format --verify-no-changes
-dotnet test
+dotnet build api/Connect.slnx
+dotnet format api/Connect.slnx --verify-no-changes
+dotnet test api/Connect.slnx
+```
+
+You should see `Build succeeded` with `0 Warning(s)` and `0 Error(s)`, no output from the format check, and `Passed!` with `Failed: 0` for the tests.
+
+In the folder `web`:
+
+```
 npm run lint
 npx prettier --check .
 npm test
+npm run build
 ```
+
+You should see no lint errors, `All matched files use Prettier code style!` and every test passed.
 
 The pipeline runs the same checks. A merge request cannot be accepted while any of them is red.
 
@@ -199,8 +297,10 @@ The pipeline runs the same checks. A merge request cannot be accepted while any 
 1. Take an issue from the board of the sprint and drag it to the list In progress.
 2. Branch from `dev`, named `<type>/<issue number>-<short name>`.
 3. Commit as `<type>(<scope>): <what changed> (#<issue number>)`.
-4. Open a merge request into `dev` and ask a teammate who did not write it to approve.
-5. Walk the Definition of Done of the type of the issue, line by line.
+4. Push the branch with `git push -u origin <your branch>`. You should see a line with a link to make a merge request.
+5. Open the link, choose `dev` as the target and ask a teammate who did not write it to approve. The template fills the description: start it with `Relates to #<issue number>`.
+6. Wait for the pipeline of the merge request. Green means you can ask for the review. Red: click the red run, then the red job, and read the last lines of its log. They say what failed. The part Pipeline of [gitlabSetup.md](gitlabSetup.md) explains each job.
+7. Walk the Definition of Done of the type of the issue, line by line.
 
 ## 8. Check that no secret leaked
 
@@ -210,7 +310,7 @@ Run this before every merge request:
 git grep -i -E "password|secret|token|connectionstring"
 ```
 
-Everything it finds has to be a placeholder or the name of a variable. If a real value ever reaches a commit, say so in the team channel at once. Removing it in a later commit is not enough, because the value stays in the history and has to be treated as leaked and replaced.
+You should see only lines where the word is a name, a placeholder or an explanation, such as `POSTGRES_PASSWORD=` in `.env.example`. Everything it finds has to be a placeholder or the name of a variable. If a real value ever reaches a commit, say so in the team channel at once. Removing it in a later commit is not enough, because the value stays in the history and has to be treated as leaked and replaced.
 
 ## 9. The words Connect uses
 
@@ -252,17 +352,15 @@ Issue 09 Every team member on the client's server (task 9.2) prepares the founda
 
 The server is IPv4 only today. The client's sheet names an IPv6 address, 2a01:239:4b8:db00::1, but it is not configured on the interface yet.
 
-### How to log in
+### Logging in
 
-For now, every team member logs in as root:
+Every team member has a user of their own, named after their first name in lower case, reachable only with their own ssh key. The keys came from each member's GitLab profile (User settings, SSH keys) on 9 October 2026, so a key you added on GitLab is a key that works here.
 
 ```
-ssh root@31.70.66.186
+ssh <your first name>@31.70.66.186
 ```
 
-Send your public ed25519 key to Wesley Oerlemans. Task 9.2 gives every member their own user with their own key, and after that root login and password login go off.
-
-On your first login, check the host key fingerprint against these three:
+You should see a prompt such as `nick@connect:~$`. On your first login, check the host key fingerprint against these three:
 
 ```
 ED25519 SHA256:jZUye4ZjNvmKksJkDOtlQ94+O/jKnpsfWvzAhqj2Nbk
@@ -270,44 +368,107 @@ ECDSA SHA256:jFBiJlKA3mGbIo0c5qv3sqeLa3xRRGyXRuGp9mSYLCI
 RSA SHA256:CmuGqwCHzubotlbA2rp/Ocg/P4yHMlochwTAXRxr35U
 ```
 
-### What runs on it today
+- Password login is off for everyone: `/etc/ssh/sshd_config.d/10-connect.conf` sets `PasswordAuthentication no` and `KbdInteractiveAuthentication no`. A try with a password answers `Permission denied (publickey)` (tried on 9 October 2026).
+- Root may still log in, but only with a key (`PermitRootLogin prohibit-password`), until a member of the group sudo has a sudo password. Then the same file gets `PermitRootLogin no`, checked with `sudo sshd -t` before `sudo systemctl reload ssh`.
+- The group sudo holds wesley. The second member of the group sudo is still to be chosen by the team. Each of the two sets their own sudo password in person on the server, never in a chat or a file.
 
-- Docker 29.8.2, Compose v5.5.1, buildx. `hello-world` ran. No containers, no volumes.
-- ufw is active, default deny incoming, and allows only 22/tcp, 80/tcp and 443/tcp, on IPv4 and IPv6.
-- fail2ban guards sshd: five failures bans an address for one hour.
-- unattended-upgrades is enabled.
-- Nothing of Connect is deployed yet.
+### New team member
 
-### How it was received and rebuilt on 2 October 2026
+On the server, as a member of the group sudo, with the new member's first name and their public key from their GitLab profile:
 
-The server had been used before, by an earlier iteration of this project built by other people. It carried Dokploy as a Docker Swarm stack with Traefik, PostgreSQL and Redis, a leftover Strapi volume, container images named sonarqube, young-amstelland-frontend and young-amstelland-backend, six ssh keys that were not the team's, and root logins from six different addresses since May 2026. Ports 3000, 8080 and 8081 were open to the internet.
+```
+sudo adduser --disabled-password --gecos "" <name>
+sudo install -d -m 700 -o <name> -g <name> /home/<name>/.ssh
+sudo nano /home/<name>/.ssh/authorized_keys   # paste only their public key
+sudo chown <name>:<name> /home/<name>/.ssh/authorized_keys
+sudo chmod 600 /home/<name>/.ssh/authorized_keys
+```
 
-On 2 October 2026 Wesley Oerlemans removed all of it: left the Docker swarm, removed every container, image and volume, purged and reinstalled Docker, deleted the old Dokploy files and home directories, removed every foreign key from root's authorized_keys, fully upgraded every package, removed old kernels, vacuumed the journal, reset the firewall to 22, 80 and 443, added fail2ban, set the hostname and the time zone, and rebooted. Disk use dropped from 21 GB to 2.9 GB. A copy of the old authorized_keys file stays on the server, in case a key belonged to someone who should keep access. The scripts and the log of the rebuild stay on the server too.
+You should see no output from the last two commands. The new member then logs in with `ssh <name>@31.70.66.186`.
+
+### Someone leaves
+
+```
+sudo deluser --remove-home <name>
+```
+
+You should see `Removing user '<name>'`. Their key and home folder are gone, and a login with their name answers `Permission denied (publickey)`.
 
 ### Who logged in
 
-Run `last` or `journalctl -u ssh` on the server to see every login.
-
-Today every login is root, because personal users come with task 9.2. The list cannot yet show names. Once every member has their own user, this part lists each member by name instead.
+`sudo journalctl -u ssh --since "7 days ago" | grep Accepted` lists every login with the user name, the key type and the time. `last` only lists logins with a terminal. Since 9 October 2026 the list shows personal first names instead of root.
 
 ### First login per team member
 
-| Name | First login |
+Each member writes their own line after their first login with their own user.
+
+| Name | First login with own user |
 |---|---|
-| Wesley Oerlemans | 2 October 2026 |
+| Wesley Oerlemans | 9 October 2026 |
 | Bayon Eerhart | |
 | Nick Hoebe | |
 | Gurpreet Singh | |
 | Kelvin van Voorst | |
 
-### What is still to do
+### Open ports
 
-- Task 9.1: the client points the DNS record of the test address at the server.
-- Task 9.2: every team member gets a personal user with their own key, two members get sudo, then password login and root login go off.
-- Task 9.3: check that every container listens on the server itself, not past the firewall.
-- Task 9.4: Caddy makes the padlock on the test address.
-- Task 9.5: a deploy user and `/srv/connect-test`, with the pipeline's own ssh key.
-- Task 9.6: the whole team and the client confirm access and the padlock.
+```
+sudo ufw status verbose
+```
+
+You should see `Default: deny (incoming), allow (outgoing)` and only these, for IPv4 and IPv6:
+
+| Port | Why |
+|---|---|
+| 22/tcp | The secure login (ssh) |
+| 80/tcp | Web visits, which Caddy sends on to https |
+| 443/tcp | Web visits with the padlock |
+
+- A scan from outside on 9 October 2026 found only 22 answering. 80 and 443 answer since Caddy runs.
+- Docker 29.8.2 with Compose 5.5.1 comes from Docker's own package source (download.docker.com).
+- Docker opens ports past ufw. So every container publishes its port only on 127.0.0.1, for example `"127.0.0.1:8080:8080"`. That holds for the database and the test mailbox of #39 as well, which are reached only through Caddy with a login.
+- The group docker equals full administrator rights on the server. Only the user deploy is in it, a team member only when needed.
+- `/srv/connect-test` holds the test site, owned by deploy.
+
+### The test address
+
+The test site is at https://31-70-66-186.sslip.io until the foundation sets the DNS record of the real test address (task 9.1, #236). sslip.io is a free name service that points a name with the IP address in it at that address. When the real address comes, only the first line of `deploy/Caddyfile` changes.
+
+- Caddy 2.11.7 runs as a system service, installed from its own package source on 9 October 2026. Its settings file is `deploy/Caddyfile` in Git and `/etc/caddy/Caddyfile` on the server.
+- The certificate comes from Let's Encrypt and Caddy renews it by itself. http answers with a redirect to https.
+- Change the file in Git first. After the merge: `scp deploy/Caddyfile <your name>@31.70.66.186:/tmp/Caddyfile`, then `sudo cp /tmp/Caddyfile /etc/caddy/Caddyfile`, `caddy validate --config /etc/caddy/Caddyfile` (you should see `Valid configuration`) and `sudo systemctl reload caddy`.
+- The log: `sudo journalctl -u caddy`. The end date of the certificate: `echo | openssl s_client -connect 31-70-66-186.sslip.io:443 -servername 31-70-66-186.sslip.io 2>/dev/null | openssl x509 -noout -enddate`.
+- Caddy writes no log of every visit, because the Caddyfile has no log directive.
+- Until the Connect server runs on 127.0.0.1:8080 (task 3.9, #267), the address answers 502 with the padlock. See the Caddy documentation on automatic https: https://caddyserver.com/docs/automatic-https
+
+### The pipeline on the server
+
+- The user deploy has no password, is in the group docker, owns `/srv/connect-test` and accepts only the deploy key of the pipeline. Nobody logs in as deploy by hand.
+- Three protected GitLab variables, under Settings, CI/CD, Variables: SSH_PRIVATE_KEY (the private deploy key, base64 on one line, masked), SSH_KNOWN_HOSTS (the host keys above) and TEST_SERVER_HOST. Protected means only dev and main get them, so a run on another branch gets no key.
+- The job ssh-check in `.gitlab-ci.yml` starts by hand on dev, or in a pipeline started with the variable RUN_SSH_CHECK set to yes. It logs in as deploy and prints the name of the server, `connect`.
+- The secret settings of the test site are in `/srv/connect-test/.env` on the server, rights 600, owner deploy. The database password was made on the server with `openssl rand -hex 24` and is not written anywhere else. `deploy/.env.example` lists every name.
+- **A new deploy key after a leak.** Make a new pair with `ssh-keygen -t ed25519`, put the public part in `/home/deploy/.ssh/authorized_keys` instead of the old one, the private part base64 encoded in SSH_PRIVATE_KEY, delete the private part from your laptop, and run ssh-check.
+- **Change the database password.** Change POSTGRES_PASSWORD and the password inside ConnectionStrings__Connect in `/srv/connect-test/.env` together. The database keeps its first password on its volume, so also change it in PostgreSQL itself, or start the test database over.
+
+## 11. The security scan
+
+Every merge request, every run on dev and main, and once a week on dev, the pipeline checks the packages of the server and the screen against the public lists of known holes (issue #22).
+
+- **Threshold.** High and critical stop the pipeline. Low and moderate do not, so the team is not stopped by every small advisory, while a serious hole never gets in.
+- **backend-scan.** `dotnet restore` with NuGet audit from `api/Directory.Build.props`, then `dotnet list package --vulnerable --include-transitive`. Red on NU1903 (high) or NU1904 (critical), or on High or Critical in the list. An advisory the client accepted (a NuGetAuditSuppress line, see `docs/security/securityExceptions.md`) is skipped, and the log names it under "Skipped, accepted by the client".
+- **frontend-scan.** `npm ci`, then `npm audit --audit-level=high`. It only runs once `web/package.json` exists.
+- **The same on your laptop.**
+
+  ```
+  cd api
+  dotnet restore
+  dotnet list package --vulnerable --include-transitive
+  ```
+
+  You should see "has no vulnerable packages" for every project. An advisory the client accepted still shows as High in this list; only the pipeline skips it. For the screen: `cd web`, `npm ci`, `npm audit --audit-level=high`, and you should see "found 0 vulnerabilities".
+- **When it is red.** Open the red job and read the package and the advisory link. Update the package to the version the advisory names as fixed, and push. Is there no fixed version, then tell the stand up the same day. Only the client may accept the risk, see `docs/security/securityExceptions.md`.
+- **The weekly run.** Build, Pipeline schedules, every Monday morning on dev. Only the two scan jobs run, nothing is deployed. One member per sprint reads the result on Monday and tells the stand up when it is red. Proposal: sprint 2 Wesley Oerlemans, sprint 3 Kelvin van Voorst, sprint 4 Nick Hoebe, sprint 5 Gurpreet Singh, decided at each sprint planning.
+- **Proof that it stops a change.** On 8 October 2026 the closed merge request !31 added `Newtonsoft.Json` 12.0.3 to the server on purpose. backend-scan turned red with NU1903 and the advisory GHSA-5crp-9r3c-p9vr (pipeline 583877), and turned green again after the package was removed. The screen half of this test follows once `web/package.json` exists.
 
 ## References
 

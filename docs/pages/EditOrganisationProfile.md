@@ -119,6 +119,8 @@ The form is the shared component web/src/components/OrganisationProfileForm.tsx 
 - The not reachable messages sit in role alert, the saved text on My account in role status.
 - Edit our profile and Cancel are links, because they go to another page.
 - Colours, fonts and spacing come only from web/src/styles/tokens.css, following the Figma frame Create an organisation profile.
+- Clickable prototype (laptop, sprint 1 and 2), on the Figma page Prototype sprint 1 and 2 (desktop). The line above each screen names its GitLab issues.
+  - [I04 Edit our organisation profile](https://www.figma.com/design/SAVxDf3rlsWz22qlzTEYte/Young-Amstelland-Connect--team-workspace?node-id=1020-510)
 - Privacy: the form never asks for the name, phone number or email address of a person, and the line above the form says not to put them in. An organisation can only ever change its own profile. The address has no id that could be changed.
 
 ## Built by

@@ -150,6 +150,13 @@ The wait message and the locked message appear within one second after pressing 
 - A screen reader reads the social buttons as Continue with Google and Continue with Facebook. The icons are hidden with aria-hidden.
 - The link Set a new password is reachable with Tab and opened with Enter.
 - Colours, fonts and spacing come only from web/src/styles/tokens.css, following the Figma frames Log in and Social buttons on the Figma board.
+- Clickable prototype (laptop, sprint 1 and 2), on the Figma page Prototype sprint 1 and 2 (desktop). The line above each screen names its GitLab issues.
+  - [C01 Log in](https://www.figma.com/design/SAVxDf3rlsWz22qlzTEYte/Young-Amstelland-Connect--team-workspace?node-id=1018-2)
+  - [C02 Log in, wait a minute](https://www.figma.com/design/SAVxDf3rlsWz22qlzTEYte/Young-Amstelland-Connect--team-workspace?node-id=1018-131)
+  - [C03 Log in, too many tries from this device](https://www.figma.com/design/SAVxDf3rlsWz22qlzTEYte/Young-Amstelland-Connect--team-workspace?node-id=1018-265)
+  - [C04 Log in, locked for fifteen minutes](https://www.figma.com/design/SAVxDf3rlsWz22qlzTEYte/Young-Amstelland-Connect--team-workspace?node-id=1018-400)
+  - [C05 Email: someone tried to log in](https://www.figma.com/design/SAVxDf3rlsWz22qlzTEYte/Young-Amstelland-Connect--team-workspace?node-id=1018-538)
+  - [D02 Log in, back to the member page](https://www.figma.com/design/SAVxDf3rlsWz22qlzTEYte/Young-Amstelland-Connect--team-workspace?node-id=1018-1176)
 - Privacy: nothing on the page tells a stranger whether an email address has an account on Connect. The wrong password message, the waits, the lock, the sentences below the lock and the box I am a person look the same for every address. The password is hidden, never kept and never shown. The page never shows who tried or from where. No script from Google or Facebook is loaded, so they do not learn that a young person visits Connect. The cookie is HttpOnly, so the screen asks the server who is logged in and never reads the cookie or keeps a logged in flag in local storage.
 - safeNextPath (web/src/utils/safeNextPath.ts) only follows next when it is a page of Connect. It refuses `//x`, `/\x`, full addresses, javascript: and /login, so a link can never send a member to a fake copy of Connect after logging in.
 

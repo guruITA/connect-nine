@@ -63,6 +63,8 @@ My account gets a link Saved below the link Connections of task 42.4 (MyAccount.
 - Error on taking a card off: "Not removed, Connect is not reachable right now" next to the button.
 - Phone (360 pixels wide) and laptop (1280 pixels wide): the page matches the Figma frame Saved at both widths, shown with screenshots in the merge request. axe reports 0 issues at both widths, also after a removal.
 - Design: the Figma frame Saved on the Figma board of Connect, page Design directions. Colours, fonts and spacing only through web/src/styles/tokens.css.
+- Clickable prototype (laptop, sprint 1 and 2), on the Figma page Prototype sprint 1 and 2 (desktop). The line above each screen names its GitLab issues.
+  - [J15 Saved](https://www.figma.com/design/SAVxDf3rlsWz22qlzTEYte/Young-Amstelland-Connect--team-workspace?node-id=1020-2993)
 
 ## Accessibility and privacy
 

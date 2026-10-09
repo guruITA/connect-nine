@@ -16,7 +16,9 @@ One file per task I did, with the proof block of the task filled in. A point tha
 
 | File | Task | Portflow |
 | --- | --- | --- |
+| `portfolioProof/task1499FigmaBoardInTeamDocs.md` | Task 179.1 The team documents follow the new Figma board (#1499), merge request !37 | Managing and Collaborating MS1 and MS4 |
 | `portfolioProof/task2RepositorySkeleton.md` | Task 1.1 The starting structure (#2), merge request !13 | Managing and Collaborating MS1 and MS4 |
+| `portfolioProof/task1497PrototypeInPageDocs.md` | Task 178.1 The page documents point to the prototype screens (#1497), merge request !35 | Managing and Collaborating MS1 and MS4 |
 | `portfolioProof/task9LoggedAfterwards.md` | Task 9 Templates and rules (#9), work logged afterwards as issues #1500 to #1515, merge request !39 | Managing and Collaborating MS1 and MS4 |
 
 ## The full documents behind them
