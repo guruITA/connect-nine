@@ -19,13 +19,13 @@ public sealed class CreateAccountRequestValidator
             .NotEmpty()
             .MinimumLength(15)
             .WithMessage("Password must be at least 15 characters")
-            .Matches("[0-9]")
+            .Must(password => password.Any(char.IsDigit))
             .WithMessage("Password must contain at least one digit")
-            .Matches("[a-z]")
+            .Must(password => password.Any(char.IsLower))
             .WithMessage("Password must contain at least one lowercase letter")
-            .Matches("[A-Z]")
+            .Must(password => password.Any(char.IsUpper))
             .WithMessage("Password must contain at least one uppercase letter")
-            .Matches("[^a-zA-Z0-9]")
+            .Must(password => password.Any(character => !char.IsLetterOrDigit(character)))
             .WithMessage("Password must contain at least one non-alphanumeric character");
     }
 }

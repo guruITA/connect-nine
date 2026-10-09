@@ -24,7 +24,6 @@ public static class DependencyInjection
 
         services
             .AddIdentityCore<Account>()
-            .AddPasswordValidator<PasswordValidator<Account>>()
             .AddRoles<IdentityRole<Guid>>()
             .AddEntityFrameworkStores<ConnectDbContext>();
 
