@@ -17,7 +17,7 @@ One file per task I did, with the proof block of the task filled in. A point tha
 | File | Task | Portflow |
 | --- | --- | --- |
 | `portfolioProof/task2RepositorySkeleton.md` | Task 1.1 The starting structure (#2), merge request !13 | Managing and Collaborating MS1 and MS4 |
-| `portfolioProof/task9LoggedAfterwards.md` | Task 9 Templates and rules (#9), work logged afterwards as issues #1500 to #1515, merge request !38 | Managing and Collaborating MS1 and MS4 |
+| `portfolioProof/task9LoggedAfterwards.md` | Task 9 Templates and rules (#9), work logged afterwards as issues #1500 to #1515, merge request !39 | Managing and Collaborating MS1 and MS4 |
 
 ## The full documents behind them
 
