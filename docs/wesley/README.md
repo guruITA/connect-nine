@@ -20,6 +20,7 @@ One file per task I did, with the proof block of the task filled in. A point tha
 | `portfolioProof/task2RepositorySkeleton.md` | Task 1.1 The starting structure (#2), merge request !13 | Managing and Collaborating MS1 and MS4 |
 | `portfolioProof/task1497PrototypeInPageDocs.md` | Task 178.1 The page documents point to the prototype screens (#1497), merge request !35 | Managing and Collaborating MS1 and MS4 |
 | `portfolioProof/task9LoggedAfterwards.md` | Task 9 Templates and rules (#9), work logged afterwards as issues #1500 to #1515, merge request !39 | Managing and Collaborating MS1 and MS4 |
+| `portfolioProof/task1519SprintReview1Documents.md` | Issue #1519 The Sprint 1 review documents in the repository | Managing and Collaborating MS1 |
 
 ## The full documents behind them
 
