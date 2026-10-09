@@ -294,7 +294,7 @@ The pipeline runs the same checks. A merge request cannot be accepted while any 
 
 ## 7. Your first change
 
-1. Take an issue from the board of the sprint and put it in Doing.
+1. Take an issue from the board of the sprint and drag it to the list In progress.
 2. Branch from `dev`, named `<type>/<issue number>-<short name>`.
 3. Commit as `<type>(<scope>): <what changed> (#<issue number>)`.
 4. Push the branch with `git push -u origin <your branch>`. You should see a line with a link to make a merge request.

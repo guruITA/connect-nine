@@ -14,10 +14,10 @@ in `docs/team/boardNumbers.md`.
 
 ## The five sprints
 
-Each sprint is a milestone in GitLab and has its own board with the lists Open, Doing, Verify
-and Closed (`docs/team/gitlabSetup.md`). A sprint ends in the week of its sprint review and
-retrospective in the HvA schedule. Every issue carries the milestone and the label of its
-sprint.
+Each sprint is a milestone in GitLab and has its own board with the lists Open, In progress,
+Verify, Won't do and Closed (`docs/team/gitlabSetup.md`). A sprint ends in the week of its
+sprint review and retrospective in the HvA schedule. Every issue carries the milestone and the
+label of its sprint.
 
 | Sprint | Start | End | Issues | Must | Should | Could |
 |---|---|---|---|---|---|---|
