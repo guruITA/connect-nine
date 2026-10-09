@@ -2,7 +2,7 @@
 
 One goal per sprint, and what a real person can do with Connect once that sprint ends. MVP here means the smallest thing that works end to end, not a list of finished issues.
 
-The plan of 1 October 2026 held 227 board items carrying 347 weight, under 21 epics, cut into 1214 tasks. After sprint 1 the team planned sprints 2 to 5 again on 9 October 2026, in [decision 004](../decisions/004-replanAfterSprint1.md): school goals first, then every must, at about 60 weight per sprint of three weeks and 20 in sprint 5. The numbers below come from the board after that change: 249 board items, 146 of them in a sprint and 103 should and could items without a sprint. The milestone of each sprint in GitLab holds the same goal and the same MVP line. When one changes, the other changes with it.
+The plan of 1 October 2026 held 227 board items carrying 347 weight, under 21 epics, cut into 1214 tasks. After sprint 1 the team planned sprints 2 to 5 again on 9 October 2026, in [decision 004](../decisions/004-replanAfterSprint1.md): school goals first, then every must, at about 60 weight per sprint of three weeks and 20 in sprint 5. The numbers below come from the board after that change: 250 board items, 147 of them in a sprint and 103 should and could items without a sprint. The milestone of each sprint in GitLab holds the same goal and the same MVP line. When one changes, the other changes with it.
 
 ```mermaid
 gantt
@@ -19,7 +19,7 @@ gantt
 
 | Sprint | Dates | Board items | Open weight | Goal in one line |
 |---|---|---|---|---|
-| 1 | 21 September to 9 October 2026 | 24 | 10 | A person can make an account, log in and have a profile, on a repository nobody can bypass |
+| 1 | 21 September to 9 October 2026 | 25 | 12 | A person can make an account, log in and have a profile, on a repository nobody can bypass |
 | 2 | 19 October to 6 November 2026 | 30 | 63 | A person can make an account, log in and have a profile, and the team knows which personal data it protects |
 | 3 | 9 to 27 November 2026 | 39 | 61 | Members confirm their address, organisations join, and members find each other and connect |
 | 4 | 30 November to 18 December 2026 | 34 | 63 | Connect runs in production, the team sees that it is healthy, and every school deliverable is in |

@@ -44,7 +44,7 @@ What GitLab holds after the change on 9 October 2026. The weight counts the open
 
 | Sprint | Issues | Must | Should | Could | Open weight |
 |---|---|---|---|---|---|
-| Sprint 1 | 24 | 22 | 2 | 0 | 10 |
+| Sprint 1 | 25 | 23 | 2 | 0 | 12 |
 | Sprint 2 | 30 | 25 | 5 | 0 | 63 |
 | Sprint 3 | 39 | 20 | 18 | 1 | 61 |
 | Sprint 4 | 34 | 25 | 8 | 1 | 63 |

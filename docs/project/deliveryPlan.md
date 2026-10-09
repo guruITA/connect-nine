@@ -21,14 +21,14 @@ sprint.
 
 | Sprint | Start | End | Issues | Must | Should | Could |
 |---|---|---|---|---|---|---|
-| Sprint 1 | Mon 21 Sep 2026 | Fri 9 Oct 2026 | 24 | 22 | 2 | 0 |
+| Sprint 1 | Mon 21 Sep 2026 | Fri 9 Oct 2026 | 25 | 23 | 2 | 0 |
 | Sprint 2 | Mon 19 Oct 2026 | Fri 6 Nov 2026 | 30 | 25 | 5 | 0 |
 | Sprint 3 | Mon 9 Nov 2026 | Fri 27 Nov 2026 | 39 | 20 | 18 | 1 |
 | Sprint 4 | Mon 30 Nov 2026 | Fri 18 Dec 2026 | 34 | 25 | 8 | 1 |
 | Sprint 5 | Mon 4 Jan 2027 | Fri 8 Jan 2027 | 19 | 19 | 0 | 0 |
 | Without a sprint | | | 103 | 0 | 34 | 69 |
 
-Together that is all 249 issues of the board, in 21 epics, as GitLab holds them after the team
+Together that is all 250 issues of the board, in 21 epics, as GitLab holds them after the team
 planned sprints 2 to 5 again on 9 October 2026 in
 [decision 004](../decisions/004-replanAfterSprint1.md). The rules of that plan: what is done or
 waits in an open merge request stays, school goals come first, then every must, then should and
