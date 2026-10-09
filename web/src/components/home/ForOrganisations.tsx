@@ -1,12 +1,12 @@
 import ButtonLink from "../ButtonLink";
 import Eyebrow from "./Eyebrow";
-import styles from "./PartnerBanner.module.css";
+import styles from "./ForOrganisations.module.css";
 
-export default function PartnerBanner() {
+export default function ForOrganisations() {
   return (
     <section className={styles.section} aria-labelledby="partner-title">
       <div className={styles.inner}>
-        <div className={styles.banner}>
+        <div className={styles.panel}>
           <div className={styles.text}>
             <Eyebrow tone="onGreen">For organisations</Eyebrow>
             <h2 id="partner-title" className={styles.title}>
