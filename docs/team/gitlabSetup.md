@@ -54,7 +54,7 @@ Settings, Labels. Scoped labels use two colons. The colours follow section 8 ste
 - epic::<name>, one per epic, and EPIC on the issue that stands for an epic.
 - school::required on issues that exist because of a school requirement.
 - On every task, never on the issue: outcome::analysing-and-advising, outcome::designing-and-realising, outcome::managing-and-collaborating, level::2, level::3, direction::full-stack, direction::security-specialist.
-- Doing and Verify, the two lists of the boards between Open and Closed.
+- Doing and Verify are old labels from before the boards used the status of an issue. The boards do not use them (see Boards, one per sprint).
 
 ## Epics
 
@@ -76,13 +76,20 @@ Every milestone description has the three headings the assessor looks for: Sprin
 
 ## Boards, one per sprint
 
-Plan, Issue boards: Sprint 1 to Sprint 5, each with the lists Open, Doing, Verify and Closed. Doing has a limit of 3 per person. The Free tier cannot enforce list limits, so the team checks it at the daily.
+Plan, Issue boards: Sprint 1 to Sprint 5, each with the lists Open, In progress, Verify, Won't do and Closed. The three lists in the middle follow the status of an issue, not a label. A card stands in the list of its status, and dragging it to another list changes its status. In progress has a limit of 3 issues per person. The board does not enforce it, so the team checks it at the daily.
 
-The picture below shows the four lists an issue moves through on a sprint board.
+- Open: the issues of the sprint that nobody started yet.
+- In progress: someone works on it.
+- Verify: the work is ready, and a teammate reviews it and checks the Definition of done.
+- Won't do: the team decided not to build it. The reason goes in a comment on the issue.
+- Closed: done. Closing an issue gives it the status Done.
+
+The picture below shows how an issue moves through the lists of a sprint board.
 
 ```mermaid
 flowchart LR
-    O[Open] --> D["Doing<br/>max 3 issues per person at a time"] --> V[Verify] --> C[Closed]
+    O[Open] --> P["In progress<br/>max 3 issues per person at a time"] --> V[Verify] --> C[Closed]
+    O -.-> W["Won't do"]
 ```
 
 Two limits of the Free tier:

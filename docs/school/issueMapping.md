@@ -47,7 +47,7 @@ Labels with two colons are grouped by kind. The table shows all labels of the pr
 | Outcome | outcome::analysing-and-advising, outcome::designing-and-realising, outcome::managing-and-collaborating | task |
 | Level | level::2, level::3 | task |
 | Direction | direction::full-stack, direction::security-specialist | task |
-| Board list | Doing, Verify | issue, moved on the sprint board |
+| Board list | no label: In progress, Verify and Won't do are the status of the issue | issue, moved on the sprint board |
 
 Every task also carries the milestone of its sprint, the same as its issue.
 

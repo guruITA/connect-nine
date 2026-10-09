@@ -6,6 +6,8 @@ Relates to #9.
 
 On 9 October 2026 the teacher asked the team to put the work it had already done without an issue on the board. Sixteen issues, #1500 to #1515, now stand closed in Sprint 1. Each is assigned to the person who did the work. The work of the whole team (the architecture, the design, the page documents, the brief with the problem analysis and the vision, the requirements, the collaboration agreement and the Definition of Done) is assigned to all five students. Rule A8 in docs/team/issueRules.md and a line in docs/team/gitlabSetup.md say how this is done from now on, so the next issue logged afterwards looks the same.
 
+The same merge request makes the documents name the lists of the sprint boards as they are in GitLab: Open, In progress, Verify, Won't do and Closed. The three lists in the middle follow the status of an issue, and the old labels Doing and Verify are no longer used for them. This is in docs/team/gitlabSetup.md, docs/project/deliveryPlan.md, docs/school/issueMapping.md and docs/team/onboarding.md.
+
 | Who | Issues |
 | --- | --- |
 | The whole team | #1500 architecture and tech stack, #1501 design and clickable prototype, #1502 page documents, #1503 brief, problem analysis and product vision, #1504 requirements, #1506 collaboration agreement, #1507 Definition of Done |
