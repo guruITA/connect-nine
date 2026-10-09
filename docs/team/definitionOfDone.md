@@ -2,7 +2,7 @@
 
 Every issue carries the list of its type, in full, with a checkbox on every line. Never on a task. The same list for everyone: no line depends on frontend or backend. The issue templates in .gitlab/issue_templates copy only the bold sentence of each line. The "How to check" under it lives only here. A line that is not true for every issue of its type does not belong here: it becomes a non functional acceptance criterion on the issues where it applies.
 
-The source is section 3 of the page Issue creation on the Figma board. When it changes, the templates and this file change in the same merge request.
+This file is the source. When it changes, the templates in .gitlab/issue_templates change in the same merge request.
 
 ## Type slice, the list for every vertical slice (37 lines)
 
