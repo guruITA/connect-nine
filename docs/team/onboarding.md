@@ -294,7 +294,7 @@ The pipeline runs the same checks. A merge request cannot be accepted while any 
 
 ## 7. Your first change
 
-1. Take an issue from the board of the sprint and put it in Doing.
+1. Take an issue from the board of the sprint and drag it to the list In progress.
 2. Branch from `dev`, named `<type>/<issue number>-<short name>`:
 
    ```

@@ -34,6 +34,10 @@ Work that is not a slice is still an issue, so the team records what it did and 
 
 Weight is size and uncertainty compared with a known example, never a number of hours: 1, 2, 3 or 5, as in the weight scale in section 2. A 5 is a signal to split again. The only accepted 5 is a slice that cannot be split without making horizontal cards, and its description says why.
 
+### A8
+
+Work the team did before it had an issue still gets one afterwards, so the board shows everything the team did. The teacher asked for this on 9 October 2026. Such an issue stands in the milestone of the sprint where the work was done and is closed at once, so it lands in Closed with the status Done. It is assigned to the person who did the work. Work the whole team did together (the architecture, the design, the team agreements and everything that needed a brainstorm) is assigned to all five students. Its form is short: the story as the title (rules B1 and B2), the line "Logged afterwards on &lt;date>: this work was done in sprint &lt;n> before it had an issue of its own.", Description, Where to find it (the files or the merge request), and Acceptance criteria that are already ticked. It has no Definition of done, because its lines (a teammate checked it and wrote the date, and so on) were not done that way, and ticking them would not be true. It carries the type, epic, priority and sprint labels like any other issue. Issues #1500 to #1515 are the first ones.
+
 ## The story
 
 ### B1
