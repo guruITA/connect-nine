@@ -102,6 +102,8 @@ Part Past:
 Phone and laptop:
 - On a phone on mobile data the list is there within two seconds after tapping the tab, with "Loading events..." in between (AC9 of issue 66).
 - Design: the Figma frame Events on the page Design directions of the Figma board. Colours, fonts and spacing come only from web/src/styles/tokens.css.
+- Clickable prototype (laptop, sprint 1 and 2), on the Figma page Prototype sprint 1 and 2 (desktop). The line above each screen names its GitLab issues. In sprint 1 the tab only has its name, as in this screen.
+  - [E10 Events](https://www.figma.com/design/SAVxDf3rlsWz22qlzTEYte/Young-Amstelland-Connect--team-workspace?node-id=1018-2644)
 
 ## Accessibility and privacy
 

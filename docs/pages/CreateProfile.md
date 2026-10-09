@@ -77,6 +77,10 @@ Since issue 33, the four fields with their labels, hints, counter and messages, 
 - Not reachable: "Connect is not reachable right now, your text is kept" above the form, every value stays.
 - Phone (360 pixels wide) and laptop (1280 pixels wide): the page matches the Figma frame Create your profile at both widths, shown with screenshots in the merge request.
 - Design: the Figma frame Create your profile on the Figma board of Connect, page Design directions. Colours, fonts and spacing only through web/src/styles/tokens.css.
+- Clickable prototype (laptop, sprint 1 and 2), on the Figma page Prototype sprint 1 and 2 (desktop). The line above each screen names its GitLab issues.
+  - [G01 Create your profile](https://www.figma.com/design/SAVxDf3rlsWz22qlzTEYte/Young-Amstelland-Connect--team-workspace?node-id=1019-1964)
+  - [G02 Create your profile, region message](https://www.figma.com/design/SAVxDf3rlsWz22qlzTEYte/Young-Amstelland-Connect--team-workspace?node-id=1019-2101)
+  - [H01 Create your profile, under 16](https://www.figma.com/design/SAVxDf3rlsWz22qlzTEYte/Young-Amstelland-Connect--team-workspace?node-id=1019-3703)
 
 ## Accessibility and privacy
 

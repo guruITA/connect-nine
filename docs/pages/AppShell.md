@@ -164,6 +164,11 @@ A tap on a tab shows the new page within one second, without the tabs flashing w
 
 The design: colours, fonts and spacing come only from the variables in `web/src/styles/tokens.css`, following the Figma frame of the app shell on the page Design directions of the Figma board.
 
+Clickable prototype (laptop, sprint 1 and 2), on the Figma page Prototype sprint 1 and 2 (desktop). The line above each screen names its GitLab issues. The top bar with the five tabs is on every screen of the prototype. The two screens below show the tabs that only have their name in sprint 1.
+
+- [E10 Events](https://www.figma.com/design/SAVxDf3rlsWz22qlzTEYte/Young-Amstelland-Connect--team-workspace?node-id=1018-2644)
+- [E11 Projects](https://www.figma.com/design/SAVxDf3rlsWz22qlzTEYte/Young-Amstelland-Connect--team-workspace?node-id=1018-2755)
+
 ## Built by
 
 | Board | Title | GitLab | Sprint | Prio |

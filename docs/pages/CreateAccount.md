@@ -145,6 +145,13 @@ The return page `/login/return` is its own page (`SocialLoginReturn.tsx`), but i
 
 The design: colours, fonts and spacing come only from the variables in `web/src/styles/tokens.css` (task 3.5 names navy 0E2038, green 16A34A, Bricolage Grotesque for headings and Hanken Grotesk for text), following the Figma frame Make an account, its state made, and the frame Social buttons on the Figma board.
 
+Clickable prototype (laptop, sprint 1 and 2), on the Figma page Prototype sprint 1 and 2 (desktop). The line above each screen names its GitLab issues.
+
+- [A02 Make an account](https://www.figma.com/design/SAVxDf3rlsWz22qlzTEYte/Young-Amstelland-Connect--team-workspace?node-id=1017-761)
+- [A03 Make an account, password messages](https://www.figma.com/design/SAVxDf3rlsWz22qlzTEYte/Young-Amstelland-Connect--team-workspace?node-id=1017-899)
+- [A04 Make an account, leaked password](https://www.figma.com/design/SAVxDf3rlsWz22qlzTEYte/Young-Amstelland-Connect--team-workspace?node-id=1017-1045)
+- [A05 Account made](https://www.figma.com/design/SAVxDf3rlsWz22qlzTEYte/Young-Amstelland-Connect--team-workspace?node-id=1017-1187)
+
 ## Built by
 
 | Board | Title | GitLab | Sprint | Prio |

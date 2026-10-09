@@ -113,6 +113,15 @@ flowchart TD
 
 The design: colours, fonts and spacing come only from the variables in `web/src/styles/tokens.css`, following the Figma frame Log in methods on the Figma board.
 
+Clickable prototype (laptop, sprint 1 and 2), on the Figma page Prototype sprint 1 and 2 (desktop). The line above each screen names its GitLab issues.
+
+- [F01 Log in methods](https://www.figma.com/design/SAVxDf3rlsWz22qlzTEYte/Young-Amstelland-Connect--team-workspace?node-id=1019-1212)
+- [F02 Log in methods, remove Facebook?](https://www.figma.com/design/SAVxDf3rlsWz22qlzTEYte/Young-Amstelland-Connect--team-workspace?node-id=1019-1336)
+- [F03 Log in methods, Facebook removed](https://www.figma.com/design/SAVxDf3rlsWz22qlzTEYte/Young-Amstelland-Connect--team-workspace?node-id=1019-1461)
+- [F04 Log in methods, only Google](https://www.figma.com/design/SAVxDf3rlsWz22qlzTEYte/Young-Amstelland-Connect--team-workspace?node-id=1019-1575)
+- [F05 Log in methods, last way in refused](https://www.figma.com/design/SAVxDf3rlsWz22qlzTEYte/Young-Amstelland-Connect--team-workspace?node-id=1019-1708)
+- [F06 Log in methods, password set](https://www.figma.com/design/SAVxDf3rlsWz22qlzTEYte/Young-Amstelland-Connect--team-workspace?node-id=1019-1846)
+
 ## Built by
 
 | Board | Title | GitLab | Sprint | Prio |

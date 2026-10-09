@@ -55,6 +55,8 @@ The page sits inside AppShell of issue 06, so the tabs and the footer stay in pl
 - Phone (360 pixels wide): the sentence and the link fit on the screen without scrolling, above the tabs. The page shows within two seconds after opening a wrong link.
 - Laptop (1280 pixels wide): the same content inside the shell, no scrolling sideways.
 - Design: the Figma frame of the not found page on the Figma board of Connect, page Design directions. Colours, fonts and spacing come only from the variables in web/src/styles/tokens.css.
+- Clickable prototype (laptop, sprint 1 and 2), on the Figma page Prototype sprint 1 and 2 (desktop). The line above each screen names its GitLab issues.
+  - [J16 Member page of someone who does not exist or is hidden](https://www.figma.com/design/SAVxDf3rlsWz22qlzTEYte/Young-Amstelland-Connect--team-workspace?node-id=1022-2)
 
 ## Accessibility and privacy
 

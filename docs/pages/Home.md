@@ -81,6 +81,10 @@ The page sits inside AppShell of issue 06. The shell draws a header with the nam
 - Laptop (1280 pixels wide): the tabs sit in the header at the top, from 768 pixels wide.
 - Speed: tapping a tab to Home shows the page within one second, and the tabs do not flash white. The server sends index.html with Cache-Control: no-cache and the built files with a code in their name for a year (task 6.1), so a new version of Connect reaches every visitor at the next visit.
 - Design: the Figma frame Home on the page Design directions of the Figma board of Connect. Colours, fonts and spacing come only from the variables in web/src/styles/tokens.css (navy 0E2038, green 16A34A, Bricolage Grotesque for headings, Hanken Grotesk for text).
+- Clickable prototype (laptop, sprint 1 and 2), on the Figma page Prototype sprint 1 and 2 (desktop). The line above each screen names its GitLab issues.
+  - [A01 Home, visitor](https://www.figma.com/design/SAVxDf3rlsWz22qlzTEYte/Young-Amstelland-Connect--team-workspace?node-id=1017-2)
+  - [E01 Home, logged in](https://www.figma.com/design/SAVxDf3rlsWz22qlzTEYte/Young-Amstelland-Connect--team-workspace?node-id=1017-258)
+  - [E09 Home, account deleted](https://www.figma.com/design/SAVxDf3rlsWz22qlzTEYte/Young-Amstelland-Connect--team-workspace?node-id=1017-499)
 
 ## Accessibility and privacy
 

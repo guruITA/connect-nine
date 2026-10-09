@@ -87,6 +87,8 @@ The page sits inside AppShell of issue 06, so the five tabs stay around it.
 - Take back too late: "This request was already answered" above the list (AC7 of issue 136).
 - Phone and laptop: at 360 pixels wide nothing scrolls sideways, and axe finds 0 problems at 360 and 1280 pixels, also with the window open. The row leaves the list within one second after Take back (AC11 of issue 136).
 - Design: the Figma frame Requests I sent on the page Design directions of the Figma board. Colours, fonts and spacing come only from web/src/styles/tokens.css.
+- Clickable prototype (laptop, sprint 1 and 2), on the Figma page Prototype sprint 1 and 2 (desktop). The line above each screen names its GitLab issues.
+  - [J08 Requests I sent](https://www.figma.com/design/SAVxDf3rlsWz22qlzTEYte/Young-Amstelland-Connect--team-workspace?node-id=1020-2147)
 
 ## Accessibility and privacy
 
