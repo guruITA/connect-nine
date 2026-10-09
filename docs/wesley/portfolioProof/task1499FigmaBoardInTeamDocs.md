@@ -4,14 +4,14 @@ Relates to #1498, task 179.1 (#1499).
 
 ## What changed
 
-On 9 October 2026 the Figma board went from 82 to 13 pages. The 21 pages with full issue cards, the 20 archive pages, the page Issue creation and the copies of the sprint 1 screens are gone. Two new pages show every issue as a picture made from GitLab: Issue pyramid (a column per epic, a band per sprint, lines for what waits for what) and Epics and features (every epic with its issues in the colour of their priority). Group H of docs/team/issueRules.md now describes these two pages, and the rulebook, the Definition of done, the code conventions, the GitLab setup and the document guide no longer send the reader to a page that is gone.
+On 9 October 2026 the Figma board went from 82 to 14 pages. The 21 pages with full issue cards, 19 of the 20 archive pages, the page Issue creation and the copies of the sprint 1 screens are gone. The earlier prototype v5 stays as the record of how the design grew. Two new pages show every issue as a picture made from GitLab: Issue pyramid (a column per epic, a band per sprint, lines for what waits for what) and Epics and features (every epic with its issues in the colour of their priority). Group H of docs/team/issueRules.md now describes these two pages, and the rulebook, the Definition of done, the code conventions, the GitLab setup and the document guide no longer send the reader to a page that is gone.
 
 ## Level 3, full-stack
 
 **MS1 Seeing risks early and keeping the work transferable**
 - The risk: after the compact form of 8 October the issue cards on the Figma board were longer and older than the issues in GitLab, and four team documents named the page Issue creation as their source. A teammate who followed a document could build from an old card or look for a page that was about to go.
 - What I made: the rulebook and the team documents now describe the board that exists. Group H says that GitLab is the source of every issue, how the two pages are read, and that they are made again from GitLab when issues, links, sprints or priorities change, never by hand.
-- Alternative I did not choose: keeping the old pages as archive pages in the same file. A reader then has to know which of 82 pages counts, and Figma keeps every earlier version of the file in its version history anyway.
+- Alternative I did not choose: keeping all old pages as archive pages in the same file. A reader then has to know which of 82 pages counts, and Figma keeps every earlier version of the file in its version history anyway. Only the earlier prototype v5 stays, because it records the design thinking that the current prototype grew from.
 - TODO Wesley: how the team used the page Issue pyramid in the planning of sprint 2, and what changed after that.
 
 **MS4 Making your work fit with the work of the team**
