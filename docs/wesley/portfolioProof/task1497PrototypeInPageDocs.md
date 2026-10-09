@@ -1,6 +1,6 @@
 # Proof: task 178.1 The page documents point to the prototype screens (#1497)
 
-Merge request: MR_NUMBER, branch `docs/1496-prototype-in-page-docs`. Issue: 178 The page descriptions point to the screens of the prototype (#1496).
+Merge request: !35, branch `docs/1496-prototype-in-page-docs`. Issue: 178 The page descriptions point to the screens of the prototype (#1496).
 Profile: Full Stack Software Developer, level 3. Portflow: Managing and Collaborating, MS1 and MS4. Link the merge request and this file.
 
 Every point the task asks for is below. A point that needs someone else is marked TODO with who and what.
