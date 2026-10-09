@@ -404,8 +404,9 @@ RSA SHA256:CmuGqwCHzubotlbA2rp/Ocg/P4yHMlochwTAXRxr35U
 ```
 
 - Password login is off for everyone: `/etc/ssh/sshd_config.d/10-connect.conf` sets `PasswordAuthentication no` and `KbdInteractiveAuthentication no`. A try with a password answers `Permission denied (publickey)` (tried on 9 October 2026).
-- Root may still log in, but only with a key (`PermitRootLogin prohibit-password`), until a member of the group sudo has a sudo password. Then the same file gets `PermitRootLogin no`, checked with `sudo sshd -t` before `sudo systemctl reload ssh`.
-- The group sudo holds wesley. The second member of the group sudo is still to be chosen by the team. Each of the two sets their own sudo password in person on the server, never in a chat or a file.
+- Root never logs in over ssh: the same file sets `PermitRootLogin no` since 9 October 2026, checked with `sshd -t` before `systemctl reload ssh`. A try answers `root@31.70.66.186: Permission denied (publickey).`
+- The group sudo holds wesley and gurpreet, the two admins. They become root with `sudo -i` after logging in with their own key, without a password (`/etc/sudoers.d/20-connect-admins`, decided by Wesley on 9 October 2026). Every user has a locked password, so the ssh key is the only way in, and whoever holds an admin's key is root. Guard that key.
+- Add an admin with `sudo usermod -aG sudo <name>` and a line `<name> ALL=(ALL) NOPASSWD:ALL` in that file through `sudo visudo -f /etc/sudoers.d/20-connect-admins`.
 
 ### New team member
 
