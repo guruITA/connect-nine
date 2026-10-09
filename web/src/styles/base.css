@@ -5,17 +5,33 @@
   box-sizing: border-box;
 }
 
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: var(--header-height);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+}
+
 body {
   margin: 0;
   background: var(--color-background);
   color: var(--color-text);
   font-family: var(--font-body);
-  font-size: var(--font-size-body);
+  font-size: var(--text-body-size);
   font-weight: var(--font-weight-regular);
-  line-height: var(--line-height-body);
+  line-height: var(--text-body-line);
+}
+
+img {
+  display: block;
+  max-width: 100%;
 }
 
 :focus-visible {
   outline: var(--focus-ring-width) solid var(--color-focus);
-  outline-offset: 2px;
+  outline-offset: var(--focus-ring-offset);
 }

@@ -1,48 +1,143 @@
 /*
- * Design tokens of Connect: the Young Amstelland Awards look, decided on 25 September 2026
- * (Figma, page Design directions, section "DECIDED: the Young Amstelland Awards look").
+ * Design tokens of Connect, read from the Figma frame "A01 Home, visitor"
+ * (page "Prototype sprint 1 and 2 (desktop)", node 1017:2), in the Young Amstelland Awards look.
  * Components use only these variables, never a fixed colour, font or size.
  */
 :root {
   /* Colours */
   --color-navy: #0e2038;
   --color-background: #f4f7fb;
+  --color-header: rgb(244 247 251 / 80%);
+  --color-header-line: rgb(14 32 56 / 6%);
   --color-text: #12233a;
-  --color-text-muted: #4b5b72;
-  --color-green: #16a34a;
-  --color-panel: #e7eef7;
-  --color-line: #d3ddeb;
+  --color-text-muted: #4b5c73;
+  --color-panel: #d9e4f3;
+  --color-green: #0f7a38;
+  --color-green-dark: #0a5c2a;
+  --color-green-text: #0b6a30;
+  --color-green-bright: #16a34a;
+  --color-mint: #7fe3a6;
+  --color-mint-panel: #e3f5ea;
+  --color-mint-light: #d8fbe6;
+  --color-mint-text: #e6fbee;
+  --color-blue: #2e64a8;
+  --color-blue-mark: #3d74b8;
+  --color-blue-text: #dce7f7;
+  --color-blue-glow: rgb(46 100 168 / 45%);
+  --color-blue-glow-end: rgb(46 100 168 / 0%);
   --color-white: #ffffff;
+  --color-on-dark-lead: #c3d0e2;
+  --color-on-dark-quiet: #b9c7da;
+  --color-on-dark-label: #a9b8cc;
+  --color-on-dark-link: #cdd8e6;
+  --color-on-dark-muted: #8fa3bd;
+  --color-on-dark-faint: #9fb0c6;
+  --color-on-dark-chip: rgb(255 255 255 / 7%);
+  --color-on-dark-panel: rgb(255 255 255 / 5%);
   --color-focus: var(--color-navy);
   --color-focus-on-dark: var(--color-white);
 
   /* Fonts, served by Connect itself through @fontsource, never from Google */
-  --font-heading: "Bricolage Grotesque", system-ui, sans-serif;
+  /* The variable font, so the browser picks the optical size from the font size, as Figma does. */
+  --font-heading: "Bricolage Grotesque Variable", system-ui, sans-serif;
   --font-body: "Hanken Grotesk", system-ui, sans-serif;
+  --font-label: "Space Grotesk", system-ui, sans-serif;
   --font-weight-regular: 400;
+  --font-weight-medium: 500;
   --font-weight-semibold: 600;
-  --font-weight-extrabold: 800;
+  --font-weight-bold: 700;
 
-  --font-size-body: 1rem;
-  --font-size-lead: 1.125rem;
-  --font-size-brand: 1.375rem;
-  --font-size-display: clamp(2.75rem, 9vw, 4.5rem);
+  /* Type scale: size, line height and letter spacing per style */
+  --text-display-size: clamp(2.75rem, 1.6rem + 3.6vw, 4.6875rem);
+  --text-display-line: 1.04;
+  --text-display-tracking: -0.02em;
+  --text-h2-size: clamp(2rem, 1.5rem + 1.6vw, 2.875rem);
+  --text-h2-line: 1.0435;
+  --text-h2-step-size: 2.875rem;
+  --text-h2-step-line: 3rem;
+  --text-h2-tracking: -0.02em;
+  --text-h3-size: 1.75rem;
+  --text-h3-line: 1.875rem;
+  --text-h3-tracking: -0.035rem;
+  --text-lead-size: clamp(1.125rem, 1rem + 0.5vw, 1.375rem);
+  --text-lead-line: 1.55;
+  --text-large-size: 1.125rem;
+  --text-large-line: 1.75rem;
+  --text-body-size: 1rem;
+  --text-body-line: 1.5rem;
+  --text-small-size: 0.875rem;
+  --text-small-line: 1.25rem;
+  --text-label-size: 0.75rem;
+  --text-label-line: 1rem;
+  --text-label-tracking: 0.12rem;
+  --text-label-tracking-wide: 0.135rem;
+  --text-link-tracking: 0.0175rem;
+  --text-brand-tracking: -0.01rem;
 
-  --line-height-tight: 1.08;
-  --line-height-body: 1.45;
-
-  /* Spacing, on the design's unit of 12 pixels */
-  --space-xs: 0.375rem;
+  /* Spacing */
+  --space-2xs: 0.25rem;
+  --space-xs: 0.5rem;
   --space-s: 0.75rem;
-  --space-m: 1.5rem;
-  --space-l: 2.25rem;
-  --space-xl: 3rem;
+  --space-m: 1rem;
+  --space-l: 1.5rem;
+  --space-xl: 2rem;
+  --space-2xl: 3rem;
+  --space-3xl: 4.5rem;
+  --space-4xl: 6.5rem;
+  --space-section: clamp(var(--space-2xl), 8vw, var(--space-4xl));
+  --space-page: clamp(1.25rem, 8.9vw, 8rem);
+  --space-3xs: 0.125rem;
+  --space-brand-gap: 0.625rem;
+  --space-tab-gap: 0.375rem;
+  --space-tab-inline: 0.875rem;
+  --space-hero: clamp(var(--space-2xl), 7vw, 6rem);
+  --space-hero-gap: 3.5rem;
+  --space-hero-lead: 1.125rem;
+  --space-hero-actions: 1.8125rem;
+  --space-stat-inline: 1.375rem;
+  --space-section-title: 2.25rem;
+  --space-tile-step: 1.75rem;
+  --space-tile-gap: 0.625rem;
+  --space-bento-gap: 1.25rem;
+  --space-foundation-body: 0.875rem;
+  --space-banner-gap: 2.5rem;
+  --space-banner-inline: 3.25rem;
+  --space-banner-lead: 0.625rem;
+  --space-banner-actions: 0.6875rem;
+  --space-closing-lead: 0.875rem;
+  --space-closing-action: 1.625rem;
+  --space-chip-inline: 1.25rem;
+  --space-footer-columns: 4rem;
+  --space-footer-end: 2.5rem;
+  --space-footer-bottom: 1.75rem;
 
   /* Shapes and sizes */
   --radius-pill: 999px;
-  --radius-card: 4px;
+  --radius-tile: 1.5rem;
+  --radius-chip: 1.25rem;
+  --radius-mark: 1rem;
+  --header-height: 4.75rem;
+  --header-blur: 10px;
+  --mark-size: 3.25rem;
+  --hairline-width: 1px;
+  --hatch-bleed: -0.707px;
+  --space-hatch-gap: 0.5625rem;
+  --border-width: 2px;
   --focus-ring-width: 3px;
+  --focus-ring-offset: 2px;
   --target-size: 44px;
-  --content-width: 72rem;
-  --text-width: 36rem;
+  --content-width: 74rem;
+  --hero-text-width: 40rem;
+  --closing-text-width: 35rem;
+  --footer-text-width: 20.625rem;
+  --banner-actions-width: 15rem;
+  --photo-discover-width: 20.625rem;
+  --photo-foundation-width: 33.75rem;
+  --photo-foundation-height: 27.5rem;
+  --emblem-width: 30rem;
+  --emblem-width-small: 20rem;
+  --button-height: 3rem;
+  --step-min-width: 14rem;
+  --tile-events-height: 18.125rem;
+  --tile-projects-height: 17.5625rem;
 }

@@ -1,48 +1,114 @@
+/* Figma: "Site header (frosted)", 76 pixels high, sticky on a laptop. */
 .topBar {
-  background: var(--color-navy);
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background: var(--color-header);
+  box-shadow: 0 var(--hairline-width) 0 0 var(--color-header-line);
+  backdrop-filter: blur(var(--header-blur));
 }
 
-.nav {
+.inner {
   display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-xs) var(--space-s);
   align-items: center;
-  justify-content: space-between;
-  gap: var(--space-s);
-  max-width: var(--content-width);
+  max-width: calc(var(--content-width) + 2 * var(--space-page));
+  min-height: var(--header-height);
   margin: 0 auto;
-  padding: var(--space-s) var(--space-m);
-}
-
-.brand,
-.action {
-  display: inline-flex;
-  align-items: center;
-  min-height: var(--target-size);
-  text-decoration: none;
+  padding: var(--space-xs) var(--space-page);
 }
 
 .brand {
-  color: var(--color-white);
-  font-family: var(--font-heading);
-  font-size: var(--font-size-brand);
-  font-weight: var(--font-weight-extrabold);
-  line-height: var(--line-height-tight);
+  display: flex;
+  gap: var(--space-brand-gap);
+  align-items: center;
+  min-height: var(--target-size);
+  margin-right: auto;
+  text-decoration: none;
 }
 
-/* Navy on green, 5.0:1. White on green would be 3.3:1, too low for this text size. */
-.action {
-  padding: 0 var(--space-m);
+.brandText {
+  display: flex;
+  flex-direction: column;
+}
+
+.brandName {
+  color: var(--color-navy);
+  font-family: var(--font-heading);
+  font-size: var(--text-body-size);
+  font-weight: var(--font-weight-bold);
+  line-height: var(--text-body-line);
+  letter-spacing: var(--text-brand-tracking);
+}
+
+.brandProduct {
+  color: var(--color-green-text);
+  font-family: var(--font-label);
+  font-size: var(--text-label-size);
+  font-weight: var(--font-weight-bold);
+  line-height: var(--text-label-line);
+  letter-spacing: var(--text-label-tracking-wide);
+  text-transform: uppercase;
+}
+
+.tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-tab-gap);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.tab {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--target-size);
+  padding: var(--space-xs) var(--space-tab-inline);
   border-radius: var(--radius-pill);
-  background: var(--color-green);
   color: var(--color-navy);
   font-weight: var(--font-weight-semibold);
+  text-decoration: none;
 }
 
-.brand:hover,
-.action:hover {
+.tab:hover {
   text-decoration: underline;
 }
 
-.brand:focus-visible,
-.action:focus-visible {
-  outline-color: var(--color-focus-on-dark);
+.current {
+  background: var(--color-panel);
+  color: var(--color-green-text);
+}
+
+.action {
+  margin-left: var(--space-brand-gap);
+}
+
+/* On a phone the tabs move to their own row under the name and the button. */
+@media (width < 60rem) {
+  .topBar {
+    position: static;
+  }
+
+  .nav {
+    order: 1;
+    width: 100%;
+  }
+
+  .action {
+    margin-left: 0;
+  }
+}
+
+/* On a laptop the design is 76 pixels high with 40 pixel tabs. */
+@media (width >= 60rem) {
+  .inner {
+    flex-wrap: nowrap;
+    padding-block: 0;
+  }
+
+  .tab {
+    min-height: auto;
+  }
 }
