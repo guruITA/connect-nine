@@ -16,6 +16,7 @@ The deck of the Sprint 1 review of 9 October 2026 and the Sprint Review form the
 
 - [ ] Wesley Oerlemans: send the form to the team coach, Karthik Srinivasan, as DLO asks.
 - [ ] A teammate who is not the author: approve the merge request.
+- [ ] Wesley Oerlemans: after !42 is merged, add the row for this file to docs/wesley/README.md (left out here, because !42 changes the same table).
 
 ## AI use
 
