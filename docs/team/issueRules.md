@@ -1,8 +1,8 @@
 # Rulebook: how to write an issue and its tasks
 
-This file is the source. The compact form was set by Wesley on 8 October 2026, after feedback from the team that issues and tasks were too long. The page Issue creation on the Figma board still shows the older, longer form.
+This file is the source. The compact form was set by Wesley on 8 October 2026, after feedback from the team that issues and tasks were too long. Since 9 October 2026 the Figma board holds no rules and no issue texts, only the pages Issue pyramid and Epics and features (group H).
 
-A person or an AI that follows these rules and the templates in .gitlab/issue_templates writes issues and tasks the same way. Issue #25 and its task #320 are the worked example. Group H says how the issues stand on a feature page, as a pyramid. When anything else disagrees with this rulebook, the rulebook wins.
+A person or an AI that follows these rules and the templates in .gitlab/issue_templates writes issues and tasks the same way. Issue #25 and its task #320 are the worked example. Group H says how the issues stand on the Figma board. When anything else disagrees with this rulebook, the rulebook wins.
 
 ## What an issue is
 
@@ -173,57 +173,57 @@ A reference to another card uses its GitLab number, for example #24. GitLab show
 
 ### F6
 
-One set of names for the whole project, the same on every card: the folders frontend and backend, the backend projects Presentation, Application, Domain, Infrastructure and Connect.Tests, docs/project/requirements.md, docs/architecture/architecture.md, docs/architecture/api.md, docs/team/onboarding.md, docs/team/codeConventions.md, docs/team/definitionOfDone.md, docs/testing/testData.md, the folder docs/decisions, the docker compose service database, and server addresses under /api. Names in code follow section 3b.
+One set of names for the whole project, the same on every card: the folders frontend and backend, the backend projects Presentation, Application, Domain, Infrastructure and Connect.Tests, docs/project/requirements.md, docs/architecture/architecture.md, docs/architecture/api.md, docs/team/onboarding.md, docs/team/codeConventions.md, docs/team/definitionOfDone.md, docs/testing/testData.md, the folder docs/decisions, the docker compose service database, and server addresses under /api. Names in code follow docs/team/codeConventions.md.
 
 ### F7
 
 A card holds what is special to this piece of work. What is the same for every card (the full Definition of done, the BoKSA school text, explanations of words and setup) lives once in docs and is not copied onto the card.
 
-## How the issues stand on a feature page (the pyramid)
+## How the issues stand on the Figma board (the pyramid and the epics)
 
 ### H1
 
-Every feature page (Issues 01 to Issues 21) shows its issues as a pyramid, read from top to bottom, so everyone sees which issue can start now and which issue waits for another one.
+GitLab is the source of every issue. The Figma board shows the issues only as a picture, on two pages: Issue pyramid and Epics and features. The text of an issue never goes onto the board, so the board cannot fall behind GitLab.
 
 ### H2
 
-A feature page has two parts. At the top the pyramid map: one small box per issue. Below it the full issue cards, in the same layers, layer 1 first, and inside a layer from left to right in the same order as the map. Every layer of cards has the same label as in the map. Every card stands exactly under its box in the map, in the same slot, so the cards form the same pyramid as the map. Every layer of cards starts with a thick navy line and the large title LAYER &lt;n> in bold, readable when you zoom out, with the line that says when it can start under it.
+The page Issue pyramid has one column per epic, in build order from left to right, and one band per sprint, from top to bottom. A column shows what the team builds for that epic, a band shows when.
 
 ### H3
 
-Layers. An issue that waits for nothing, or only for issues on other pages, is in layer 1. Every other issue is one layer below the lowest issue on this page that it waits for. Layers are numbered from 1 at the top. A layer holds as many issues as is true, also 20 or more.
+Inside a column an issue stands below every issue of the same epic that it waits for. Inside a band the issues stand in rows: an issue that waits for nothing in its epic is in the top row of its sprint, every other issue one row below the lowest issue of its epic that it waits for.
 
 ### H4
 
-A box in the map holds: the number and title, "Is blocked by:" with the numbers on this page (or the number on another page for layer 1), "Blocks:" with the numbers on this page or "nothing on this page", "Blocks on other pages:" with the numbers and their epic when there are any, and the weight.
+A card holds the GitLab number as a link to the issue and the short title, which is the part of the story after "I want". Under it the card names what else the issue waits for: "after #39" for an issue higher up in the same column, "after #12 Account" for an issue of another epic. That text is red when the issue it waits for is planned in a later sprint, so the planning has to change.
 
 ### H5
 
-Lines. A line with an arrow runs from an issue to every issue on this page that waits for it. An issue that waits for two issues gets two lines. A line never crosses a box: it runs down from the bottom of a box, sideways halfway between two layers, and down into the top of the next box.
+A line with an arrow runs from an issue to an issue in the row right below it that waits for it, inside one column. A wait over more rows, or on another epic, is the text on the card and not a line, so lines never cross a column or run through a card.
 
 ### H6
 
-Order inside a layer. An issue stands under the issue that blocks it, so every branch forms its own block, and a parent is centred above its children. An issue that waits for more than one issue stands under the first of them in rank order.
+A card names only the waits that matter. When C waits for B and B waits for A, the card of C does not name A.
 
 ### H7
 
-Issues on other pages. An issue on another page that blocks an issue here is drawn above the layer where it is needed as a grey box with a dashed border, with its number, title, epic and page, and a dashed line to the issue that waits for it. What an issue blocks on other pages is written inside its own box.
+The page Epics and features has one column per epic in the same build order, with every issue of that epic under it, Must first, then Should, Could and Nice to have. Every card has the colour of its priority label in GitLab (part Labels of docs/team/gitlabSetup.md).
 
 ### H8
 
-Every layer has a label on the left: "LAYER &lt;n>" and one line that says when it can start, for example "22 waits for 21, 24 and 25 wait for 23". The bands of the layers alternate two light greys so they are easy to tell apart. Above the map one line explains how to read it: from top to bottom, a line runs from an issue to every issue that waits for it, everything in one layer can be built at the same time once the issues above it that it is connected to are done.
+Both pages say at the top on which date they were made from GitLab. When issues, links, sprints or priorities change, the pages are made again from GitLab and never edited by hand.
 
 ### H9
 
-Issues that are not slices (setup, research, decision, client) stand in the pyramid too, in their layer, with their type in the box.
+Issues that are not slices (setup, research, decision, client) stand on both pages too, in their epic.
 
 ### H10
 
-One truth for every link. The box, the Linked items on the card and the links in GitLab use the same words (Is blocked by, Blocks) and say exactly the same. When a link changes, all three change together.
+One truth for every link. Is blocked by and Blocks are set in GitLab as Linked items on both issues. The pages only show them.
 
 ### H11
 
-The rank number is the build order over the whole board and follows the layers: an issue never has a lower rank than an issue that blocks it.
+The rank number is the build order over the whole project: an issue never has a lower rank than an issue that blocks it.
 
 ## Before a card is finished, check
 
@@ -241,7 +241,7 @@ The rank number is the build order over the whole board and follows the layers: 
 - [ ] Every slice has a database, a backend and a frontend task, and the unit and integration tests are inside the task that writes the code.
 - [ ] Every task has What, Checklist and a BoKSA proof block, and no acceptance criteria or Definition of done.
 - [ ] The Definition of done of the right type is on the issue, and on no task.
-- [ ] The issue stands in the right layer of its feature page, and its box in the pyramid map, its Linked items and GitLab say the same.
+- [ ] Its epic, priority and sprint are set in GitLab, so the pages Issue pyramid and Epics and features show it in the right place when they are made again.
 - [ ] No em dashes and no semicolons.
 
 ## AI use declaration

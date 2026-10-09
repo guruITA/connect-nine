@@ -1,8 +1,8 @@
 # How the GitLab project is set up
 
-How the project Connect Nine on gitlab.fdmci.hva.nl is set up, written so someone outside the team can repeat it on a new project. It follows section 8 of the page Issue creation on the Figma board and tasks 1.2, 1.3 and 1.8 of issue 01. Set on 27 September 2026.
+How the project Connect Nine on gitlab.fdmci.hva.nl is set up, written so someone outside the team can repeat it on a new project. It follows tasks 1.2, 1.3 and 1.8 of issue 01. Set on 27 September 2026.
 
-The HvA GitLab runs GitLab 19.4 in the Free tier. Where a setting of section 8 needs a paid tier, this file says what the team does instead.
+The HvA GitLab runs GitLab 19.4 in the Free tier. Where a setting needs a paid tier, this file says what the team does instead.
 
 ## Members
 
@@ -64,7 +64,7 @@ When it is red:
 
 ## Labels
 
-Settings, Labels. Scoped labels use two colons. The colours follow section 8 step 1.
+Settings, Labels. Scoped labels use two colons. The colours, as set in GitLab on 9 October 2026: prio::must FFD6D1, prio::should FFE9A8, prio::could D6F2DC, prio::nice-to-have EDEDED, type::slice CFE8FF and the other types E6DDFB, sprint::1 111111, sprint::1-stretch FFFFFF, sprint::2 to sprint::5 6B6B6B, blocked 111111, epic::&lt;name> 6699CC, EPIC FFDDC2, school::required FFE9A8, outcome and level F3F3F1, direction::full-stack CFE8FF, direction::security-specialist FFE9A8, Doing and Verify E6E6E6. The page Epics and features on the Figma board uses the four prio colours.
 
 - prio::must, prio::should, prio::could, prio::nice-to-have, starred in that order (label priority) so lists sort by them.
 - type::slice, type::setup, type::research, type::decision, type::client.

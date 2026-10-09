@@ -1,6 +1,6 @@
 # Code conventions
 
-What "the code follows the team's code conventions" in the Definition of Done means, per layer. The same for everyone and every issue. Every rule is a common industry standard, kept small for a team of five that is new to React and .NET. The source is section 3b of the page Issue creation on the Figma board, plus the rules the team added after the audit of 27 September 2026 (the last part of this file). When the board changes, this file changes in the same merge request.
+What "the code follows the team's code conventions" in the Definition of Done means, per layer. The same for everyone and every issue. Every rule is a common industry standard, kept small for a team of five that is new to React and .NET. This file is the source, with the rules the team added after the audit of 27 September 2026 in its last part.
 
 A rule that ends in (tool: name) is checked by that tool. Until the tool exists (#259 for the server, #263 for the screen, #266 for the pipeline), the reviewer checks it. A rule that ends in (reviewer) is only checked by a person.
 
