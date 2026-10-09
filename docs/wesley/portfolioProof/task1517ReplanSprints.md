@@ -16,7 +16,7 @@ Sprint 1 ended on 9 October 2026 with 19 of its issues open, 18 of them must, an
 
 **MS4 Making your work fit with the work of the team**
 - What I made: GitLab, the sprint goals, the delivery plan and the five milestones tell the same plan. Sprint 2 holds the first slice of sprint 1, the security analysis of Kelvin van Voorst and six school goals. Sprint 4 holds 25 school goals of DevOps, architecture and research.
-- How I checked it: after the change every open issue was read back from GitLab and compared with the plan, with its milestone and its sprint label. A check over all Is blocked by links finds no issue in a sprint before an issue it waits for, and no should or could in a sprint before the last must unless a must or a school goal waits for it.
+- How I checked it: after the change every open issue was read back from GitLab and compared with the plan, with its milestone and its sprint label. A check over all Is blocked by links finds one issue in a sprint before an issue it waits for: issue 106 (#38), which stays in Verify because its research proposals are done, while issues 85 and 10 moved to sprint 2. It finds no should or could in a sprint before the last must unless a must or a school goal waits for it.
 - TODO teammates: each owner of a moved datapoint issue (#65 and #67 Gurpreet Singh, #69, #72 and #187 Wesley Oerlemans) checks whether the datapoint still fits its new sprint, and every team member writes the date in decision 004.
 
 ## TODO

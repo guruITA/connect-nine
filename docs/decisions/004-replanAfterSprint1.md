@@ -51,7 +51,7 @@ What GitLab holds after the change on 9 October 2026. The weight counts the open
 | Sprint 5 | 19 | 19 | 0 | 0 | 22 |
 | Without a sprint | 103 | 0 | 34 | 69 | 135 |
 
-163 issues and 905 open tasks changed sprint. The should and could issues in sprint 3 and 4 are there because a must or a school goal waits for them, for example the events for research issue 107 and the showcases for research issues 108 and 109. No issue stands in a sprint before an issue it waits for.
+163 issues and 905 open tasks changed sprint. The should and could issues in sprint 3 and 4 are there because a must or a school goal waits for them, for example the events for research issue 107 and the showcases for research issues 108 and 109. No issue stands in a sprint before an issue it waits for, with one exception: issue 106 (#38) stays in Verify in sprint 1 because the research proposals are done, while issues 85 and 10 that it formally waits for moved to sprint 2.
 
 ## Consequences
 
