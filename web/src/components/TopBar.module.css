@@ -1,0 +1,48 @@
+.topBar {
+  background: var(--color-navy);
+}
+
+.nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-s);
+  max-width: var(--content-width);
+  margin: 0 auto;
+  padding: var(--space-s) var(--space-m);
+}
+
+.brand,
+.action {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--target-size);
+  text-decoration: none;
+}
+
+.brand {
+  color: var(--color-white);
+  font-family: var(--font-heading);
+  font-size: var(--font-size-brand);
+  font-weight: var(--font-weight-extrabold);
+  line-height: var(--line-height-tight);
+}
+
+/* Navy on green, 5.0:1. White on green would be 3.3:1, too low for this text size. */
+.action {
+  padding: 0 var(--space-m);
+  border-radius: var(--radius-pill);
+  background: var(--color-green);
+  color: var(--color-navy);
+  font-weight: var(--font-weight-semibold);
+}
+
+.brand:hover,
+.action:hover {
+  text-decoration: underline;
+}
+
+.brand:focus-visible,
+.action:focus-visible {
+  outline-color: var(--color-focus-on-dark);
+}

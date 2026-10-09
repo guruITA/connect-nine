@@ -1,0 +1,20 @@
+.home {
+  max-width: var(--content-width);
+  margin: 0 auto;
+  padding: var(--space-xl) var(--space-m);
+}
+
+.title {
+  margin: 0 0 var(--space-m);
+  color: var(--color-navy);
+  font-family: var(--font-heading);
+  font-size: var(--font-size-display);
+  font-weight: var(--font-weight-extrabold);
+  line-height: var(--line-height-tight);
+}
+
+.intro {
+  max-width: var(--text-width);
+  margin: 0;
+  font-size: var(--font-size-lead);
+}
