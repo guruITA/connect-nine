@@ -16,7 +16,6 @@ One file per task I did, with the proof block of the task filled in. A point tha
 
 | File | Task | Portflow |
 | --- | --- | --- |
-| `portfolioProof/task1517ReplanSprints.md` | Task 180.1 Sprints 2 to 5 planned again after sprint 1 (#1517), decision 004 | Managing and Collaborating MS1 and MS4 |
 | `portfolioProof/task2RepositorySkeleton.md` | Task 1.1 The starting structure (#2), merge request !13 | Managing and Collaborating MS1 and MS4 |
 
 ## The full documents behind them

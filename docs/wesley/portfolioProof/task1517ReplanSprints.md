@@ -25,6 +25,7 @@ Sprint 1 ended on 9 October 2026 with 19 of its issues open, 18 of them must, an
 - [ ] Gurpreet Singh and Wesley: check the datapoints of #65, #67, #69, #72 and #187 against their new sprint (MS4).
 - [ ] Every team member: write the date in the table Agreed by of decision 004.
 - [ ] After the merge: make the Figma page Issue pyramid again from GitLab (#1498).
+- [ ] After !35 and !37: add the row for this file to docs/wesley/README.md, which those two merge requests also change.
 
 ## AI use
 
