@@ -12,9 +12,18 @@ public sealed class CrossProjectTests
     public void ApplicationAndInfrastructureRegistration_Compose()
     {
         ServiceCollection services = new();
-        IConfiguration configuration = new ConfigurationBuilder().Build();
+        IConfiguration configuration = new ConfigurationBuilder()
+            .AddInMemoryCollection(new Dictionary<string, string?>
+            {
+                ["ConnectionStrings:DefaultConnection"] =
+                    "Host=localhost;Database=connect;Username=connect;Password=connect"
+            })
+            .Build();
 
-        Assert.That(services.AddApplication(), Is.SameAs(services));
-        Assert.That(services.AddInfrastructure(configuration), Is.SameAs(services));
+        using (Assert.EnterMultipleScope())
+        {
+            Assert.That(services.AddApplication(), Is.SameAs(services));
+            Assert.That(services.AddInfrastructure(configuration), Is.SameAs(services));
+        }
     }
 }

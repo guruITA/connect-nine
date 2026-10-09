@@ -136,7 +136,7 @@ with a restaurant.
 | Presentation | the waiter | The endpoints, the validators of what comes in, the session guard, the rate limit, the health address. It reads a request, calls a handler and returns the answer. | `Program.cs`, `Features/<Feature>/<Feature>Endpoints.cs`, `Validators/<Name>RequestValidator.cs`, `Authentication/`, `RateLimiting/` |
 | Application | the chef | The commands, queries and handlers with the business rules, for example that an email address must still be free. | `DependencyInjection.cs`, `Abstractions/ICommandHandler.cs`, `IQueryHandler.cs`, `IAppDbContext.cs`, `Features/<Feature>/<UseCase>/<UseCase>Command.cs` or `Query.cs` with `<UseCase>Handler.cs` |
 | Domain | the menu | The entities and the contracts that are not about data access, for example `IMailSender`. It uses nothing. | `Entities/<Entity>.cs`, `Accounts/PasswordRules.cs` |
-| Infrastructure | the storeroom | Holds the database connection, the table settings, the migrations and the mail sender. The chef reaches the data through the hatch IAppDbContext. | `Persistence/AppDbContext.cs`, `Persistence/Configurations/`, `Migrations/`, `Mail/` |
+| Infrastructure | the storeroom | Holds the database connection, the table settings, the migrations and the mail sender. The chef reaches the data through the hatch IAppDbContext. | `Persistence/ConnectDbContext.cs`, `Persistence/Migrations/`, `Mail/` |
 
 Which project may use which (the `ProjectReference` lines, issue 03 task 3.1):
 
@@ -186,7 +186,7 @@ slice copies it:
    wrong input with one message per field.
 3. Application: the handler checks that the email address is still free and turns the password
    into a hash.
-4. Infrastructure: `AppDbContext` saves one row in the table `account`.
+4. Infrastructure: `ConnectDbContext` saves one row in the Identity table `AspNetUsers`.
 5. The answer goes back the same way and the page shows "Your account is made".
 
 The diagram below shows the same request as messages between the screen, the layers and the database.
@@ -359,6 +359,14 @@ through a new issue.
 - No secret is ever in Git, in a log or in the Terraform state. In production the secrets are
   GitLab variables that `infra/k3s/applySecrets.sh` turns into Kubernetes Secrets (issue 95
   Connect and its database described in Terraform).
+
+The first migration is `AddAccountTable` in
+`api/Connect.Infrastructure/Persistence/Migrations/`. It creates the ASP.NET Identity tables,
+the `profile` table and the indexes and constraints used by accounts. The
+`ux_account_email` unique index makes normalized email addresses case-insensitive for uniqueness.
+The `AspNetUsers.password_hash` check allows `NULL` but rejects an empty string. The database
+constraints are covered by PostgreSQL integration tests in
+`api/Connect.Infrastructure.Tests/Persistence/AccountTableTests.cs`.
 
 ## Security in the architecture
 
