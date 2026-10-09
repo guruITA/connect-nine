@@ -49,6 +49,7 @@ Nobody pushes directly to dev or main: both are protected, and the pipeline job 
 
 9. The title uses the same format as a commit. The description starts with `Relates to #12`, so GitLab links it to the issue without closing it. The issue is closed by the teammate who ticked the acceptance criteria on the test site.
 10. Every merge request description has a part `## TODO` with one line per thing that is still needed, each as a checkbox with who does it: `- [ ] Reviewer: ...`, `- [ ] <name>: ...`. Anyone who opens the merge request reads there what is still open, and the line is ticked when it is done. When nothing is open the part says "Nothing open." The same part goes in the proof file of the task in `docs/<your name>/portfolioProof/`. (reviewer)
+11. A merge request with a red or running pipeline cannot be merged (Pipelines must succeed), and a reviewer never approves it. A red job is fixed on the branch first, and the reviewer looks again after the green run. (reviewer)
 
 ## Frontend: TypeScript, React, Vite
 
