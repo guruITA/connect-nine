@@ -2,7 +2,7 @@
 
 One goal per sprint, and what a real person can do with Connect once that sprint ends. MVP here means the smallest thing that works end to end, not a list of finished issues.
 
-The plan of 1 October 2026 held 227 board items carrying 347 weight, under 21 epics, cut into 1214 tasks. After sprint 1 the team planned sprints 2 to 5 again on 9 October 2026, in [decision 004](../decisions/004-replanAfterSprint1.md): school goals first, then every must, at about 60 weight per sprint of three weeks and 20 in sprint 5. The numbers below come from the board after that change: 250 board items, 147 of them in a sprint and 103 should and could items without a sprint. The milestone of each sprint in GitLab holds the same goal and the same MVP line. When one changes, the other changes with it.
+The plan of 1 October 2026 held 227 board items carrying 347 weight, under 21 epics, cut into 1214 tasks. After sprint 1 the team planned sprints 2 to 5 again on 9 October 2026, in [decision 004](../decisions/004-replanAfterSprint1.md): school goals first and spread over sprints 2 to 4, then every must, at about 60 weight per sprint of three weeks and 20 in sprint 5. The numbers below come from the board after that change: 250 board items, 147 of them in a sprint and 103 should and could items without a sprint. The milestone of each sprint in GitLab holds the same goal and the same MVP line. When one changes, the other changes with it.
 
 ```mermaid
 gantt
@@ -21,9 +21,9 @@ gantt
 |---|---|---|---|---|
 | 1 | 21 September to 9 October 2026 | 25 | 12 | A person can make an account, log in and have a profile, on a repository nobody can bypass |
 | 2 | 19 October to 6 November 2026 | 30 | 63 | A person can make an account, log in and have a profile, and the team knows which personal data it protects |
-| 3 | 9 to 27 November 2026 | 39 | 61 | Members confirm their address, organisations join, and members find each other and connect |
-| 4 | 30 November to 18 December 2026 | 34 | 63 | Connect runs in production, the team sees that it is healthy, and every school deliverable is in |
-| 5 | 4 to 8 January 2027 | 19 | 22 | The last must haves of the foundation, so every must on the board is done |
+| 3 | 9 to 27 November 2026 | 36 | 60 | Connect runs in production, organisations join and members connect |
+| 4 | 30 November to 18 December 2026 | 36 | 63 | Young people find events, opportunities and projects, and Connect warns the team when it is down |
+| 5 | 4 to 8 January 2027 | 20 | 23 | The last must haves of the foundation, so every must on the board is done |
 | Without a sprint | | 103 | 135 | Should and could placeholders for a faster team or a next team |
 
 ## Sprint 1, 21 September to 9 October 2026
@@ -48,19 +48,19 @@ What is in it: Account 10 items, Profiles 5, Security analysis 4, Workshop evide
 
 ## Sprint 3, 9 to 27 November 2026
 
-**Goal.** Members confirm their address, organisations join, and members find each other and connect.
+**Goal.** Connect runs in production, organisations join and members connect.
 
-**MVP after this sprint.** A member confirms an email address and can log in with Google. An organisation creates a profile and has a page of its own. Members add tags, see suggested members with the reason, send, receive and accept a connection request and save a suggestion. The foundation lists, deactivates and reactivates members and edits site pages such as the privacy statement. An organisation publishes an event and an opportunity, a young person registers for an event until it is full, and adds a project.
+**MVP after this sprint.** Every merge into `main` reaches the production address after all checks, a broken version is replaced within ten minutes, and the team reads the numbers, the dashboard and the logs of the live version. A member confirms an email address and logs in with Google. An organisation creates a profile and has a page of its own. Members add tags, see suggested members with the reason, send, receive and accept a connection request and save a suggestion. The foundation lists, deactivates and reactivates members.
 
-What is in it: Matching 8 items, Account security 7, Admin 6, Events 5, Profiles 4, Site shell 3, Opportunities 2, Account 2, News 1, Showcases 1. The events, the opportunities, the news and the first project are here because a school goal of sprint 4 waits for them: research issue 107 needs the events, issue 105 the rate limit needs the list of opportunities, and issue 104 the threat model and research issues 108 and 109 need the projects and their pictures.
+What is in it: Matching 8 items, Production 7, Account security 6, Profiles 4, Observability 3, Hosting and deploy 3, Admin 3, Account 2. Thirteen of them are school goals: the code quality and image checks, production on k3s, and the numbers, the dashboard and the logs of the live version.
 
 ## Sprint 4, 30 November to 18 December 2026
 
-**Goal.** Connect runs in production, the team sees that it is healthy, and every school deliverable is in.
+**Goal.** Young people find events, opportunities and projects, and Connect warns the team when it is down.
 
-**MVP after this sprint.** Connect is reachable on its real address, and every merge into `main` reaches production after all checks, with a broken version replaced within ten minutes. The team reads logs, metrics and alerts of the live version. A young person adds a picture to a project and finds projects on a page of their own, on a profile and in a list of all projects. Every research report is reviewed by another student.
+**MVP after this sprint.** An organisation publishes an event and an opportunity, and a young person registers for an event until it is full. A young person adds a project with a picture and finds projects on a page of their own, on a profile and in a list of all projects. The foundation edits site pages such as the privacy statement, and the privacy statement is on every page. The team gets an email within five minutes when Connect is down, slow or giving many errors.
 
-What is in it: Production 9 items, Showcases 6, Research and development 5, Observability 4, Hosting and deploy 3, Security analysis 2, Decisions 2, Workshop evidence 2, News 1. 25 of the 34 are school goals: the code quality and image scans, production, observability, the recording and the live demo of DevOps, the architecture drawings and design patterns, the threat model and the rate limit, and the research.
+What is in it: Showcases 7 items, Research and development 5, Events 5, Admin 3, Security analysis 2, Decisions 2, Workshop evidence 2, Production 2, News 2, Opportunities 2, Site shell 2, Observability 1, Account security 1. Twelve of them are school goals: the alerts, the recording and the live demo of DevOps, the architecture drawings and the design patterns, the threat model and the rate limit, and the research. The events, the opportunities, the news and the projects are here in the same sprint as the research and the threat model that measure them.
 
 ## Sprint 5, 4 to 8 January 2027
 
@@ -68,7 +68,7 @@ What is in it: Production 9 items, Showcases 6, Research and development 5, Obse
 
 **MVP after this sprint.** A member edits the profile and its tags, a parent sees what Connect keeps and gives permission with one button, a locked log in sends an email, members filter Discover and decline a request, and the foundation searches members and sees the usage numbers.
 
-What is in it: Profiles 9 items, Matching 3, Account security 3, Admin 2, Security analysis 1, Site shell 1. All 19 are must, with 22 weight in one week, 2 above the pace of decision 004. The team checks at the sprint 4 review whether that still holds.
+What is in it: Profiles 9 items, Matching 3, Account security 3, Site shell 2, Admin 2, Security analysis 1. All 20 are must, with 23 weight in one week, 3 above the pace of decision 004. The team checks at the sprint 4 review whether that still holds.
 
 ## Without a sprint
 

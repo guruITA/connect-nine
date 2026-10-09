@@ -23,15 +23,16 @@ sprint.
 |---|---|---|---|---|---|---|
 | Sprint 1 | Mon 21 Sep 2026 | Fri 9 Oct 2026 | 25 | 23 | 2 | 0 |
 | Sprint 2 | Mon 19 Oct 2026 | Fri 6 Nov 2026 | 30 | 25 | 5 | 0 |
-| Sprint 3 | Mon 9 Nov 2026 | Fri 27 Nov 2026 | 39 | 20 | 18 | 1 |
-| Sprint 4 | Mon 30 Nov 2026 | Fri 18 Dec 2026 | 34 | 25 | 8 | 1 |
-| Sprint 5 | Mon 4 Jan 2027 | Fri 8 Jan 2027 | 19 | 19 | 0 | 0 |
+| Sprint 3 | Mon 9 Nov 2026 | Fri 27 Nov 2026 | 36 | 29 | 7 | 0 |
+| Sprint 4 | Mon 30 Nov 2026 | Fri 18 Dec 2026 | 36 | 15 | 19 | 2 |
+| Sprint 5 | Mon 4 Jan 2027 | Fri 8 Jan 2027 | 20 | 20 | 0 | 0 |
 | Without a sprint | | | 103 | 0 | 34 | 69 |
 
 Together that is all 250 issues of the board, in 21 epics, as GitLab holds them after the team
 planned sprints 2 to 5 again on 9 October 2026 in
 [decision 004](../decisions/004-replanAfterSprint1.md). The rules of that plan: what is done or
-waits in an open merge request stays, school goals come first, then every must, then should and
+waits in an open merge request stays, school goals come first and are spread over sprints 2
+to 4, then every must, then should and
 could, at about 60 weight per sprint of three weeks and 20 in sprint 5. A should or could issue
 stands in a sprint only when a must or a school goal waits for it. The 103 should and could
 issues that nothing waits for stay open without a sprint, as placeholders for a faster team or a
@@ -164,28 +165,29 @@ tools compared on one flow.
 
 ## Sprint 3, 9 to 27 November 2026
 
-Confirming the email address and logging in with Google, the waits after wrong passwords
-(issues 30 and 30b), organisation profiles and pages, tags, and matching from the suggestions of
-issue 37 to the saved items of issue 44. The admin lists, deactivates and reactivates members
-and edits site pages, and the privacy statement is on every page. The events (issues 65 to 68b),
-the opportunities (54 and 55), the first project (60) and the first news item (71) are here
-because a school goal of sprint 4 waits for them.
+Production and the first members who connect. The code quality and image checks of issues 88 to
+90 and production of issues 91 to 97 come first, so every merge into `main` reaches the live
+version from this sprint on. The numbers, the dashboard and the logs of issues 98, 99 and 101
+watch it. Next to that: confirming the email address and logging in with Google, the waits
+after wrong passwords (issues 30 and 30b), organisation profiles and pages, tags, matching from
+the suggestions of issue 37 to the saved items of issue 44, and the admin list of members with
+deactivate and reactivate.
 
 ## Sprint 4, 30 November to 18 December 2026
 
-The school deliverables of DevOps, architecture and research land in this sprint:
+What young people find, and the rest of the school deliverables:
 
-- **Code quality and image scan.** Issues 88 The team picks the code quality tool, 89 A change
-  that lowers code quality is stopped and 90 An image with a serious known hole is stopped.
-- **Production.** Issue 91 The director agrees where production runs comes first. Then issue
-  92 k3s and Terraform for production, compose for test, and issues 93 to 97, 173 and 174.
-- **Observability.** Issues 98 to 101.
+- **Events, opportunities, projects and news.** Issues 65 to 68b, 54 and 55, 60 to 64 with 61b and
+  62b, 48, and 71 and 71b. They are here in the same sprint as the research and the threat
+  model that measure them.
+- **Site pages and admin.** Issues 50, 50b and 51, the friendly page of issue 53, and the
+  activity log of issue 32.
+- **Production extras.** Issues 173 and 174, and the alert email of issue 100.
 - **DevOps evidence.** Issue 86 A recording of one change from commit to production and issue
   87 The live demo to the teacher.
 - **Architecture and security.** Issues 102 The architecture drawn in layers, parts and places,
   103 The design patterns Connect uses, where and why, 104 A threat model of adding an image to
   a project, and 105.
-- **Showcases.** Issues 61 to 64, because issue 104 and research issues 108 and 109 need them.
 - **Research.** Issues 107 Three ways to give out the last event place, 108 Two ways of paging
   the showcases, 109 Image formats for project pictures, and 110 The cost of password hashing,
   measured. Issue 112 Every research report reviewed by a fellow student closes the research in
@@ -193,14 +195,14 @@ The school deliverables of DevOps, architecture and research land in this sprint
 
 ## Sprint 5, 4 to 8 January 2027
 
-The last 19 musts of the project, all of them for the foundation: editing a profile and its tags
+The last 20 musts of the project, all of them for the foundation: editing a profile and its tags
 (issues 33, 36b, 36c and 36d), the rest of the parent permission (130b and 131), the lock and
 the email after fifteen wrong passwords (31, 31b and 29b), the rest of Discover and the requests
-(37b, 38 and 41c), searching members and the usage numbers (45b and 47), the house rules (52),
-the rule that an account is a young person or an organisation (34b), member pages hidden from
-search engines (15b), the region message (07b) and issue 105b. With 22 weight in one week this
-sprint is 2 above the pace of decision 004. The team checks at the sprint 4 review whether that
-still holds.
+(37b, 38 and 41c), searching members and the usage numbers (45b and 47), the privacy statement in
+Dutch (51b), the house rules (52), the rule that an account is a young person or an organisation
+(34b), member pages hidden from search engines (15b), the region message (07b) and issue 105b.
+With 23 weight in one week this sprint is 3 above the pace of decision 004. The team checks at
+the sprint 4 review whether that still holds.
 
 A handover session with the client, if he wants one, gets a date before the last sprint review
 as a GitLab milestone Handover (issue 10, task 10.7).
