@@ -91,6 +91,12 @@ flowchart TD
 
 The design: colours, fonts and spacing come only from the variables in `web/src/styles/tokens.css`, following the Figma frame Forgot password on the Figma board.
 
+Clickable prototype (laptop, sprint 1 and 2), on the Figma page Prototype sprint 1 and 2 (desktop). The line above each screen names its GitLab issues.
+
+- [C06 Forgot password](https://www.figma.com/design/SAVxDf3rlsWz22qlzTEYte/Young-Amstelland-Connect--team-workspace?node-id=1018-572)
+- [C07 Reset link sent](https://www.figma.com/design/SAVxDf3rlsWz22qlzTEYte/Young-Amstelland-Connect--team-workspace?node-id=1018-686)
+- [C08 Email: set a new password](https://www.figma.com/design/SAVxDf3rlsWz22qlzTEYte/Young-Amstelland-Connect--team-workspace?node-id=1018-799)
+
 ## Built by
 
 | Board | Title | GitLab | Sprint | Prio |

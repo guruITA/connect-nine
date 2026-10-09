@@ -247,6 +247,16 @@ The part My challenges shows within two seconds after opening My profile (issue 
 
 The design: colours, fonts and spacing come only from the variables in `web/src/styles/tokens.css`, following the Figma frames of My profile on the page Design directions of the Figma board (among them My profile state not confirmed, Skills and interests, Projects, Profile and My profile with My challenges).
 
+Clickable prototype (laptop, sprint 1 and 2), on the Figma page Prototype sprint 1 and 2 (desktop). The line above each screen names its GitLab issues.
+
+- [G03 My profile](https://www.figma.com/design/SAVxDf3rlsWz22qlzTEYte/Young-Amstelland-Connect--team-workspace?node-id=1019-2242)
+- [G04 My profile, email not confirmed](https://www.figma.com/design/SAVxDf3rlsWz22qlzTEYte/Young-Amstelland-Connect--team-workspace?node-id=1019-2497)
+- [G05 My profile, tag not allowed](https://www.figma.com/design/SAVxDf3rlsWz22qlzTEYte/Young-Amstelland-Connect--team-workspace?node-id=1019-2758)
+- [G06 My profile, ten tags is the most](https://www.figma.com/design/SAVxDf3rlsWz22qlzTEYte/Young-Amstelland-Connect--team-workspace?node-id=1019-3016)
+- [G08 My profile, changes saved](https://www.figma.com/design/SAVxDf3rlsWz22qlzTEYte/Young-Amstelland-Connect--team-workspace?node-id=1019-3442)
+- [H02 My profile, waiting for a parent](https://www.figma.com/design/SAVxDf3rlsWz22qlzTEYte/Young-Amstelland-Connect--team-workspace?node-id=1019-3855)
+- [H06 My profile, link for a parent ended](https://www.figma.com/design/SAVxDf3rlsWz22qlzTEYte/Young-Amstelland-Connect--team-workspace?node-id=1019-4385)
+
 ## Built by
 
 | Board | Title | GitLab | Sprint | Prio |

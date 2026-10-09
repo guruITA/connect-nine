@@ -75,6 +75,9 @@ What the server does before the page opens:
 - Empty: not used.
 - Phone (360 pixels wide) and laptop (1280 pixels wide): the team does the whole log in on both on the test site (tasks 23.8 and 24.5), and checks the not active sentence of a switched off member on both (task 46.8).
 - Design: the Figma board of Connect, page Design directions (the buttons follow the Figma frame Social buttons). Colours, fonts and spacing only through web/src/styles/tokens.css.
+- Clickable prototype (laptop, sprint 1 and 2), on the Figma page Prototype sprint 1 and 2 (desktop). The line above each screen names its GitLab issues. The return page itself is not drawn. These two screens stand in for the pages of Google and Facebook.
+  - [B01 Google page (stand-in)](https://www.figma.com/design/SAVxDf3rlsWz22qlzTEYte/Young-Amstelland-Connect--team-workspace?node-id=1017-1901)
+  - [B03 Facebook page (stand-in)](https://www.figma.com/design/SAVxDf3rlsWz22qlzTEYte/Young-Amstelland-Connect--team-workspace?node-id=1017-2038)
 
 ## Accessibility and privacy
 

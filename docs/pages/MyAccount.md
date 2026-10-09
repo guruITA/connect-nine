@@ -200,6 +200,16 @@ In this order, each a real link:
 
 The design: colours, fonts and spacing come only from the variables in `web/src/styles/tokens.css`, following the Figma frame My account on the Figma board. The part Tags of your organisation follows the Figma frame Skills and interests, the logo part the Figma frame Organisation logo.
 
+Clickable prototype (laptop, sprint 1 and 2), on the Figma page Prototype sprint 1 and 2 (desktop). The line above each screen names its GitLab issues.
+
+- [E02 My account, no profile yet](https://www.figma.com/design/SAVxDf3rlsWz22qlzTEYte/Young-Amstelland-Connect--team-workspace?node-id=1019-2)
+- [E03 My account](https://www.figma.com/design/SAVxDf3rlsWz22qlzTEYte/Young-Amstelland-Connect--team-workspace?node-id=1019-211)
+- [E04 My account, password changed](https://www.figma.com/design/SAVxDf3rlsWz22qlzTEYte/Young-Amstelland-Connect--team-workspace?node-id=1019-454)
+- [E05 My account, link sent to the new address](https://www.figma.com/design/SAVxDf3rlsWz22qlzTEYte/Young-Amstelland-Connect--team-workspace?node-id=1019-702)
+- [E08 Delete your account window](https://www.figma.com/design/SAVxDf3rlsWz22qlzTEYte/Young-Amstelland-Connect--team-workspace?node-id=1019-952)
+- [I03 My account, organisation](https://www.figma.com/design/SAVxDf3rlsWz22qlzTEYte/Young-Amstelland-Connect--team-workspace?node-id=1020-249)
+- [I05 My account, organisation changes saved](https://www.figma.com/design/SAVxDf3rlsWz22qlzTEYte/Young-Amstelland-Connect--team-workspace?node-id=1020-647)
+
 ## Built by
 
 | Board | Title | GitLab | Sprint | Prio |

@@ -148,6 +148,9 @@ Part Upcoming events:
 Phone and laptop:
 - The first twenty cards show within two seconds of pressing Discover (AC15 of issue 37), and a new list after pressing a filter button within two seconds (AC11 of issue 38).
 - Design: the Figma frame Discover on the page Design directions of the Figma board. Colours, fonts and spacing come only from web/src/styles/tokens.css.
+- Clickable prototype (laptop, sprint 1 and 2), on the Figma page Prototype sprint 1 and 2 (desktop). The line above each screen names its GitLab issues.
+  - [J01 Discover](https://www.figma.com/design/SAVxDf3rlsWz22qlzTEYte/Young-Amstelland-Connect--team-workspace?node-id=1020-1054)
+  - [J02 Discover, organisations](https://www.figma.com/design/SAVxDf3rlsWz22qlzTEYte/Young-Amstelland-Connect--team-workspace?node-id=1020-1276)
 
 ## Accessibility and privacy
 

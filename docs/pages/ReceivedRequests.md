@@ -110,6 +110,12 @@ flowchart TD
 
 The design: colours, fonts and spacing come only from `web/src/styles/tokens.css`, following the Figma frame Requests on the page Design directions of the Figma board.
 
+Clickable prototype (laptop, sprint 1 and 2), on the Figma page Prototype sprint 1 and 2 (desktop). The line above each screen names its GitLab issues.
+
+- [J09 Requests I received](https://www.figma.com/design/SAVxDf3rlsWz22qlzTEYte/Young-Amstelland-Connect--team-workspace?node-id=1020-2272)
+- [J10 Requests I received, after Accept](https://www.figma.com/design/SAVxDf3rlsWz22qlzTEYte/Young-Amstelland-Connect--team-workspace?node-id=1020-2398)
+- [J11 Requests I received, nobody waiting](https://www.figma.com/design/SAVxDf3rlsWz22qlzTEYte/Young-Amstelland-Connect--team-workspace?node-id=1020-2513)
+
 ## Built by
 
 | Board | Title | GitLab | Sprint | Prio |

@@ -93,6 +93,9 @@ flowchart LR
 - Not reachable on Save: "Connect is not reachable right now, your text is kept" above the form, and every field keeps its value. A tester checks this with airplane mode on a phone.
 - Phone (360 pixels wide) and laptop (1280 pixels wide): the page matches the Figma frame Create an organisation profile at both widths, shown with screenshots in the merge request (task 34.4).
 - Design: the Figma frame Create an organisation profile on the Figma board of Connect, page Design directions. The page Edit our profile follows the same frame. Colours, fonts and spacing come only from web/src/styles/tokens.css.
+- Clickable prototype (laptop, sprint 1 and 2), on the Figma page Prototype sprint 1 and 2 (desktop). The line above each screen names its GitLab issues.
+  - [I01 Create an organisation profile](https://www.figma.com/design/SAVxDf3rlsWz22qlzTEYte/Young-Amstelland-Connect--team-workspace?node-id=1020-2)
+  - [I02 Organisation profile saved](https://www.figma.com/design/SAVxDf3rlsWz22qlzTEYte/Young-Amstelland-Connect--team-workspace?node-id=1020-136)
 
 ## Accessibility and privacy
 

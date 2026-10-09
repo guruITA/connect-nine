@@ -107,6 +107,10 @@ The four fields live in `MemberProfileForm`, taken out of Create your profile by
 
 The design: colours, fonts and spacing come only from the variables in `web/src/styles/tokens.css`, following the Figma frame Edit your profile (and Create your profile for the shared form) on the Figma board.
 
+Clickable prototype (laptop, sprint 1 and 2), on the Figma page Prototype sprint 1 and 2 (desktop). The line above each screen names its GitLab issues.
+
+- [G07 Edit your profile](https://www.figma.com/design/SAVxDf3rlsWz22qlzTEYte/Young-Amstelland-Connect--team-workspace?node-id=1019-3302)
+
 ## Built by
 
 | Board | Title | GitLab | Sprint | Prio |

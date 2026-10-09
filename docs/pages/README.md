@@ -4,6 +4,25 @@ Every page of the website Connect, grouped by the part of Connect it belongs to.
 
 The frame around every page (the name Connect, the five tabs, the links at the top and the footer) is described in [AppShell.md](AppShell.md).
 
+## The clickable prototype of sprint 1 and 2
+
+The Figma page [Prototype sprint 1 and 2 (desktop)](https://www.figma.com/design/SAVxDf3rlsWz22qlzTEYte/Young-Amstelland-Connect--team-workspace?node-id=1016-2) shows every screen that the issues of sprint 1 and sprint 2 ask for, 79 screens for a laptop. Each row is one flow:
+
+| Row | Flow |
+|---|---|
+| A | Make an account and confirm the email address |
+| B | Join with Google or Facebook |
+| C | Log in, wait, lock and choose a new password |
+| D | A visitor opens a member link |
+| E | Home, tabs and My account |
+| F | Log in methods |
+| G | Profile of a young person |
+| H | Young people under 16 and their parent |
+| I | Organisations |
+| J | Discover, connection requests, connections and saved |
+
+The line above each screen names the GitLab issues it shows, and each page document of sprint 1 and 2 links its screens under its design line. Screens with a message, such as a password that is too short, stand next to the normal screen and are not on the click path. Dashed yellow pills are shortcuts of the prototype, for example to open an email, and are not part of Connect. Names, organisations, dates and email texts are examples. The prototype has no phone screens, so for a phone the page documents still point to the page Design directions. To click through, open the page in Figma, press Present and pick a flow on the left.
+
 ## How the main pages connect
 
 The five tabs of the frame lead to the main pages. The other pages open from those.

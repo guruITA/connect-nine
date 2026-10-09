@@ -105,6 +105,10 @@ The list appears within two seconds after pressing Connections on the test site 
 - Loading uses aria-busy, the error messages role alert, and the already removed message role status.
 - Cancel and Escape put the focus back on the button Remove. After a remove the focus moves to the heading.
 - Colours, fonts and spacing come only from web/src/styles/tokens.css, following the Figma frame Connections on the page Design directions.
+- Clickable prototype (laptop, sprint 1 and 2), on the Figma page Prototype sprint 1 and 2 (desktop). The line above each screen names its GitLab issues.
+  - [J12 Connections](https://www.figma.com/design/SAVxDf3rlsWz22qlzTEYte/Young-Amstelland-Connect--team-workspace?node-id=1020-2624)
+  - [J13 Remove a connection window](https://www.figma.com/design/SAVxDf3rlsWz22qlzTEYte/Young-Amstelland-Connect--team-workspace?node-id=1020-2746)
+  - [J14 Connections, after Remove](https://www.figma.com/design/SAVxDf3rlsWz22qlzTEYte/Young-Amstelland-Connect--team-workspace?node-id=1020-2880)
 - Privacy: nobody else can see this list, not another member and not a visitor. A list of who knows whom says a lot about a young person, so a row shows only the first name, the age band in words, the region and the date. No email address and no birth date. The other member is never told about a remove. There is no message button on this page.
 
 ## Built by

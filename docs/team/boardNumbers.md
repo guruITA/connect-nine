@@ -231,6 +231,7 @@ The cards name each other by their board number. GitLab gives its own numbers.
 | 133 | #233 | Add a logo to my organisation profile |
 | 159 | #234 | Remove the picture of my project |
 | 152 | #235 | See the reports about members |
+| 178 | #1496 | The page descriptions point to the screens of the prototype |
 
 ## AI use declaration
 

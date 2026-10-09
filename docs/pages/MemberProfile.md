@@ -104,6 +104,14 @@ Data for the profile: getMemberProfile(id) in web/src/api/memberProfiles.ts asks
 - Not reachable: "Connect is not reachable right now, try again later" in an area with role alert, never the not found page, and the tab title "Connect". After a full reload with the server down, RequireLogin shows its own not reachable message first. A tester checks it by switching the phone to airplane mode and reloading the page.
 - Phone (360 pixels wide) and laptop (1280 pixels wide): the screenshots are checked against the Figma frame. The first 20 project cards are there within two seconds after the page opens (issue 62b AC10).
 - Design: the Figma frame Member page (task 14.4 calls it Member profile) on the Figma board of Connect, page Design directions. Colours, fonts and spacing come only from the variables in web/src/styles/tokens.css.
+- Clickable prototype (laptop, sprint 1 and 2), on the Figma page Prototype sprint 1 and 2 (desktop). The line above each screen names its GitLab issues.
+  - [D01 Member page, visitor](https://www.figma.com/design/SAVxDf3rlsWz22qlzTEYte/Young-Amstelland-Connect--team-workspace?node-id=1018-1063)
+  - [J03 Profile of another member](https://www.figma.com/design/SAVxDf3rlsWz22qlzTEYte/Young-Amstelland-Connect--team-workspace?node-id=1020-1423)
+  - [J04 Profile of another member, request sent](https://www.figma.com/design/SAVxDf3rlsWz22qlzTEYte/Young-Amstelland-Connect--team-workspace?node-id=1020-1573)
+  - [J05 Profile of a member who asked you first](https://www.figma.com/design/SAVxDf3rlsWz22qlzTEYte/Young-Amstelland-Connect--team-workspace?node-id=1020-1723)
+  - [J06 Profile of a member, connected](https://www.figma.com/design/SAVxDf3rlsWz22qlzTEYte/Young-Amstelland-Connect--team-workspace?node-id=1020-1868)
+  - [J07 Profile of a member under 18, request declined](https://www.figma.com/design/SAVxDf3rlsWz22qlzTEYte/Young-Amstelland-Connect--team-workspace?node-id=1020-2014)
+  - [J16 Member page of someone who does not exist or is hidden](https://www.figma.com/design/SAVxDf3rlsWz22qlzTEYte/Young-Amstelland-Connect--team-workspace?node-id=1022-2)
 
 ## Accessibility and privacy
 

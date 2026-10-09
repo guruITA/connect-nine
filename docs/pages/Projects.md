@@ -90,6 +90,8 @@ The page sits inside AppShell of issue 06, so the five tabs stay around it.
 - Phone (360 pixels wide): one column of cards. Scrolling with a thumb loads the next pages.
 - Laptop (1280 pixels wide): more columns. No scrolling sideways on either screen.
 - Design: the Figma frame Projects on the page Design directions of the Figma board of Connect. Colours, fonts and spacing come only from the variables in web/src/styles/tokens.css.
+- Clickable prototype (laptop, sprint 1 and 2), on the Figma page Prototype sprint 1 and 2 (desktop). The line above each screen names its GitLab issues. In sprint 1 the tab only has its name, as in this screen.
+  - [E11 Projects](https://www.figma.com/design/SAVxDf3rlsWz22qlzTEYte/Young-Amstelland-Connect--team-workspace?node-id=1018-2755)
 - Test data: docs/testing/testData.md lists sixty five test projects of the test member Robin (Seed project 01 to 25 and Scroll project 01 to 40), four pages. The removed project Seed project removed and the Project of Sam (a switched off test member) must never show.
 
 ## Accessibility and privacy

@@ -97,6 +97,8 @@ There is no Edit button on this page, and no list of opportunities, events or ch
 - Not reachable: "Connect is not reachable right now, try again later" in an area with role alert, in place of the page, never an empty page. A tester checks it by switching the phone to airplane mode and pressing See our page.
 - Visitor: "Log in to see organisations" with its sentence and the button Log in.
 - Phone (360 pixels wide) and laptop (1280 pixels wide): the page matches the Figma frame Organisation page at both widths. Colours, fonts and spacing come only from web/src/styles/tokens.css. The frame is on the page Design directions of the Figma board of Connect.
+- Clickable prototype (laptop, sprint 1 and 2), on the Figma page Prototype sprint 1 and 2 (desktop). The line above each screen names its GitLab issues.
+  - [I06 Organisation page](https://www.figma.com/design/SAVxDf3rlsWz22qlzTEYte/Young-Amstelland-Connect--team-workspace?node-id=1020-913)
 - Test data: docs/testing/testData.md lists Seed Club Atlas (with website https://example.org, kind Club), Seed Bakery De Korenaar (no website), Seed Hidden Fund (not confirmed) and an id that no organisation has.
 
 ## Accessibility and privacy

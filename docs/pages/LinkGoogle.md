@@ -64,6 +64,8 @@ flowchart LR
 - Success: the home page opens, logged in.
 - Phone (360 pixels wide) and laptop (1280 pixels wide): the team checks the page on both on the test site (task 23b.6). No scrolling sideways.
 - Design: the Figma board of Connect, page Design directions. Colours, fonts and spacing only through web/src/styles/tokens.css.
+- Clickable prototype (laptop, sprint 1 and 2), on the Figma page Prototype sprint 1 and 2 (desktop). The line above each screen names its GitLab issues.
+  - [B02 Link Google](https://www.figma.com/design/SAVxDf3rlsWz22qlzTEYte/Young-Amstelland-Connect--team-workspace?node-id=1017-1923)
 
 ## Accessibility and privacy
 
