@@ -1,0 +1,177 @@
+/* Figma: "Ways in (bento)", two rows of a wide and a narrow tile. */
+.section {
+  background: var(--color-background);
+}
+
+.inner {
+  max-width: calc(var(--content-width) + 2 * var(--space-page));
+  margin: 0 auto;
+  padding: var(--space-xl) var(--space-page) var(--space-section);
+}
+
+.title {
+  margin: var(--space-s) 0 var(--space-section-title);
+  color: var(--color-navy);
+  font-family: var(--font-heading);
+  font-size: var(--text-h2-size);
+  font-weight: var(--font-weight-bold);
+  line-height: var(--text-h2-line);
+  letter-spacing: var(--text-h2-tracking);
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--space-bento-gap);
+}
+
+.tile {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-tile-gap);
+  padding: var(--space-xl);
+  border-radius: var(--radius-tile);
+  background: var(--color-panel);
+  overflow: hidden;
+}
+
+/* The tile link sits at the bottom of a tile, after any free space. */
+.tile > :last-child:is(a) {
+  margin-top: auto;
+}
+
+.discover {
+  grid-column: span 2;
+  flex-direction: row;
+  gap: 0;
+  padding: 0;
+}
+
+.tileBody {
+  display: flex;
+  flex: 1 1 0;
+  flex-direction: column;
+  gap: var(--space-tile-gap);
+  min-width: 0;
+  padding: var(--space-xl);
+}
+
+.discoverPhoto {
+  flex: 0 0 var(--photo-discover-width);
+  width: var(--photo-discover-width);
+  max-width: none;
+  object-fit: cover;
+}
+
+.events {
+  min-height: var(--tile-events-height);
+  background: var(--color-blue);
+}
+
+.projects {
+  min-height: var(--tile-projects-height);
+}
+
+.promise {
+  grid-column: span 2;
+  background: var(--color-mint-panel);
+}
+
+.mark {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--mark-size);
+  height: var(--mark-size);
+  /* Figma puts an 8 pixel space under the mark, on top of the gap. */
+  margin-bottom: calc(var(--space-xs) + var(--space-tile-gap));
+  border-radius: var(--radius-mark);
+  background: var(--color-white);
+}
+
+.markOnBlue {
+  background: var(--color-blue-mark);
+}
+
+.tileTitle {
+  margin: 0;
+  color: var(--color-navy);
+  font-family: var(--font-heading);
+  font-size: var(--text-h3-size);
+  font-weight: var(--font-weight-bold);
+  line-height: var(--text-h3-line);
+  letter-spacing: var(--text-h3-tracking);
+}
+
+.tileText {
+  margin: 0;
+  color: var(--color-text-muted);
+  font-size: var(--text-large-size);
+  line-height: var(--text-large-line);
+}
+
+.events .tileTitle {
+  color: var(--color-white);
+}
+
+.events .tileText {
+  color: var(--color-blue-text);
+}
+
+.tileLink {
+  align-self: flex-start;
+  /* Figma puts a 10 pixel space above the link, on top of the gap. */
+  margin-top: calc(2 * var(--space-tile-gap));
+  color: var(--color-green-text);
+  font-family: var(--font-label);
+  font-size: var(--text-small-size);
+  font-weight: var(--font-weight-bold);
+  line-height: var(--text-small-line);
+  letter-spacing: var(--text-link-tracking);
+  text-decoration: none;
+}
+
+.tileLink:hover {
+  text-decoration: underline;
+}
+
+.onBlue {
+  color: var(--color-white);
+}
+
+.onBlue:focus-visible {
+  outline-color: var(--color-focus-on-dark);
+}
+
+@media (width < 60rem) {
+  .grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .discover,
+  .promise {
+    grid-column: auto;
+  }
+
+  .discover {
+    flex-direction: column-reverse;
+  }
+
+  .discoverPhoto {
+    flex-basis: auto;
+    width: 100%;
+    aspect-ratio: 330 / 220;
+  }
+
+  .events,
+  .projects {
+    min-height: auto;
+  }
+
+  /* Every link on a phone is at least 44 pixels high (Definition of Done). */
+  .tileLink {
+    display: inline-flex;
+    align-items: center;
+    min-height: var(--target-size);
+  }
+}
