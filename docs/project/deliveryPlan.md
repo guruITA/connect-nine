@@ -21,17 +21,22 @@ sprint.
 
 | Sprint | Start | End | Issues | Must | Should | Could |
 |---|---|---|---|---|---|---|
-| Sprint 1 | Mon 21 Sep 2026 | Fri 9 Oct 2026 | 14, plus 12 stretch | 14, plus 11 stretch | 0, plus 1 stretch | 0 |
-| Sprint 2 | Mon 19 Oct 2026 | Fri 6 Nov 2026 | 54 | 31 | 18 | 5 |
-| Sprint 3 | Mon 9 Nov 2026 | Fri 27 Nov 2026 | 55 | 11 | 34 | 10 |
-| Sprint 4 | Mon 30 Nov 2026 | Fri 18 Dec 2026 | 49 | 24 | 12 | 13 |
-| Sprint 5 | Mon 4 Jan 2027 | Fri 8 Jan 2027 | 43 | 0 | 0 | 43 |
+| Sprint 1 | Mon 21 Sep 2026 | Fri 9 Oct 2026 | 24 | 22 | 2 | 0 |
+| Sprint 2 | Mon 19 Oct 2026 | Fri 6 Nov 2026 | 30 | 25 | 5 | 0 |
+| Sprint 3 | Mon 9 Nov 2026 | Fri 27 Nov 2026 | 39 | 20 | 18 | 1 |
+| Sprint 4 | Mon 30 Nov 2026 | Fri 18 Dec 2026 | 34 | 25 | 8 | 1 |
+| Sprint 5 | Mon 4 Jan 2027 | Fri 8 Jan 2027 | 19 | 19 | 0 | 0 |
+| Without a sprint | | | 103 | 0 | 34 | 69 |
 
-Together that is all 227 issues of the board, in 21 epics. The stretch issues of sprint 1
-carry the label sprint::1-stretch: the team builds them in sprint 1 when the sprint 1 issues
-are done. Sprint 5 is one week and holds only could issues, so what the team does not reach
-there is the natural place to cut. The priorities are the proposal of the team until the
-client confirms the order of the epics (`docs/client/clientQuestions.md`, question 1).
+Together that is all 249 issues of the board, in 21 epics, as GitLab holds them after the team
+planned sprints 2 to 5 again on 9 October 2026 in
+[decision 004](../decisions/004-replanAfterSprint1.md). The rules of that plan: what is done or
+waits in an open merge request stays, school goals come first, then every must, then should and
+could, at about 60 weight per sprint of three weeks and 20 in sprint 5. A should or could issue
+stands in a sprint only when a must or a school goal waits for it. The 103 should and could
+issues that nothing waits for stay open without a sprint, as placeholders for a faster team or a
+next team. The priorities are the proposal of the team until the client confirms the order of
+the epics (`docs/client/clientQuestions.md`, question 1).
 
 Every milestone description has the three headings the assessor looks for: Sprint goal, MVP
 after this sprint and Client feedback. The team fills them at the start of the sprint.
@@ -129,6 +134,8 @@ on the test site, ownership and what the students may show, page speed and uptim
 after January and the hosting grant, the Google and Facebook accounts for social log in, and
 three account questions. The answers go under Client feedback in the sprint 1 milestone.
 
+**What moved after sprint 1.** None of the 12 slices of sprint 1 was finished. The 18 issues that had not started and issue 03, which had started, moved to sprint 2 in decision 004. Issues 01, 09, 11, 178 and 179 stay in sprint 1 because their work waits in an open merge request, and issue 106 stays in Verify.
+
 **Minimum credible set for Sprint Review 1.**
 
 - The collaboration agreement. It is a draft now, not signed yet. The team finishes the final
@@ -144,56 +151,74 @@ three account questions. The answers go under Client feedback in the sprint 1 mi
 
 ## Sprint 2, 19 October to 6 November 2026
 
-Account (15 issues), profiles (14), account security (10) and matching (13), from issue 113
-Delete my account and all my data to issue 44 See my saved items. Two research issues are in
-this sprint: issue 110 The cost of password hashing, measured, and issue 111 Two end to end
-test tools compared on one flow.
+The first slice of sprint 1 and what makes an account safe: issues 03 Create an account to 08
+See my own profile page, 03b, 04b, 06b, 14, 15, issue 113 Delete my account and all my data,
+the password reset of issues 21 and 22, the password change of issue 114, the check
+against leaked passwords of issue 116, and issue 130 A young person under 16 asks a parent for
+permission. Issue 20 starts Connect with one command, issue 17 adds the health check and issue
+16 the security scan. The security analysis of Kelvin van Voorst (issues 12, 13, 18 and 19) and
+the client meeting of issue 10 move here from sprint 1. School goals: issue 84 The DevOps
+learning outcomes agreed, issue 85 the evidence table per student, issue 176 the Scrum Master
+proof of sprint 2, issue 177 four ways of loading a profile, and issue 111 Two end to end test
+tools compared on one flow.
 
 ## Sprint 3, 9 to 27 November 2026
 
-Admin, the site pages (privacy statement and house rules), opportunities, events and news, and
-the first issues of showcases and challenges. Activity for the admin (issues 32, 120, 121 and
-32b) also lands here. Research issue 107 Three ways to give out the last event place, measured,
-is in this sprint, together with issue 68b A full event refuses a place fairly that it measures.
+Confirming the email address and logging in with Google, the waits after wrong passwords
+(issues 30 and 30b), organisation profiles and pages, tags, and matching from the suggestions of
+issue 37 to the saved items of issue 44. The admin lists, deactivates and reactivates members
+and edits site pages, and the privacy statement is on every page. The events (issues 65 to 68b),
+the opportunities (54 and 55), the first project (60) and the first news item (71) are here
+because a school goal of sprint 4 waits for them.
 
 ## Sprint 4, 30 November to 18 December 2026
 
-The school deliverables of DevOps and architecture land in this sprint:
+The school deliverables of DevOps, architecture and research land in this sprint:
 
 - **Code quality and image scan.** Issues 88 The team picks the code quality tool, 89 A change
   that lowers code quality is stopped and 90 An image with a serious known hole is stopped.
-- **Production.** Issue 91 The director agrees where production runs comes first. Then issue 92
-  k3s and Terraform for production, compose for test, and issues 93 to 97, 173 and 174.
+- **Production.** Issue 91 The director agrees where production runs comes first. Then issue
+  92 k3s and Terraform for production, compose for test, and issues 93 to 97, 173 and 174.
 - **Observability.** Issues 98 to 101.
 - **DevOps evidence.** Issue 86 A recording of one change from commit to production and issue
   87 The live demo to the teacher.
 - **Architecture and security.** Issues 102 The architecture drawn in layers, parts and places,
   103 The design patterns Connect uses, where and why, 104 A threat model of adding an image to
-  a project, 105 and 105b.
-- **Features.** The rest of showcases and challenges, badges (80 and 80b) and the first
-  webshop issues (81 to 82d), which stay blocked until question 2 is answered.
-- **Research.** Issues 108 Two ways of paging the showcases, measured, and 109 Image formats
-  for project pictures, measured on a phone. Both stay in sprint 4 because they measure
-  features built in sprint 4: issue 63 Browse all showcases, issue 61b Add an image to my
-  project and issue 64 Open a project page. Issue 112 Every research report reviewed by a
-  fellow student closes the research in this sprint.
+  a project, and 105.
+- **Showcases.** Issues 61 to 64, because issue 104 and research issues 108 and 109 need them.
+- **Research.** Issues 107 Three ways to give out the last event place, 108 Two ways of paging
+  the showcases, 109 Image formats for project pictures, and 110 The cost of password hashing,
+  measured. Issue 112 Every research report reviewed by a fellow student closes the research in
+  this sprint.
 
 ## Sprint 5, 4 to 8 January 2027
 
-Only could extras across the feature epics. The research is done by the end of sprint 4, so
-this week holds no must issue. Many of them wait for a yes of the client in questions 9 and up of
-`docs/client/clientQuestions.md`. Issues 167 to 170 of epic Challenges are blocked on
-questions 84 to 87.
+The last 19 musts of the project, all of them for the foundation: editing a profile and its tags
+(issues 33, 36b, 36c and 36d), the rest of the parent permission (130b and 131), the lock and
+the email after fifteen wrong passwords (31, 31b and 29b), the rest of Discover and the requests
+(37b, 38 and 41c), searching members and the usage numbers (45b and 47), the house rules (52),
+the rule that an account is a young person or an organisation (34b), member pages hidden from
+search engines (15b), the region message (07b) and issue 105b. With 22 weight in one week this
+sprint is 2 above the pace of decision 004. The team checks at the sprint 4 review whether that
+still holds.
 
 A handover session with the client, if he wants one, gets a date before the last sprint review
 as a GitLab milestone Handover (issue 10, task 10.7).
+
+## Without a sprint
+
+34 should and 69 could issues that no must or school goal waits for, among them the webshop,
+the challenges, the badges, most of the admin and the opportunities, and the rest of the news
+and events. They stay open with their priority and the label of their epic. Many of them also
+wait for a yes of the client in questions 9 and up of `docs/client/clientQuestions.md`.
 
 ## Individual lines
 
 **Wesley Oerlemans, Research & Design.** The earlier plan had a draft R&D research piece to the
 learning group teacher by 5 October 2026. The approval of every student's research topic is now
 issue 106, in sprint 1. The event capacity race of the earlier plan is issue 107 Three ways to
-give out the last event place, measured, in sprint 3. The peer review of every report is issue
+give out the last event place, measured, in sprint 4, because it waits
+for the events of sprint 3. The peer review of every report is issue
 112, in sprint 4. The research schedule was moved forward on 27 September 2026 so that it sits
 closer to the level 3 datapoint sheet (Research & Design in sprint 1, Review of R&D Report in
 sprint 3). The exact Portflow deadlines for the proposal and the report are not in the
@@ -201,11 +226,11 @@ material the team holds. Route: coach Karthik Srinivasan.
 
 **Kelvin van Voorst, Security.** His security requirements and risk framing datapoint is issue
 12 Inventory of the personal data per module and issue 13 The role table per module, in sprint
-1. The data flow diagram is issue 18, in sprint 1 stretch. The threat model of a second feature
+2. The data flow diagram is issue 18, in sprint 2. The threat model of a second feature
 is issue 104 A threat model of adding an image to a project, in sprint 4.
 
 **Every student, DevOps.** Each student agrees three to five learning outcomes with the DevOps
-teacher in issue 84, in sprint 1 stretch. The recording (issue 86) and the live demo (issue 87)
+teacher in issue 84, in sprint 2. The recording (issue 86) and the live demo (issue 87)
 are in sprint 4.
 
 ## The datapoint moments per the all-students sheet, as far as it is known
