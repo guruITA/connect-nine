@@ -20,8 +20,8 @@ The source is section 3 of the page Issue creation on the Figma board. When it c
   How to check: `git grep -i -E "password|secret|token|connectionstring"` shows only placeholders. Real values live only in .env and in the settings of the server.
 - [ ] **No leftover code: nothing commented out, no debug output, and every TODO names an issue.**
   How to check: search the change for commented out code, console.log, Console.WriteLine and TODO. Every TODO names an issue number.
-- [ ] **The server keeps its four layers apart: only the Infrastructure layer talks to the database.**
-  How to check: no file in api/Presentation or api/Application uses the database context or SQL. The compiler already refuses Domain code that uses another project.
+- [ ] **The server keeps its layers apart: a handler reaches the data only through the contract IAppDbContext.**
+  How to check: no file in api/Connect.Presentation uses the database context or SQL. A handler in api/Connect.Application uses IAppDbContext, never AppDbContext, Npgsql or SQL text. The compiler already refuses Domain code that uses another project. See docs/decisions/002-layeredArchitecture.md.
 
 ### Tests
 

@@ -84,7 +84,7 @@ C# is the language. .NET is the platform it runs on. ASP.NET Core is the part of
 
 ### Version and tools
 
-1. .NET 10, the long term support version, supported until November 2028. .NET 8 stops getting security fixes on 10 November 2026, in the middle of this project.
+1. .NET 10, the long term support version, supported until 14 November 2028. .NET 8 and .NET 9 stop getting security fixes on 10 November 2026, in the middle of this project. Why, with the source: docs/decisions/003-dotnet10.md. (tool: net10.0 in every project file, dotnet build of #259)
 2. In every project file: `<Nullable>enable</Nullable>` (the compiler warns when a value can be empty) and `<TreatWarningsAsErrors>true</TreatWarningsAsErrors>` (a warning stops the build, so "zero warnings" checks itself).
 3. The built in .NET analyzers and dotnet format, with the rules in .editorconfig. `dotnet build` and `dotnet format --verify-no-changes` must report nothing. Nothing extra to install.
 
@@ -96,8 +96,8 @@ C# is the language. .NET is the platform it runs on. ASP.NET Core is the part of
 
 ### Structure
 
-7. Four projects in backend: Presentation, Application, Domain and Infrastructure, plus the test project Connect.Tests. Application holds one folder per feature in Features, one feature per epic, and inside it one folder per use case with its command or query and its handler: Features/Account/CreateAccount/CreateAccountCommand.cs with CreateAccountHandler.cs. A write is a command, a read is a query, never both in one handler. There are no repository classes, no IXRepository interfaces and no Repositories folder.
-8. Presentation uses Application and Infrastructure. Application and Infrastructure use Domain. Domain uses nothing. Because they are separate projects, the compiler refuses code that breaks this, so a beginner cannot break the layers by accident.
+7. Four layer projects in api: Connect.Presentation, Connect.Application, Connect.Domain and Connect.Infrastructure, plus the start project Connect, which starts the server and connects the layers. Application holds one folder per feature in Features, one feature per epic, and inside it one folder per use case with its command or query and its handler: api/Connect.Application/Features/Account/CreateAccount/CreateAccountCommand.cs with CreateAccountHandler.cs. A write is a command, a read is a query, never both in one handler. A handler reaches the data only through the contract IAppDbContext in api/Connect.Application/Abstractions, which AppDbContext in Infrastructure implements. There are no repository classes, no IXRepository interfaces, no Repositories folder and no use case written as a Service class. (reviewer)
+8. References point inward: Connect uses Presentation and Infrastructure, Presentation uses Application, Infrastructure uses Application (it implements contracts such as IAppDbContext), Application uses Domain, and Domain uses nothing. Each test project uses only the project it tests. Because they are separate projects, the compiler refuses code that breaks this, so a beginner cannot break the layers by accident. The decision, the options that lost and the compiler proof: docs/decisions/002-layeredArchitecture.md. (tool: the compiler, through the project references)
 
 ### Web addresses (endpoints)
 
@@ -109,9 +109,9 @@ C# is the language. .NET is the platform it runs on. ASP.NET Core is the part of
 
 ### Other
 
-14. A class gets what it needs through its constructor (dependency injection). Each layer registers its classes in one method: AddApplication(), AddInfrastructure(). Every handler is also registered in Program.cs, one line per handler.
+14. A class gets what it needs through its constructor (dependency injection). Each layer registers its own classes in one method: AddApplication() in api/Connect.Application/DependencyInjection.cs, AddInfrastructure(configuration) and AddPresentation() in theirs, and Program.cs of Connect only calls those three. Every handler is registered in AddApplication(), one line per handler. (reviewer)
 15. Logging with ILogger and a message template: `_logger.LogError(ex, "Status failed for {RequestId}", requestId)`. Never glue text together with `$"..."` in a log line, the template keeps the values searchable.
-16. Tests with NUnit. Name: Method_Situation_ExpectedResult, for example GetStatusAsync_DatabaseDown_ReturnsNotReachable. Every test has three parts: Arrange (prepare), Act (do), Assert (check).
+16. Tests with NUnit. Name: Method_Situation_ExpectedResult, for example HandleAsync_EmailAlreadyUsed_ReturnsConflict. Every test has three parts: Arrange (prepare), Act (do), Assert (check). A handler is unit tested with an in-memory SQLite AppDbContext. A rule that depends on PostgreSQL itself (a unique index, citext, a constraint, ExecuteDeleteAsync) is tested against a real PostgreSQL, because SQLite does not behave the same. (reviewer)
 
 ## Database: PostgreSQL through EF Core
 
@@ -162,13 +162,13 @@ These rules join the parts above. When an older text disagrees, these win.
 ### Files and folders
 
 11. A record ...Request or ...Response may sit in the endpoint file of its feature (an agreed exception to "one class per file"). A component used on one page only may sit in components under a folder named after the page.
-12. Test folders: api/Connect.Tests/Features/<Feature>, with a handler test named <UseCase>HandlerTests.cs, api/Connect.Tests/Domain, api/Connect.Tests/Infrastructure, with a database test named <Feature>DatabaseTests.cs, api/Connect.Tests/Presentation, api/Connect.Tests/Fixtures.
+12. Test projects per layer: api/Connect.Application.Tests/Features/<Feature> with a handler test named <UseCase>HandlerTests.cs, api/Connect.Infrastructure.Tests/Persistence with a database test against a real PostgreSQL named <Feature>DatabaseTests.cs, api/Connect.Presentation.Tests/<Feature>/Endpoints with the endpoint tests, and api/Connect.Tests for tests across projects. There is no Connect.Domain.Tests (task 3.1, #259). Shared helpers go in a Fixtures folder of the test project. (reviewer)
 
 ### Commands
 
-13. The solution is made with `dotnet new sln --format sln`, so every command can use api/Connect.sln.
+13. The solution file is api/Connect.slnx, as on dev and in task 3.1 (#259), so every command can use api/Connect.slnx. (reviewer)
 14. docker-compose.yml names the database service `database` and gives it no fixed `container_name`, so two checkouts never clash on the container name. Commands reach it by the service name: `docker compose exec database psql -U connect -d connect`.
-15. A migration is always added with `dotnet ef migrations add <Name> --project api/Infrastructure --startup-project api/Presentation`.
+15. A migration is always added with `dotnet ef migrations add <Name> --project api/Connect.Infrastructure --startup-project api/Connect`. (reviewer)
 16. Going back one migration: `dotnet ef migrations list`, then `dotnet ef database update <the migration just before yours>` with the same --project and --startup-project. Never a fixed old migration name.
 17. The database port is published only on 127.0.0.1: `"127.0.0.1:5432:5432"`.
 
