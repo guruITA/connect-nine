@@ -366,6 +366,25 @@ Issue 09 Every team member on the client's server (task 9.2) prepares the founda
 | Hostname | connect |
 | Time zone | Europe/Amsterdam |
 
+The facts above come from these commands, run on the server on 9 October 2026:
+
+```
+$ nproc
+4
+$ free -h
+               total        used        free      shared  buff/cache   available
+Mem:           7.7Gi       833Mi       5.9Gi       1.0Mi       1.2Gi       6.9Gi
+Swap:             0B          0B          0B
+$ df -h /
+Filesystem      Size  Used Avail Use% Mounted on
+/dev/vda1       232G  3.1G  229G   2% /
+$ head -4 /etc/os-release
+PRETTY_NAME="Ubuntu 24.04.5 LTS"
+NAME="Ubuntu"
+VERSION_ID="24.04"
+VERSION="24.04.5 LTS (Noble Numbat)"
+```
+
 The server is IPv4 only today. The client's sheet names an IPv6 address, 2a01:239:4b8:db00::1, but it is not configured on the interface yet.
 
 ### Logging in
@@ -440,8 +459,26 @@ You should see `Default: deny (incoming), allow (outgoing)` and only these, for 
 | 80/tcp | Web visits, which Caddy sends on to https |
 | 443/tcp | Web visits with the padlock |
 
+The output on 9 October 2026:
+
+```
+Status: active
+Logging: on (low)
+Default: deny (incoming), allow (outgoing), deny (routed)
+New profiles: skip
+
+To                         Action      From
+--                         ------      ----
+22/tcp                     ALLOW IN    Anywhere
+80/tcp                     ALLOW IN    Anywhere
+443/tcp                    ALLOW IN    Anywhere
+22/tcp (v6)                ALLOW IN    Anywhere (v6)
+80/tcp (v6)                ALLOW IN    Anywhere (v6)
+443/tcp (v6)               ALLOW IN    Anywhere (v6)
+```
+
 - A scan from outside on 9 October 2026 found only 22 answering. 80 and 443 answer since Caddy runs.
-- Docker 29.8.2 with Compose 5.5.1 comes from Docker's own package source (download.docker.com).
+- Docker 29.8.2 with Compose 5.5.1 comes from Docker's own package source (download.docker.com). Checked on 9 October 2026: `docker --version` answers `Docker version 29.8.2, build 7fc2dff`, `docker compose version` answers `Docker Compose version v5.5.1`, and `docker run --rm hello-world` prints `Hello from Docker!`.
 - The programs on the server and their licence, so hosting costs no licence money (NFR3): Docker Engine (Apache 2.0, github.com/moby/moby), the Docker Compose plugin (Apache 2.0, github.com/docker/compose), Caddy (Apache 2.0, github.com/caddyserver/caddy) and ufw (GPL 3.0, launchpad.net/ufw).
 - Docker opens ports past ufw. So every container publishes its port only on 127.0.0.1, for example `"127.0.0.1:8080:8080"`. That holds for the database and the test mailbox of #39 as well, which are reached only through Caddy with a login.
 - The group docker equals full administrator rights on the server. Only the user deploy is in it, a team member only when needed.
