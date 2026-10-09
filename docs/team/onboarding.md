@@ -23,15 +23,19 @@ docker --version
 git --version
 ```
 
+You should see four version numbers. `dotnet --version` starts with 10. `node --version` starts with v and the number of the current LTS. The other two print a line that starts with `Docker version` and `git version`. A line such as `command not found` means the tool is not installed or not on your path.
+
 ## 2. Get the code
 
 Clone the project and stay on `dev`, which is the default branch.
 
 ```
-git clone <the project address on GitLab>
+git clone https://gitlab.fdmci.hva.nl/studio/social-impact-apps/onderwijs/projects/2026-2027-semester-1/projects/project-9-wail-salutem-foundation-project-2/connect-nine.git
 cd connect-nine
 git switch dev
 ```
+
+You should see `Cloning into 'connect-nine'...`, and after the last command `Already on 'dev'`.
 
 Nobody pushes to `dev` or `main`. Both are protected. Every change starts on its own branch and reaches `dev` through a merge request that a teammate approves.
 
@@ -171,15 +175,16 @@ The ignore rules cover the variants, so `.env.local` and `.env.production` canno
 
 ### Start the server
 
+The backend has four layers: Presentation handles HTTP, Application holds use
+cases and business rules, Domain holds core contracts and entities, and
+Infrastructure handles external systems such as the database. The start project
+`api/Connect` connects them, see `docs/decisions/002-layeredArchitecture.md`.
+
 ```
 dotnet run --project api/Connect/Connect.csproj
 ```
 
-The backend has four layers: Presentation handles HTTP, Application holds use
-cases and business rules, Domain holds core contracts and entities, and
-Infrastructure handles external systems such as the database. Start the server
-with `dotnet run --project api/Connect/Connect.csproj`; it listens on
-`http://localhost:5000`.
+You should see `Now listening on: http://localhost:5000`. Open http://localhost:5000/api/health in a browser: you should see `{"status":"healthy"}`. Stop the server with Ctrl+C.
 
 ### Start the frontend
 
@@ -191,7 +196,7 @@ npm install
 npm run dev
 ```
 
-Open http://localhost:5173. Run `npm install` again after a pull that changed `package.json`.
+You should see a line with `Local:` and an address such as http://localhost:5173. Open it. Run `npm install` again after a pull that changed `package.json`.
 
 The frontend never names the address of the server. Every call to `/api` goes to Vite, and Vite passes it on to `http://localhost:5000` (the proxy in `web/vite.config.ts`). The browser only sees one address, so the server needs no CORS settings. Start the server as well when a page needs data. Check the proxy with:
 
@@ -216,10 +221,12 @@ The scripts in `web/package.json`:
 In the root of the repository:
 
 ```
-dotnet build
-dotnet format --verify-no-changes
-dotnet test
+dotnet build api/Connect.slnx
+dotnet format api/Connect.slnx --verify-no-changes
+dotnet test api/Connect.slnx
 ```
+
+You should see `Build succeeded` with `0 Warning(s)` and `0 Error(s)`, no output from the format check, and `Passed!` with `Failed: 0` for the tests.
 
 In the folder `web`:
 
@@ -230,6 +237,8 @@ npm test
 npm run build
 ```
 
+You should see no lint errors, `All matched files use Prettier code style!` and every test passed.
+
 The pipeline runs the same checks. A merge request cannot be accepted while any of them is red.
 
 ## 7. Your first change
@@ -237,8 +246,10 @@ The pipeline runs the same checks. A merge request cannot be accepted while any 
 1. Take an issue from the board of the sprint and put it in Doing.
 2. Branch from `dev`, named `<type>/<issue number>-<short name>`.
 3. Commit as `<type>(<scope>): <what changed> (#<issue number>)`.
-4. Open a merge request into `dev` and ask a teammate who did not write it to approve.
-5. Walk the Definition of Done of the type of the issue, line by line.
+4. Push the branch with `git push -u origin <your branch>`. You should see a line with a link to make a merge request.
+5. Open the link, choose `dev` as the target and ask a teammate who did not write it to approve. The template fills the description: start it with `Relates to #<issue number>`.
+6. Wait for the pipeline of the merge request. Green means you can ask for the review. Red: click the red run, then the red job, and read the last lines of its log. They say what failed. The part Pipeline of [gitlabSetup.md](gitlabSetup.md) explains each job.
+7. Walk the Definition of Done of the type of the issue, line by line.
 
 ## 8. Check that no secret leaked
 
@@ -248,7 +259,7 @@ Run this before every merge request:
 git grep -i -E "password|secret|token|connectionstring"
 ```
 
-Everything it finds has to be a placeholder or the name of a variable. If a real value ever reaches a commit, say so in the team channel at once. Removing it in a later commit is not enough, because the value stays in the history and has to be treated as leaked and replaced.
+You should see only lines where the word is a name, a placeholder or an explanation, such as `POSTGRES_PASSWORD=` in `.env.example`. Everything it finds has to be a placeholder or the name of a variable. If a real value ever reaches a commit, say so in the team channel at once. Removing it in a later commit is not enough, because the value stays in the history and has to be treated as leaked and replaced.
 
 ## 9. The words Connect uses
 
