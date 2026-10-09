@@ -43,7 +43,8 @@ flowchart LR
 - Settings, Merge requests: All threads must be resolved on, and Delete source branch on by default.
 - Settings, Merge requests, Merge request approvals: one approval required from any member, the author may not approve their own merge request, and people who added commits may not approve it either. Approvals are removed when new commits are pushed.
 - The team rule holds on top of the setting: nobody merges without an approval of someone else, and the reviewer of the Definition of Done checks it on every issue.
-- The template .gitlab/merge_request_templates/Default.md fills the description of every new merge request. Its parts: Relates to, What changed, How to check it, The test that fails when its rule is removed, Proof for the portfolio, The version to go back to, TODO (rule 10 of the code conventions) and AI use (section 9.1 of the collaboration agreement).
+- Every merge request has all five students as reviewer: Bayon Eerhart, Gurpreet Singh, Nick Hoebe, Kelvin van Voorst and Wesley Oerlemans (team rule since 9 October 2026), so everyone sees every change. One approval of someone who is not the author is still enough to merge. The template Default.md holds the quick action `/assign_reviewer` with the five names. A merge request made through the API or glab gets them with `reviewer_ids`.
+- The template .gitlab/merge_request_templates/Default.md fills the description of every new merge request. Its parts: Relates to, the reviewers line, What changed, How to check it, The test that fails when its rule is removed, Proof for the portfolio, The version to go back to, TODO (rule 10 of the code conventions) and AI use (section 9.1 of the collaboration agreement).
 
 ## Pipeline
 
@@ -129,6 +130,13 @@ flowchart TD
 - Every task is a child item of its issue, in the order of the board, with its portfolio labels and the milestone of its issue.
 - Every "is blocked by" of the board is a linked item, so each issue also shows "blocks" on the other side.
 - New issues start from the templates in .gitlab/issue_templates, one per type.
+
+## Templates
+
+- Issue templates live in .gitlab/issue_templates on dev: slice, setup, research, decision and client for an issue, and task for a task. New issue, Description, Choose a template offers all six. The Definition of Done in each template copies only the bold sentences of docs/team/definitionOfDone.md, and the two change in the same merge request.
+- The merge request template is .gitlab/merge_request_templates/Default.md. Because it is named Default, GitLab fills it in by itself on every new merge request made in the browser. A merge request made through the API or glab starts empty, so paste the template there by hand.
+- The line `/assign_reviewer @eerharb @singhg11 @hoebenj @voorstk2 @oerlemw` in the template adds the five reviewers when the merge request is saved. Still to confirm on the first merge request made in the browser after this merge: the five names show under Reviewers and the line is gone from the description. If the line stays, add the reviewers by hand.
+- Settings, General, Default description template for issues: GitLab offers this setting only in Premium and Ultimate (GitLab Docs, Description templates). The project API shows the field issues_template, empty on 8 October 2026, but a field in the API does not prove the HvA licence has the setting. The team does not need it: an issue has five types and no single default fits all of them, and the merge request default comes from the name Default.md.
 
 ## AI use declaration
 
