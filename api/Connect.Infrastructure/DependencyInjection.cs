@@ -24,8 +24,20 @@ public static class DependencyInjection
 
         services
             .AddIdentityCore<Account>()
+            .AddPasswordValidator<PasswordValidator<Account>>()
             .AddRoles<IdentityRole<Guid>>()
             .AddEntityFrameworkStores<ConnectDbContext>();
+
+        services.Configure<IdentityOptions>(options =>
+        {
+            options.Password.RequiredLength = 15;
+            options.Password.RequireDigit = true;
+            options.Password.RequireLowercase = true;
+            options.Password.RequireUppercase = true;
+            options.Password.RequireNonAlphanumeric = true;
+            options.Password.RequiredUniqueChars = 1;
+        });
+
         return services;
     }
 }

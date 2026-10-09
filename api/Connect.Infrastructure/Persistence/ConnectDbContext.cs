@@ -1,3 +1,4 @@
+using Connect.Application.Common.Abstractions;
 using Connect.Domain.Common;
 using Connect.Domain.Users;
 using Microsoft.AspNetCore.Identity;
@@ -7,7 +8,7 @@ using Microsoft.EntityFrameworkCore;
 namespace Connect.Infrastructure.Persistence;
 
 public sealed class ConnectDbContext(DbContextOptions<ConnectDbContext> options)
-    : IdentityDbContext<Account, IdentityRole<Guid>, Guid>(options)
+    : IdentityDbContext<Account, IdentityRole<Guid>, Guid>(options), IAppDbContext
 {
     public IQueryable<Account> Accounts => Set<Account>();
 

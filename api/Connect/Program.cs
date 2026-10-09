@@ -1,6 +1,7 @@
 using Connect.Application;
 using Connect.Infrastructure;
 using Connect.Presentation;
+using Connect.Presentation.Accounts.Endpoints;
 using Connect.Presentation.Health.Endpoints;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -20,5 +21,6 @@ app.UseExceptionHandler();
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapHealthEndpoints();
+app.MapAccountEndpoints();
 
 app.Run();
