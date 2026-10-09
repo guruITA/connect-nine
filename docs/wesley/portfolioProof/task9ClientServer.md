@@ -26,9 +26,9 @@ School asks: "You ensure that your work aligns with that of others and contribut
 
 ## TODO
 
-- [ ] Wesley: run `bash /tmp/claude-1000/dk/setGitlabVariables.sh` to make the three variables (the classifier of the session did not allow it), then run ssh-check on dev after the merge and add the link here.
-- [ ] Wesley: set your own sudo password on the server in person (`sudo passwd wesley` does not work without one, so as root: `passwd wesley`), then `PermitRootLogin no`.
-- [ ] Team: choose the second member of the group sudo.
+- [x] Wesley: make the three variables, then run ssh-check on dev after the merge. Done on 9 October 2026: ssh-check green in job 1342015 of dev pipeline 583960, and red on an unprotected branch in pipeline 583976.
+- [x] Wesley: root access without a root login. Done on 9 October 2026: `PermitRootLogin no`, and wesley and gurpreet use sudo without a password (`/etc/sudoers.d/20-connect-admins`), because every user has a locked password.
+- [x] Team: choose the second member of the group sudo. Gurpreet Singh, 9 October 2026.
 - [ ] Teammates: first login and signed line, screenshot of the padlock on a phone (9.4 and 9.6).
 - [ ] Owner of #267: read part The pipeline on the server and write your name and the date in #10.
 

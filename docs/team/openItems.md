@@ -107,9 +107,11 @@ Dated items the team has to schedule.
   first login arrived from the client on 2 October 2026. On 9 October 2026 every member got a
   personal user, password login went off, Caddy runs with a padlock on the interim address
   https://31-70-66-186.sslip.io, and the user deploy and the secret settings of the test site are
-  ready (merge request !34). Still open: the DNS record of the real test address (task 9.1), the
-  three GitLab variables of the pipeline, the second sudo member, the first login of each member
-  and the check with the client (task 9.6). Issue 03 Create an account puts Connect on that
+  ready (merge request !34). Later that day the three GitLab variables of the pipeline were made
+  and ssh-check went green on dev, root stopped logging in over ssh, and wesley and gurpreet
+  became the two admins. Still open: the DNS record of the real test address (task 9.1, the
+  client sends the domain), the first login of each member and the check with the client
+  (task 9.6). Issue 03 Create an account puts Connect on that
   server for the first time. Owner: the Product Owner of sprint 1, Nick Hoebe, with the client.
 - **Kelvin van Voorst's Security requirements and risk framing datapoint.** The security
   requirements, key assets and main risks of the project. On the board as issue 12 Inventory of
