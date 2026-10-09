@@ -9,7 +9,7 @@ Read three documents first, in this order: [collaborationAgreement.md](collabora
 | Tool | Version | Why |
 |---|---|---|
 | .NET SDK | 10 | The backend of Connect |
-| Node.js | current LTS | The frontend of Connect |
+| Node.js | 22, at least 22.13 | The frontend of Connect. Vite needs 22.12 or newer, ESLint and the test tools need 22.13 |
 | Docker | current | The database and the test site run in containers |
 | Git | current | Every change reaches dev through a merge request |
 | An editor | Visual Studio, Rider or Visual Studio Code | Any of the three is fine |
@@ -173,6 +173,8 @@ The ignore rules cover the variants, so `.env.local` and `.env.production` canno
 
 ## 5. Run Connect
 
+### Start the server
+
 The backend has four layers: Presentation handles HTTP, Application holds use
 cases and business rules, Domain holds core contracts and entities, and
 Infrastructure handles external systems such as the database. The start project
@@ -184,7 +186,9 @@ dotnet run --project api/Connect/Connect.csproj
 
 You should see `Now listening on: http://localhost:5000`. Open http://localhost:5000/api/health in a browser: you should see `{"status":"healthy"}`. Stop the server with Ctrl+C.
 
-The screen in `web` comes with task 3.5 (#263). From then on, in a second terminal:
+### Start the frontend
+
+The frontend is a React app in the folder `web`, built and served by Vite. It needs Node.js 22, at least 22.13. `web/.nvmrc` says 22, so with nvm you run `nvm use` in that folder.
 
 ```
 cd web
@@ -192,9 +196,29 @@ npm install
 npm run dev
 ```
 
-You should see a line with `Local:` and an address such as http://localhost:5173.
+You should see a line with `Local:` and an address such as http://localhost:5173. Open it. Run `npm install` again after a pull that changed `package.json`.
+
+The frontend never names the address of the server. Every call to `/api` goes to Vite, and Vite passes it on to `http://localhost:5000` (the proxy in `web/vite.config.ts`). The browser only sees one address, so the server needs no CORS settings. Start the server as well when a page needs data. Check the proxy with:
+
+```
+curl http://localhost:5173/api/health
+```
+
+It answers `{"status":"healthy"}` when the server runs.
+
+The scripts in `web/package.json`:
+
+| Script | What it does |
+|---|---|
+| `npm run dev` | Starts Vite on http://localhost:5173 and reloads the page on every change |
+| `npm run build` | Checks the types and builds the site into `web/dist` |
+| `npm run lint` | ESLint with the rules for TypeScript, React hooks and accessibility |
+| `npm run format` | Prettier puts every file in the team layout |
+| `npm test` | Runs every Vitest test once |
 
 ## 6. Run the checks before you push
+
+In the root of the repository:
 
 ```
 dotnet build api/Connect.slnx
@@ -204,12 +228,13 @@ dotnet test api/Connect.slnx
 
 You should see `Build succeeded` with `0 Warning(s)` and `0 Error(s)`, no output from the format check, and `Passed!` with `Failed: 0` for the tests.
 
-Once `web` holds the screen (#263), also run these in `web`:
+In the folder `web`:
 
 ```
 npm run lint
 npx prettier --check .
 npm test
+npm run build
 ```
 
 You should see no lint errors, `All matched files use Prettier code style!` and every test passed.

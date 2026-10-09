@@ -1,0 +1,114 @@
+/* Figma: "Site header (frosted)", 76 pixels high, sticky on a laptop. */
+.topBar {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background: var(--color-header);
+  box-shadow: 0 var(--hairline-width) 0 0 var(--color-header-line);
+  backdrop-filter: blur(var(--header-blur));
+}
+
+.inner {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-xs) var(--space-s);
+  align-items: center;
+  max-width: calc(var(--content-width) + 2 * var(--space-page));
+  min-height: var(--header-height);
+  margin: 0 auto;
+  padding: var(--space-xs) var(--space-page);
+}
+
+.brand {
+  display: flex;
+  gap: var(--space-brand-gap);
+  align-items: center;
+  min-height: var(--target-size);
+  margin-right: auto;
+  text-decoration: none;
+}
+
+.brandText {
+  display: flex;
+  flex-direction: column;
+}
+
+.brandName {
+  color: var(--color-navy);
+  font-family: var(--font-heading);
+  font-size: var(--text-body-size);
+  font-weight: var(--font-weight-bold);
+  line-height: var(--text-body-line);
+  letter-spacing: var(--text-brand-tracking);
+}
+
+.brandProduct {
+  color: var(--color-green-text);
+  font-family: var(--font-label);
+  font-size: var(--text-label-size);
+  font-weight: var(--font-weight-bold);
+  line-height: var(--text-label-line);
+  letter-spacing: var(--text-label-tracking-wide);
+  text-transform: uppercase;
+}
+
+.tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-tab-gap);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.tab {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--target-size);
+  padding: var(--space-xs) var(--space-tab-inline);
+  border-radius: var(--radius-pill);
+  color: var(--color-navy);
+  font-weight: var(--font-weight-semibold);
+  text-decoration: none;
+}
+
+.tab:hover {
+  text-decoration: underline;
+}
+
+.current {
+  background: var(--color-panel);
+  color: var(--color-green-text);
+}
+
+.action {
+  margin-left: var(--space-brand-gap);
+}
+
+/* On a phone the tabs move to their own row under the name and the button. */
+@media (width < 60rem) {
+  .topBar {
+    position: static;
+  }
+
+  .nav {
+    order: 1;
+    width: 100%;
+  }
+
+  .action {
+    margin-left: 0;
+  }
+}
+
+/* On a laptop the design is 76 pixels high with 40 pixel tabs. */
+@media (width >= 60rem) {
+  .inner {
+    flex-wrap: nowrap;
+    padding-block: 0;
+  }
+
+  .tab {
+    min-height: auto;
+  }
+}

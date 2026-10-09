@@ -1,0 +1,172 @@
+/* Figma: "Site footer" */
+.footer {
+  background: var(--color-navy);
+}
+
+.inner {
+  max-width: calc(var(--content-width) + 2 * var(--space-page));
+  margin: 0 auto;
+  padding: var(--space-3xl) var(--space-page) var(--space-footer-end);
+}
+
+.top {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2xl);
+  align-items: flex-start;
+  justify-content: space-between;
+}
+
+.about {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-m);
+}
+
+.brand {
+  display: flex;
+  gap: var(--space-brand-gap);
+  align-items: center;
+  margin: 0;
+}
+
+.brandText {
+  display: flex;
+  flex-direction: column;
+  font-family: var(--font-heading);
+  font-size: var(--text-body-size);
+  font-weight: var(--font-weight-bold);
+  line-height: var(--text-body-line);
+}
+
+.brandName {
+  color: var(--color-white);
+}
+
+.brandProduct {
+  color: var(--color-green-bright);
+}
+
+.summary {
+  max-width: var(--footer-text-width);
+  margin: 0;
+  color: var(--color-on-dark-quiet);
+}
+
+.columns {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-xl) var(--space-footer-columns);
+}
+
+.column {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+}
+
+.columnTitle {
+  margin: 0 0 var(--space-s);
+  color: var(--color-white);
+  font-family: var(--font-label);
+  font-size: var(--text-label-size);
+  font-weight: var(--font-weight-bold);
+  line-height: var(--text-label-line);
+  letter-spacing: var(--text-label-tracking-wide);
+  text-transform: uppercase;
+}
+
+.links {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.link {
+  color: var(--color-on-dark-link);
+  text-decoration: none;
+}
+
+.link:hover {
+  text-decoration: underline;
+}
+
+.link:focus-visible {
+  outline-color: var(--color-focus-on-dark);
+}
+
+.credit {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: var(--space-m);
+  align-items: center;
+  margin-top: var(--space-footer-end);
+  padding: var(--space-m) var(--space-chip-inline);
+  border-radius: var(--radius-chip);
+  background: var(--color-on-dark-panel);
+}
+
+.creditLabel {
+  margin: 0;
+  color: var(--color-on-dark-muted);
+  font-family: var(--font-label);
+  font-size: var(--text-label-size);
+  font-weight: var(--font-weight-bold);
+  line-height: var(--text-label-line);
+  letter-spacing: var(--text-label-tracking);
+  text-transform: uppercase;
+}
+
+.creditOrg {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3xs);
+  margin: 0;
+}
+
+.creditName {
+  color: var(--color-white);
+  font-weight: var(--font-weight-bold);
+}
+
+.creditLine {
+  color: var(--color-on-dark-muted);
+  font-size: var(--text-small-size);
+  line-height: var(--text-small-line);
+}
+
+.bottom {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-xs) var(--space-l);
+  justify-content: space-between;
+  margin-top: var(--space-footer-bottom);
+  font-size: var(--text-small-size);
+  line-height: var(--text-small-line);
+}
+
+.copyright {
+  margin: 0;
+  color: var(--color-on-dark-link);
+}
+
+.product {
+  margin: 0;
+  color: var(--color-on-dark-faint);
+}
+
+/* Every link on a phone is at least 44 pixels high (Definition of Done). */
+@media (width < 60rem) {
+  .links {
+    gap: 0;
+  }
+
+  .link {
+    display: inline-flex;
+    align-items: center;
+    min-height: var(--target-size);
+  }
+}

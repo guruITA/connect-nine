@@ -1,0 +1,125 @@
+/* Figma: "Hero", navy with a soft blue glow on the right. */
+.hero {
+  background:
+    radial-gradient(
+      55.56% 55.56% at 83.33% 33.33%,
+      var(--color-blue-glow) 0%,
+      var(--color-blue-glow-end) 100%
+    ),
+    var(--color-navy);
+  overflow: hidden;
+}
+
+.inner {
+  max-width: calc(var(--content-width) + 2 * var(--space-page));
+  margin: 0 auto;
+  padding: var(--space-hero) var(--space-page);
+}
+
+.row {
+  display: flex;
+  gap: var(--space-hero-gap);
+  align-items: center;
+}
+
+.text {
+  flex: 1 1 0;
+  min-width: 0;
+}
+
+.title {
+  max-width: var(--hero-text-width);
+  margin: var(--space-m) 0 0;
+  color: var(--color-white);
+  font-family: var(--font-heading);
+  font-size: var(--text-display-size);
+  font-weight: var(--font-weight-bold);
+  line-height: var(--text-display-line);
+  letter-spacing: var(--text-display-tracking);
+}
+
+.lead {
+  margin: var(--space-hero-lead) 0 0;
+  color: var(--color-on-dark-lead);
+  font-size: var(--text-lead-size);
+  line-height: var(--text-lead-line);
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-s);
+  margin-top: var(--space-hero-actions);
+}
+
+/* The emblem keeps the proportions of its 480 by 420 frame at every width. */
+.emblem {
+  position: relative;
+  flex: 0 0 auto;
+  width: var(--emblem-width);
+  aspect-ratio: 480 / 420;
+}
+
+.circle {
+  position: absolute;
+  top: -2.381%;
+  left: 4.1667%;
+  width: 91.667%;
+}
+
+.glyph {
+  position: absolute;
+  top: 23.095%;
+  left: 18.75%;
+  width: 62.5%;
+}
+
+.stats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-s);
+  margin: var(--space-2xl) 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.stat {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2xs);
+  padding: var(--space-m) var(--space-stat-inline);
+  border-radius: var(--radius-chip);
+  background: var(--color-on-dark-chip);
+}
+
+.statValue {
+  color: var(--color-white);
+  font-family: var(--font-heading);
+  font-size: var(--text-h3-size);
+  font-weight: var(--font-weight-bold);
+  line-height: var(--text-h3-line);
+  letter-spacing: var(--text-h3-tracking);
+}
+
+.statLabel {
+  color: var(--color-on-dark-label);
+  font-family: var(--font-label);
+  font-size: var(--text-label-size);
+  font-weight: var(--font-weight-medium);
+  line-height: var(--text-label-line);
+  letter-spacing: var(--text-label-tracking);
+  text-transform: uppercase;
+}
+
+/* Below a laptop the emblem moves under the text and gets smaller. */
+@media (width < 60rem) {
+  .row {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .emblem {
+    width: min(100%, var(--emblem-width-small));
+    align-self: center;
+  }
+}
