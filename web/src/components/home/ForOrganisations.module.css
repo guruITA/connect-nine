@@ -1,4 +1,4 @@
-/* Figma: "Partner banner", green with a light diagonal. */
+/* Figma: "Partner banner", green with a light diagonal. Named ForOrganisations, because ad blockers block files with "banner" in their name. */
 .section {
   background: var(--color-background);
 }
@@ -9,11 +9,11 @@
   padding: 0 var(--space-page) var(--space-section);
 }
 
-.banner {
+.panel {
   display: flex;
-  gap: var(--space-banner-gap);
+  gap: var(--space-organisations-gap);
   align-items: center;
-  padding: var(--space-2xl) var(--space-banner-inline);
+  padding: var(--space-2xl) var(--space-organisations-inline);
   border-radius: var(--radius-tile);
   background: linear-gradient(
     168.08deg,
@@ -38,7 +38,7 @@
 }
 
 .lead {
-  margin: var(--space-banner-lead) 0 0;
+  margin: var(--space-organisations-lead) 0 0;
   color: var(--color-mint-text);
   font-size: var(--text-lead-size);
   line-height: var(--text-lead-line);
@@ -46,9 +46,9 @@
 
 .actions {
   display: flex;
-  flex: 0 0 var(--banner-actions-width);
+  flex: 0 0 var(--organisations-actions-width);
   flex-direction: column;
-  gap: var(--space-banner-actions);
+  gap: var(--space-organisations-actions);
 }
 
 .pill {
@@ -65,7 +65,7 @@
 }
 
 @media (width < 60rem) {
-  .banner {
+  .panel {
     flex-direction: column;
     align-items: stretch;
     padding: var(--space-xl) var(--space-l);

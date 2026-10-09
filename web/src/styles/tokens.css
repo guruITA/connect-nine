@@ -100,10 +100,10 @@
   --space-tile-gap: 0.625rem;
   --space-bento-gap: 1.25rem;
   --space-foundation-body: 0.875rem;
-  --space-banner-gap: 2.5rem;
-  --space-banner-inline: 3.25rem;
-  --space-banner-lead: 0.625rem;
-  --space-banner-actions: 0.6875rem;
+  --space-organisations-gap: 2.5rem;
+  --space-organisations-inline: 3.25rem;
+  --space-organisations-lead: 0.625rem;
+  --space-organisations-actions: 0.6875rem;
   --space-closing-lead: 0.875rem;
   --space-closing-action: 1.625rem;
   --space-chip-inline: 1.25rem;
@@ -130,7 +130,7 @@
   --hero-text-width: 40rem;
   --closing-text-width: 35rem;
   --footer-text-width: 20.625rem;
-  --banner-actions-width: 15rem;
+  --organisations-actions-width: 15rem;
   --photo-discover-width: 20.625rem;
   --photo-foundation-width: 33.75rem;
   --photo-foundation-height: 27.5rem;
