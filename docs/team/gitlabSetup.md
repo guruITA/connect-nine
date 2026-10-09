@@ -108,6 +108,7 @@ flowchart TD
 ```
 
 - Every card of the board is one issue: the story as the title, and the parts from DESCRIPTION to DEFINITION OF DONE as the description. The first line names the board number and the rank. docs/team/boardNumbers.md lists the board number next to the GitLab number.
+- Work the team did before it had an issue gets an issue afterwards, in the milestone of the sprint where it was done, and is closed at once (rule A8 of docs/team/issueRules.md). Issues #1500 to #1515, logged on 9 October 2026, are the first ones.
 - A title may hold 255 characters. A longer story is shortened in the title, and the full story stands at the top of the description.
 - Every task is a child item of its issue, in the order of the board, with its portfolio labels and the milestone of its issue.
 - Every "is blocked by" of the board is a linked item, so each issue also shows "blocks" on the other side.
