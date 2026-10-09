@@ -13,8 +13,7 @@ School asks: "You anticipate risks and bottlenecks in the process before they be
 
 2. **Why a link per page document and not one link in the README.** One link in the README asks every builder to find their own screens among 79. A link per page document puts the screens where the rules of that page already are. The README of `docs/pages` explains once how to read the prototype: the rows A to J, the issue numbers above each screen, the screens with a message that are not on the click path, and that the prototype has no phone screens, so for a phone the page documents still point to Design directions.
 
-3. **What the team does when a screen and a page document disagree.**
-   - TODO Wesley and team: decide at the stand up what wins when a screen of the prototype and a page document disagree. Then I write the decision here.
+3. **What the team does when a screen and a page document disagree.** I decided on 9 October 2026 that the prototype wins on how a page looks and behaves. When an issue or a page document asks for a feature that the prototype does not show, the prototype is incomplete there: the feature is built as the issue says and the screen is added to the prototype. The rule is in the part on the prototype in `docs/pages/README.md`, so a teammate who builds a page reads it where they open the screens. Without it, a teammate would have to guess which of the two to follow, and two people could build the same page in two ways.
 
 ## MS4 Making your work fit with the work of the team
 
@@ -34,7 +33,7 @@ What is still needed before this proof is complete. Tick a line when it is done.
 
 - [ ] Every team member: open the screens from one page document you will build and confirm in #1496 that the links open the right screens (Definition of done of the issue).
 - [ ] Reviewer of this merge request: write your name and the date in #1496.
-- [ ] Wesley and team: decide what wins when a screen and a page document disagree, then fill in MS1.3.
+- [x] Wesley: decide what wins when a screen and a page document disagree, then fill in MS1.3.
 
 ## AI use
 
