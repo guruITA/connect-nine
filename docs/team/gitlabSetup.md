@@ -11,6 +11,9 @@ level 40, checked through the GitLab API on 8 October 2026): Bayon Eerhart, Nick
 Wesley Oerlemans, Gurpreet Singh and Kelvin van Voorst. Their individual
 profiles and levels are listed in the collaboration agreement. Teachers and
 coaches only watch the work; they do not take part in making changes.
+Through the HvA group some teachers and coaches also have Maintainer or Owner
+rights on the project (checked through the GitLab API on 9 October 2026), so
+GitLab would let them change things. By agreement they only watch.
 
 The client, Rachid Kherrazi of the WailSalutem Foundation, has no GitLab
 account.

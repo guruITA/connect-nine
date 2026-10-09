@@ -295,12 +295,27 @@ The pipeline runs the same checks. A merge request cannot be accepted while any 
 ## 7. Your first change
 
 1. Take an issue from the board of the sprint and put it in Doing.
-2. Branch from `dev`, named `<type>/<issue number>-<short name>`.
-3. Commit as `<type>(<scope>): <what changed> (#<issue number>)`.
+2. Branch from `dev`, named `<type>/<issue number>-<short name>`:
+
+   ```
+   git switch dev
+   git pull
+   git switch -c feature/14-create-an-account
+   ```
+
+   You should see `Switched to a new branch 'feature/14-create-an-account'`.
+3. Commit as `<type>(<scope>): <what changed> (#<issue number>)`:
+
+   ```
+   git add <the files you changed>
+   git commit -m "feat(backend): add account endpoint (#14)"
+   ```
+
+   You should see a line such as `[feature/14-create-an-account 3f2a1b9] feat(backend): add account endpoint (#14)` and how many files changed.
 4. Push the branch with `git push -u origin <your branch>`. You should see a line with a link to make a merge request.
-5. Open the link, choose `dev` as the target and ask a teammate who did not write it to approve. The template fills the description: start it with `Relates to #<issue number>`.
-6. Wait for the pipeline of the merge request. Green means you can ask for the review. Red: click the red run, then the red job, and read the last lines of its log. They say what failed. The part Pipeline of [gitlabSetup.md](gitlabSetup.md) explains each job.
-7. Walk the Definition of Done of the type of the issue, line by line.
+5. Open the link, choose `dev` as the target and ask a teammate who did not write it to approve. The template fills the description: start it with `Relates to #<issue number>`. You should see the merge request page with your title and the template in the description.
+6. Wait for the pipeline of the merge request. Green means you can ask for the review. Red: click the red run, then the red job, and read the last lines of its log. They say what failed. The part Pipeline of [gitlabSetup.md](gitlabSetup.md) explains each job. You should see a green check next to the pipeline of the merge request when every job passed.
+7. Walk the Definition of Done of the type of the issue, line by line. You should see every line of the list in the issue ticked before you ask for the merge.
 
 ## 8. Check that no secret leaked
 
@@ -341,6 +356,7 @@ Issue 09 Every team member on the client's server (task 9.2) prepares the founda
 
 | Fact | Value |
 |---|---|
+| Owner | The WailSalutem Foundation, the client (director Rachid Kherrazi) |
 | Provider and country | Strato, Germany |
 | CPU | 4 vCPU, AMD EPYC Milan, 2.0 GHz |
 | Memory | 7.7 GiB |
@@ -426,6 +442,7 @@ You should see `Default: deny (incoming), allow (outgoing)` and only these, for 
 
 - A scan from outside on 9 October 2026 found only 22 answering. 80 and 443 answer since Caddy runs.
 - Docker 29.8.2 with Compose 5.5.1 comes from Docker's own package source (download.docker.com).
+- The programs on the server and their licence, so hosting costs no licence money (NFR3): Docker Engine (Apache 2.0, github.com/moby/moby), the Docker Compose plugin (Apache 2.0, github.com/docker/compose), Caddy (Apache 2.0, github.com/caddyserver/caddy) and ufw (GPL 3.0, launchpad.net/ufw).
 - Docker opens ports past ufw. So every container publishes its port only on 127.0.0.1, for example `"127.0.0.1:8080:8080"`. That holds for the database and the test mailbox of #39 as well, which are reached only through Caddy with a login.
 - The group docker equals full administrator rights on the server. Only the user deploy is in it, a team member only when needed.
 - `/srv/connect-test` holds the test site, owned by deploy.
