@@ -123,23 +123,74 @@ A real password, key, token or connection string that carries credentials never 
 
 ### Set up your local secrets
 
-Once per clone, in the startup project of the backend:
+Once per clone, in the startup project of the backend (`api/Connect/Connect.csproj`):
 
 ```
 dotnet user-secrets init
 ```
 
-That writes a `<UserSecretsId>` into the project file. Then set a value:
+That writes a `<UserSecretsId>` into the project file. Then set a value. The server reads the
+`ConnectionStrings:DefaultConnection` setting:
 
 ```
 dotnet user-secrets set "ConnectionStrings:Default" "Host=localhost;Port=5432;Database=connect;Username=connect;Password=<your local password>"
 dotnet user-secrets list
 ```
 
+For this repository, the complete command is:
+
+```
+dotnet user-secrets set "ConnectionStrings:DefaultConnection" "Host=localhost;Port=5432;Database=connect;Username=connect;Password=your-local-password"
+```
+
+Use `ConnectionStrings:DefaultConnection` for this repository; older examples using
+`ConnectionStrings:Default` are obsolete.
+
 Two things to know about User Secrets:
 
 - The file lives outside the repository, at `~/.microsoft/usersecrets/<UserSecretsId>/secrets.json` on Linux and macOS, and at `%APPDATA%\Microsoft\UserSecrets\<UserSecretsId>\secrets.json` on Windows.
 - It is plain text. User Secrets keeps a secret out of Git. It does not protect the value on your disk, and it is only read when the environment is Development.
+
+### Create and apply migrations
+
+The database context is in `api/Connect.Infrastructure`, while `api/Connect` is the startup
+project that loads the connection string. Create a migration with both projects specified:
+
+```
+dotnet ef migrations add <MigrationName> \
+  --project api/Connect.Infrastructure/Connect.Infrastructure.csproj \
+  --startup-project api/Connect/Connect.csproj \
+  --output-dir Persistence/Migrations
+```
+
+Apply all pending migrations to the local PostgreSQL database:
+
+```
+dotnet ef database update \
+  --project api/Connect.Infrastructure/Connect.Infrastructure.csproj \
+  --startup-project api/Connect/Connect.csproj
+```
+
+List migrations before changing database state:
+
+```
+dotnet ef migrations list \
+  --project api/Connect.Infrastructure/Connect.Infrastructure.csproj \
+  --startup-project api/Connect/Connect.csproj
+```
+
+To go back one migration, use the migration immediately before the current one from that list.
+Never put a fixed old migration name in a shared command:
+
+```
+dotnet ef database update <MigrationBeforeYours> \
+  --project api/Connect.Infrastructure/Connect.Infrastructure.csproj \
+  --startup-project api/Connect/Connect.csproj
+```
+
+Do not edit a migration already on `dev`; add a new migration instead. The local test factory
+runs `Database.Migrate()` once when its host starts. Infrastructure table tests use PostgreSQL,
+because InMemory cannot enforce PostgreSQL indexes, check constraints or PostgreSQL error codes.
 
 ### Production secrets
 
