@@ -39,7 +39,7 @@ Each member runs `dotnet --list-sdks` and writes the line that starts with 10.
 |---|---|---|
 | Bayon Eerhart | | |
 | Nick Hoebe | | |
-| Wesley Oerlemans | | |
+| Wesley Oerlemans | 10 October 2026 | 10.0.401 [/home/wesley/.dotnet/sdk] |
 | Gurpreet Singh | | |
 | Kelvin van Voorst | | |
 

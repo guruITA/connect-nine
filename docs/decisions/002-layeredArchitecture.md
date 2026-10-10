@@ -109,7 +109,7 @@ The example on dev (merge request !11) puts the handler `CreateUserCommandHandle
 |---|---|---|
 | Bayon Eerhart | | |
 | Nick Hoebe | | |
-| Wesley Oerlemans | | |
+| Wesley Oerlemans | 10 October 2026 | |
 | Gurpreet Singh | | |
 | Kelvin van Voorst | | |
 

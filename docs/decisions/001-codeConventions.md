@@ -63,7 +63,7 @@ Proposed: the first column of every table, which is what `docs/team/codeConventi
 |---|---|---|
 | Bayon Eerhart | | |
 | Nick Hoebe | | |
-| Wesley Oerlemans | | |
+| Wesley Oerlemans | 10 October 2026 | |
 | Gurpreet Singh | | |
 | Kelvin van Voorst | | |
 
