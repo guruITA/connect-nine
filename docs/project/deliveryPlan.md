@@ -21,14 +21,14 @@ label of its sprint.
 
 | Sprint | Start | End | Issues | Must | Should | Could |
 |---|---|---|---|---|---|---|
-| Sprint 1 | Mon 21 Sep 2026 | Fri 9 Oct 2026 | 25 | 23 | 2 | 0 |
-| Sprint 2 | Mon 19 Oct 2026 | Fri 6 Nov 2026 | 37 | 32 | 5 | 0 |
+| Sprint 1 | Mon 21 Sep 2026 | Fri 9 Oct 2026 | 26 | 24 | 2 | 0 |
+| Sprint 2 | Mon 19 Oct 2026 | Fri 6 Nov 2026 | 38 | 33 | 5 | 0 |
 | Sprint 3 | Mon 9 Nov 2026 | Fri 27 Nov 2026 | 35 | 28 | 7 | 0 |
-| Sprint 4 | Mon 30 Nov 2026 | Fri 18 Dec 2026 | 31 | 10 | 19 | 2 |
+| Sprint 4 | Mon 30 Nov 2026 | Fri 18 Dec 2026 | 32 | 11 | 19 | 2 |
 | Sprint 5 | Mon 4 Jan 2027 | Fri 8 Jan 2027 | 19 | 19 | 0 | 0 |
 | Without a sprint | | | 103 | 0 | 34 | 69 |
 
-Together that is all 250 issues of the board, in 21 epics, as GitLab holds them after the team
+Together that is all 253 issues of the board, in 21 epics, as GitLab holds them after the team
 planned sprints 2 to 5 again on 9 October 2026 in
 [decision 004](../decisions/004-replanAfterSprint1.md). The rules of that plan: what is done or
 waits in an open merge request stays, school goals come first and are spread over sprints 2
@@ -159,7 +159,7 @@ the password reset of issues 21 and 22, the password change of issue 114, the ch
 against leaked passwords of issue 116, and issue 130 A young person under 16 asks a parent for
 permission. Issue 20 starts Connect with one command, issue 17 adds the health check and issue
 16 the security scan. The security analysis of Kelvin van Voorst (issues 12, 13, 18 and 19) and
-the client meeting of issue 10 move here from sprint 1. School goals: issue 84 The DevOps
+the client meeting of issue 10 move here from sprint 1. School goals: issue 181 Knowledge test 1 in week 9 (26 to 30 October), issue 84 The DevOps
 learning outcomes agreed, issue 85 the evidence table per student, issue 176 the Scrum Master
 proof of sprint 2, issue 177 four ways of loading a profile, issue 107 Three ways to give out the
 last event place, measured on a small program of its own, issues 108 to 110 (paging, image
@@ -187,6 +187,7 @@ What young people find, and the rest of the school deliverables:
 - **Site pages and admin.** Issues 50, 50b and 51, the friendly page of issue 53, and the
   activity log of issue 32.
 - **Production extras.** Issues 173 and 174, and the alert email of issue 100.
+- **Knowledge test 2.** Issue 182, in week 16 (14 to 18 December).
 - **DevOps evidence.** Issue 86 A recording of one change from commit to production and issue
   87 The live demo to the teacher.
 - **Architecture and security.** Issues 102 The architecture drawn in layers, parts and places,
@@ -195,7 +196,10 @@ What young people find, and the rest of the school deliverables:
 
 ## Sprint 5, 4 to 8 January 2027
 
-The last 19 musts of the project, all of them for the foundation: editing a profile and its tags
+First, repair and improvement before the final evaluation of week 17: what the sprint 4 review
+and the teachers ask is fixed, and every portfolio is completed. School work is finished in sprint
+4, so nothing of school is planned here. With the time that is left, the last 19 musts of the
+project, all of them for the foundation: editing a profile and its tags
 (issues 33, 36b and 36d), the rest of the parent permission (130b and 131), the lock and
 the email after fifteen wrong passwords (31, 31b and 29b), the rest of Discover and the requests
 (37b, 38 and 41c), searching members and the usage numbers (45b and 47), the privacy statement in

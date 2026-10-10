@@ -237,6 +237,8 @@ The cards name each other by their board number. GitLab gives its own numbers.
 | 178 | #1496 | The page descriptions point to the screens of the prototype |
 | 179 | #1498 | The team rules describe the Figma board as it is now |
 | 180 | #1516 | Sprints 2 to 5 planned again after sprint 1 |
+| 181 | #1521 | Knowledge test 1, week 9 (26 to 30 October 2026) |
+| 182 | #1522 | Knowledge test 2, week 16 (14 to 18 December 2026) |
 
 ## AI use declaration
 
