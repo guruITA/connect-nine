@@ -12,6 +12,14 @@ The deck of the Sprint 1 review of 9 October 2026 and the Sprint Review form the
 - What I made: the deck with its speaker notes and the client's form are in one folder that the whole team and the coach can open, next to the other documents, instead of on one laptop. The next sprint reviews go in the same folder.
 - Alternative I did not choose: only uploading the files to Portflow. Then each student has a copy, but the team and the coach have no shared one, and DLO asks for the copy on the team repository.
 
+## Second merge request: the Portflow texts and the template
+
+The texts the whole team pastes into Portflow for the Sprint 1 review now stand in docs/sprintReviews/sprint1PortflowGuide.md: two pieces of evidence as GitLab links, one comment per evidence with the feedback of the client and the teacher in a section per sub-goal, and the level of every sub-goal with its reason. docs/sprintReviews/portflowSprintReviewTemplate.md holds the same structure with placeholders and the rules, so the next sprint reviews start from it.
+
+**MS1 Seeing risks early and keeping the work transferable**
+- What I made: one guide in the repository instead of five students each writing their own texts, and a template with the rules we found (the level rule, which form row goes to which sub-goal, no level without proof), so the next review is not built from scratch.
+- Alternative I did not choose: sending the texts in Teams. Then they are hard to find again and nobody can see which version is the final one.
+
 ## TODO
 
 - [x] Shared with the team coach: merged into dev on 9 October 2026 (!43), so the coach finds the form on the team repository. DLO asks to share the form "by putting a copy on the team repo", so no separate message is needed.
