@@ -4,7 +4,7 @@ For every sprint review of Young Amstelland Connect. Replace everything between 
 
 ## Rules (read first)
 
-1. **Team voice.** "We" and "our", never "I" or "my", except inside a quote from the client. All five paste the same texts.
+1. **Team voice.** "We" and "our", never "I" or "my", except inside a quote from the client. All five paste the same texts. **Plus one personal block per student** at the end of the evidence 1 description, in third person without "he" or "she": role, the part presented in the review (from the agenda), and own items on the current board (closed, waiting in an open merge request, next sprint), next to the team issues of all five.
 2. **Two pieces of evidence, both in Project Group, both "Add link".** Evidence 1 is the deck, evidence 2 is the client's Sprint Review form. Both are GitLab permalinks to the merge commit, so the version stays fixed.
 3. **Evidence 1 holds what we showed, evidence 2 holds only feedback.** On evidence 1, the Analysing & Advising and Designing & Realising sub-goals (the Sprint Review assesses "Analyse, Design"). On evidence 2, the Managing & Collaborating sub-goals, and only what the client and the teacher said.
 4. **No Personal Leadership in these team texts.** PL is about one person, and all five paste the same text.

@@ -31,7 +31,7 @@ Our proposed order: profiles, account and matching first, then opportunities, ev
 AA5 - above level 3 (client: "Presentation skills" beyond expectation)
 For the client: his question word for word in Dutch with an English translation, the four server layers explained as waiter, chef, menu and storeroom, and two plain questions at the end. For the young people: the prototype has the look of the Young Amstelland Awards website, and the deck explains its screens in plain words, such as "First name, age band and town. Never an address or a school."
 
-OR1 - above level 3 (no rating and no point to improve, so our own assumption)
+OR1 - above level 3 (praised by the client in the review, without a rating, so our own assumption)
 On purpose, we chose a stack most of us did not know, because learning is the main goal of the semester. Each part has its reason on the slide: learning for React and .NET, support until November 2028 for .NET 10, no license cost and a plain container for PostgreSQL 16. The server code has four layers (#12), and a wrong reference between them does not build. Decisions 001 to 003 record the conventions, the layers and .NET 10. When PostgreSQL replaced SQL Server on 26 September, only one layer was affected. The Figma prototype, shown live, walks the Sprint 1 flow from a new account to another member's profile and holds the six security and privacy rules from our requirements.
 
 OR2 - above level 3 (strong point named by the client, without a rating, so our own assumption)
@@ -75,16 +75,16 @@ Feed-up: at level 3, advice is well-founded: it weighs alternatives, names risks
 Feed-forward: we repeat this in the Sprint 2 review: advice with the alternatives we weighed, the risks and the reasons.
 
 AA5 - above level 3 (based on the client's rating)
-Client: "Presentation skills": beyond expectation. Under points to improve he wrote "n.a.", so he saw nothing to improve.
+Client: "Presentation skills": beyond expectation. In the review he said the prototype has a nice theme and takes over the style of the award website. Under points to improve he wrote "n.a.", so he saw nothing to improve.
 Teacher: no point to improve on how we communicated. We read his point on who says what as being about dividing the roles, not about how we adapted our words and screens.
 Why this level: rated beyond expectation, with nothing to improve.
 Feed-up: at level 3, communication is consciously adapted in form and language to target groups with diverse interests.
 Feed-forward: we keep using everyday comparisons for the client, and in Sprint 2 we show working screens with plain texts for the young people.
 
-OR1 - above level 3 (no rating and no point to improve, so our own assumption)
-Client: no rating. Under points to improve he wrote "n.a.", so he saw nothing to improve.
+OR1 - above level 3 (praised by the client in the review, without a rating, so our own assumption)
+Client: no rating. In the review he said everything in the prototype was good, nicely worked out and clear. Under points to improve he wrote "n.a.", so he saw nothing to improve.
 Teacher: no point to improve on this.
-Why this level: the review shows a systematic design (four layers in #12 that refuse a wrong reference, Decisions 001 to 003, and a live Figma prototype of the Sprint 1 flow with the six rules from our requirements), a reason for every part of the stack, PostgreSQL in place of SQL Server with its reasons, and a design that held up when we switched databases on 26 September, with only one layer affected.
+Why this level: the client called the prototype nicely worked out and clear, and the review shows a systematic design (four layers in #12 that refuse a wrong reference, Decisions 001 to 003, and a live Figma prototype of the Sprint 1 flow with the six rules from our requirements), a reason for every part of the stack, PostgreSQL in place of SQL Server with its reasons, and a design that held up when we switched databases on 26 September, with only one layer affected.
 Feed-up: at level 3, design and realisation are systematic, choices are justified against alternatives, and the design is adapted to new insights.
 Feed-forward: we repeat this in the Sprint 2 review: a reason for every design choice and how the design holds up against a change.
 
@@ -176,7 +176,49 @@ Open **Goals & Progress**. Each of these sub-goals should show its evidence and 
 
 ## 8. Team
 
-- Bayon, Nick, Gurpreet and Kelvin follow steps 2 to 7 in their own Portflow with the same names, GitLab links, descriptions, comments, sub-goal links and highlights. Kelvin and Bayon change only what the next two lines say.
+- Bayon, Nick, Gurpreet and Kelvin follow steps 2 to 7 in their own Portflow with the same names, GitLab links, descriptions, comments, sub-goal links and highlights, plus their own personal block at the end of the evidence 1 description (below). Kelvin and Bayon change only what the next two lines say.
 - Validation works per portfolio, so each of the five sends the two validation requests from their own Portflow. Rob Kiebert then gets ten requests in total, so we tell him beforehand in Teams.
 - Kelvin's profile is Security Specialist: he replaces "Full-Stack Developer" with "Security Specialist" everywhere and rewrites each feed-up line to his own level 3 criterion, in the same style ("at level 3, ...") and without "you".
 - Bayon is assessed on level 2: he first replaces "level 3 (Advanced)" with "level 2", then every other "level 3" with "level 2", and rewrites each feed-up line to the level 2 criterion of his profile, in the same style ("at level 2, ...") and without "you".
+
+**Personal contribution.** The expectations of the studio lecturers ask for proof of the personal contribution. Each student pastes only their own block below at the end of the evidence 1 description, after the OR3 paragraph, with an empty line before it. The parts come from the agenda in the deck, the numbers from the current board in GitLab (assignee, closed or waiting in an open merge request). Measure the numbers again on the day of pasting, because they change when a merge request is merged.
+
+**Wesley Oerlemans**
+```
+PERSONAL CONTRIBUTION: Wesley Oerlemans
+Role: Scrum Master of Sprint 1.
+In the review: led the meeting and presented part 1 (who we are and the client's question) and part 6 (questions and feedback).
+On the current board: owner of 7 closed Sprint 1 issues (12 weight), 3 Sprint 1 issues waiting in an open merge request (8 weight) and 7 Sprint 2 stories (13 weight), and co-owner of the 8 closed team issues of all five (16 weight).
+```
+
+**Nick Hoebe**
+```
+PERSONAL CONTRIBUTION: Nick Hoebe
+Role: Product Owner of Sprint 1.
+In the review: presented part 2 (Sprint 1, planned and delivered) and, with Kelvin van Voorst, part 3 (how Connect is built and what it protects).
+On the current board: owner of 4 closed Sprint 1 issues (5 weight) and 2 Sprint 2 stories (7 weight), and co-owner of the 8 closed team issues of all five (16 weight).
+```
+
+**Kelvin van Voorst**
+```
+PERSONAL CONTRIBUTION: Kelvin van Voorst
+Role: Security Specialist, privacy and security analysis.
+In the review: presented, with Nick Hoebe, part 3 (how Connect is built and what it protects), including the six security and privacy rules.
+On the current board: owner of 4 Sprint 2 stories (10 weight), and co-owner of the 8 closed team issues of all five (16 weight).
+```
+
+**Bayon Eerhart**
+```
+PERSONAL CONTRIBUTION: Bayon Eerhart
+Role: Developer, Product Owner of Sprint 2.
+In the review: presented part 4 (the prototype, live in Figma).
+On the current board: owner of 2 Sprint 2 stories (3 weight), and co-owner of the 8 closed team issues of all five (16 weight).
+```
+
+**Gurpreet Singh**
+```
+PERSONAL CONTRIBUTION: Gurpreet Singh
+Role: Developer, Scrum Master of Sprint 2.
+In the review: presented part 5 (Sprints 2 to 5 and what we need from the client).
+On the current board: owner of 2 closed Sprint 1 issues (3 weight) and 3 Sprint 2 stories (9 weight), and co-owner of the 8 closed team issues of all five (16 weight).
+```
