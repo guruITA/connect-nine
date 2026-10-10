@@ -17,7 +17,7 @@ The deck of the Sprint 1 review of 9 October 2026 and the Sprint Review form the
 The texts the whole team pastes into Portflow for the Sprint 1 review now stand in docs/sprintReviews/sprint1PortflowGuide.md: two pieces of evidence as GitLab links, one comment per evidence with the feedback of the client and the teacher in a section per sub-goal, the level of every sub-goal with its reason, and in step 9 a personal part per student with every sub-goal of their own profile that their own work on GitLab proves. docs/sprintReviews/portflowSprintReviewTemplate.md holds the same structure with placeholders and the rules, so the next sprint reviews start from it.
 
 **MS1 Seeing risks early and keeping the work transferable**
-- What I made: one guide in the repository instead of five students each writing their own texts, and a template with the rules we found (the level rule, which form row goes to which sub-goal, only proof in a section, no level without proof, weights from the current board, a personal part per student), so the next review is not built from scratch.
+- What I made: one guide in the repository instead of five students each writing their own texts, and a template with the rules we found (the level rule, which form row goes to which sub-goal, only proof in a section, no level without proof, weights from the current board, a personal part per student, every text measured against level 3), so the next review is not built from scratch.
 - Alternative I did not choose: sending the texts in Teams. Then they are hard to find again and nobody can see which version is the final one.
 
 ## TODO
