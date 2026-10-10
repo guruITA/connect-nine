@@ -11,7 +11,7 @@ where noted.
 Since 27 September 2026 most open points have a home on the board: an issue decides them, or a
 question of `docs/client/clientQuestions.md` does. This register names that issue by its board
 number and title, for example issue 11 The team agrees on the layered architecture. The GitLab
-number of each board number is in `boardNumbers.md`. The board has 227 issues in 21 epics,
+number of each board number is in `boardNumbers.md`. The board has 251 issues in 21 epics,
 spread over five sprints:
 
 | Sprint | Dates |
@@ -47,6 +47,9 @@ Decisions the team, or the team with the client, still has to make.
 | One line of the Definition of Done is still a proposal to confirm with the client: every button and link on a phone is at least 44 by 44 pixels | Whole team, with the client | Issue 10, no question number yet | `definitionOfDone.md` |
 | Clarify one unreadable entry in the skills inventory, recorded as "lid low" | Bayon Eerhart | Open, no issue | `docs/architecture/techStack.md` |
 | A temporary test address with a padlock before the client's DNS record: a wildcard DNS name such as sslip.io, a free dynamic DNS name, an own domain, or a Let's Encrypt certificate for the bare IP address. In use since 9 October 2026: https://31-70-66-186.sslip.io, to be confirmed by the team | Whole team | A stand up in sprint 1, owner Nick Hoebe, inside issue 09 task 9.4 | `docs/architecture/infrastructure.md` |
+| How much weight sprint 2 takes on. Sprint 1 finished 38 of its 48 weight, and 30 of those 38 is preparation logged afterwards (#1500 to #1515). Sprint 2 holds 63 and decision 004 plans about 60 per sprint. The teacher asked on 9 October 2026 to plan on the weight a sprint really finished | Whole team | The sprint 2 planning | `docs/project/sprintGoals.md`, `docs/decisions/004-replanAfterSprint1.md` |
+| Which sprint the research reports and the DevOps evidence land in. `docs/school/datapointPlan.md` names DevOps and Testing as a datapoint in sprint 2 and the review of the R and D report in sprint 3. Decision 004 puts the research issues 107 to 110, the peer review of issue 112 and the DevOps evidence of issues 86 and 87 in sprint 4 | Whole team | The sprint 2 planning, issue 180 (#1516) | `docs/school/datapointPlan.md`, `docs/decisions/004-replanAfterSprint1.md` |
+| The tables Agreed by of decisions 001 to 004. Each member writes the date they agreed | Whole team | A stand up, issues 01, 11 and 180 | `docs/decisions/` |
 
 ## Needs asking
 
@@ -121,20 +124,15 @@ Dated items the team has to schedule.
 - **Wesley Oerlemans's research draft to the learning group teacher.** Owner: Wesley Oerlemans.
   Date: by 5 October 2026. The review and approval of every student's proposal is issue 106 Each
   student's research topic approved (sprint 1).
-- **Sprint 1 review minimum set.** The final version of the collaboration agreement agreed and signed, the sprint 1 issues done
-  and the sprint 1 board up to date, and each team member's own evidence collection gathered
-  toward their individual datapoints. The sprint 1 issues are 01 The repository, the pipeline
-  and the team rules, 09 Every team member on the client's server, 10 The client's priorities
-  for the epics, 11 The team agrees on the layered architecture, 12 Inventory of the personal
-  data per module, 13 The role table per module, 03 Create an account, 04 Log in with email and
-  password, 05 Log out, 06 Move between the five tabs of Connect, 07 Create a profile and 08 See
-  my own profile page. Twelve more issues are sprint 1 stretch. Owner: whole team. Date: Friday
-  9 October 2026.
 
 ## Closed since the earlier register
 
 Kept here so the history stays findable.
 
+- **Sprint 1 review.** Held with the client on 9 October 2026 (#1519). Sprint 1 closed 21 of its
+  26 issues. Open are 01, 09, 11, 106 and 180: they wait on the tables Agreed by, the first login
+  of each member, the domain of the client and the research proposals. Sprints 2 to 5 were
+  planned again the same day in decision 004.
 - **GitLab repository.** The project connect-nine on gitlab.fdmci.hva.nl was set up on 27
   September 2026, with dev and main protected, labels, one milestone and one board per sprint,
   and the issue and merge request templates, see `gitlabSetup.md`. The seven portfolio labels of

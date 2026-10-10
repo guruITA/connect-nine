@@ -38,6 +38,8 @@ What it also settles: the layered architecture with four backend projects on .NE
 
 **What happened.** The sprint built the foundation: the repository and the pipeline, the server of the foundation, the architecture, the data model, the clickable prototype of sprint 1 and 2, and the plans. None of the 12 slices was finished, and issue 03 Create an account was started. The 18 issues that had not started and issue 03 moved to sprint 2 in decision 004. What waits in an open merge request stays in sprint 1.
 
+**Weight finished.** Sprint 1 finished 38 of its 48 weight. Of those 38, 30 is preparation that was logged afterwards as issues #1500 to #1515 and 2 is the sprint review (#1519). Every issue of the sprint got its weight on 9 October 2026, after the review, because the teacher asked the team to plan on the weight a sprint really finished. Sprint 2 holds 63. The team weighs that against these 38 at the sprint 2 planning (`docs/team/openItems.md`).
+
 ## Sprint 2, 19 October to 6 November 2026
 
 **Goal.** A person can make an account, log in and have a profile, and the team knows which personal data it must protect.
