@@ -172,7 +172,7 @@ On comment 1 and on comment 2: **⋮**, then **Request comment validation**, the
 
 ## 7. Check
 
-Open **Goals & Progress**. Each of these sub-goals should show its evidence and a highlighted section of a comment: AA3, AA4, AA5, OR1, OR2, OR3, MS1, MS2, MS4. A sub-goal without both means a link is missing. No comment section should be linked to a goal name, only to a sub-goal code. The evidence 1 description ends with the personal block of the student.
+Open **Goals & Progress**. Each of these sub-goals should show its evidence and a highlighted section of a comment: AA3, AA4, AA5, OR1, OR2, OR3, MS1, MS2, MS4. A sub-goal without both means a link is missing. No comment section should be linked to a goal name, only to a sub-goal code. The evidence 1 description and comment 1 each end with the personal part of the student from step 9, and that sub-goal shows a highlighted section too.
 
 ## 8. Team
 
@@ -183,39 +183,94 @@ Open **Goals & Progress**. Each of these sub-goals should show its evidence and 
 
 ## 9. Personal blocks
 
-The expectations of the studio lecturers ask for proof of the personal contribution. Each student, Wesley included, pastes only their own block at the end of the evidence 1 description, after the OR3 paragraph, with an empty line before it. The numbers come from the current board in GitLab (assignee, closed or waiting in an open merge request). Measure the numbers again on the day of pasting, because they change when a merge request is merged.
+The expectations of the studio lecturers ask for proof of the personal contribution. Each student, Wesley included, adds only their own part, with a sub-goal from their own profile, to evidence 1 in three places: the code in **Manage (sub-)goals**, a paragraph at the end of the description, and a section at the end of comment 1 that is linked and highlighted like the sections in step 3. The numbers come from the current board in GitLab (assignee, closed or merged). Measure them again on the day of pasting, because they change when a merge request is merged.
 
-**Wesley Oerlemans**
-```
-PERSONAL CONTRIBUTION: Wesley Oerlemans
-Role: Scrum Master of Sprint 1.
-On the current board: owner of 7 closed Sprint 1 issues (12 weight), 3 Sprint 1 issues waiting in an open merge request (8 weight) and 7 Sprint 2 issues (13 weight), and co-owner of the 8 closed team issues of all five (16 weight).
-```
+### Wesley Oerlemans (Full Stack Software Developer, level 3): MS1
 
-**Nick Hoebe**
+1. **Manage (sub-)goals** on evidence 1: add the goal Managing & Collaborating and the sub-goal MS1.
+2. At the end of the description, after an empty line:
 ```
-PERSONAL CONTRIBUTION: Nick Hoebe
-Role: Product Owner of Sprint 1.
-On the current board: owner of 4 closed Sprint 1 issues (5 weight) and 2 Sprint 2 issues (7 weight), and co-owner of the 8 closed team issues of all five (16 weight).
+MS1 Personal contribution of Wesley Oerlemans - above level 3 (client rated this beyond expectation for the team, so own assumption for the personal part)
+On the current board, Wesley Oerlemans owns the closed issues that keep the risks in view and the work transparent: the biggest risks and every open point in one place (#1511), every part of Connect on one board with its sprint and priority (#1509), a calendar with one goal per sprint (#1505) and a testing plan (#1508). Of the 37 merged merge requests, 23 are by Wesley Oerlemans.
 ```
-
-**Kelvin van Voorst**
+3. At the end of comment 1, after an empty line, then link it to MS1 and highlight it:
 ```
-PERSONAL CONTRIBUTION: Kelvin van Voorst
-Role: Security Specialist, privacy and security analysis.
-On the current board: owner of 4 Sprint 2 issues (10 weight), and co-owner of the 8 closed team issues of all five (16 weight).
+MS1 - above level 3 (client rated this beyond expectation for the team, so own assumption for the personal part)
+Client: "Clear on what will be delivered in next sprint (user stories)": beyond expectation for the team. Individual level: "I see that all the team members are motivated to participate so for all the students a complement, so I will skip next details". Under points to improve he wrote "n.a.", so he saw nothing to improve.
+Teacher: no point to improve on risks or transparency. His point on not taking on too much is read as being about the weight planned.
+Why this level: the client rated the team beyond expectation on this, and the board shows the personal part: risks and open points in one place (#1511), every part of Connect on one board (#1509), one goal per sprint (#1505) and a testing plan (#1508).
+Feed-up: at level 3, risks and bottlenecks are anticipated before they become problems, and the work stays transparent and transferable.
+Feed-forward: in Sprint 2, Wesley Oerlemans keeps the list of risks and open points and the board up to date at every change.
 ```
 
-**Bayon Eerhart**
+### Nick Hoebe (Full Stack Software Developer, level 3): OR2
+
+1. **Manage (sub-)goals** on evidence 1: OR2 (the goal Designing & Realising is already there).
+2. At the end of the description, after an empty line:
 ```
-PERSONAL CONTRIBUTION: Bayon Eerhart
-Role: Developer, Product Owner of Sprint 2.
-On the current board: owner of 2 Sprint 2 issues (3 weight), and co-owner of the 8 closed team issues of all five (16 weight).
+OR2 Personal contribution of Nick Hoebe - above level 3 (the client named using the development tools a strong point of the team, without a rating, so own assumption)
+Nick Hoebe added the pipeline stage that refuses .env files, so no secret reaches the repository (merge request !7, #1513), the configuration documentation with a safe .env.example for every setting (!6, #1512), and the backend structure with a health endpoint and the account table, with architecture documentation and pattern evidence (!11, !22, !36, #1476).
+```
+3. At the end of comment 1, after an empty line, then link it to OR2 and highlight it:
+```
+OR2 - above level 3 (the client named using the development tools a strong point of the team, without a rating, so own assumption)
+Client: strong point of the team: "using the development tools". Individual level: "I see that all the team members are motivated to participate so for all the students a complement, so I will skip next details". Under points to improve he wrote "n.a.", so he saw nothing to improve.
+Teacher: no point to improve on this.
+Why this level: the client named the development tools a strong point of the team, and the merged work of Nick Hoebe shows methods from the field chosen with a reason: a pipeline stage that keeps secrets out of the repository (!7), a safe example for every setting (!6) and a backend structure with pattern evidence (!11, !22, #1476).
+Feed-up: at level 3, relevant standards and methods from the field are selected independently, and why they fit the context is substantiated.
+Feed-forward: in Sprint 2, Nick Hoebe writes down for the login (#15) which method is chosen and why it fits Connect.
 ```
 
-**Gurpreet Singh**
+### Gurpreet Singh (Full Stack Software Developer, level 3): MS5
+
+1. **Manage (sub-)goals** on evidence 1: add the goal Managing & Collaborating and the sub-goal MS5.
+2. At the end of the description, after an empty line:
 ```
-PERSONAL CONTRIBUTION: Gurpreet Singh
-Role: Developer, Scrum Master of Sprint 2.
-On the current board: owner of 2 closed Sprint 1 issues (3 weight) and 3 Sprint 2 issues (9 weight), and co-owner of the 8 closed team issues of all five (16 weight).
+MS5 Personal contribution of Gurpreet Singh - above level 3 (no rating and no point to improve, so own assumption)
+Gurpreet Singh approved 20 of the 31 merged merge requests of teammates, the most in the team, and set up the local PostgreSQL 16 database with pgAdmin in one command for the team (!21).
+```
+3. At the end of comment 1, after an empty line, then link it to MS5 and highlight it:
+```
+MS5 - above level 3 (no rating and no point to improve, so own assumption)
+Client: no rating. Individual level: "I see that all the team members are motivated to participate so for all the students a complement, so I will skip next details". Under points to improve he wrote "n.a.", so he saw nothing to improve.
+Teacher: no point to improve on this.
+Why this level: nobody gave a point to improve, and GitLab shows the support: 20 approvals of merge requests of teammates, the most in the team, and the local database in one command for the team (!21).
+Feed-up: at level 3, others are supported in their contribution to the team goal.
+Feed-forward: in Sprint 2, Gurpreet Singh keeps reviewing the merge requests of teammates and shows that work as Scrum Master in #1483.
+```
+
+### Kelvin van Voorst (Security Specialist, level 2): OR5
+
+1. **Manage (sub-)goals** on evidence 1: OR5 (the goal Designing & Realising is already there).
+2. At the end of the description, after an empty line:
+```
+OR5 Personal contribution of Kelvin van Voorst - no level this time (no finished own work on the board yet)
+On the current board, Kelvin van Voorst owns the four privacy and security analysis issues of Sprint 2: the personal data per module and its risks (#21), the privacy law on the data of minors (#24), who may see and change what (#28) and how profile data travels through Connect (#29).
+```
+3. At the end of comment 1, after an empty line, then link it to OR5 and highlight it:
+```
+OR5 - no level this time (no finished own work on the board yet)
+Client: no rating. Individual level: "I see that all the team members are motivated to participate so for all the students a complement, so I will skip next details". Under points to improve he wrote "n.a.", so he saw nothing to improve.
+Teacher: no point to improve on this.
+Why this level: the four analysis issues of Kelvin van Voorst (#21, #24, #28, #29) moved from Sprint 1 to Sprint 2 and are still open, so there is no finished own work to assess yet.
+Feed-up: at level 2, the interests of end users, such as privacy, security or accessibility, are taken into account.
+Feed-forward: in Sprint 2, Kelvin van Voorst finishes #21, #24, #28 and #29 and shows the result in the Sprint 2 review.
+```
+
+### Bayon Eerhart (Full Stack Software Developer, level 2): MS5
+
+1. **Manage (sub-)goals** on evidence 1: add the goal Managing & Collaborating and the sub-goal MS5.
+2. At the end of the description, after an empty line:
+```
+MS5 Personal contribution of Bayon Eerhart - above level 2 (no rating and no point to improve, so own assumption)
+Bayon Eerhart took on the role of Product Owner for Sprint 2, shown in the review, and owns two Sprint 2 issues, each with acceptance criteria and a definition of done: moving between the five tabs of Connect from every page (#19) and seeing the own name under the tab Profile (#20).
+```
+3. At the end of comment 1, after an empty line, then link it to MS5 and highlight it:
+```
+MS5 - above level 2 (no rating and no point to improve, so own assumption)
+Client: no rating. Individual level: "I see that all the team members are motivated to participate so for all the students a complement, so I will skip next details". Under points to improve he wrote "n.a.", so he saw nothing to improve.
+Teacher: no point to improve on this.
+Why this level: nobody gave a point to improve, and the review and the board show the tasks taken on: Product Owner of Sprint 2 and the Sprint 2 issues #19 and #20.
+Feed-up: at level 2, tasks that contribute to the team goal are taken on, also when they fall outside the own responsibilities.
+Feed-forward: in Sprint 2, Bayon Eerhart finishes #19 and #20 and shows them working in the Sprint 2 review.
 ```
