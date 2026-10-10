@@ -1,6 +1,6 @@
 # Sprint 1 review: Portflow steps
 
-Young Amstelland Connect, team Sprint 1 review of 9 October 2026. All texts are in team voice. Only Kelvin and Bayon adjust the profile, the level and the feed-up lines (step 8). Two pieces of evidence, both an **Add link** to the files in the team repository (merge commit c0ca49c7, merge request !43, issue #1519). Evidence 1 is the deck, for Analysing & Advising and Designing & Realising. Evidence 2 is the feedback on our process and teamwork, for Managing & Collaborating. Each evidence gets one comment with the feedback of both the client and the teacher, in one section per sub-goal. Each section is highlighted and linked to its own sub-goal. Every claim comes from the deck, its speaker notes, the board and Figma shown in the review, the client's form, the teacher's feedback or GitLab.
+Young Amstelland Connect, team Sprint 1 review of 9 October 2026. Everything except the personal blocks in step 9 is in team voice. Only Kelvin and Bayon adjust the profile, the level and the feed-up lines (step 8). Two pieces of evidence, both an **Add link** to the files in the team repository (merge commit c0ca49c7, merge request !43, issue #1519). Evidence 1 is the deck, for Analysing & Advising and Designing & Realising. Evidence 2 is the feedback on our process and teamwork, for Managing & Collaborating. Each evidence gets one comment with the feedback of both the client and the teacher, in one section per sub-goal. Each section is highlighted and linked to its own sub-goal. Every claim comes from the deck, its speaker notes, the board and Figma shown in the review, the client's form, what the client said in the review, the teacher's feedback or GitLab.
 
 ## 1. DLO (deadline was 9 October, 23:59)
 
@@ -15,7 +15,7 @@ If not uploaded yet: download both files from the GitLab links in steps 2 and 4 
 https://gitlab.fdmci.hva.nl/studio/social-impact-apps/onderwijs/projects/2026-2027-semester-1/projects/project-9-wail-salutem-foundation-project-2/connect-nine/-/blob/c0ca49c7ef6bf29574bb6fedd066b548b0c15c1b/docs/sprintReviews/sprint1ReviewDeck.pptx
 ```
 
-**Description:** open the evidence, click the pencil next to **Evidence description**, and paste:
+**Description:** open the evidence, click the pencil next to **Evidence description**, and paste the text below. Then add the personal block of the student from step 9 at the end, after an empty line.
 ```
 Sprint 1 review of Young Amstelland Connect, 9 October 2026, for our client Rachid Kherrazi (WailSalutem Foundation), by Team 9 (Connect Nine). All five of us presented, each part with its own speakers, time and speaker notes. We showed this deck, the GitLab board and the Figma prototype. The deck and the client's form are in docs/sprintReviews in our team repository (merge request !43, issue #1519). Feedback on analysis and design is in the comment on this evidence, and feedback on process and teamwork is in the evidence "Sprint 1 review: feedback from the client".
 
@@ -32,13 +32,13 @@ AA5 - above level 3 (client: "Presentation skills" beyond expectation)
 For the client: his question word for word in Dutch with an English translation, the four server layers explained as waiter, chef, menu and storeroom, and two plain questions at the end. For the young people: the prototype has the look of the Young Amstelland Awards website, and the deck explains its screens in plain words, such as "First name, age band and town. Never an address or a school."
 
 OR1 - above level 3 (praised by the client in the review, without a rating, so our own assumption)
-On purpose, we chose a stack most of us did not know, because learning is the main goal of the semester. Each part has its reason on the slide: learning for React and .NET, support until November 2028 for .NET 10, no license cost and a plain container for PostgreSQL 16. The server code has four layers (#12), and a wrong reference between them does not build. Decisions 001 to 003 record the conventions, the layers and .NET 10. When PostgreSQL replaced SQL Server on 26 September, only one layer was affected. The Figma prototype, shown live, walks the Sprint 1 flow from a new account to another member's profile and holds the six security and privacy rules from our requirements.
+On purpose, we chose a stack most of us did not know, because learning is the main goal of the semester. Each part has its reason on the slide: learning for React and .NET, support until November 2028 for .NET 10, no license cost and a plain container for PostgreSQL 16. The server code has four layers (#12), and a wrong reference between them does not build. Decisions 001 to 003 record the conventions, the layers and .NET 10. A backend with a health check, the account table and a local PostgreSQL 16 database in one command are in. When PostgreSQL replaced SQL Server on 26 September, only one layer was affected. The Figma prototype, shown live, walks the Sprint 1 flow from a new account to another member's profile and holds the six security and privacy rules from our requirements.
 
 OR2 - above level 3 (strong point named by the client, without a rating, so our own assumption)
 In our repository (#1, #22, #1513) changes reach main only from dev, and every merge needs a teammate's approval and a green pipeline. The pipeline refuses .env files with secrets, and a weekly scan, pulled forward from Sprint 2, stops packages with a known high or critical risk. Code conventions come with examples, templates and an onboarding guide. We presented this as a foundation every next screen can land on. Why it fits, in our own reasoning: a second pair of eyes suits a team where most of us are learning the stack, and blocking secrets and risky packages suits a platform with personal data of members under 18.
 
 OR3 - above level 3 (no rating and no point to improve, so our own assumption)
-We involve the client systematically: his choices of 25 September (the webshop is not required, the test site holds only invented accounts) are in our plan and rules, we keep a list of 134 questions only the foundation can answer, and we asked him for one meeting on the order and these questions, and for a free Figma account, so every link in our page descriptions (#1496) opens the right screen for him. We acted on a teacher's request: 16 items of work done before they had an issue are now on the board. Through the client we brought in the interests of others: does the prototype fit the young people he knows, and may an organisation contact a member under 18? In our choices, a parent decides whether the profile of anyone under 16 is visible, and school goals come first, because every one of us is assessed on them.
+We involve the client systematically: his choices of 25 September (the webshop is not required, the test site holds only invented accounts) are in our plan and rules, we keep a list of 134 questions only the foundation can answer, and we asked him for one meeting on the order and these questions, and for a free Figma account, so every link in our page descriptions (#1496) opens the right screen for him. We acted on a teacher's request: 16 items of work done before they had an issue are now on the board. Through the client we brought in the interests of others: does the prototype fit the young people he knows, and may an organisation contact a member under 18? In our choices, the profile of anyone under 16 is visible only with a parent's permission, and school goals come first, because every one of us is assessed on them.
 ```
 
 **Link the evidence:**
@@ -58,7 +58,7 @@ We involve the client systematically: his choices of 25 September (the webshop i
 4. Click **Save**.
 
 ```
-Feedback on our team Sprint 1 review of 9 October 2026 from our client Rachid Kherrazi (WailSalutem Foundation, Sprint Review form) and our teacher Rob Kiebert, with one section per sub-goal. Levels are measured against BoKSA Full-Stack Developer level 3 (Advanced). If a teacher disagrees with a level, we would like to know on what basis, and why that feedback was not given during the review, so we can ask for it there next time.
+Feedback on our team Sprint 1 review of 9 October 2026 from our client Rachid Kherrazi (WailSalutem Foundation, Sprint Review form and what he said in the review) and our teacher Rob Kiebert, with one section per sub-goal. Levels are measured against BoKSA Full-Stack Developer level 3 (Advanced). If a teacher disagrees with a level, we would like to know on what basis, and why that feedback was not given during the review, so we can ask for it there next time.
 
 AA3 - above level 3 (based on the client's rating)
 Client: "Clear idea of project needs": beyond expectation. Under points to improve he wrote "n.a.", so he saw nothing to improve.
@@ -84,7 +84,7 @@ Feed-forward: we keep using everyday comparisons for the client, and in Sprint 2
 OR1 - above level 3 (praised by the client in the review, without a rating, so our own assumption)
 Client: no rating. In the review he said everything in the prototype was good, nicely worked out and clear. Under points to improve he wrote "n.a.", so he saw nothing to improve.
 Teacher: no point to improve on this.
-Why this level: the client called the prototype nicely worked out and clear, and the review shows a systematic design (four layers in #12 that refuse a wrong reference, Decisions 001 to 003, and a live Figma prototype of the Sprint 1 flow with the six rules from our requirements), a reason for every part of the stack, PostgreSQL in place of SQL Server with its reasons, and a design that held up when we switched databases on 26 September, with only one layer affected.
+Why this level: the client called the prototype nicely worked out and clear, and the review shows a systematic design and realisation (four layers in #12 that refuse a wrong reference, a backend with a health check and a local PostgreSQL 16 database in one command, Decisions 001 to 003, and a live Figma prototype of the Sprint 1 flow with the six rules from our requirements), a reason for every part of the stack, PostgreSQL in place of SQL Server with its reasons, and a design that held up when we switched databases on 26 September, with only one layer affected.
 Feed-up: at level 3, design and realisation are systematic, choices are justified against alternatives, and the design is adapted to new insights.
 Feed-forward: we repeat this in the Sprint 2 review: a reason for every design choice and how the design holds up against a change.
 
@@ -114,7 +114,7 @@ https://gitlab.fdmci.hva.nl/studio/social-impact-apps/onderwijs/projects/2026-20
 
 **Description:** pencil next to **Evidence description**, and paste:
 ```
-Feedback on our team Sprint 1 review of 9 October 2026 from our client Rachid Kherrazi (the Sprint Review form behind this link) and our teacher Rob Kiebert, on our process and teamwork. The comment has one section per sub-goal, each linked to it. The client's feedback on project needs, presentation and development tools is with the evidence "Sprint 1 review: Young Amstelland Connect". The form is in docs/sprintReviews in our team repository (merge request !43, issue #1519), which is how DLO asks us to share it with the team coach.
+Feedback on our team Sprint 1 review of 9 October 2026 from our client Rachid Kherrazi (the Sprint Review form behind this link) and our teacher Rob Kiebert, on our process and teamwork. The comment has one section per sub-goal, each linked to it. The client's feedback on project needs, presentation, the prototype and development tools is with the evidence "Sprint 1 review: Young Amstelland Connect". The form is in docs/sprintReviews in our team repository (merge request !43, issue #1519), which is how DLO asks us to share it with the team coach.
 
 ABOUT THE LEVELS
 Levels are measured against BoKSA Full-Stack Developer level 3 (Advanced): "beyond expectation" from the client is above level 3 and "as expected" is at level 3. Under points to improve he wrote "n.a.", so he saw nothing to improve. Where the teacher gave a point to improve, the sub-goal is at level 3, also when the client rated the topic beyond expectation. If a teacher disagrees with a level, we would like to know on what basis, and why that feedback was not given during the review, so we can ask for it there next time.
@@ -147,7 +147,7 @@ Feedback on our team Sprint 1 review of 9 October 2026 from our client Rachid Kh
 MS1 - above level 3 (based on the client's rating)
 Client: "Clear on what will be delivered in next sprint (user stories)": beyond expectation. Under points to improve he wrote "n.a.", so he saw nothing to improve.
 Teacher: no point to improve on how clear the next sprint is. We read his point on not taking on too much as being about the weight we plan.
-Why this level: rated beyond expectation. On the board we showed the Sprint 2 goal and its 30 stories, all with acceptance criteria and a definition of done, 17 already with an owner. We asked the client for the DNS record our test address waits for and for one meeting on the open questions. Every part of Connect is on one board, with risks and open points in one place, so the work stays transparent for anyone who joins.
+Why this level: rated beyond expectation. On the board of 9 October 2026 we showed the new Sprint 1 and Sprint 2, with the Sprint 2 goal and its 30 items, all with acceptance criteria and a definition of done, 17 already with an owner. We asked the client for the DNS record our test address waits for and for one meeting on the open questions. Every part of Connect is on one board, with risks and open points in one place, so the work stays transparent for anyone who joins.
 Feed-up: at level 3, risks and bottlenecks are anticipated before they become problems, and the work stays transparent and transferable.
 Feed-forward: at every review we show the next sprint goal and what we wait on, and we ask the foundation in time for what we need.
 
@@ -156,7 +156,7 @@ Client: "User stories delivered in line with planning": beyond expectation. Unde
 Teacher: plan to the weight done in earlier sprints, so we do not take on too much.
 Why this level: the teacher's point to improve keeps it at level 3.
 Feed-up: at level 3, progress and collaboration are evaluated critically, patterns are recognised, and the process is adjusted proactively where necessary.
-Feed-forward: on the current board, 44 of the 46 weight in Sprint 1 is done, counting work waiting in a merge request (36 closed). Sprint 2 is planned at 63, because Sprint 1 was preparation and we expect to go faster now. After the Sprint 2 review we compare the weight done in Sprint 2 with the 63 and use that difference for the plan of Sprint 3.
+Feed-forward: on the board of 9 October 2026, 44 of the 46 weight in Sprint 1 was done, counting work waiting in a merge request (36 closed). Sprint 2 is planned at 63, because Sprint 1 was preparation and we expect to go faster now. After the Sprint 2 review we compare the weight done in Sprint 2 with the 63 and use that difference for the plan of Sprint 3.
 
 MS4 - at level 3 (the teacher gave a point to improve)
 Client: "Leading the meeting - clear structure and roles": beyond expectation. "Each team member actively participated": as expected. Individual level: "I see that all the team members are motivated to participate so for all the students a complement, so I will skip next details". Under points to improve he wrote "n.a.", so he saw nothing to improve.
@@ -168,52 +168,54 @@ Feed-forward: before the next review every speaker knows their part and which qu
 
 ## 6. Validation
 
-On comment 1 and on comment 2: **⋮**, then **Request comment validation**, then choose Rob Kiebert. The client cannot validate, because he is not a teacher. Each comment holds his feedback too, which Rob can check against the client's form behind evidence 2.
+On comment 1 and on comment 2: **⋮**, then **Request comment validation**, then choose Rob Kiebert. The client cannot validate, because he is not a teacher. Each comment holds his feedback too, which Rob can check against the client's form behind evidence 2 and, for what the client said about the prototype, against the review itself.
 
 ## 7. Check
 
-Open **Goals & Progress**. Each of these sub-goals should show its evidence and a highlighted section of a comment: AA3, AA4, AA5, OR1, OR2, OR3, MS1, MS2, MS4. A sub-goal without both means a link is missing. No comment section should be linked to a goal name, only to a sub-goal code.
+Open **Goals & Progress**. Each of these sub-goals should show its evidence and a highlighted section of a comment: AA3, AA4, AA5, OR1, OR2, OR3, MS1, MS2, MS4. A sub-goal without both means a link is missing. No comment section should be linked to a goal name, only to a sub-goal code. The evidence 1 description ends with the personal block of the student.
 
 ## 8. Team
 
-- Bayon, Nick, Gurpreet and Kelvin follow steps 2 to 7 in their own Portflow with the same names, GitLab links, descriptions, comments, sub-goal links and highlights, plus their own personal block at the end of the evidence 1 description (below). Kelvin and Bayon change only what the next two lines say.
+- Bayon, Nick, Gurpreet and Kelvin follow steps 2 to 7 in their own Portflow with the same names, GitLab links, descriptions, comments, sub-goal links and highlights, plus their own personal block from step 9. Kelvin and Bayon change only what their own line below says.
 - Validation works per portfolio, so each of the five sends the two validation requests from their own Portflow. Rob Kiebert then gets ten requests in total, so we tell him beforehand in Teams.
 - Kelvin's profile is Security Specialist: he replaces "Full-Stack Developer" with "Security Specialist" everywhere and rewrites each feed-up line to his own level 3 criterion, in the same style ("at level 3, ...") and without "you".
 - Bayon is assessed on level 2: he first replaces "level 3 (Advanced)" with "level 2", then every other "level 3" with "level 2", and rewrites each feed-up line to the level 2 criterion of his profile, in the same style ("at level 2, ...") and without "you".
 
-**Personal contribution.** The expectations of the studio lecturers ask for proof of the personal contribution. Each student pastes only their own block below at the end of the evidence 1 description, after the OR3 paragraph, with an empty line before it. The numbers come from the current board in GitLab (assignee, closed or waiting in an open merge request). Measure the numbers again on the day of pasting, because they change when a merge request is merged.
+## 9. Personal blocks
+
+The expectations of the studio lecturers ask for proof of the personal contribution. Each student, Wesley included, pastes only their own block at the end of the evidence 1 description, after the OR3 paragraph, with an empty line before it. The numbers come from the board of 9 October 2026 in GitLab (assignee, closed or waiting in an open merge request).
 
 **Wesley Oerlemans**
 ```
 PERSONAL CONTRIBUTION: Wesley Oerlemans
 Role: Scrum Master of Sprint 1.
-On the current board: owner of 7 closed Sprint 1 issues (12 weight), 3 Sprint 1 issues waiting in an open merge request (8 weight) and 7 Sprint 2 stories (13 weight), and co-owner of the 8 closed team issues of all five (16 weight).
+On the board of 9 October 2026: owner of 7 closed Sprint 1 issues (12 weight), 3 Sprint 1 issues waiting in an open merge request (8 weight) and 7 Sprint 2 issues (13 weight), and co-owner of the 8 closed team issues of all five (16 weight).
 ```
 
 **Nick Hoebe**
 ```
 PERSONAL CONTRIBUTION: Nick Hoebe
 Role: Product Owner of Sprint 1.
-On the current board: owner of 4 closed Sprint 1 issues (5 weight) and 2 Sprint 2 stories (7 weight), and co-owner of the 8 closed team issues of all five (16 weight).
+On the board of 9 October 2026: owner of 4 closed Sprint 1 issues (5 weight) and 2 Sprint 2 issues (7 weight), and co-owner of the 8 closed team issues of all five (16 weight).
 ```
 
 **Kelvin van Voorst**
 ```
 PERSONAL CONTRIBUTION: Kelvin van Voorst
 Role: Security Specialist, privacy and security analysis.
-On the current board: owner of 4 Sprint 2 stories (10 weight), and co-owner of the 8 closed team issues of all five (16 weight).
+On the board of 9 October 2026: owner of 4 Sprint 2 issues (10 weight), and co-owner of the 8 closed team issues of all five (16 weight).
 ```
 
 **Bayon Eerhart**
 ```
 PERSONAL CONTRIBUTION: Bayon Eerhart
 Role: Developer, Product Owner of Sprint 2.
-On the current board: owner of 2 Sprint 2 stories (3 weight), and co-owner of the 8 closed team issues of all five (16 weight).
+On the board of 9 October 2026: owner of 2 Sprint 2 issues (3 weight), and co-owner of the 8 closed team issues of all five (16 weight).
 ```
 
 **Gurpreet Singh**
 ```
 PERSONAL CONTRIBUTION: Gurpreet Singh
 Role: Developer, Scrum Master of Sprint 2.
-On the current board: owner of 2 closed Sprint 1 issues (3 weight) and 3 Sprint 2 stories (9 weight), and co-owner of the 8 closed team issues of all five (16 weight).
+On the board of 9 October 2026: owner of 2 closed Sprint 1 issues (3 weight) and 3 Sprint 2 issues (9 weight), and co-owner of the 8 closed team issues of all five (16 weight).
 ```
