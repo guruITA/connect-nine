@@ -181,13 +181,12 @@ Open **Goals & Progress**. Each of these sub-goals should show its evidence and 
 - Kelvin's profile is Security Specialist: he replaces "Full-Stack Developer" with "Security Specialist" everywhere and rewrites each feed-up line to his own level 3 criterion, in the same style ("at level 3, ...") and without "you".
 - Bayon is assessed on level 2: he first replaces "level 3 (Advanced)" with "level 2", then every other "level 3" with "level 2", and rewrites each feed-up line to the level 2 criterion of his profile, in the same style ("at level 2, ...") and without "you".
 
-**Personal contribution.** The expectations of the studio lecturers ask for proof of the personal contribution. Each student pastes only their own block below at the end of the evidence 1 description, after the OR3 paragraph, with an empty line before it. The parts come from the agenda in the deck, the numbers from the current board in GitLab (assignee, closed or waiting in an open merge request). Measure the numbers again on the day of pasting, because they change when a merge request is merged.
+**Personal contribution.** The expectations of the studio lecturers ask for proof of the personal contribution. Each student pastes only their own block below at the end of the evidence 1 description, after the OR3 paragraph, with an empty line before it. The numbers come from the current board in GitLab (assignee, closed or waiting in an open merge request). Measure the numbers again on the day of pasting, because they change when a merge request is merged.
 
 **Wesley Oerlemans**
 ```
 PERSONAL CONTRIBUTION: Wesley Oerlemans
 Role: Scrum Master of Sprint 1.
-In the review: led the meeting and presented part 1 (who we are and the client's question) and part 6 (questions and feedback).
 On the current board: owner of 7 closed Sprint 1 issues (12 weight), 3 Sprint 1 issues waiting in an open merge request (8 weight) and 7 Sprint 2 stories (13 weight), and co-owner of the 8 closed team issues of all five (16 weight).
 ```
 
@@ -195,7 +194,6 @@ On the current board: owner of 7 closed Sprint 1 issues (12 weight), 3 Sprint 1 
 ```
 PERSONAL CONTRIBUTION: Nick Hoebe
 Role: Product Owner of Sprint 1.
-In the review: presented part 2 (Sprint 1, planned and delivered) and, with Kelvin van Voorst, part 3 (how Connect is built and what it protects).
 On the current board: owner of 4 closed Sprint 1 issues (5 weight) and 2 Sprint 2 stories (7 weight), and co-owner of the 8 closed team issues of all five (16 weight).
 ```
 
@@ -203,7 +201,6 @@ On the current board: owner of 4 closed Sprint 1 issues (5 weight) and 2 Sprint 
 ```
 PERSONAL CONTRIBUTION: Kelvin van Voorst
 Role: Security Specialist, privacy and security analysis.
-In the review: presented, with Nick Hoebe, part 3 (how Connect is built and what it protects), including the six security and privacy rules.
 On the current board: owner of 4 Sprint 2 stories (10 weight), and co-owner of the 8 closed team issues of all five (16 weight).
 ```
 
@@ -211,7 +208,6 @@ On the current board: owner of 4 Sprint 2 stories (10 weight), and co-owner of t
 ```
 PERSONAL CONTRIBUTION: Bayon Eerhart
 Role: Developer, Product Owner of Sprint 2.
-In the review: presented part 4 (the prototype, live in Figma).
 On the current board: owner of 2 Sprint 2 stories (3 weight), and co-owner of the 8 closed team issues of all five (16 weight).
 ```
 
@@ -219,6 +215,5 @@ On the current board: owner of 2 Sprint 2 stories (3 weight), and co-owner of th
 ```
 PERSONAL CONTRIBUTION: Gurpreet Singh
 Role: Developer, Scrum Master of Sprint 2.
-In the review: presented part 5 (Sprints 2 to 5 and what we need from the client).
 On the current board: owner of 2 closed Sprint 1 issues (3 weight) and 3 Sprint 2 stories (9 weight), and co-owner of the 8 closed team issues of all five (16 weight).
 ```
