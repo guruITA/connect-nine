@@ -423,7 +423,7 @@ How access works on this server:
 - Password login is off for everyone: `/etc/ssh/sshd_config.d/10-connect.conf` sets `PasswordAuthentication no` and `KbdInteractiveAuthentication no`. A try with a password answers `Permission denied (publickey)` (tried on 9 October 2026).
 - Why no password login: the team decided this for security (#237). A password can be guessed or leaked, a key cannot be guessed. This also holds for the client: his own access to the server goes with a key as well. He sends his public key, and a member of the group sudo adds him with the steps of New team member below.
 - Root never logs in over ssh: the same file sets `PermitRootLogin no` since 9 October 2026, checked with `sshd -t` before `systemctl reload ssh`. A try answers `root@31.70.66.186: Permission denied (publickey).`
-- The group sudo holds wesley and gurpreet, the two admins. They become root with `sudo -i` after logging in with their own key, without a password (`/etc/sudoers.d/20-connect-admins`, decided by Wesley on 9 October 2026). Every user has a locked password, so the ssh key is the only way in, and whoever holds an admin's key is root. Guard that key.
+- Every team member is an admin: the group sudo holds wesley, gurpreet, bayon, nick and kelvin. They become root with `sudo -i` after logging in with their own key, without a password (`/etc/sudoers.d/20-connect-admins`). Wesley decided this for wesley and gurpreet on 9 October 2026 and for the whole team on 10 October 2026. Every user has a locked password, so the ssh key is the only way in, and whoever holds a member's key is root. Guard that key.
 - Add an admin with `sudo usermod -aG sudo <name>` and a line `<name> ALL=(ALL) NOPASSWD:ALL` in that file through `sudo visudo -f /etc/sudoers.d/20-connect-admins`.
 
 ### New team member
@@ -457,6 +457,8 @@ sudo deluser --remove-home <name>
 ```
 
 You should see `Removing user '<name>'`. Their key and home folder are gone, and a login with their name answers `Permission denied (publickey)`.
+
+Then remove their line from `/etc/sudoers.d/20-connect-admins` with `sudo visudo -f /etc/sudoers.d/20-connect-admins`. Otherwise a new user who later gets the same name is root from the first login.
 
 ### Who logged in
 

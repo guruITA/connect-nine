@@ -28,7 +28,7 @@ School asks: "You ensure that your work aligns with that of others and contribut
 ## TODO
 
 - [x] Wesley: make the three variables, then run ssh-check on dev after the merge. Done on 9 October 2026: ssh-check green in job 1342015 of dev pipeline 583960, and red on an unprotected branch in pipeline 583976.
-- [x] Wesley: root access without a root login. Done on 9 October 2026: `PermitRootLogin no`, and wesley and gurpreet use sudo without a password (`/etc/sudoers.d/20-connect-admins`), because every user has a locked password.
+- [x] Wesley: root access without a root login. Done on 9 October 2026: `PermitRootLogin no`, and wesley and gurpreet use sudo without a password (`/etc/sudoers.d/20-connect-admins`), because every user has a locked password. On 10 October 2026 bayon, nick and kelvin got the same rights, so every team member is an admin. The old file is kept as `/root/20-connect-admins.bak-20261010`, and `visudo -c` parsed the new one before it was put in place.
 - [x] Team: choose the second member of the group sudo. Gurpreet Singh, 9 October 2026.
 - [ ] Teammates: first login and signed line, screenshot of the padlock on a phone (9.4 and 9.6).
 - [ ] Owner of #267: read part The pipeline on the server and write your name and the date in #10.
