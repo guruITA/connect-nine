@@ -156,7 +156,7 @@ Client: "User stories delivered in line with planning": beyond expectation. Unde
 Teacher: plan to the weight done in earlier sprints, so we do not take on too much.
 Why this level: the teacher's point to improve keeps it at level 3.
 Feed-up: at level 3, progress and collaboration are evaluated critically, patterns are recognised, and the process is adjusted proactively where necessary.
-Feed-forward: on the board of 9 October 2026, 44 of the 46 weight in Sprint 1 was done, counting work waiting in a merge request (36 closed). Sprint 2 is planned at 63, because Sprint 1 was preparation and we expect to go faster now. After the Sprint 2 review we compare the weight done in Sprint 2 with the 63 and use that difference for the plan of Sprint 3.
+Feed-forward: on the board of 9 October 2026, 46 of the 48 weight in Sprint 1 was done, counting work waiting in a merge request (38 closed). Sprint 2 is planned at 63, because Sprint 1 was preparation and we expect to go faster now. After the Sprint 2 review we compare the weight done in Sprint 2 with the 63 and use that difference for the plan of Sprint 3.
 
 MS4 - at level 3 (the teacher gave a point to improve)
 Client: "Leading the meeting - clear structure and roles": beyond expectation. "Each team member actively participated": as expected. Individual level: "I see that all the team members are motivated to participate so for all the students a complement, so I will skip next details". Under points to improve he wrote "n.a.", so he saw nothing to improve.
