@@ -15,15 +15,15 @@ For every sprint review of Young Amstelland Connect. Replace everything between 
    - the client rated it "beyond expectation", and the teacher gave no point to improve on that topic: above level 3
    - the client rated it "as expected": at level 3
    - the teacher gave a point to improve on that topic: at level 3, even if the client rated it beyond
-   - "n.a." under points to improve on the form means the client saw nothing to improve; write it in every section as "so he saw nothing to improve"
-   - no rating and no point to improve from the teacher, but proof in the presentation, the GitLab board, the prototype or our work shown or linked in the review: above level 3, called "our own assumption"; the section gives that proof, and the feed-forward is to repeat what we did
+   - "n.a." under points to improve on the form means the client saw nothing to improve. Write it in every section as "so he saw nothing to improve"
+   - no rating and no point to improve from the teacher, but proof in the presentation, the GitLab board, the prototype or our work shown or linked in the review: above level 3, called "our own assumption". The section gives that proof, and the feed-forward is to repeat what we did
    - no proof at all in any of those: "no level this time", even with "n.a.", and the feed-forward says what we show next time
    - a strong point without a rating: above level 3, also called "our own assumption"
    - Before writing "nobody gave a point to improve", check that no teacher point touches that topic. If one seems to, say in the section why it is about something else (for example: his point on who says what is about dividing roles, not about how we communicated).
 9. **Every "above level 3" without a rating needs proof from the review:** the presentation, the GitLab board, the prototype, or work we made that was shown or linked in it. The section names that proof and ties it to the parts of the criterion. Only when there is no proof at all, write "no level this time" and what you show next time. The slides of a review that is done cannot change: build the proof from what is in the deck, the speaker notes and what was shown.
-10. **Facts only from the presentation** (deck and speaker notes), the GitLab board and Figma shown in it, the client's form, the teacher's feedback, and GitLab numbers. Say "done, counting work waiting in a merge request" and give the closed number too; never "finished" for work that is still open. Never claim something the deck doesn't say (for example "we prepared it together", "all merge requests had approval"). **Only proof:** every sentence in a section proves a part of the criterion of that sub-goal. Context, backlog detail and numbers that prove nothing stay out (for example "one of 103 should and could items", "Sprint 1 had 31 merge requests").
+10. **Facts only from the presentation** (deck and speaker notes), the GitLab board and Figma shown in it, the client's form, the teacher's feedback, and GitLab numbers. Say "done, counting work waiting in a merge request" and give the closed number too. Never "finished" for work that is still open. Never claim something the deck doesn't say (for example "we prepared it together", "all merge requests had approval"). **Only proof:** every sentence in a section proves a part of the criterion of that sub-goal. Context, backlog detail and numbers that prove nothing stay out (for example "one of 103 should and could items", "Sprint 1 had 31 merge requests").
 11. **The disagree question appears once per text, never per section:** once in each description (ABOUT THE LEVELS) and once in the opening paragraph of each comment.
-12. **All feedback in English**, also a teacher's Dutch feedback, so every teacher can read it later. **No "you" outside a quote** (paraphrase the BoKSA criterion), no AI mentions, no "retrospective" (the retro is a different datapoint).
+12. **All feedback in English**, also a teacher's Dutch feedback, so every teacher can read it later. **No "you" outside a quote** (paraphrase the BoKSA criterion), no AI mentions, no "retrospective" (the retro is a different datapoint). **No semicolons and no em-dashes:** a new thought gets a full stop, the rest a comma.
 
 ## Which client form row goes to which sub-goal
 
@@ -65,10 +65,10 @@ https://gitlab.fdmci.hva.nl/studio/social-impact-apps/onderwijs/projects/2026-20
 
 **Description:** pencil next to **Evidence description**, and paste:
 ```
-Sprint <n> review of Young Amstelland Connect, <date>, for our client <client name> (<organisation>), by Team 9 (Connect Nine). <one sentence on how the review was set up, only what the deck shows>. In the review we showed <what was shown: deck, board, prototype, working software>. The deck and the client's form are in our team repository in docs/sprintReviews (merge request !<mr>, issue #<issue>). The feedback of the client and the teacher is in one comment on this evidence, with a section per sub-goal; the feedback on how we worked is in the evidence "Sprint <n> review: feedback from the client".
+Sprint <n> review of Young Amstelland Connect, <date>, for our client <client name> (<organisation>), by Team 9 (Connect Nine). <one sentence on how the review was set up, only what the deck shows>. In the review we showed <what was shown: deck, board, prototype, working software>. The deck and the client's form are in our team repository in docs/sprintReviews (merge request !<mr>, issue #<issue>). The feedback of the client and the teacher is in one comment on this evidence, with a section per sub-goal, and the feedback on how we worked is in the evidence "Sprint <n> review: feedback from the client".
 
 ABOUT THE LEVELS
-Levels are measured against BoKSA Full-Stack Developer level 3 (Advanced). Where the client gave a rating, the level follows that rating. Where nobody gave feedback to improve, we assess the sub-goal as above level 3; that is our own assumption, based on that lack of feedback. If a teacher disagrees with a rating, we would like to know on what basis. If there is extra feedback, we would also like to know why it was not given during the review, so that next time we can ask for it at the review itself.
+Levels are measured against BoKSA Full-Stack Developer level 3 (Advanced). Where the client gave a rating, the level follows that rating. Where nobody gave feedback to improve, we assess the sub-goal as above level 3. That is our own assumption, based on that lack of feedback. If a teacher disagrees with a rating, we would like to know on what basis. If there is extra feedback, we would also like to know why it was not given during the review, so that next time we can ask for it at the review itself.
 
 <CODE> <short name of the sub-goal> - <above level 3 | at level 3> (<client: "<form row>" <rating> | no feedback to improve, our own assumption>)
 <the proof from the review, in one paragraph, every fact from the deck, board, Figma or GitLab>
@@ -89,7 +89,7 @@ Feedback on our team Sprint <n> review of <date>, from our client <client name> 
 <CODE> - <above level 3 | at level 3 | no level this time> (<based on the client's rating | no feedback to improve, our own assumption | the teacher gave a point to improve>)
 Client: <"<form row>": <rating> | no point on this in the Sprint Review form>.
 Teacher: <his point, in English | no point to improve on this>.
-Why this level: <the reason from the level rule; with no feedback, also the proof from the review>.
+Why this level: <the reason from the level rule, and with no feedback also the proof from the review>.
 Feed-up: level 3 asks <the BoKSA level 3 criterion in own words, without "you">.
 Feed-forward: <what we do next, concrete, in the next sprint>.
 ```
