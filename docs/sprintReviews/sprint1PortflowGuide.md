@@ -58,7 +58,7 @@ We involve the client systematically: his choices of 25 September (the webshop i
 4. Click **Save**.
 
 ```
-Feedback on our team Sprint 1 review of 9 October 2026 from our client Rachid Kherrazi (WailSalutem Foundation, Sprint Review form) and our teacher Rob Kiebert, one section per sub-goal, measured against BoKSA Full-Stack Developer level 3 (Advanced). If a teacher disagrees with a level, we would like to know on what basis, and why that feedback was not given during the review, so we can ask for it there next time.
+Feedback on our team Sprint 1 review of 9 October 2026 from our client Rachid Kherrazi (WailSalutem Foundation, Sprint Review form) and our teacher Rob Kiebert, with one section per sub-goal. Levels are measured against BoKSA Full-Stack Developer level 3 (Advanced). If a teacher disagrees with a level, we would like to know on what basis, and why that feedback was not given during the review, so we can ask for it there next time.
 
 AA3 - above level 3 (based on the client's rating)
 Client: "Clear idea of project needs": beyond expectation. Under points to improve he wrote "n.a.", so he saw nothing to improve.
@@ -91,14 +91,14 @@ Feed-forward: we repeat this in the Sprint 2 review: a reason for every design c
 OR2 - above level 3 (strong point named by the client, without a rating, so our own assumption)
 Client: strong point of the team: "using the development tools". Under points to improve he wrote "n.a.", so he saw nothing to improve.
 Teacher: no point to improve on this.
-Why this level: the client named it our strong point. The review shows the methods (a teammate's approval and a green pipeline for every merge, secrets refused, risky packages stopped), presented as a foundation every next screen can land on. Our own reasoning adds why they fit: a second pair of eyes suits a team where most of us are learning the stack, and blocking secrets and risky packages suits a platform with personal data of members under 18.
+Why this level: the client named it our strong point. The review shows the methods we selected (a teammate's approval and a green pipeline for every merge, secrets refused, and a weekly scan for risky packages that we pulled forward from Sprint 2), presented as a foundation every next screen can land on. Our own reasoning adds why they fit: a second pair of eyes suits a team where most of us are learning the stack, and blocking secrets and risky packages suits a platform with personal data of members under 18.
 Feed-up: at level 3, relevant standards and methods from the field are selected independently, and why they fit the context is substantiated.
 Feed-forward: every change keeps going through a merge request with a teammate's approval and a green pipeline as the code grows in Sprint 2.
 
 OR3 - above level 3 (no rating and no point to improve, so our own assumption)
 Client: no rating. Under points to improve he wrote "n.a.", so he saw nothing to improve.
 Teacher: no point to improve on this.
-Why this level: the review shows systematic involvement of the client (his choices in our plan and rules, a list of 134 questions only the foundation can answer, and requests for one meeting on them and a Figma account), a teacher's request acted on, the interests of young people and organisations brought in through our questions to the client, and those of parents and the HvA weighed in our rules and plan.
+Why this level: the review shows systematic involvement of the client (his choices in our plan and rules, a list of 134 questions only the foundation can answer, and our requests for one meeting on them and for his own Figma account), a teacher's request acted on, the interests of young people and organisations brought in through our questions to the client, and those of parents and the HvA weighed in our rules and plan.
 Feed-up: at level 3, multiple stakeholders with diverse interests are involved proactively, the coordination with them is systematic, and their feedback is weighed consciously in the choices.
 Feed-forward: we repeat this in the Sprint 2 review: the client's choices in our plan, the open questions, what we need from the foundation, and questions for his feedback.
 ```
@@ -142,7 +142,7 @@ Client: "Leading the meeting - clear structure and roles": beyond expectation. "
 **Link each section:** the same way as in step 3, three times, once per section (MS1, MS2, MS4): **⋮**, **Link to sub-goal(s)**, the code of the section, highlight only that section (from the code line to the line that starts with "Feed-forward"), **Save**.
 
 ```
-Feedback on our team Sprint 1 review of 9 October 2026 from our client Rachid Kherrazi (WailSalutem Foundation, Sprint Review form) and our teacher Rob Kiebert, one section per sub-goal, measured against BoKSA Full-Stack Developer level 3 (Advanced). If a teacher disagrees with a level, we would like to know on what basis, and why that feedback was not given during the review, so we can ask for it there next time.
+Feedback on our team Sprint 1 review of 9 October 2026 from our client Rachid Kherrazi (WailSalutem Foundation, Sprint Review form) and our teacher Rob Kiebert, with one section per sub-goal. Levels are measured against BoKSA Full-Stack Developer level 3 (Advanced). If a teacher disagrees with a level, we would like to know on what basis, and why that feedback was not given during the review, so we can ask for it there next time.
 
 MS1 - above level 3 (based on the client's rating)
 Client: "Clear on what will be delivered in next sprint (user stories)": beyond expectation. Under points to improve he wrote "n.a.", so he saw nothing to improve.
@@ -156,7 +156,7 @@ Client: "User stories delivered in line with planning": beyond expectation. Unde
 Teacher: plan to the weight done in earlier sprints, so we do not take on too much.
 Why this level: the teacher's point to improve keeps it at level 3.
 Feed-up: at level 3, progress and collaboration are evaluated critically, patterns are recognised, and the process is adjusted proactively where necessary.
-Feed-forward: GitLab shows 46 of 82 weight done in Sprint 1, counting work waiting in a merge request (36 closed). Sprint 2 is planned at 63, because Sprint 1 was preparation and we expect to go faster now. After the Sprint 2 review we compare the weight done in Sprint 2 with the 63 and use that difference for the plan of Sprint 3.
+Feed-forward: on the current board, 44 of the 46 weight in Sprint 1 is done, counting work waiting in a merge request (36 closed). Sprint 2 is planned at 63, because Sprint 1 was preparation and we expect to go faster now. After the Sprint 2 review we compare the weight done in Sprint 2 with the 63 and use that difference for the plan of Sprint 3.
 
 MS4 - at level 3 (the teacher gave a point to improve)
 Client: "Leading the meeting - clear structure and roles": beyond expectation. "Each team member actively participated": as expected. Individual level: "I see that all the team members are motivated to participate so for all the students a complement, so I will skip next details". Under points to improve he wrote "n.a.", so he saw nothing to improve.
@@ -176,7 +176,7 @@ Open **Goals & Progress**. Each of these sub-goals should show its evidence and 
 
 ## 8. Team
 
-- Bayon, Nick, Gurpreet and Kelvin add the same two GitLab links, the same two descriptions and the same two comments to their own Portflow, with the same links and highlights per section.
-- Validation works per portfolio, so each of you sends the two validation requests from your own Portflow. Rob Kiebert then gets ten requests in total, so tell him beforehand in Teams.
+- Bayon, Nick, Gurpreet and Kelvin follow steps 2 to 7 in their own Portflow with the same names, GitLab links, descriptions, comments, sub-goal links and highlights. Kelvin and Bayon change only what the next two lines say.
+- Validation works per portfolio, so each of the five sends the two validation requests from their own Portflow. Rob Kiebert then gets ten requests in total, so we tell him beforehand in Teams.
 - Kelvin's profile is Security Specialist: he replaces "Full-Stack Developer" with "Security Specialist" everywhere and rewrites each feed-up line to his own level 3 criterion, in the same style ("at level 3, ...") and without "you".
 - Bayon is assessed on level 2: he first replaces "level 3 (Advanced)" with "level 2", then every other "level 3" with "level 2", and rewrites each feed-up line to the level 2 criterion of his profile, in the same style ("at level 2, ...") and without "you".
