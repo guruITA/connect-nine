@@ -27,7 +27,7 @@ School asks: "You adapt your communication to different target groups in form an
 ## TODO
 
 - [ ] Whole team: walk the four choices and point 5 at a stand up, then each fills in their date in Agreed by.
-- [ ] Whole team: each confirms in a comment on #1 that they can follow the rules.
+- [x] Whole team: each confirms in a comment on #1 that they can follow the rules. On 9 October 2026 every teammate told Wesley that it is good, written down in #7.
 - [ ] Wesley: fill in AA4 point 3 and AA5 point 4 after the team moment.
 
 ## AI use

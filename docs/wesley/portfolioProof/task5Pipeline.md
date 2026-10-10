@@ -43,7 +43,7 @@ School asks: "You systematically validate that the solution does what it should,
 ## TODO
 
 - [ ] Reviewer of !24: read a red log with only the part Pipeline and write whether it was clear.
-- [ ] Wesley: after the merge of !24, add the link of the first run on dev here.
+- [x] Wesley: after the merge of !24, add the link of the first run on dev here. The first run on dev is pipeline 583948 of 9 October 2026: https://gitlab.fdmci.hva.nl/studio/social-impact-apps/onderwijs/projects/2026-2027-semester-1/projects/project-9-wail-salutem-foundation-project-2/connect-nine/-/pipelines/583948
 - [ ] Wesley: screenshots in !25.
 - [ ] Reviewer of !25: confirm that the red run got no approval.
 - [x] Wesley: switch on Pipelines must succeed (done 8 October 2026).
