@@ -4,7 +4,7 @@ For every sprint review of Young Amstelland Connect. Replace everything between 
 
 ## Rules (read first)
 
-1. **Team voice.** "We" and "our", never "I" or "my", except inside a quote from the client. All five paste the same texts. **Plus one personal block per student** at the end of the evidence 1 description, in third person without "he" or "she": role, the part presented in the review (from the agenda), and own items on the current board (closed, waiting in an open merge request, next sprint), next to the team issues of all five.
+1. **Team voice.** "We" and "our", never "I" or "my", except inside a quote from the client. All five paste the same texts. **Plus a personal part per student** (step 9): every sub-goal of their own profile that their own work proves, in third person.
 2. **Two pieces of evidence, both in Project Group, both "Add link".** Evidence 1 is the deck, evidence 2 is the client's Sprint Review form. Both are GitLab permalinks to the merge commit, so the version stays fixed.
 3. **Evidence 1 holds what we showed, evidence 2 holds only feedback.** On evidence 1, the Analysing & Advising and Designing & Realising sub-goals (the Sprint Review assesses "Analyse, Design"). On evidence 2, the Managing & Collaborating sub-goals, and only what the client and the teacher said.
 4. **No Personal Leadership in these team texts.** PL is about one person, and all five paste the same text.
@@ -136,7 +136,29 @@ On comment 1 and comment 2: **⋮**, **Request comment validation**, choose <tea
 - [ ] Every fact can be found in the deck, the speaker notes, the board, Figma, the form, the teacher's feedback or GitLab.
 - [ ] No "I", "my" or "you" outside a quote, no "retrospective", one line per paragraph.
 - [ ] In Portflow: **Goals & Progress** shows every code with its evidence and a highlighted section.
+- [ ] Every student's evidence 1 description and comment 1 end with their personal part, and each personal code has the same level as its team section.
 
 ## 8. Team
 
-The other four paste the same texts and links and make the same highlights.
+The other four paste the same texts and links and make the same highlights. Each adds only their own personal part from step 9.
+
+## 9. Personal blocks
+
+Each student, the writer of the guide included, adds only their own part to evidence 1, in third person without "he" or "she": every sub-goal of their own profile (docs/team/collaborationAgreement.md) that their own work proves, not only the strongest one. Own work is what GitLab shows: issues with their name as the only assignee (closed or waiting in an open merge request), merge requests they wrote, and merge requests of teammates they approved. Per code:
+
+1. **Manage (sub-)goals** on evidence 1: add the code, and its goal when that goal is not there yet.
+2. At the end of the description, after an empty line:
+```
+<CODE> Personal contribution of <full name> - <level> (<reason>)
+<the own work that proves the criterion, with issue and merge request numbers>
+```
+3. At the end of comment 1, after an empty line, linked to its own code and highlighted like the sections in step 3:
+```
+<CODE> - <level> (<reason>)
+Client: <the rating for the team on this topic, or no rating>. Individual level: "<the client's individual feedback>". Under points to improve he wrote "<...>", so he saw <...>.
+Teacher: <his point, or no point to improve on this>.
+Why this level: <the reason from the level rule, with the own proof>.
+Feed-up: at level <n>, <the criterion of the own profile and level, without "you">.
+Feed-forward: in Sprint <n+1>, <full name> <what comes next, with the own issue numbers>.
+```
+A personal code gets the same level as the team section with the same code, so no student has two levels for one code. A student without finished own work on the board for a code gets "no level this time", and the feed-forward names the own open issues. The numbers come from the current board, measured again on the day of pasting.

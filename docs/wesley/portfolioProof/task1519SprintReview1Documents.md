@@ -14,10 +14,10 @@ The deck of the Sprint 1 review of 9 October 2026 and the Sprint Review form the
 
 ## Second merge request: the Portflow texts and the template
 
-The texts the whole team pastes into Portflow for the Sprint 1 review now stand in docs/sprintReviews/sprint1PortflowGuide.md: two pieces of evidence as GitLab links, one comment per evidence with the feedback of the client and the teacher in a section per sub-goal, and the level of every sub-goal with its reason. docs/sprintReviews/portflowSprintReviewTemplate.md holds the same structure with placeholders and the rules, so the next sprint reviews start from it.
+The texts the whole team pastes into Portflow for the Sprint 1 review now stand in docs/sprintReviews/sprint1PortflowGuide.md: two pieces of evidence as GitLab links, one comment per evidence with the feedback of the client and the teacher in a section per sub-goal, the level of every sub-goal with its reason, and in step 9 a personal part per student with every sub-goal of their own profile that their own work on GitLab proves. docs/sprintReviews/portflowSprintReviewTemplate.md holds the same structure with placeholders and the rules, so the next sprint reviews start from it.
 
 **MS1 Seeing risks early and keeping the work transferable**
-- What I made: one guide in the repository instead of five students each writing their own texts, and a template with the rules we found (the level rule, which form row goes to which sub-goal, no level without proof), so the next review is not built from scratch.
+- What I made: one guide in the repository instead of five students each writing their own texts, and a template with the rules we found (the level rule, which form row goes to which sub-goal, only proof in a section, no level without proof, weights from the current board, a personal part per student), so the next review is not built from scratch.
 - Alternative I did not choose: sending the texts in Teams. Then they are hard to find again and nobody can see which version is the final one.
 
 ## TODO
@@ -25,6 +25,8 @@ The texts the whole team pastes into Portflow for the Sprint 1 review now stand 
 - [x] Shared with the team coach: merged into dev on 9 October 2026 (!43), so the coach finds the form on the team repository. DLO asks to share the form "by putting a copy on the team repo", so no separate message is needed.
 - [x] Approved by Gurpreet Singh and Nick Hoebe (!43).
 - [ ] Wesley Oerlemans: after !42 is merged, add the row for this file to docs/wesley/README.md (left out here, because !42 changes the same table).
+- [ ] Bayon Eerhart, Nick Hoebe, Gurpreet Singh and Kelvin van Voorst: add the own personal part from step 9 of the guide in Portflow, with the numbers measured again on the day of pasting.
+- [ ] Kelvin van Voorst: confirm the level. docs/team/collaborationAgreement.md says Security Specialist level 2, step 8 of the guide says level 3.
 
 ## AI use
 
