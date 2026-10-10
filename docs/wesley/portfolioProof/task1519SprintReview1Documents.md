@@ -26,7 +26,7 @@ The texts the whole team pastes into Portflow for the Sprint 1 review now stand 
 - [x] Approved by Gurpreet Singh and Nick Hoebe (!43).
 - [ ] Wesley Oerlemans: after !42 is merged, add the row for this file to docs/wesley/README.md (left out here, because !42 changes the same table).
 - [ ] Bayon Eerhart, Nick Hoebe, Gurpreet Singh and Kelvin van Voorst: add the own personal part from step 9 of the guide in Portflow, with the numbers measured again on the day of pasting.
-- [ ] Kelvin van Voorst: confirm the level. docs/team/collaborationAgreement.md says Security Specialist level 2, step 8 of the guide says level 3.
+- [x] Level: every text is measured against level 3, also for Bayon and Kelvin, who are assessed on level 2 (decision Wesley Oerlemans, 10 October 2026).
 
 ## AI use
 

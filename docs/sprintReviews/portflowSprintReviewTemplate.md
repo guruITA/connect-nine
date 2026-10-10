@@ -11,7 +11,7 @@ For every sprint review of Young Amstelland Connect. Replace everything between 
 5. **One comment per evidence, with the feedback of the client and the teacher together.** Only the teacher can validate, so he validates both comments. The client's own form is the proof for his part.
 6. **One section per sub-goal in that comment.** Each section is highlighted and linked to its own sub-goal. A section never mentions another code.
 7. **Every sub-goal linked to an evidence has three things:** a heading in that evidence's description, a section in its comment, and its code in the link step. The check list (step 7) has the same codes.
-8. **The level rule, measured against BoKSA Full-Stack Developer level 3 (Advanced):**
+8. **The level rule, measured against BoKSA Full-Stack Developer level 3 (Advanced):** Everyone is measured against level 3, also a student assessed on level 2 and the Security Specialist with the level 3 criteria of that profile, so at or above level 3 is above level 2.
    - the client rated it "beyond expectation", and the teacher gave no point to improve on that topic: above level 3
    - the client rated it "as expected": at level 3
    - the teacher gave a point to improve on that topic: at level 3, even if the client rated it beyond
@@ -158,7 +158,7 @@ Each student, the writer of the guide included, adds only their own part to evid
 Client: <the rating for the team on this topic, or no rating>. Individual level: "<the client's individual feedback>". Under points to improve he wrote "<...>", so he saw <...>.
 Teacher: <his point, or no point to improve on this>.
 Why this level: <the reason from the level rule, with the own proof>.
-Feed-up: at level <n>, <the criterion of the own profile and level, without "you">.
+Feed-up: at level 3, <the level 3 criterion of the own profile, without "you">.
 Feed-forward: in Sprint <n+1>, <full name> <what comes next, with the own issue numbers>.
 ```
 A personal code gets the same level as the team section with the same code, so no student has two levels for one code. A student without finished own work on the board for a code gets "no level this time", and the feed-forward names the own open issues. The numbers come from the current board, measured again on the day of pasting.

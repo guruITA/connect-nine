@@ -1,6 +1,6 @@
 # Sprint 1 review: Portflow steps
 
-Young Amstelland Connect, team Sprint 1 review of 9 October 2026. Everything except the personal blocks in step 9 is in team voice. Only Kelvin and Bayon adjust the profile, the level and the feed-up lines (step 8). Two pieces of evidence, both an **Add link** to the files in the team repository (merge commit c0ca49c7, merge request !43, issue #1519). Evidence 1 is the deck, for Analysing & Advising and Designing & Realising. Evidence 2 is the feedback on our process and teamwork, for Managing & Collaborating. Each evidence gets one comment with the feedback of both the client and the teacher, in one section per sub-goal. Each section is highlighted and linked to its own sub-goal. Every claim comes from the deck, its speaker notes, the board and Figma shown in the review, the client's form, what the client said in the review, the teacher's feedback or GitLab.
+Young Amstelland Connect, team Sprint 1 review of 9 October 2026. Everything except the personal blocks in step 9 is in team voice. Everyone is measured against level 3, also Bayon and Kelvin, who are assessed on level 2, so at or above level 3 is above their own level. Only Kelvin adjusts the profile and the feed-up lines (step 8). Two pieces of evidence, both an **Add link** to the files in the team repository (merge commit c0ca49c7, merge request !43, issue #1519). Evidence 1 is the deck, for Analysing & Advising and Designing & Realising. Evidence 2 is the feedback on our process and teamwork, for Managing & Collaborating. Each evidence gets one comment with the feedback of both the client and the teacher, in one section per sub-goal. Each section is highlighted and linked to its own sub-goal. Every claim comes from the deck, its speaker notes, the board and Figma shown in the review, the client's form, what the client said in the review, the teacher's feedback or GitLab.
 
 ## 1. DLO (deadline was 9 October, 23:59)
 
@@ -178,8 +178,8 @@ Open **Goals & Progress**. Each of these sub-goals should show its evidence and 
 
 - Bayon, Nick, Gurpreet and Kelvin follow steps 2 to 7 in their own Portflow with the same names, GitLab links, descriptions, comments, sub-goal links and highlights, plus their own personal block from step 9. Kelvin and Bayon change only what their own line below says.
 - Validation works per portfolio, so each of the five sends the two validation requests from their own Portflow. Rob Kiebert then gets ten requests in total, so we tell him beforehand in Teams.
-- Kelvin's profile is Security Specialist: he replaces "Full-Stack Developer" with "Security Specialist" everywhere and rewrites each feed-up line to his own level 3 criterion, in the same style ("at level 3, ...") and without "you".
-- Bayon is assessed on level 2: he first replaces "level 3 (Advanced)" with "level 2", then every other "level 3" with "level 2", and rewrites each feed-up line to the level 2 criterion of his profile, in the same style ("at level 2, ...") and without "you".
+- Kelvin's profile is Security Specialist: he replaces "Full-Stack Developer" with "Security Specialist" everywhere and rewrites each feed-up line to his own level 3 criterion, in the same style ("at level 3, ...") and without "you". Kelvin is assessed on level 2, so at or above level 3 is above the own level.
+- Bayon is assessed on level 2 and keeps every text on level 3, so at or above level 3 is above the own level. Nothing to replace.
 
 ## 9. Personal blocks
 
@@ -349,7 +349,7 @@ Feed-up: at level 3, others are supported in their contribution to the team goal
 Feed-forward: in Sprint 2, Gurpreet Singh keeps reviewing the merge requests of teammates and shows that work as Scrum Master in #1483.
 ```
 
-### Kelvin van Voorst (Security Specialist, level 2): OR5
+### Kelvin van Voorst (Security Specialist, assessed on level 2, measured against level 3): OR5
 
 1. **Manage (sub-)goals** on evidence 1: add the sub-goal OR5.
 2. At the end of the description, after an empty line:
@@ -363,24 +363,24 @@ OR5 - no level this time (no finished own work on the board yet)
 Client: no rating. Individual level: "I see that all the team members are motivated to participate so for all the students a complement, so I will skip next details". Under points to improve he wrote "n.a.", so he saw nothing to improve.
 Teacher: no point to improve on this.
 Why this level: the four analysis issues of Kelvin van Voorst (#21, #24, #28, #29) moved from Sprint 1 to Sprint 2 and are still open, so there is no finished own work to assess yet.
-Feed-up: at level 2, the interests of end users, such as privacy, security or accessibility, are taken into account.
+Feed-up: at level 3, the broader impact on end users and society is taken into account consciously in design and realisation, with an own ethical judgement.
 Feed-forward: in Sprint 2, Kelvin van Voorst finishes #21, #24, #28 and #29 and shows the result in the Sprint 2 review.
 ```
 
-### Bayon Eerhart (Full Stack Software Developer, level 2): MS5
+### Bayon Eerhart (Full Stack Software Developer, assessed on level 2, measured against level 3): MS5
 
 1. **Manage (sub-)goals** on evidence 1: add the sub-goal MS5, and the goal Managing & Collaborating.
 2. At the end of the description, after an empty line:
 ```
-MS5 Personal contribution of Bayon Eerhart - above level 2 (no rating and no point to improve, so own assumption)
+MS5 Personal contribution of Bayon Eerhart - above level 3 (no rating and no point to improve, so own assumption)
 Bayon Eerhart took on the role of Product Owner for Sprint 2, shown in the review, and owns two Sprint 2 issues, each with acceptance criteria and a definition of done: moving between the five tabs of Connect from every page (#19) and seeing the own name under the tab Profile (#20).
 ```
 3. At the end of comment 1, after an empty line, then link each section to its own code and highlight it:
 ```
-MS5 - above level 2 (no rating and no point to improve, so own assumption)
+MS5 - above level 3 (no rating and no point to improve, so own assumption)
 Client: no rating. Individual level: "I see that all the team members are motivated to participate so for all the students a complement, so I will skip next details". Under points to improve he wrote "n.a.", so he saw nothing to improve.
 Teacher: no point to improve on this.
-Why this level: nobody gave a point to improve, and the review and the board show the tasks taken on: Product Owner of Sprint 2 and the Sprint 2 issues #19 and #20.
-Feed-up: at level 2, tasks that contribute to the team goal are taken on, also when they fall outside the own responsibilities.
+Why this level: nobody gave a point to improve, and the review shows Bayon Eerhart as Product Owner of Sprint 2, the role that orders the work the others build, next to the own Sprint 2 issues #19 and #20.
+Feed-up: at level 3, others are supported in their contribution to the team goal.
 Feed-forward: in Sprint 2, Bayon Eerhart finishes #19 and #20 and shows them working in the Sprint 2 review.
 ```
