@@ -57,7 +57,7 @@ What GitLab holds after the change on 9 October 2026. The weight counts the open
 ## Consequences
 
 - **For the client.** Every must he can read on the board is planned. 103 should and could issues are not planned this semester and stay visible as placeholders. The order stays the proposal of the team until the client answers question 1 in issue 10 (#11, now in sprint 2).
-- **For the datapoints of the team.** Issues that a student planned for a datapoint moved. Issue 107 (#187) went from sprint 2 to 4, because it waits for the events. Issue 34 (#65) and issue 36 (#69) went from sprint 2 to 3, and issue 34b (#67) and issue 36c (#72) from sprint 2 to 5. Each owner checks whether the datapoint still fits.
+- **For the datapoints of the team.** Issues that a student planned for a datapoint moved. Issue 107 (#187) went from sprint 2 to 4, because it waits for the events. Issue 34 (#65) and issue 36 (#69) went from sprint 2 to 3, and issue 34b (#67) and issue 36c (#72) from sprint 2 to 5. Each owner checks whether the datapoint still fits. Checked by Wesley Oerlemans on 10 October 2026: issue 107 (#187) is back in sprint 2, because its experiment runs on a small program of its own with invented data and does not need the events of Connect, so the link to issue 68b (#129) is removed. Issues 36 (#69) and 36c (#72) stay in sprints 3 and 5, and his personal development plan follows the board.
 - **Checked again.** After the review of sprint 2 on 5 November 2026 the team measures the weight it finished and plans sprints 3 to 5 again with the same rules.
 - **The Figma page Issue pyramid** is made again from GitLab after this change, as group H of `docs/team/issueRules.md` asks (#1498).
 

@@ -20,9 +20,9 @@ gantt
 | Sprint | Dates | Board items | Open weight | Goal in one line |
 |---|---|---|---|---|
 | 1 | 21 September to 9 October 2026 | 25 | 12 | A person can make an account, log in and have a profile, on a repository nobody can bypass |
-| 2 | 19 October to 6 November 2026 | 30 | 63 | A person can make an account, log in and have a profile, and the team knows which personal data it protects |
+| 2 | 19 October to 6 November 2026 | 31 | 66 | A person can make an account, log in and have a profile, and the team knows which personal data it protects |
 | 3 | 9 to 27 November 2026 | 36 | 60 | Connect runs in production, organisations join and members connect |
-| 4 | 30 November to 18 December 2026 | 36 | 63 | Young people find events, opportunities and projects, and Connect warns the team when it is down |
+| 4 | 30 November to 18 December 2026 | 35 | 60 | Young people find events, opportunities and projects, and Connect warns the team when it is down |
 | 5 | 4 to 8 January 2027 | 20 | 23 | The last must haves of the foundation, so every must on the board is done |
 | Without a sprint | | 103 | 135 | Should and could placeholders for a faster team or a next team |
 
@@ -38,7 +38,7 @@ What it also settles: the layered architecture with four backend projects on .NE
 
 **What happened.** The sprint built the foundation: the repository and the pipeline, the server of the foundation, the architecture, the data model, the clickable prototype of sprint 1 and 2, and the plans. None of the 12 slices was finished, and issue 03 Create an account was started. The 18 issues that had not started and issue 03 moved to sprint 2 in decision 004. What waits in an open merge request stays in sprint 1.
 
-**Weight finished.** Sprint 1 finished 38 of its 48 weight. Of those 38, 30 is preparation that was logged afterwards as issues #1500 to #1515 and 2 is the sprint review (#1519). Every issue of the sprint got its weight on 9 October 2026, after the review, because the teacher asked the team to plan on the weight a sprint really finished. Sprint 2 holds 63. The team weighs that against these 38 at the sprint 2 planning (`docs/team/openItems.md`).
+**Weight finished.** Sprint 1 finished 38 of its 48 weight. Of those 38, 30 is preparation that was logged afterwards as issues #1500 to #1515 and 2 is the sprint review (#1519). Every issue of the sprint got its weight on 9 October 2026, after the review, because the teacher asked the team to plan on the weight a sprint really finished. Sprint 2 holds 66, with issue 107 (#187) moved back on 10 October 2026. The team weighs that against these 38 at the sprint 2 planning (`docs/team/openItems.md`).
 
 ## Sprint 2, 19 October to 6 November 2026
 
@@ -46,7 +46,7 @@ What it also settles: the layered architecture with four backend projects on .NE
 
 **MVP after this sprint.** A visitor creates an account, logs in, fills in a profile, sees their own profile page, views another member's profile and logs out. A member who is not logged in is asked to log in and comes back to the page they wanted. A young person under 16 asks a parent for permission, a member resets a forgotten password and deletes the account with all its data, and Connect starts with one command and says whether it is healthy.
 
-What is in it: Account 10 items, Profiles 5, Security analysis 4, Workshop evidence 3, Research and development 2, Hosting and deploy 2, Site shell 2, Foundation 1, Decisions 1. Six of them are school goals: the DevOps learning outcomes, the evidence table per student, the inventory of personal data, the Scrum Master proof of sprint 2, and the research on loading a profile and on Playwright and Cypress.
+What is in it: Account 10 items, Profiles 5, Security analysis 4, Workshop evidence 3, Research and development 3, Hosting and deploy 2, Site shell 2, Foundation 1, Decisions 1. Seven of them are school goals: the DevOps learning outcomes, the evidence table per student, the inventory of personal data, the Scrum Master proof of sprint 2, and the research on loading a profile, on giving out the last event place and on Playwright and Cypress.
 
 ## Sprint 3, 9 to 27 November 2026
 
@@ -62,7 +62,7 @@ What is in it: Matching 8 items, Production 7, Account security 6, Profiles 4, O
 
 **MVP after this sprint.** An organisation publishes an event and an opportunity, and a young person registers for an event until it is full. A young person adds a project with a picture and finds projects on a page of their own, on a profile and in a list of all projects. The foundation edits site pages such as the privacy statement, and the privacy statement is on every page. The team gets an email within five minutes when Connect is down, slow or giving many errors.
 
-What is in it: Showcases 7 items, Research and development 5, Events 5, Admin 3, Security analysis 2, Decisions 2, Workshop evidence 2, Production 2, News 2, Opportunities 2, Site shell 2, Observability 1, Account security 1. Twelve of them are school goals: the alerts, the recording and the live demo of DevOps, the architecture drawings and the design patterns, the threat model and the rate limit, and the research. The events, the opportunities, the news and the projects are here in the same sprint as the research and the threat model that measure them.
+What is in it: Showcases 7 items, Research and development 4, Events 5, Admin 3, Security analysis 2, Decisions 2, Workshop evidence 2, Production 2, News 2, Opportunities 2, Site shell 2, Observability 1, Account security 1. Eleven of them are school goals: the alerts, the recording and the live demo of DevOps, the architecture drawings and the design patterns, the threat model and the rate limit, and the research. The events, the opportunities, the news and the projects are here in the same sprint as the research and the threat model that measure them.
 
 ## Sprint 5, 4 to 8 January 2027
 

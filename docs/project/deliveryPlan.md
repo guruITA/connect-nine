@@ -22,9 +22,9 @@ label of its sprint.
 | Sprint | Start | End | Issues | Must | Should | Could |
 |---|---|---|---|---|---|---|
 | Sprint 1 | Mon 21 Sep 2026 | Fri 9 Oct 2026 | 25 | 23 | 2 | 0 |
-| Sprint 2 | Mon 19 Oct 2026 | Fri 6 Nov 2026 | 30 | 25 | 5 | 0 |
+| Sprint 2 | Mon 19 Oct 2026 | Fri 6 Nov 2026 | 31 | 26 | 5 | 0 |
 | Sprint 3 | Mon 9 Nov 2026 | Fri 27 Nov 2026 | 36 | 29 | 7 | 0 |
-| Sprint 4 | Mon 30 Nov 2026 | Fri 18 Dec 2026 | 36 | 15 | 19 | 2 |
+| Sprint 4 | Mon 30 Nov 2026 | Fri 18 Dec 2026 | 35 | 14 | 19 | 2 |
 | Sprint 5 | Mon 4 Jan 2027 | Fri 8 Jan 2027 | 20 | 20 | 0 | 0 |
 | Without a sprint | | | 103 | 0 | 34 | 69 |
 
@@ -160,7 +160,8 @@ permission. Issue 20 starts Connect with one command, issue 17 adds the health c
 16 the security scan. The security analysis of Kelvin van Voorst (issues 12, 13, 18 and 19) and
 the client meeting of issue 10 move here from sprint 1. School goals: issue 84 The DevOps
 learning outcomes agreed, issue 85 the evidence table per student, issue 176 the Scrum Master
-proof of sprint 2, issue 177 four ways of loading a profile, and issue 111 Two end to end test
+proof of sprint 2, issue 177 four ways of loading a profile, issue 107 Three ways to give out the
+last event place, measured on a small program of its own, and issue 111 Two end to end test
 tools compared on one flow.
 
 ## Sprint 3, 9 to 27 November 2026
@@ -188,7 +189,7 @@ What young people find, and the rest of the school deliverables:
 - **Architecture and security.** Issues 102 The architecture drawn in layers, parts and places,
   103 The design patterns Connect uses, where and why, 104 A threat model of adding an image to
   a project, and 105.
-- **Research.** Issues 107 Three ways to give out the last event place, 108 Two ways of paging
+- **Research.** Issues 108 Two ways of paging
   the showcases, 109 Image formats for project pictures, and 110 The cost of password hashing,
   measured. Issue 112 Every research report reviewed by a fellow student closes the research in
   this sprint.
@@ -220,8 +221,9 @@ wait for a yes of the client in questions 9 and up of `docs/client/clientQuestio
 **Wesley Oerlemans, Research & Design.** The earlier plan had a draft R&D research piece to the
 learning group teacher by 5 October 2026. The approval of every student's research topic is now
 issue 106, in sprint 1. The event capacity race of the earlier plan is issue 107 Three ways to
-give out the last event place, measured, in sprint 4, because it waits
-for the events of sprint 3. The peer review of every report is issue
+give out the last event place, measured, in sprint 2. Decision 004 first put it in sprint 4 to
+wait for the events, but on 10 October 2026 it moved back, because the experiment runs on a small
+program of its own with invented data. The peer review of every report is issue
 112, in sprint 4. The research schedule was moved forward on 27 September 2026 so that it sits
 closer to the level 3 datapoint sheet (Research & Design in sprint 1, Review of R&D Report in
 sprint 3). The exact Portflow deadlines for the proposal and the report are not in the
@@ -320,7 +322,7 @@ gantt
     section Research
     85 table and 106 topics     :r1, 2026-09-21, 2026-10-10
     110 and 111 measured           :r2, 2026-10-19, 2026-11-07
-    107 measured                   :r3, 2026-11-09, 2026-11-28
+    107 measured                   :r3, 2026-10-19, 2026-11-07
     108 and 109 measured, 112     :r4, 2026-11-30, 2026-12-19
 ```
 
