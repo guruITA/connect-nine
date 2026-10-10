@@ -183,39 +183,39 @@ Open **Goals & Progress**. Each of these sub-goals should show its evidence and 
 
 ## 9. Personal blocks
 
-The expectations of the studio lecturers ask for proof of the personal contribution. Each student, Wesley included, pastes only their own block at the end of the evidence 1 description, after the OR3 paragraph, with an empty line before it. The numbers come from the board of 9 October 2026 in GitLab (assignee, closed or waiting in an open merge request).
+The expectations of the studio lecturers ask for proof of the personal contribution. Each student, Wesley included, pastes only their own block at the end of the evidence 1 description, after the OR3 paragraph, with an empty line before it. The numbers come from the current board in GitLab (assignee, closed or waiting in an open merge request). Measure the numbers again on the day of pasting, because they change when a merge request is merged.
 
 **Wesley Oerlemans**
 ```
 PERSONAL CONTRIBUTION: Wesley Oerlemans
 Role: Scrum Master of Sprint 1.
-On the board of 9 October 2026: owner of 7 closed Sprint 1 issues (12 weight), 3 Sprint 1 issues waiting in an open merge request (8 weight) and 7 Sprint 2 issues (13 weight), and co-owner of the 8 closed team issues of all five (16 weight).
+On the current board: owner of 7 closed Sprint 1 issues (12 weight), 3 Sprint 1 issues waiting in an open merge request (8 weight) and 7 Sprint 2 issues (13 weight), and co-owner of the 8 closed team issues of all five (16 weight).
 ```
 
 **Nick Hoebe**
 ```
 PERSONAL CONTRIBUTION: Nick Hoebe
 Role: Product Owner of Sprint 1.
-On the board of 9 October 2026: owner of 4 closed Sprint 1 issues (5 weight) and 2 Sprint 2 issues (7 weight), and co-owner of the 8 closed team issues of all five (16 weight).
+On the current board: owner of 4 closed Sprint 1 issues (5 weight) and 2 Sprint 2 issues (7 weight), and co-owner of the 8 closed team issues of all five (16 weight).
 ```
 
 **Kelvin van Voorst**
 ```
 PERSONAL CONTRIBUTION: Kelvin van Voorst
 Role: Security Specialist, privacy and security analysis.
-On the board of 9 October 2026: owner of 4 Sprint 2 issues (10 weight), and co-owner of the 8 closed team issues of all five (16 weight).
+On the current board: owner of 4 Sprint 2 issues (10 weight), and co-owner of the 8 closed team issues of all five (16 weight).
 ```
 
 **Bayon Eerhart**
 ```
 PERSONAL CONTRIBUTION: Bayon Eerhart
 Role: Developer, Product Owner of Sprint 2.
-On the board of 9 October 2026: owner of 2 Sprint 2 issues (3 weight), and co-owner of the 8 closed team issues of all five (16 weight).
+On the current board: owner of 2 Sprint 2 issues (3 weight), and co-owner of the 8 closed team issues of all five (16 weight).
 ```
 
 **Gurpreet Singh**
 ```
 PERSONAL CONTRIBUTION: Gurpreet Singh
 Role: Developer, Scrum Master of Sprint 2.
-On the board of 9 October 2026: owner of 2 closed Sprint 1 issues (3 weight) and 3 Sprint 2 issues (9 weight), and co-owner of the 8 closed team issues of all five (16 weight).
+On the current board: owner of 2 closed Sprint 1 issues (3 weight) and 3 Sprint 2 issues (9 weight), and co-owner of the 8 closed team issues of all five (16 weight).
 ```
