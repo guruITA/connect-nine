@@ -67,13 +67,14 @@ When it is red:
 
 ## Labels
 
-Settings, Labels. Scoped labels use two colons. The colours, as set in GitLab on 9 October 2026: prio::must FFD6D1, prio::should FFE9A8, prio::could D6F2DC, prio::nice-to-have EDEDED, type::slice CFE8FF and the other types E6DDFB, sprint::1 111111, sprint::1-stretch FFFFFF, sprint::2 to sprint::5 6B6B6B, blocked 111111, epic::&lt;name> 6699CC, EPIC FFDDC2, school::required FFE9A8, outcome and level F3F3F1, direction::full-stack CFE8FF, direction::security-specialist FFE9A8, Doing and Verify E6E6E6. The page Epics and features on the Figma board uses the four prio colours.
+Settings, Labels. Scoped labels use two colons. The colours, as set in GitLab on 9 October 2026: prio::must FFD6D1, prio::should FFE9A8, prio::could D6F2DC, prio::nice-to-have EDEDED, type::slice CFE8FF and the other types E6DDFB, sprint::1 111111, sprint::1-stretch FFFFFF, sprint::2 to sprint::5 6B6B6B, blocked 111111, epic::&lt;name> 6699CC, EPIC FFDDC2, school::required FFE9A8, school-only E9D5FF, outcome and level F3F3F1, direction::full-stack CFE8FF, direction::security-specialist FFE9A8, Doing and Verify E6E6E6. The page Epics and features on the Figma board uses the four prio colours.
 
 - prio::must, prio::should, prio::could, prio::nice-to-have, starred in that order (label priority) so lists sort by them.
 - type::slice, type::setup, type::research, type::decision, type::client.
 - sprint::1, sprint::1-stretch, sprint::2 to sprint::5, and blocked (always with the reason in the issue).
 - epic::<name>, one per epic, and EPIC on the issue that stands for an epic.
 - school::required on issues that exist because of a school requirement.
+- school-only, next to school::required, on a school issue that adds nothing to Connect itself: knowledge tests, research outside Connect, proposals and peer reviews, evidence for the portfolio, the DevOps recording and demo, and the workshop issues. A school issue that builds something in Connect (production, monitoring, the rate limit, a document for the client) does not get it. Since 10 October 2026. It has no two colons on purpose: scoped labels work on this GitLab, so `school::only` would remove school::required.
 - On every task, never on the issue: outcome::analysing-and-advising, outcome::designing-and-realising, outcome::managing-and-collaborating, level::2, level::3, direction::full-stack, direction::security-specialist.
 - Doing and Verify are old labels from before the boards used the status of an issue. The boards do not use them (see Boards, one per sprint).
 
@@ -97,7 +98,7 @@ Every milestone description has the three headings the assessor looks for: Sprin
 
 ## Boards, one per sprint
 
-Plan, Issue boards: Sprint 1 to Sprint 5, each with the lists Open, In progress, Verify, Won't do and Closed. The three lists in the middle follow the status of an issue, not a label. A card stands in the list of its status, and dragging it to another list changes its status. In progress has a limit of 3 issues per person. The board does not enforce it, so the team checks it at the daily.
+Plan, Issue boards: Sprint 1 to Sprint 5 for the project, and School · Sprint 1 to School · Sprint 5 for school work, each with the lists Open, In progress, Verify, Won't do and Closed. This GitLab stores the milestone and label of a board but does not apply them, so a board shows every issue. The filter is in the link: the milestone of every sprint links the project board with the sprint and without school-only, and the School board with the sprint and only school-only. Always open a board through those links, so the project and school stay apart. The three lists in the middle follow the status of an issue, not a label. A card stands in the list of its status, and dragging it to another list changes its status. In progress has a limit of 3 issues per person. The board does not enforce it, so the team checks it at the daily.
 
 - Open: the issues of the sprint that nobody started yet.
 - In progress: someone works on it.
