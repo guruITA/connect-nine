@@ -12,8 +12,9 @@ School asks: "You anticipate risks and bottlenecks in the process before they be
 1. **The handover risk.** A newcomer who needs the team to get started. The guide now says after each command in parts 1 and 2 what you should see, has the real clone address instead of a placeholder, and in part 7 says what to do with a red pipeline.
 2. **Tool or reviewer.** Every rule of the conventions now ends in (tool: name) or (reviewer). A team that changes keeps the tool checks without anyone remembering them, and the (reviewer) marks show what a new reviewer must look at by hand.
 3. **The walkthrough.**
-   - TODO Wesley: plan the timed walkthrough with a teammate who did not write the guide, with a date in #1.
-   - TODO teammate: follow the guide alone, and write in #1 your name, the date, the minutes and every question.
+   - Planned on 10 October 2026 as task #1520 (Task 1.9 under #1), assigned to Gurpreet Singh, who did not write the guide.
+   - TODO Wesley: the date of the walkthrough in #1, once Gurpreet Singh has picked it.
+   - TODO Gurpreet Singh (#1520): follow the guide alone, and write in #1 your name, the date, the minutes and every question.
    - TODO Wesley: fix every question in the guide and write here what changed.
 
 ## MS4 Making the work fit with the work of the team
@@ -27,8 +28,9 @@ School asks: "You ensure that your work aligns with that of others and contribut
 
 ## TODO
 
-- [ ] Wesley: plan the walkthrough in #1.
-- [ ] Teammate: do the walkthrough and write the result in #1.
+- [x] Wesley: plan the walkthrough with a teammate (task #1520, Gurpreet Singh, 10 October 2026).
+- [ ] Wesley: the date of the walkthrough in #1.
+- [ ] Gurpreet Singh (#1520): do the walkthrough and write the result in #1.
 
 ## AI use
 
