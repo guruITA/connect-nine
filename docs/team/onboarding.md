@@ -389,19 +389,36 @@ The server is IPv4 only today. The client's sheet names an IPv6 address, 2a01:23
 
 ### Logging in
 
-Every team member has a user of their own, named after their first name in lower case, reachable only with their own ssh key. The keys came from each member's GitLab profile (User settings, SSH keys) on 9 October 2026, so a key you added on GitLab is a key that works here.
+Every team member has a user of their own, named after their first name in lower case, reachable only with their own ssh key. On 9 October 2026 the keys were copied once from each member's GitLab profile (User settings, SSH keys). A key you add to GitLab after that date does not reach the server by itself: send it to an admin, see A new laptop or a new key below.
 
-```
-ssh <your first name>@31.70.66.186
-```
+Your first login, step by step:
 
-You should see a prompt such as `nick@connect:~$`. On your first login, check the host key fingerprint against these three:
+1. Check that you have a key. `ls ~/.ssh` lists a file that ends in `.pub`, such as `id_ed25519.pub`. The same command works in PowerShell on Windows. No such file? Make one with `ssh-keygen -t ed25519` and press Enter to keep the default file name. Give it a passphrase: whoever copies a key without one can log in as you.
+2. Log in with your own first name in lower case:
 
-```
-ED25519 SHA256:jZUye4ZjNvmKksJkDOtlQ94+O/jKnpsfWvzAhqj2Nbk
-ECDSA SHA256:jFBiJlKA3mGbIo0c5qv3sqeLa3xRRGyXRuGp9mSYLCI
-RSA SHA256:CmuGqwCHzubotlbA2rp/Ocg/P4yHMlochwTAXRxr35U
-```
+   ```
+   ssh <your first name>@31.70.66.186
+   ```
+
+3. The first time, ssh shows a fingerprint and asks `Are you sure you want to continue connecting (yes/no/[fingerprint])?`. Compare the fingerprint with these three. It must match one of them exactly, then type `yes`. This proves you reached the client's server and not a machine in between.
+
+   ```
+   ED25519 SHA256:jZUye4ZjNvmKksJkDOtlQ94+O/jKnpsfWvzAhqj2Nbk
+   ECDSA SHA256:jFBiJlKA3mGbIo0c5qv3sqeLa3xRRGyXRuGp9mSYLCI
+   RSA SHA256:CmuGqwCHzubotlbA2rp/Ocg/P4yHMlochwTAXRxr35U
+   ```
+
+4. You should see a prompt such as `nick@connect:~$`. Type `exit` to leave.
+5. Write your date in First login per team member below, through a small merge request.
+
+Your key has another file name? Point ssh at it: `ssh -i ~/.ssh/<file> <your first name>@31.70.66.186`.
+
+When the login fails:
+
+- `Permission denied (publickey)`: the server does not know the key on this laptop. Most often it is a new laptop, or a key made after 9 October 2026. Send the content of your public key (`cat ~/.ssh/id_ed25519.pub`) to an admin, a member of the group sudo named below. A public key is not a secret, so the team chat is fine. Never send the file without `.pub`: that is your private key. The admin adds it with the steps of A new laptop or a new key.
+- `WARNING: REMOTE HOST IDENTIFICATION HAS CHANGED!`: the server answered with another fingerprint than the one your laptop saved. Do not log in. Tell the team, because either the server was reinstalled or something sits in between. Only after the team knows why, remove the old fingerprint with `ssh-keygen -R 31.70.66.186` and start again at step 2.
+
+How access works on this server:
 
 - Password login is off for everyone: `/etc/ssh/sshd_config.d/10-connect.conf` sets `PasswordAuthentication no` and `KbdInteractiveAuthentication no`. A try with a password answers `Permission denied (publickey)` (tried on 9 October 2026).
 - Why no password login: the team decided this for security (#237). A password can be guessed or leaked, a key cannot be guessed. This also holds for the client: his own access to the server goes with a key as well. He sends his public key, and a member of the group sudo adds him with the steps of New team member below.
@@ -422,6 +439,16 @@ sudo chmod 600 /home/<name>/.ssh/authorized_keys
 ```
 
 You should see no output from the last two commands. The new member then logs in with `ssh <name>@31.70.66.186`.
+
+### A new laptop or a new key
+
+A member who already has a user sends their public key, the line that starts with `ssh-ed25519`. On the server, as a member of the group sudo:
+
+```
+sudo nano /home/<name>/.ssh/authorized_keys   # paste the key on a new line, keep the old lines
+```
+
+Save, and the member logs in with the new key. Delete the line of a laptop the member no longer has, so a lost laptop is no way in.
 
 ### Someone leaves
 

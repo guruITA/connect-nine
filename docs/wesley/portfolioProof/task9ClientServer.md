@@ -21,7 +21,7 @@ School asks: "You ensure that your work aligns with that of others and contribut
 
 1. **For #267.** Caddy sends every visit to 127.0.0.1:8080, so the Connect server of #267 must listen there. The user deploy, `/srv/connect-test`, the three variables and the names in `/srv/connect-test/.env` are written in part The pipeline on the server.
 2. **An open point for #259 and #267.** The connection string has three names today: the code on dev reads `ConnectionStrings:Authentication`, `docs/architecture/configuration.md` says `ConnectionStrings:Default`, and task 9.5 says `ConnectionStrings__Connect`. The server follows the task. The owners of #259 and #267 choose one name.
-3. **The five signed lines.**
+3. **The five signed lines.** Part Logging in walks a teammate through the first login step by step, with the fingerprint check and the two errors people meet most. Part A new laptop or a new key tells an admin how to add a key that was not on GitLab on 9 October 2026, so nobody has to ask how.
    - TODO each teammate: log in with your own user and write the date in part First login per team member.
 
 ## TODO
