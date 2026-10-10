@@ -350,7 +350,7 @@ You should see only lines where the word is a name, a placeholder or an explanat
 
 ## 10. The client's server
 
-Issue 09 Every team member on the client's server (task 9.2) prepares the foundation's server for the team.
+Issue 09 Every team member on the client's server (task 9.2) prepares the foundation's server for the team. How the foundation gets in without the team, and what changes at the handover, is in [serverHandover.md](../client/serverHandover.md).
 
 ### The machine
 

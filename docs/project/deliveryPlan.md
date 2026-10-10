@@ -205,7 +205,8 @@ With 23 weight in one week this sprint is 3 above the pace of decision 004. The 
 the sprint 4 review whether that still holds.
 
 A handover session with the client, if he wants one, gets a date before the last sprint review
-as a GitLab milestone Handover (issue 10, task 10.7).
+as a GitLab milestone Handover (issue 10, task 10.7). What happens with the access to the server in
+that session is in [serverHandover.md](../client/serverHandover.md).
 
 ## Without a sprint
 
