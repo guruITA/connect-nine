@@ -241,10 +241,17 @@ The cards name each other by their board number. GitLab gives its own numbers.
 | 182 | #1522 | Knowledge test 2, week 16 (14 to 18 December 2026) |
 | 183 | #1523 | Workshop DevOps, done by 2 November 2026 |
 | 184 | #1524 | Workshop Testing, done by 2 November 2026 |
-| 185 | #1525 | Workshop Architecture and Patterns, done by 2 November 2026 |
-| 186 | #1526 | Workshop Security, done by 2 November 2026 |
-| 187 | #1527 | Workshop R&D, done by 6 November 2026 |
+| 185 | #1525 | Workshop Architecture and Patterns, done by 27 November 2026 |
+| 186 | #1526 | Workshop Security, done by 27 November 2026 |
+| 187 | #1527 | Workshop R&D, handed in 23 November 2026 |
 | 188 | #1528 | Review of Security & Testing, every workshop checked, 14 December 2026 |
+| 189 | #1529 | Datapoint DevOps & Testing, level 3, 2 November 2026 |
+| 190 | #1530 | Datapoint Security & Architecture, level 2, 2 November 2026 |
+| 191 | #1531 | Datapoint Threat Model, Security Specialist, 2 November 2026 |
+| 192 | #1532 | Datapoint Review of R&D Report, level 3, 23 November 2026 |
+| 193 | #1533 | Datapoint DevOps & Testing, level 2, 23 November 2026 |
+| 194 | #1534 | Datapoint Vulnerability detection & mitigation, Security Specialist, 23 November 2026 |
+| 195 | #1535 | Datapoint Security Hardening, Security Specialist, 14 December 2026 |
 
 ## AI use declaration
 

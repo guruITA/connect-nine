@@ -22,13 +22,13 @@ label of its sprint.
 | Sprint | Start | End | Issues | Must | Should | Could |
 |---|---|---|---|---|---|---|
 | Sprint 1 | Mon 21 Sep 2026 | Fri 9 Oct 2026 | 26 | 24 | 2 | 0 |
-| Sprint 2 | Mon 19 Oct 2026 | Fri 6 Nov 2026 | 65 | 58 | 7 | 0 |
-| Sprint 3 | Mon 9 Nov 2026 | Fri 27 Nov 2026 | 22 | 15 | 7 | 0 |
-| Sprint 4 | Mon 30 Nov 2026 | Fri 18 Dec 2026 | 24 | 5 | 17 | 2 |
+| Sprint 2 | Mon 19 Oct 2026 | Fri 6 Nov 2026 | 55 | 48 | 7 | 0 |
+| Sprint 3 | Mon 9 Nov 2026 | Fri 27 Nov 2026 | 38 | 31 | 7 | 0 |
+| Sprint 4 | Mon 30 Nov 2026 | Fri 18 Dec 2026 | 25 | 6 | 17 | 2 |
 | Sprint 5 | Mon 4 Jan 2027 | Fri 8 Jan 2027 | 19 | 19 | 0 | 0 |
 | Without a sprint | | | 103 | 0 | 34 | 69 |
 
-Together that is all 259 issues of the board, in 21 epics, as GitLab holds them after the team
+Together that is all 266 issues of the board, in 21 epics, as GitLab holds them after the team
 planned sprints 2 to 5 again on 9 October 2026 in
 [decision 004](../decisions/004-replanAfterSprint1.md). The rules of that plan: what is done or
 waits in an open merge request stays, school goals come first and are spread over sprints 2
@@ -161,19 +161,15 @@ permission. Issue 20 starts Connect with one command, issue 17 adds the health c
 16 the security scan. The security analysis of Kelvin van Voorst (issues 12, 13, 18 and 19) and
 the client meeting of issue 10 move here from sprint 1. School goals: issue 181 Knowledge test 1 in week 9 (26 to 30 October), issue 84 The DevOps
 learning outcomes agreed, issue 85 the evidence table per student, issue 176 the Scrum Master
-proof of sprint 2, issue 177 four ways of loading a profile, issue 107 Three ways to give out the
-last event place, measured on a small program of its own, issues 108 to 110 (paging, image
-formats and the cost of password hashing), issue 111 Two end to end test tools compared on one
-flow, and issue 112 Every research report reviewed by a fellow student. The research runs ahead
-of the review of the R and D report in sprint 3.
+proof of sprint 2, and issue 107 Three ways to give out the last event place, measured on a small
+program of its own.
 
-Since 10 October 2026 the work of every workshop is finished at its first datapoint, so this
-sprint also holds the five workshop issues 183 to 187 (DevOps, Testing, Architecture and Patterns,
-Security, R&D) and the cards that do their work: the code quality and image checks and production
-on k3s with Terraform (issues 88 to 97), its numbers, dashboard, alerts and logs (98 to 101), the
-mail and backup the alerts need (173 and 174), the recording and the live demo of DevOps (86 and
-87), the architecture drawings and patterns (102 and 103), the threat model of an image (104) and
-the rate limit (105). Sprint 4 only checks them again (issue 188).
+Since 10 October 2026 the DevOps and Testing workshops are finished at their datapoint of Monday
+2 November: the workshop issues 183 and 184 and the cards that do their work, the code quality and
+image checks and production on k3s with Terraform (issues 88 to 97), its numbers, dashboard, alerts
+and logs (98 to 101), the mail and backup the alerts need (173 and 174), and the recording and the
+live demo of DevOps (86 and 87). The datapoint issues 189 to 191 show what each student hands in on
+2 November.
 
 ## Sprint 3, 9 to 27 November 2026
 
@@ -182,6 +178,14 @@ with the rest of the DevOps workshop. In this sprint: confirming the email addre
 after wrong passwords (issues 30 and 30b), organisation profiles and pages, tags, matching from
 the suggestions of issue 37 to the saved items of issue 44, and the admin list of members with
 deactivate and reactivate.
+
+School work in this sprint: the research (issues 177 and 108 to 111) and the peer review of issue
+112, handed in on Monday 23 November for the review of the R and D report (workshop issue 187,
+datapoint issue 192), and the Architecture and Patterns and Security workshops (issues 185 and 186,
+with the drawings and patterns of issues 102 and 103, the threat model of issue 104 and the rate
+limit of issue 105), finished by Friday 27 November so sprint 4 only checks them. The datapoints of
+Bayon Eerhart (DevOps & Testing, 193) and Kelvin van Voorst (vulnerability detection, 194) fall in
+this sprint too.
 
 ## Sprint 4, 30 November to 18 December 2026
 
@@ -230,7 +234,7 @@ issue 106, in sprint 1. The event capacity race of the earlier plan is issue 107
 give out the last event place, measured, in sprint 2. Decision 004 first put it in sprint 4 to
 wait for the events, but on 10 October 2026 it moved back, because the experiment runs on a small
 program of its own with invented data. The peer review of every report is issue
-112, in sprint 2 since 10 October 2026, ahead of the review of the R and D report in sprint 3. The research schedule was moved forward on 27 September 2026 so that it sits
+112, in sprint 3, handed in on Monday 23 November 2026 for the review of the R and D report. The research schedule was moved forward on 27 September 2026 so that it sits
 closer to the level 3 datapoint sheet (Research & Design in sprint 1, Review of R&D Report in
 sprint 3). The exact Portflow deadlines for the proposal and the report are not in the
 material the team holds. Route: coach Karthik Srinivasan.
@@ -238,7 +242,7 @@ material the team holds. Route: coach Karthik Srinivasan.
 **Kelvin van Voorst, Security.** His security requirements and risk framing datapoint is issue
 12 Inventory of the personal data per module and issue 13 The role table per module, in sprint
 2. The data flow diagram is issue 18, in sprint 2. The threat model of a second feature
-is issue 104 A threat model of adding an image to a project, in sprint 2 since 10 October 2026.
+is issue 104 A threat model of adding an image to a project, in sprint 3.
 
 **Every student, DevOps.** Each student agrees three to five learning outcomes with the DevOps
 teacher in issue 84, in sprint 2. The recording (issue 86) and the live demo (issue 87)
@@ -327,7 +331,8 @@ gantt
 
     section Research
     85 table and 106 topics     :r1, 2026-09-21, 2026-10-10
-    107 to 111 measured, 112       :r2, 2026-10-19, 2026-11-07
+    107 measured                   :r2, 2026-10-19, 2026-11-07
+    108 to 111 and 177, 112        :r3, 2026-11-09, 2026-11-23
 ```
 
 *Figure: the five sprints of the board, the four sprint review deadlines from DLO, the breaks,
