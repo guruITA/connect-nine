@@ -22,13 +22,13 @@ label of its sprint.
 | Sprint | Start | End | Issues | Must | Should | Could |
 |---|---|---|---|---|---|---|
 | Sprint 1 | Mon 21 Sep 2026 | Fri 9 Oct 2026 | 26 | 24 | 2 | 0 |
-| Sprint 2 | Mon 19 Oct 2026 | Fri 6 Nov 2026 | 38 | 33 | 5 | 0 |
-| Sprint 3 | Mon 9 Nov 2026 | Fri 27 Nov 2026 | 35 | 28 | 7 | 0 |
-| Sprint 4 | Mon 30 Nov 2026 | Fri 18 Dec 2026 | 32 | 11 | 19 | 2 |
+| Sprint 2 | Mon 19 Oct 2026 | Fri 6 Nov 2026 | 65 | 58 | 7 | 0 |
+| Sprint 3 | Mon 9 Nov 2026 | Fri 27 Nov 2026 | 22 | 15 | 7 | 0 |
+| Sprint 4 | Mon 30 Nov 2026 | Fri 18 Dec 2026 | 24 | 5 | 17 | 2 |
 | Sprint 5 | Mon 4 Jan 2027 | Fri 8 Jan 2027 | 19 | 19 | 0 | 0 |
 | Without a sprint | | | 103 | 0 | 34 | 69 |
 
-Together that is all 253 issues of the board, in 21 epics, as GitLab holds them after the team
+Together that is all 259 issues of the board, in 21 epics, as GitLab holds them after the team
 planned sprints 2 to 5 again on 9 October 2026 in
 [decision 004](../decisions/004-replanAfterSprint1.md). The rules of that plan: what is done or
 waits in an open merge request stays, school goals come first and are spread over sprints 2
@@ -167,32 +167,35 @@ formats and the cost of password hashing), issue 111 Two end to end test tools c
 flow, and issue 112 Every research report reviewed by a fellow student. The research runs ahead
 of the review of the R and D report in sprint 3.
 
+Since 10 October 2026 the work of every workshop is finished at its first datapoint, so this
+sprint also holds the five workshop issues 183 to 187 (DevOps, Testing, Architecture and Patterns,
+Security, R&D) and the cards that do their work: the code quality and image checks and production
+on k3s with Terraform (issues 88 to 97), its numbers, dashboard, alerts and logs (98 to 101), the
+mail and backup the alerts need (173 and 174), the recording and the live demo of DevOps (86 and
+87), the architecture drawings and patterns (102 and 103), the threat model of an image (104) and
+the rate limit (105). Sprint 4 only checks them again (issue 188).
+
 ## Sprint 3, 9 to 27 November 2026
 
-Production and the first members who connect. The code quality and image checks of issues 88 to
-90 and production of issues 91 to 97 come first, so every merge into `main` reaches the live
-version from this sprint on. The numbers, the dashboard and the logs of issues 98, 99 and 101
-watch it. Next to that: confirming the email address and logging in with Google, the waits
+The first members who connect. Production and its monitoring moved to sprint 2 on 10 October 2026,
+with the rest of the DevOps workshop. In this sprint: confirming the email address and logging in with Google, the waits
 after wrong passwords (issues 30 and 30b), organisation profiles and pages, tags, matching from
 the suggestions of issue 37 to the saved items of issue 44, and the admin list of members with
 deactivate and reactivate.
 
 ## Sprint 4, 30 November to 18 December 2026
 
-What young people find, and the rest of the school deliverables:
+What young people find, and the check of every workshop:
 
 - **Events, opportunities, projects and news.** Issues 65 to 68b, 54 and 55, 60 to 64 with 61b and
   62b, 48, and 71 and 71b. They stay here for the MVP of this sprint. The research that measures
   them moved to sprint 2 on 10 October 2026, because its experiments run on programs of their own.
 - **Site pages and admin.** Issues 50, 50b and 51, the friendly page of issue 53, and the
   activity log of issue 32.
-- **Production extras.** Issues 173 and 174, and the alert email of issue 100.
 - **Knowledge test 2.** Issue 182, in week 16 (14 to 18 December).
-- **DevOps evidence.** Issue 86 A recording of one change from commit to production and issue
-  87 The live demo to the teacher.
-- **Architecture and security.** Issues 102 The architecture drawn in layers, parts and places,
-  103 The design patterns Connect uses, where and why, 104 A threat model of adding an image to
-  a project, and 105.
+- **The check of every workshop.** Issue 188, Review of Security & Testing on Monday 14 December:
+  DevOps, Testing, Architecture and Patterns and Security checked again against the finished
+  Connect, nothing new built for school.
 
 ## Sprint 5, 4 to 8 January 2027
 
@@ -235,11 +238,11 @@ material the team holds. Route: coach Karthik Srinivasan.
 **Kelvin van Voorst, Security.** His security requirements and risk framing datapoint is issue
 12 Inventory of the personal data per module and issue 13 The role table per module, in sprint
 2. The data flow diagram is issue 18, in sprint 2. The threat model of a second feature
-is issue 104 A threat model of adding an image to a project, in sprint 4.
+is issue 104 A threat model of adding an image to a project, in sprint 2 since 10 October 2026.
 
 **Every student, DevOps.** Each student agrees three to five learning outcomes with the DevOps
 teacher in issue 84, in sprint 2. The recording (issue 86) and the live demo (issue 87)
-are in sprint 4.
+are in sprint 2 since 10 October 2026, with the rest of the DevOps workshop (issue 183).
 
 ## The datapoint moments per the all-students sheet, as far as it is known
 
