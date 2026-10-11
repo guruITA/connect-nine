@@ -123,28 +123,14 @@ A real password, key, token or connection string that carries credentials never 
 
 ### Set up your local secrets
 
-Once per clone, in the startup project of the backend (`api/Connect/Connect.csproj`):
+`api/Connect/Connect.csproj` already holds a `<UserSecretsId>`, so you do not run `dotnet user-secrets init`. Every clone on your laptop shares the same secrets file. In the folder `api/Connect`, set the value the server reads, `ConnectionStrings:DefaultConnection`, with the password from your `.env`:
 
 ```
-dotnet user-secrets init
-```
-
-That writes a `<UserSecretsId>` into the project file. Then set a value. The server reads the
-`ConnectionStrings:DefaultConnection` setting:
-
-```
-dotnet user-secrets set "ConnectionStrings:Default" "Host=localhost;Port=5432;Database=connect;Username=connect;Password=<your local password>"
+dotnet user-secrets set "ConnectionStrings:DefaultConnection" "Host=localhost;Port=5432;Database=connect;Username=connect;Password=<your local password>"
 dotnet user-secrets list
 ```
 
-For this repository, the complete command is:
-
-```
-dotnet user-secrets set "ConnectionStrings:DefaultConnection" "Host=localhost;Port=5432;Database=connect;Username=connect;Password=your-local-password"
-```
-
-Use `ConnectionStrings:DefaultConnection` for this repository; older examples using
-`ConnectionStrings:Default` are obsolete.
+You should see `Successfully saved ConnectionStrings:DefaultConnection to the secret store.` and the list shows the value. Older examples that use `ConnectionStrings:Default` are obsolete.
 
 Two things to know about User Secrets:
 
@@ -275,6 +261,13 @@ In the root of the repository:
 dotnet build api/Connect.slnx
 dotnet format api/Connect.slnx --verify-no-changes
 dotnet test api/Connect.slnx
+```
+
+The tests in `Connect.Infrastructure.Tests` talk to your local database and do not read User Secrets. Give them the same connection string as an environment variable in the terminal where you run `dotnet test`, or they fail with `ConnectionStrings__DefaultConnection is not configured`:
+
+```
+$env:ConnectionStrings__DefaultConnection="Host=localhost;Port=5432;Database=connect;Username=connect;Password=<your local password>"   # PowerShell
+export ConnectionStrings__DefaultConnection="Host=localhost;Port=5432;Database=connect;Username=connect;Password=<your local password>"   # macOS, Linux
 ```
 
 You should see `Build succeeded` with `0 Warning(s)` and `0 Error(s)`, no output from the format check, and `Passed!` with `Failed: 0` for the tests.
