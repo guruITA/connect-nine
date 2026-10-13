@@ -1,4 +1,4 @@
-# 004 Application result pattern
+# 005 Application result pattern
 
 **Status.** Proposed on 13 October 2026, waiting for the team.
 **Issue.** The common pattern for expected application outcomes.
@@ -12,7 +12,7 @@ status code, or construct an ASP.NET Core result. Expected failures should also 
 visible in the handler's contract instead of being hidden in exception control flow.
 
 Connect already uses `Result` and `Result<T>` for this boundary. Presentation translates
-the result into the HTTP response described in `docs/decisions/005-responsePattern.md`.
+the result into the HTTP response described in `docs/decisions/006-responsePattern.md`.
 
 ## Options
 
@@ -73,7 +73,7 @@ The database adapter may translate a known database constraint into an applicati
 - New expected business outcomes require an appropriate `ErrorCode` and Presentation
   mapping, with tests for the result and the HTTP behavior.
 - The response mapping rules and JSON envelope are documented separately in
-  `docs/decisions/005-responsePattern.md`.
+  `docs/decisions/006-responsePattern.md`.
 
 ## Agreed by
 
@@ -93,7 +93,7 @@ The database adapter may translate a known database constraint into an applicati
 - `api/Connect.Application/Common/Results/Result{T}.cs`.
 - `api/Connect.Application/Common/Results/Error.cs`.
 - `api/Connect.Application.Tests/Common/Results/ResultTests.cs`.
-- `docs/decisions/005-responsePattern.md`.
+- `docs/decisions/006-responsePattern.md`.
 
 ## AI use declaration
 

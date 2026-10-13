@@ -1,4 +1,4 @@
-# 005 HTTP response pattern
+# 006 HTTP response pattern
 
 **Status.** Proposed on 13 October 2026, waiting for the team.
 **Issue.** The common pattern for successful API responses and HTTP errors.
@@ -9,7 +9,7 @@
 The browser needs a stable JSON contract, while the application should not expose
 database entities or framework-specific HTTP results. Connect therefore keeps the
 application outcome separate from its HTTP representation. The Application-side result
-pattern is documented in `docs/decisions/004-resultPattern.md`.
+pattern is documented in `docs/decisions/005-resultPattern.md`.
 
 ## Options
 
@@ -136,7 +136,7 @@ flowchart LR
 - `api/Connect.Presentation/Common/Errors/ErrorProblemDetailsMapper.cs`.
 - `api/Connect.Presentation/Common/Errors/ExceptionHandlingMiddleware.cs`.
 - `api/Connect.Tests/Accounts/Endpoints/AccountEndpointTests.cs`.
-- `docs/decisions/004-resultPattern.md`.
+- `docs/decisions/005-resultPattern.md`.
 
 ## AI use declaration
 
