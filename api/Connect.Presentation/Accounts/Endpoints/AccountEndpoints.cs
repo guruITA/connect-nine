@@ -3,6 +3,7 @@ using Connect.Application.Common.Abstractions;
 using Connect.Application.Common.Results;
 using Connect.Presentation.Accounts.DTO;
 using Connect.Presentation.Accounts.Mappers;
+using Connect.Presentation.Common.Errors;
 using Connect.Presentation.Common.Response;
 using FluentValidation;
 using Microsoft.AspNetCore.Builder;
@@ -21,7 +22,6 @@ public static class AccountEndpoints
         accountGroup.MapPost("/", async Task<Results<
             Created<Response<CreateAccountResponseData>>,
             ValidationProblem,
-            Conflict<string>,
             ProblemHttpResult>> (
                 CreateAccountRequest request,
                 IValidator<CreateAccountRequest> validator,
@@ -45,13 +45,7 @@ public static class AccountEndpoints
                     CreateAccountResponseMapper.Map(result.Value));
             }
 
-            return result.Error.Code switch
-            {
-                ErrorCode.Conflict => TypedResults.Conflict(result.Error.Description),
-                _ => TypedResults.Problem(
-                    statusCode: StatusCodes.Status500InternalServerError,
-                    title: result.Error.Description)
-            };
+            return result.Error.ToProblemDetails();
         });
 
         return endpoints;
