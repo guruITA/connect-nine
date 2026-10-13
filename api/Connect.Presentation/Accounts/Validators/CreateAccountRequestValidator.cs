@@ -17,6 +17,7 @@ public sealed class CreateAccountRequestValidator
 
         RuleFor(request => request.Password)
             .NotEmpty()
+            .WithMessage("Fill in a password")
             .MinimumLength(15)
             .WithMessage("Password must be at least 15 characters")
             .Must(password => password.Any(char.IsDigit))

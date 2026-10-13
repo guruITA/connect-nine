@@ -7,9 +7,10 @@ using NUnit.Framework;
 
 namespace Connect.Infrastructure.Tests.Persistence;
 
-public sealed class AccountTableTests
+public sealed class AccountDatabaseTests
 {
     private ConnectDbContext dbContext = null!;
+    private string connectionString = null!;
 
     [SetUp]
     public void SetUp()
@@ -58,6 +59,22 @@ public sealed class AccountTableTests
     }
 
     [Test]
+    public void FindingEmailWithDifferentCapitalization_UsesNormalizedEmail()
+    {
+        string email = $"account-{Guid.NewGuid():N}@example.com";
+        Account account = CreateAccount(email, email.ToUpperInvariant());
+        account.PasswordHash = "hash";
+
+        dbContext.Add(account);
+        dbContext.SaveChanges();
+
+        Account? found = dbContext.Users.SingleOrDefault(
+            candidate => candidate.NormalizedEmail == email.ToUpperInvariant());
+
+        Assert.That(found?.Id, Is.EqualTo(account.Id));
+    }
+
+    [Test]
     public void SavingEmptyPasswordHash_FailsOnPasswordHashCheck()
     {
         Account account = CreateAccount(
@@ -101,6 +118,28 @@ public sealed class AccountTableTests
         Assert.DoesNotThrow(() => dbContext.SaveChanges());
     }
 
+    [Test]
+    public async Task SavingSameEmailAtTheSameTime_LeavesOneRow()
+    {
+        string email = $"account-{Guid.NewGuid():N}@example.com";
+        using var barrier = new Barrier(2);
+
+        Task<bool> firstSave = SaveAtTheSameMoment(email, barrier);
+        Task<bool> secondSave = SaveAtTheSameMoment(email, barrier);
+
+        bool[] saves = await Task.WhenAll(firstSave, secondSave);
+
+        using ConnectDbContext verificationContext = CreateDbContext();
+        int rowCount = verificationContext.Users.Count(
+            account => account.NormalizedEmail == email.ToUpperInvariant());
+
+        using (Assert.EnterMultipleScope())
+        {
+            Assert.That(saves.Count(saveSucceeded => saveSucceeded), Is.EqualTo(1));
+            Assert.That(rowCount, Is.EqualTo(1));
+        }
+    }
+
     private static Account CreateAccount(string email, string normalizedEmail)
     {
         return new Account
@@ -111,6 +150,49 @@ public sealed class AccountTableTests
             UserName = email,
             NormalizedUserName = normalizedEmail
         };
+    }
+
+    private Task<bool> SaveAtTheSameMoment(string email, Barrier barrier)
+    {
+        return Task.Run(() =>
+        {
+            using ConnectDbContext context = CreateDbContext();
+            string normalizedEmail = email.ToUpperInvariant();
+            Account account = CreateAccount(email, normalizedEmail);
+            account.UserName = $"user-{Guid.NewGuid():N}";
+            account.NormalizedUserName = account.UserName.ToUpperInvariant();
+            account.PasswordHash = "hash";
+
+            context.Add(account);
+            barrier.SignalAndWait();
+
+            try
+            {
+                context.SaveChanges();
+                return true;
+            }
+            catch (DbUpdateException exception) when (IsEmailUniqueViolation(exception))
+            {
+                return false;
+            }
+        });
+    }
+
+    private ConnectDbContext CreateDbContext()
+    {
+        DbContextOptions<ConnectDbContext> options = new DbContextOptionsBuilder<ConnectDbContext>()
+            .UseNpgsql(connectionString)
+            .UseSnakeCaseNamingConvention()
+            .Options;
+
+        return new ConnectDbContext(options);
+    }
+
+    private static bool IsEmailUniqueViolation(DbUpdateException exception)
+    {
+        PostgresException postgresException = FindPostgresException(exception);
+        return postgresException.SqlState == PostgresErrorCodes.UniqueViolation
+            && postgresException.ConstraintName == "ux_account_email";
     }
 
     private static PostgresException FindPostgresException(DbUpdateException exception)

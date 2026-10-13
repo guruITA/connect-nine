@@ -1,10 +1,34 @@
 namespace Connect.Application.Common.Results;
 
-public sealed record Result<T>(T? Value, Error Error)
+public sealed record Result<T>
 {
-    public bool IsSuccess => Error == Error.None;
+    private Result(T? value, Error error)
+    {
+        Value = value;
+        Error = error;
+    }
 
-    public static Result<T> Success(T value) => new(value, Error.None);
+    public T? Value { get; }
 
-    public static Result<T> Failure(Error error) => new(default, error);
+    public Error Error { get; }
+
+    public bool IsSuccess => Error.Code == ErrorCode.None;
+
+    public static Result<T> Success(T value)
+    {
+        ArgumentNullException.ThrowIfNull(value);
+        return new(value, Error.None);
+    }
+
+    public static Result<T> Failure(Error error)
+    {
+        ArgumentNullException.ThrowIfNull(error);
+
+        if (error.Code == ErrorCode.None)
+        {
+            throw new ArgumentException("A failure must contain an error.", nameof(error));
+        }
+
+        return new(default, error);
+    }
 }

@@ -1,10 +1,10 @@
-using System.Data.Common;
 using Connect.Application.Common.Abstractions;
 using Connect.Application.Common.Results;
 using Connect.Domain.Users;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using Npgsql;
 
 namespace Connect.Application.Accounts.CreateAccount;
 
@@ -30,8 +30,7 @@ public sealed class CreateAccountCommandHandler(
         {
             result = await userManager.CreateAsync(account, command.Password);
         }
-        catch (DbUpdateException exception)
-            when (IsEmailUniqueViolation(exception))
+        catch (DbUpdateException exception) when (IsEmailUniqueViolation(exception))
         {
             return Result<CreateAccountResult>.Failure(
                 Error.Conflict("This email address already has an account"));
@@ -56,11 +55,20 @@ public sealed class CreateAccountCommandHandler(
         return Result<CreateAccountResult>.Success(new CreateAccountResult(account.Id, email));
     }
 
-    private static bool IsEmailUniqueViolation(DbUpdateException exception)
+    private static bool IsEmailUniqueViolation(Exception exception)
     {
-        return exception.InnerException is DbException databaseException
-            && databaseException.Message.Contains(
-                "ux_account_email",
-                StringComparison.OrdinalIgnoreCase);
+        for (var current = exception; current is not null; current = current.InnerException)
+        {
+            if (current is PostgresException
+                {
+                    SqlState: PostgresErrorCodes.UniqueViolation,
+                    ConstraintName: "ux_account_email"
+                })
+            {
+                return true;
+            }
+        }
+
+        return false;
     }
 }
