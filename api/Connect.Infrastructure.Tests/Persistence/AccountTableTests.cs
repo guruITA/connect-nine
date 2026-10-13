@@ -1,6 +1,7 @@
 using Connect.Domain.Users;
 using Connect.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Npgsql;
 using NUnit.Framework;
 
@@ -13,10 +14,10 @@ public sealed class AccountTableTests
     [SetUp]
     public void SetUp()
     {
-        string connectionString = Environment.GetEnvironmentVariable(
-                "ConnectionStrings__DefaultConnection")
+        IConfiguration configuration = TestConfiguration.Create();
+        string connectionString = configuration.GetConnectionString("DefaultConnection")
             ?? throw new InvalidOperationException(
-                "ConnectionStrings__DefaultConnection is not configured.");
+                "ConnectionStrings:DefaultConnection is not configured.");
 
         DbContextOptions<ConnectDbContext> options = new DbContextOptionsBuilder<ConnectDbContext>()
             .UseNpgsql(connectionString)
