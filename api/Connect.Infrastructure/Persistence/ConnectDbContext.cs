@@ -14,6 +14,16 @@ public sealed class ConnectDbContext(DbContextOptions<ConnectDbContext> options)
 
     public IQueryable<Profile> Profiles => Set<Profile>();
 
+    void IAppDbContext.Add<TEntity>(TEntity entity) where TEntity : class
+    {
+        Set<TEntity>().Add(entity);
+    }
+
+    void IAppDbContext.Remove<TEntity>(TEntity entity) where TEntity : class
+    {
+        Set<TEntity>().Remove(entity);
+    }
+
     public override int SaveChanges(bool acceptAllChangesOnSuccess)
     {
         UpdateAuditProperties();
