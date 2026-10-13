@@ -108,7 +108,7 @@ The example on dev (merge request !11) puts the handler `CreateUserCommandHandle
 | Name | Date agreed | Remark |
 |---|---|---|
 | Bayon Eerhart | | |
-| Nick Hoebe | | |
+| Nick Hoebe | 09-10-2026 | IAppDbContext/IConnectDbContext must use IQueryable<T> to keep application logic as decoupled as possible from the infrastructure layer. |
 | Wesley Oerlemans | | |
 | Gurpreet Singh | | |
 | Kelvin van Voorst | | |
