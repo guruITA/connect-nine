@@ -16,6 +16,7 @@ public sealed class CreateAccountRequestValidator
             .WithMessage("Fill in a valid email address");
 
         RuleFor(request => request.Password)
+            .Cascade(CascadeMode.Stop)
             .NotEmpty()
             .WithMessage("Fill in a password")
             .MinimumLength(15)
