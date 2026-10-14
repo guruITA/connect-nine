@@ -15,7 +15,7 @@ Making an account, `POST /api/accounts`, the first slice (#14):
 1. **Presentation** reads the form, checks it with FluentValidation and calls one handler. It knows nothing about the database.
 2. **Application** holds the handler `CreateAccountHandler` with its `CreateAccountCommand`. It decides: is this email address already taken, then hash the password and save. It reaches the data only through the contract `IAppDbContext`.
 3. **Domain** holds the account itself and its rules, for example what a valid email address is. It uses nothing else.
-4. **Infrastructure** holds `AppDbContext`, the EF Core class that implements `IAppDbContext` and talks to PostgreSQL.
+4. **Infrastructure** holds `ConnectDbContext`, the EF Core class that implements `IAppDbContext` and talks to PostgreSQL.
 
 ## Options
 
@@ -34,7 +34,7 @@ Making an account, `POST /api/accounts`, the first slice (#14):
 |---|---|---|
 | Files for one new feature | One method on an existing repository plus a service that calls it | A command or query and a handler, in their own folder |
 | What a beginner must learn | One shape | Two shapes, command and query |
-| How a rule is unit tested without PostgreSQL | Stub the repository. The EF Core team names this its advice when a test double is really needed, with the warning that it "can incur significant cost to implement and maintain", because every query needs its own method (Microsoft, n.d.-b) | The handler gets an `AppDbContext` on SQLite in memory. The EF Core team allows this, but warns that "testing against SQLite does not guarantee the same results" as the real database (Microsoft, n.d.-b) |
+| How a rule is unit tested without PostgreSQL | Stub the repository. The EF Core team names this its advice when a test double is really needed, with the warning that it "can incur significant cost to implement and maintain", because every query needs its own method (Microsoft, n.d.-b) | The handler gets an `ConnectDbContext` on SQLite in memory. The EF Core team allows this, but warns that "testing against SQLite does not guarantee the same results" as the real database (Microsoft, n.d.-b) |
 | What catches a mistake | A reviewer: a repository or service can grow into one class that does everything | The folder per use case keeps one use case in one place. A reviewer still has to spot a handler that grows too big |
 | Where it fits | Many screens that read and write the same data in the same way (CRUD) | Reads and writes that differ, for example a list of suggestions against saving a profile |
 
@@ -59,8 +59,8 @@ The structure, as the code on dev and task 3.1 (#259) have it, and as `docs/team
 - Four layer projects, `api/Connect.Presentation`, `api/Connect.Application`, `api/Connect.Domain` and `api/Connect.Infrastructure`, and the start project `api/Connect`, which starts the server and connects the layers.
 - References point inward: Connect uses Presentation and Infrastructure. Presentation uses Application. Infrastructure uses Application, because it implements contracts of Application such as `IAppDbContext`. Application uses Domain. Domain uses nothing.
 - Test projects per layer: `Connect.Application.Tests`, `Connect.Infrastructure.Tests` and `Connect.Presentation.Tests`, each using only the project it tests, plus `Connect.Tests` for tests across projects.
-- One folder per use case in `api/Connect.Application/Features/<Feature>/<UseCase>/`, with its command or query and its handler. The handler reaches the data through `IAppDbContext` in `api/Connect.Application/Abstractions`, implemented by `AppDbContext` in Infrastructure. No repository classes, no `IXRepository` contracts, no Repositories folder, no use case written as a Service class.
-- A handler is unit tested with an in-memory SQLite `AppDbContext` in `Connect.Application.Tests`. A rule that depends on PostgreSQL is tested against a real PostgreSQL in `Connect.Infrastructure.Tests` (`<Feature>DatabaseTests`). A rule in Domain is tested without any database.
+- One folder per use case in `api/Connect.Application/Features/<Feature>/<UseCase>/`, with its command or query and its handler. The handler reaches the data through `IAppDbContext` in `api/Connect.Application/Abstractions`, implemented by `ConnectDbContext` in Infrastructure. No repository classes, no `IXRepository` contracts, no Repositories folder, no use case written as a Service class.
+- A handler is unit tested with an in-memory SQLite `ConnectDbContext` in `Connect.Application.Tests`. A rule that depends on PostgreSQL is tested against a real PostgreSQL in `Connect.Infrastructure.Tests` (`<Feature>DatabaseTests`). A rule in Domain is tested without any database.
 
 ### Proof that the compiler guards the layers
 

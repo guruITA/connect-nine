@@ -233,7 +233,7 @@ Per the team's architecture document, the backend is a layered architecture with
 - **Presentation**: the Minimal API endpoints and the checks on the shape of the input.
 - **Application**: the rules of each feature, as CQRS by feature, with one folder per use case.
 - **Domain**: what things are and which rules always hold, such as ProfileVisibility, the rule for minors.
-- **Infrastructure**: the only project that reaches the database and the external services, through AppDbContext.
+- **Infrastructure**: the only project that reaches the database and the external services, through ConnectDbContext.
 
 In my design the dependencies point inward: Domain references nothing, Application references Domain and owns the contract IAppDbContext, and Infrastructure implements it. Presentation calls Application and, in my design, registers Infrastructure at start-up only. A layered architecture lets an application enforce which layers may communicate with which (Microsoft, 2021). In my design the project references do that, so a reference the design forbids does not compile. That is what issue 12 (one clear structure for new developers) asks for: a structure four new developers can follow and a later developer can keep.
 
@@ -244,7 +244,7 @@ The diagram below draws this rule for the four projects and Connect.Tests, the t
 flowchart TB
 presentation["Presentation<br/>Minimal API endpoints and<br/>checks on the shape of<br/>the input."]
 tests["Connect.Tests<br/>Handler tests on an<br/>in-memory SQLite database,<br/>integration tests on a<br/>real PostgreSQL."]
-infrastructure["Infrastructure<br/>The only project that<br/>reaches the database and<br/>the external services,<br/>through AppDbContext."]
+infrastructure["Infrastructure<br/>The only project that<br/>reaches the database and<br/>the external services,<br/>through ConnectDbContext."]
 application["Application<br/>The rules of each feature,<br/>CQRS by feature. Owns<br/>the contract IAppDbContext."]
 domain["Domain<br/>What things are and which<br/>rules always hold, such as<br/>ProfileVisibility.<br/>References nothing."]
 presentation -->|"Calls"| application
@@ -405,7 +405,7 @@ apiSpacer["⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
         handlers["[Component: Application]<br/>Command and query<br/>handlers per feature<br/>One folder per use<br/>case.<br/>Hand written handler<br/>contracts."]
         matching["[Component: Application]<br/>Matching<br/>MatchingService with<br/>IMatchStrategy.<br/>Proposal for FR2<br/>(community interaction<br/>and matching)."]
         domain["[Component: Domain]<br/>Entities and rules<br/>For example<br/>ProfileVisibility."]
-        infra["[Component: Infrastructure]<br/>AppDbContext and<br/>adapters<br/>EF Core with Npgsql,<br/>implements<br/>IAppDbContext.<br/>Adapters for the<br/>external services."]
+        infra["[Component: Infrastructure]<br/>ConnectDbContext and<br/>adapters<br/>EF Core with Npgsql,<br/>implements<br/>IAppDbContext.<br/>Adapters for the<br/>external services."]
     end
     spa -->|"JSON over HTTPS"| authn
     authn -->|"User with claims"| authz
@@ -437,7 +437,7 @@ Key: the lightest boxes are components of the API, the others are its neighbours
 | Endpoints per feature | Presentation | Minimal APIs decided |
 | Command and query handlers, matching | Application | CQRS decided 1 October 2026, matching is a proposal |
 | Entities and rules | Domain | Part of the layered structure in the team's architecture document |
-| AppDbContext and adapters | Infrastructure | Decided with EF Core and CQRS |
+| ConnectDbContext and adapters | Infrastructure | Decided with EF Core and CQRS |
 
 Section 6.4 follows one real request, a member viewing another member's profile, through these components and the four projects. That is the walk issue 253 (one real request through the four projects) asks the team to do together.
 
@@ -486,7 +486,7 @@ classDiagram
         <<interface>>
         +DbSet~MemberProfile~ MemberProfiles
     }
-    class AppDbContext {
+    class ConnectDbContext {
         <<Infrastructure>>
         +DbSet~MemberProfile~ MemberProfiles
     }
@@ -519,7 +519,7 @@ classDiagram
     GetPublicMemberProfileHandler ..> PublicMemberProfileDto
     GetPublicMemberProfileHandler --> IAppDbContext
     GetPublicMemberProfileHandler ..> ProfileVisibility
-    IAppDbContext <|.. AppDbContext
+    IAppDbContext <|.. ConnectDbContext
     IAppDbContext ..> MemberProfile
     MemberProfile --> AgeBand
     ProfileVisibility ..> AgeBand
@@ -536,7 +536,7 @@ Key: the stereotype of each class names its project. A dotted arrow is a use, a 
 - GetPublicMemberProfileHandler to PublicMemberProfileDto: returns.
 - GetPublicMemberProfileHandler to IAppDbContext: reads through.
 - GetPublicMemberProfileHandler to ProfileVisibility: applies.
-- AppDbContext to IAppDbContext: implements.
+- ConnectDbContext to IAppDbContext: implements.
 
 In my design a request runs through five steps:
 
@@ -550,7 +550,7 @@ In my design a request runs through five steps:
 | --- | --- | --- |
 | MemberProfileEndpoints, the requirement and its handler | Presentation | Design. The address and the answers come from issue 343 (viewing another member's public profile), the resource check is my proposal |
 | The query, its handler and the DTO | Application | Design, in the CQRS shape |
-| IAppDbContext, AppDbContext, ProfileVisibility, AgeBand | Application, Infrastructure, Domain | Named in the team's architecture document and in issue 343 (viewing another member's public profile) |
+| IAppDbContext, ConnectDbContext, ProfileVisibility, AgeBand | Application, Infrastructure, Domain | Named in the team's architecture document and in issue 343 (viewing another member's public profile) |
 
 The sequence below follows this request through the components of section 6.3 and the classes above. The notes carry the five steps of the list above.
 
@@ -737,13 +737,13 @@ Key: a solid arrow points from a project or folder to what it holds, the dotted 
 
 **Problem.** In my design a handler must reach the data without depending on EF Core, a test must swap in something else, and an endpoint must get its handler without building it.
 
-**Where.** In the built-in service container of ASP.NET Core (Microsoft, 2026c). In my design each project registers its own parts at start-up with one method, for example AddApplication. That follows the convention of one Add extension method per group of related services (Microsoft, 2026c). In my design the container resolves IAppDbContext to AppDbContext and puts each handler into its endpoint.
+**Where.** In the built-in service container of ASP.NET Core (Microsoft, 2026c). In my design each project registers its own parts at start-up with one method, for example AddApplication. That follows the convention of one Add extension method per group of related services (Microsoft, 2026c). In my design the container resolves IAppDbContext to ConnectDbContext and puts each handler into its endpoint.
 
 **Why I chose it.** ASP.NET Core provides it as its built-in container (Microsoft, 2026c), so there is nothing extra for us to maintain. In my design it keeps the projects apart: Application asks for IAppDbContext and never sees Infrastructure. Per the team's architecture document, a handler test gets an in-memory SQLite database, and an integration test a real PostgreSQL.
 
 **Cost.** In my assessment the compiler does not catch a missing registration, so it only shows when the app runs. AddDbContext registers a DbContext with a scoped lifetime by default (Microsoft, 2025b), and the framework creates a scope per request that stays valid as long as the request is active (Microsoft, 2026c). This means, in my assessment, that a longer-living service must not hold one.
 
-**Simpler option.** A handler that builds its own AppDbContext with new. Per the team's architecture document, that lost because only constructor injection makes a handler swappable in a test, against an in-memory SQLite AppDbContext. In my assessment, a handler that builds its own context always reaches the real database, so its test needs one too.
+**Simpler option.** A handler that builds its own ConnectDbContext with new. Per the team's architecture document, that lost because only constructor injection makes a handler swappable in a test, against an in-memory SQLite ConnectDbContext. In my assessment, a handler that builds its own context always reaches the real database, so its test needs one too.
 
 ### 7.3 Strategy for matching
 
@@ -834,7 +834,7 @@ Two neighbouring decisions have no record here. The React and .NET stack, which 
 
 ### 8.4 EF Core for data access
 
-**Status.** Accepted. I decided it on 24 September 2026 for the team to confirm, per the team's tech stack document. The whole team's CQRS decision of 1 October 2026 builds on it: per the team's architecture document, a handler reaches the data through AppDbContext, the EF Core implementation.
+**Status.** Accepted. I decided it on 24 September 2026 for the team to confirm, per the team's tech stack document. The whole team's CQRS decision of 1 October 2026 builds on it: per the team's architecture document, a handler reaches the data through ConnectDbContext, the EF Core implementation.
 
 **Context.** In my design the handlers need one layer between them and PostgreSQL that a handler test can replace.
 
@@ -842,7 +842,7 @@ Two neighbouring decisions have no record here. The React and .NET stack, which 
 
 **Options that lost.** None. The team never compared EF Core with another way to reach the data, such as SQL written by hand.
 
-**Consequences.** Per the team's architecture document, a handler reaches the data through IAppDbContext, which AppDbContext in Infrastructure implements, and there are no repository classes. A handler test runs against an in-memory SQLite database. Section 3.6 of my security document shows what EF Core means for SQL injection.
+**Consequences.** Per the team's architecture document, a handler reaches the data through IAppDbContext, which ConnectDbContext in Infrastructure implements, and there are no repository classes. A handler test runs against an in-memory SQLite database. Section 3.6 of my security document shows what EF Core means for SQL injection.
 
 ### 8.5 PostgreSQL 16, not SQL Server
 
@@ -866,7 +866,7 @@ Two neighbouring decisions have no record here. The React and .NET stack, which 
 
 **Options that lost.** The repository pattern. The team's architecture document grants it a real strength: EF Core's DbContext already does much of what a repository does, so a thin interface would have cost little. The same document names the price of CQRS, two models to maintain where the repository pattern has one. What tipped the balance, per that document, is Nick Hoebe's interest in CQRS. Section 7.4 gives my own reasons to accept the choice.
 
-**Consequences.** Per the team's architecture document, there are no repository classes or interfaces, and a handler is unit tested against an in-memory SQLite AppDbContext. In my assessment the cost is more files per feature and two shapes to learn, as section 7.1 says.
+**Consequences.** Per the team's architecture document, there are no repository classes or interfaces, and a handler is unit tested against an in-memory SQLite ConnectDbContext. In my assessment the cost is more files per feature and two shapes to learn, as section 7.1 says.
 
 ### 8.7 Hosting on the foundation's server
 

@@ -162,7 +162,7 @@ flowchart TB
         P["Presentation, the waiter: endpoints and validators"]
         A["Application, the chef: handlers and business rules"]
         D["Domain, the menu: entities and contracts"]
-        I["Infrastructure, the storeroom: AppDbContext, EF Core, mail"]
+        I["Infrastructure, the storeroom: ConnectDbContext, EF Core, mail"]
         C -->|"uses"| P
         C -->|"uses, to register classes"| I
         P -->|"uses"| A
@@ -536,7 +536,7 @@ The candidates the board already names (issue 103 task 103.1):
 1. **CQRS.** CQRS splits the model that writes from the model that reads (Microsoft, n.d.-b):
    `CreateAccountCommand` with `CreateAccountHandler` in
    `api/Application/Features/Account/CreateAccount` (issues 03 and 11), reaching the data
-   through `IAppDbContext` in `api/Application/Abstractions`. `AppDbContext` in
+   through `IAppDbContext` in `api/Application/Abstractions`. `ConnectDbContext` in
    `api/Infrastructure/Persistence` implements it. EF Core's own `DbContext` already
    "implements both the Repository and the Unit of Work patterns" (Microsoft, n.d.-d), so
    `IAppDbContext` is a thin, testable contract in front of it, one handler per use case instead
