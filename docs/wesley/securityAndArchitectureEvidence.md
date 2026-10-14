@@ -435,4 +435,4 @@ Refactoring.Guru. (n.d.). *Strategy*. Retrieved October 5, 2026, from https://re
 
 ## AI use declaration
 
-AI was used as a writing support tool while working on this document. I used AI to draft the formulation of sentences, the structure of wording, readability, and clarity from content that I had provided, and to generate the diagrams. The content itself, including my experiences, reflections, learning goals, decisions, self-assessments, and conclusions, is my own. I reviewed the drafts and decided which text to include.
+AI was used as a writing support tool while working on this document. We used AI to improve the formulation of sentences, the structure of wording, readability, and clarity of text that we had written. The content itself, including our experiences, reflections, learning goals, decisions, self-assessments, and conclusions, is our own. We reviewed the suggested changes and decided as a team which improvements to include.
