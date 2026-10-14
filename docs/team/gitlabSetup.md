@@ -51,10 +51,14 @@ flowchart LR
 The file is .gitlab-ci.yml in the root. It runs on the HvA runners with the tag hva.
 
 - When it runs: once on every merge request, and once more on dev and on main after a merge. A push to a branch that already has an open merge request does not start a second pipeline.
-- Stage build: compiles the server and the screen. Still empty, task 3.8 (#266) adds backend-build and frontend-build.
+- Stage build, job backend-build: `dotnet build api/Connect.slnx`, then `dotnet format api/Connect.slnx --verify-no-changes` to catch a layout the editor did not fix.
+- Stage build, job frontend-build: `npm ci` and `npm run build` in `web`, which type checks the screen and bundles it.
 - Stage test, job env-file-check: fails when a .env file is in Git, and names the file in its log. Only .env.example may be committed.
 - Stage test, job branch-flow: only on a merge request. Fails when the target is main and the source branch is not dev.
-- A red pipeline locks the Merge button through Pipelines must succeed (part Branches and protection). On top of that, a reviewer never approves a merge request with a red pipeline.
+- Stage test, job backend-test: `dotnet test api/Connect.slnx` against a real PostgreSQL 16, started for the job under the alias `database`. The user, password and name of that throwaway database are the CI/CD variables TEST_POSTGRES_USER, TEST_POSTGRES_PASSWORD and TEST_POSTGRES_DB (Settings, CI/CD, Variables), never written in `.gitlab-ci.yml`.
+- Stage test, job frontend-lint: `npm run lint` (ESLint) and `npx prettier --check .` in `web`.
+- Stage test, job frontend-test: `npm test` (Vitest) in `web`.
+- A red pipeline locks the Merge button through Pipelines must succeed (part Branches and protection). On top of that, a reviewer never approves a merge request with a red pipeline. No job of stage build or stage test has allow_failure, so a red build or test job always blocks the merge.
 
 When it is red:
 

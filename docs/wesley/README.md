@@ -16,6 +16,7 @@ One file per task I did, with the proof block of the task filled in. A point tha
 
 | File | Task | Portflow |
 | --- | --- | --- |
+| `portfolioProof/task266BuildAndTest.md` | Task 3.8 Build and test in the pipeline (#266), branch `chore/266-build-and-test-pipeline` | Managing and Collaborating MS1 and MS4 |
 | `portfolioProof/task1499FigmaBoardInTeamDocs.md` | Task 179.1 The team documents follow the new Figma board (#1499), merge request !37 | Managing and Collaborating MS1 and MS4 |
 | `portfolioProof/task2RepositorySkeleton.md` | Task 1.1 The starting structure (#2), merge request !13 | Managing and Collaborating MS1 and MS4 |
 | `portfolioProof/task1497PrototypeInPageDocs.md` | Task 178.1 The page documents point to the prototype screens (#1497), merge request !35 | Managing and Collaborating MS1 and MS4 |
