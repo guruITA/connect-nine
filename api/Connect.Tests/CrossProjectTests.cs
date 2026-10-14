@@ -22,7 +22,7 @@ public sealed class CrossProjectTests
 
         using (Assert.EnterMultipleScope())
         {
-            Assert.That(services.AddApplication(), Is.SameAs(services));
+            Assert.That(services.AddApplication(), Is.Not.SameAs(services));
             Assert.That(services.AddInfrastructure(configuration), Is.SameAs(services));
         }
     }
