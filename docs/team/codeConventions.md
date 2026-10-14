@@ -176,7 +176,7 @@ These rules join the parts above. When an older text disagrees, these win.
 ### Files and folders
 
 11. A record ...Request or ...Response may sit in the endpoint file of its feature (an agreed exception to "one class per file"). A component used on one page only may sit in components under a folder named after the page. (reviewer)
-12. Test projects per layer: api/Connect.Application.Tests/Features/<Feature> with a handler test named <UseCase>HandlerTests.cs, api/Connect.Infrastructure.Tests/Persistence with a database test against a real PostgreSQL named <Feature>DatabaseTests.cs, api/Connect.Presentation.Tests/<Feature>/Endpoints with the endpoint tests, and api/Connect.Tests for tests across projects. There is no Connect.Domain.Tests (task 3.1, #259). Shared helpers go in a Fixtures folder of the test project. (reviewer)
+12. Test projects per layer: api/Connect.Application.Tests/Features/<Feature> with a handler test named <UseCase>HandlerTests.cs, api/Connect.Application.Tests/Domain with a rule tested without any database, api/Connect.Infrastructure.Tests/Persistence with a database test against a real PostgreSQL named <Feature>DatabaseTests.cs, api/Connect.Presentation.Tests/<Feature>/Endpoints with the endpoint tests, and api/Connect.Tests for tests across projects. There is no Connect.Domain.Tests (task 3.1, #259). Shared helpers go in a Fixtures folder of the test project. (reviewer)
 
 ### Commands
 
