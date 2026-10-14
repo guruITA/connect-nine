@@ -24,7 +24,9 @@ The texts the whole team pastes into Portflow for the Sprint 1 review now stand 
 
 - [x] Shared with the team coach: merged into dev on 9 October 2026 (!43), so the coach finds the form on the team repository. DLO asks to share the form "by putting a copy on the team repo", so no separate message is needed.
 - [x] Approved by Gurpreet Singh and Nick Hoebe (!43).
+- [ ] A teammate who is not the author: approve !45. Gurpreet Singh approved it on 10 October 2026, lost that approval when a later commit reset it, then approved it again on 12 October 2026 and withdrew it the same day. No approval stands (GitLab API, one approval still needed).
 - [ ] Wesley Oerlemans: after !42 is merged, add the row for this file to docs/wesley/README.md (left out here, because !42 changes the same table).
+- [ ] Kelvin van Voorst: follow step 8 of the guide for the Security Specialist profile before pasting into Portflow.
 - [ ] Bayon Eerhart, Nick Hoebe, Gurpreet Singh and Kelvin van Voorst: add the own personal part from step 9 of the guide in Portflow, with the numbers measured again on the day of pasting.
 - [x] Level: every text is measured against level 3, also for Bayon and Kelvin, who are assessed on level 2 (decision Wesley Oerlemans, 10 October 2026).
 
