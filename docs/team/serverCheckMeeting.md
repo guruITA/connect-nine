@@ -17,7 +17,7 @@ You should see a line such as `10.0.401 [...]`. No line that starts with 10? Ins
 
 ## At the meeting
 
-Every step below ticks a box of #241. The commands are in part 10 of `docs/team/onboarding.md`, The client's server.
+Every step below ticks a box of #241. The point is that each of us can work on the server and do their own part, so there is no test with a made up new user. The commands are in part 10 of `docs/team/onboarding.md`, The client's server.
 
 ### 1. Everyone logs in with their own key
 
@@ -37,26 +37,19 @@ Every step below ticks a box of #241. The commands are in part 10 of `docs/team/
 1. One of us tries `ssh -o PubkeyAuthentication=no -o PreferredAuthentications=password <your first name>@<the address in Logging in>`.
 2. You should see `Permission denied (publickey)`.
 
-### 4. A test user comes and goes
-
-1. An admin follows New team member for the user `checkuser`, with the public key of one of our laptops.
-2. That laptop logs in as `checkuser`. You should see `checkuser@connect:~$`.
-3. The admin follows Someone leaves for `checkuser`. You should see `Removing user 'checkuser'`.
-4. The login as `checkuser` again answers `Permission denied (publickey)`, and `id checkuser` answers `no such user`.
-
-### 5. Someone who did not build it checks #10
+### 4. Someone who did not build it checks #10
 
 Bayon, Gurpreet, Kelvin or Nick, who built none of the tasks of #10, reads its acceptance criteria and ticks each one that holds, with their name and the date in a comment.
 
-### 6. What we stumbled on
+### 5. What we stumbled on
 
 Every step where one of us got stuck is written down during the meeting. Afterwards the one who got stuck fixes it in `docs/team/onboarding.md` through a small merge request.
 
-### 7. The handover page
+### 6. The handover page
 
 We read `docs/client/serverHandover.md` together, with part 10 of `docs/team/onboarding.md`. They say who has access, which ports are open, the test address and where the steps are. We check that neither holds a password, a key or the number of the server. The client needs no summary of his own, because he does not log in to the server and keeps the Strato customer login.
 
-### 8. The next issues can start
+### 7. The next issues can start
 
 Gurpreet and Nick, who work on #14, and Gurpreet, who works on #23, hear that the server is ready and that they can start.
 
