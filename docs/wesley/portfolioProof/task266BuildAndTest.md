@@ -1,6 +1,6 @@
 # Proof: task 3.8 Build and test in the pipeline (#266)
 
-Branch `chore/266-build-and-test-pipeline`. Issue: 03 Create an account (#14). Files: `.gitlab-ci.yml`, `docs/team/gitlabSetup.md` part Pipeline, `docs/team/onboarding.md` part 6.
+Merge request !54, branch `chore/266-build-and-test-pipeline`. Red runs on purpose: merge requests !55 and !56, closed. Issue: 03 Create an account (#14). Files: `.gitlab-ci.yml`, `docs/team/gitlabSetup.md` part Pipeline, `docs/team/onboarding.md` part 6.
 Profile: Full Stack Software Developer, level 3. Portflow: Managing and Collaborating MS1 and MS4.
 
 A point that needs someone else is marked TODO with who and what.
@@ -19,9 +19,10 @@ School asks: "You anticipate risks and bottlenecks in the process before they be
    - `frontend-test`: every Vitest test.
 4. **No password or connection string in the file.** `backend-test` builds `ConnectionStrings__DefaultConnection`, the one name the team uses since 14 October 2026, from three CI/CD variables of the project, `TEST_POSTGRES_USER`, `TEST_POSTGRES_PASSWORD` and `TEST_POSTGRES_DB`. Their values are throwaway test values, the password is masked, and none of them appears in `.gitlab-ci.yml`. No job in stage build or stage test has `allow_failure`.
 5. **Checked on a laptop before the push.** `dotnet build api/Connect.slnx` and `dotnet format api/Connect.slnx --verify-no-changes` both passed with no change asked. `dotnet test` passed on the three test projects that need no database (`Connect.Tests`, `Connect.Application.Tests`, `Connect.Presentation.Tests`, four tests). `Connect.Infrastructure.Tests` needs a real PostgreSQL and only runs in the pipeline. In `web`: `npm run build`, `npm run lint`, `npx prettier --check .` and `npm test` (four files, 20 tests) all passed with no change asked. The file passed the CI lint of the project before the first push.
-6. **The red run next to the green run.**
-   - TODO Wesley: the pipeline id and duration of the first green run of this merge request.
-   - TODO Wesley: the pipeline where one failing unit test turns only `backend-test` red, and the pipeline where one lint error turns only `frontend-lint` red.
+6. **The red run next to the green run.** Pipeline 584329 of merge request !54 ran green on 14 October 2026 in 74 seconds, well under the ten minutes of the task. All nine jobs were green and 8 tests passed, 5 of them in `Connect.Infrastructure.Tests` against the PostgreSQL service. Then two red runs on purpose, both on 14 October 2026 and both closed without merging:
+   - Merge request !55, pipeline 584330: one assertion in `api/Connect.Tests/CrossProjectTests.cs` turned around. Only `backend-test` was red, with "Failed ApplicationAndInfrastructureRegistration_Compose" in its log. Every other job of build and test was green.
+   - Merge request !56, pipeline 584331: one `debugger` statement in `web/src/main.tsx`. Only `frontend-lint` was red, with "Unexpected 'debugger' statement no-debugger" in its log. Every other job of build and test was green.
+   In both red runs GitLab skipped stage scan, the stage after test.
 7. **Someone else can keep it working.** Part 6 of `docs/team/onboarding.md` now ends with "Reading a red pipeline", a table of the five jobs with what each checks and the exact command that shows the same error on a laptop. The part Pipeline of `docs/team/gitlabSetup.md` names what each job runs, next to the existing lines for `env-file-check` and `branch-flow`, so the file and the team documents say the same.
 
 ## MS4 Making the work fit with the work of the team
@@ -36,8 +37,8 @@ School asks: "You ensure that your work aligns with that of others and contribut
 
 ## TODO
 
-- [ ] Wesley: link the pipeline id and duration of the first green run.
-- [ ] Wesley: link the pipeline where only `backend-test` is red (a failing unit test) and the pipeline where only `frontend-lint` is red (a lint error).
+- [x] Wesley: link the pipeline id and duration of the first green run. Pipeline 584329, 74 seconds.
+- [x] Wesley: link the pipeline where only `backend-test` is red (a failing unit test) and the pipeline where only `frontend-lint` is red (a lint error). Pipelines 584330 (!55) and 584331 (!56).
 - [ ] A teammate who did not build this: read one red run with only the guide, and write what was unclear in the review.
 - [ ] Reviewer of the merge request: confirm in the review that the part Pipeline of `gitlabSetup.md` matches the five jobs in `.gitlab-ci.yml`.
 
