@@ -1,6 +1,6 @@
 # 002 The structure of the server: four layer projects and CQRS by feature
 
-**Status.** Decided by the team on 1 October 2026 (rule 8 adjusted to the code by Wesley Oerlemans on 8 October 2026), per `docs/team/openItems.md` and `docs/architecture/architecture.md`. Written down here on 8 October 2026. Who was there is not recorded in the team documents, so the part Agreed by is still open.
+**Status.** Decided by the whole team on 1 October 2026 (rule 8 adjusted to the code by Wesley Oerlemans on 8 October 2026), per `docs/team/openItems.md` and `docs/architecture/architecture.md`. Written down here on 8 October 2026. The whole team decided it together, and the part Agreed by records that.
 **Issue.** 11 The team agrees on the layered architecture (#12), tasks 11.1 (#253) and 11.2 (#254).
 **Who decided.** The whole team. Drafted by Wesley Oerlemans.
 
@@ -107,11 +107,11 @@ The example on dev (merge request !11) puts the handler `CreateUserCommandHandle
 
 | Name | Date agreed | Remark |
 |---|---|---|
-| Bayon Eerhart | | |
-| Nick Hoebe | | |
-| Wesley Oerlemans | 10 October 2026 | |
-| Gurpreet Singh | | |
-| Kelvin van Voorst | | |
+| Bayon Eerhart | 1 October 2026 | Decided by the whole team |
+| Nick Hoebe | 1 October 2026 | Decided by the whole team |
+| Wesley Oerlemans | 1 October 2026 | Decided by the whole team |
+| Gurpreet Singh | 1 October 2026 | Decided by the whole team |
+| Kelvin van Voorst | 1 October 2026 | Decided by the whole team |
 
 ## References
 
