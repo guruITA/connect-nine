@@ -20,19 +20,21 @@
 # For a laptop only. Both ports listen on 127.0.0.1, so nothing outside this computer reaches them.
 #
 # The database starts empty. The tables come from the EF Core migrations of the server
-# (api/Connect.Infrastructure/Migrations), never from an SQL file here, so the database on every
-# laptop has exactly the tables the code expects. The design with all 44 tables and its test data
-# stays in docs/Gurpreet/dataModel/postgres, which is a separate setup for the design only.
+# (api/Connect.Infrastructure/Persistence/Migrations), never from an SQL file here, so the database
+# on every laptop has exactly the tables the code expects. The design with all 44 tables and its
+# test data stays in docs/Gurpreet/dataModel/postgres, which is a separate setup for the design only.
 #
 # The full guide, with the fix for a busy port 5432: docs/team/onboarding.md, section 3.
 # Every setting below links to the documentation that says what it does.
 # Reference for the whole file format: https://docs.docker.com/reference/compose-file/
 # =================================================================================================
 
-# No fixed project name. Compose takes the name of the folder of the checkout (connect-nine), and
-# puts it in front of the containers, the network and the volume (connect-nine_connect-data). So
-# every checkout in its own folder gets its own containers and its own database, and never takes
-# over the data of another checkout.
+# No fixed project name. Compose takes the name of the folder of the checkout, and puts it in
+# front of the containers, the network and the volume (connect-nine_connect-data for a checkout in
+# a folder named connect-nine). A second checkout gets its own containers and its own database only
+# when its folder has another name. Two checkouts in two folders with the same name share one
+# project name, so Compose reuses the containers and the volume of the first instead of making a
+# second one. Use a different folder name, or docker compose -p <name>, to keep two checkouts apart.
 # Source: https://docs.docker.com/compose/how-tos/project-name/
 
 # The containers this file starts. Each entry under services is one container.
@@ -47,9 +49,9 @@ services:
     image: postgres:16
 
     # No fixed container_name: Compose names the container after the project, for example
-    # connect-nine-database-1, so two checkouts in two folders each have their own copy. They run
-    # one at a time, because both use the ports below. Commands reach the container by its service
-    # name instead: docker compose exec database ...
+    # connect-nine-database-1, so two checkouts in two folders with different names each have their
+    # own copy. They run one at a time, because both use the ports below. Commands reach the
+    # container by its service name instead: docker compose exec database ...
     # Sources: https://docs.docker.com/reference/compose-file/services/#container_name
     #          https://docs.docker.com/reference/cli/docker/compose/exec/
 

@@ -29,7 +29,7 @@ machine:
 
 ```powershell
 dotnet user-secrets init
-dotnet user-secrets set "ConnectionStrings:Default" "<local connection string>"
+dotnet user-secrets set "ConnectionStrings:DefaultConnection" "<local connection string>"
 dotnet user-secrets list
 ```
 
@@ -44,11 +44,11 @@ as environment variables. Nested .NET configuration keys use double
 underscores:
 
 ```text
-ConnectionStrings__Default
+ConnectionStrings__DefaultConnection
 ```
 
 The environment variable above maps to the .NET key
-`ConnectionStrings:Default`. Do not put production credentials in
+`ConnectionStrings:DefaultConnection`. Do not put production credentials in
 `appsettings.Production.json`, manifests committed to Git, logs or Terraform
 state. Base64 encoding in a Kubernetes Secret is not encryption; access to the
 production namespace must be limited appropriately.

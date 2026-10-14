@@ -13,6 +13,7 @@ Read three documents first, in this order: [collaborationAgreement.md](collabora
 | Docker | current | The database and the test site run in containers |
 | Git | current | Every change reaches dev through a merge request |
 | An editor | Visual Studio, Rider or Visual Studio Code | Any of the three is fine |
+| dotnet-ef | matches the Entity Framework Core packages, pinned in `.config/dotnet-tools.json` | Creates and applies database migrations, part 4 |
 
 Check that each one answers before you go on:
 
@@ -23,7 +24,9 @@ docker --version
 git --version
 ```
 
-You should see four version numbers. `dotnet --version` starts with 10. `node --version` starts with v and the number of the current LTS. The other two print a line that starts with `Docker version` and `git version`. A line such as `command not found` means the tool is not installed or not on your path.
+You should see four version numbers. `dotnet --version` starts with 10. `node --version` starts with v22. The other two print a line that starts with `Docker version` and `git version`. A line such as `command not found` means the tool is not installed or not on your path.
+
+`dotnet-ef` is not installed by itself: it is a local tool, pinned to one version per repository in `.config/dotnet-tools.json`, and part 4 restores it before the first use.
 
 ## 2. Get the code
 
@@ -38,6 +41,8 @@ git switch dev
 You should see `Cloning into 'connect-nine'...`, and after the last command `Already on 'dev'`.
 
 Nobody pushes to `dev` or `main`. Both are protected. Every change starts on its own branch and reaches `dev` through a merge request that a teammate approves.
+
+Two clones on the same laptop in folders named `connect-nine`? Docker Compose names the containers and the volume after the folder, so a second clone in a folder with the same name shares the containers and the volume of the first instead of getting its own. Clone the second copy into a folder with another name, or start it with `docker compose -p <name> up -d`.
 
 ## 3. Start the database
 
@@ -61,7 +66,7 @@ docker compose stop               # stop both; your data stays
 
 Look inside in one of two ways:
 
-- **pgAdmin:** open http://localhost:5050. No login. The server Connect (local) is already on the left. The first time it asks for a password: that is `POSTGRES_PASSWORD` from your `.env`. Tick Save password.
+- **pgAdmin:** open http://localhost:5050. No login. Wait about half a minute after `docker compose ps` says the database is healthy before the page answers: pgAdmin itself still needs to start. The server Connect (local) is already on the left. The first time it asks for a password: that is `POSTGRES_PASSWORD` from your `.env`. Tick Save password.
 - **psql:** `docker compose exec database psql -U connect -d connect`, and `\q` to leave. Use your own `POSTGRES_USER` and `POSTGRES_DB` if you changed them in `.env`.
 
 The data lives in the volume `connect-data`, so a table you made is still there after `docker compose down` and `docker compose up -d`.
@@ -79,10 +84,12 @@ docker ps --filter publish=5050
 
 On Windows, `netstat -ano | findstr :5432` shows the process id, and Task Manager shows which program it is. On macOS and Linux, use `lsof -i :5432`.
 
+On Windows, the message can instead be `bind: An attempt was made to access a socket in a way forbidden by its access permissions`. That is not another program on the port: Windows itself reserves a range of ports for Hyper-V and WinNAT. Check the reserved ranges with `netsh interface ipv4 show excludedportrange protocol=tcp`. Windows can reserve a range such as 5358 to 5457, so 5432 or a nearby port can fall inside it.
+
 There are two fixes:
 
 1. **Stop the other one.** Stop that container with `docker stop <name>`, or stop the locally installed PostgreSQL service, and run `docker compose up -d` again. A container that has a restart policy starts again with Docker Desktop, so stop it again after a restart, or switch its restart policy off with `docker update --restart no <name>`.
-2. **Use another port.** Need the other PostgreSQL to keep running? In `docker-compose.yml`, change `"127.0.0.1:5432:5432"` into `"127.0.0.1:5433:5432"` and run `docker compose up -d` again. The database is then on `localhost:5433`, so use `Port=5433` in your own connection string. Keep this change on your laptop and do not commit it: the rest of the team uses 5432.
+2. **Use another port.** Need the other PostgreSQL to keep running, or did Windows reserve 5432 for itself? In `docker-compose.yml`, change `"127.0.0.1:5432:5432"` into `"127.0.0.1:15432:5432"` and run `docker compose up -d` again. The database is then on `localhost:15432`, so use `Port=15432` in your own connection string. Keep this change on your laptop and do not commit it: the rest of the team uses 5432.
 
 The seed accounts and the seed data of the test site are described in the testing folder.
 
@@ -153,6 +160,12 @@ Two things to know about User Secrets:
 
 ### Create and apply migrations
 
+Once per clone, before the first `dotnet ef` command, restore the pinned tool:
+
+```
+dotnet tool restore
+```
+
 The database context is in `api/Connect.Infrastructure`, while `api/Connect` is the startup
 project that loads the connection string. Create a migration with both projects specified:
 
@@ -199,10 +212,10 @@ Production runs on k3s. A production secret is a Kubernetes Secret in the namesp
 ```
 kubectl create secret generic connect-backend \
   --namespace connect \
-  --from-literal='ConnectionStrings__Default=Host=<host>;Database=connect;Username=connect;Password=<the production password>'
+  --from-literal='ConnectionStrings__DefaultConnection=Host=<host>;Database=connect;Username=connect;Password=<the production password>'
 ```
 
-A nested setting uses a double underscore in the name of an environment variable, because a colon is not allowed in a variable name outside Windows. `ConnectionStrings__Default` is the same setting as `ConnectionStrings:Default`.
+A nested setting uses a double underscore in the name of an environment variable, because a colon is not allowed in a variable name outside Windows. `ConnectionStrings__DefaultConnection` is the same setting as `ConnectionStrings:DefaultConnection`.
 
 A Kubernetes Secret is base64 encoded, and base64 is not encryption. Anyone allowed to read secrets in the namespace reads the value. Keep that right to the members who deploy, and turn on encryption at rest for etcd on the cluster.
 
@@ -533,7 +546,7 @@ The test site is at https://31-70-66-186.sslip.io until the foundation sets the 
 - The job ssh-check in `.gitlab-ci.yml` starts by hand on dev, or in a pipeline started with the variable RUN_SSH_CHECK set to yes. It logs in as deploy and prints the name of the server, `connect`.
 - The secret settings of the test site are in `/srv/connect-test/.env` on the server, rights 600, owner deploy. The database password was made on the server with `openssl rand -hex 24` and is not written anywhere else. `deploy/.env.example` lists every name.
 - **A new deploy key after a leak.** Make a new pair with `ssh-keygen -t ed25519`, put the public part in `/home/deploy/.ssh/authorized_keys` instead of the old one, the private part base64 encoded in SSH_PRIVATE_KEY, delete the private part from your laptop, and run ssh-check.
-- **Change the database password.** Change POSTGRES_PASSWORD and the password inside ConnectionStrings__Connect in `/srv/connect-test/.env` together. The database keeps its first password on its volume, so also change it in PostgreSQL itself, or start the test database over.
+- **Change the database password.** Change POSTGRES_PASSWORD and the password inside ConnectionStrings__DefaultConnection in `/srv/connect-test/.env` together. The database keeps its first password on its volume, so also change it in PostgreSQL itself, or start the test database over.
 
 ## 11. The security scan
 
