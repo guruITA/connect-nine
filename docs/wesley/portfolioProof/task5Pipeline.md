@@ -13,6 +13,7 @@ School asks: "You anticipate risks and bottlenecks in the process before they be
 2. **A risk found while checking.** `docs/team/gitlabSetup.md` said Pipelines must succeed was switched on after branch-flow was merged. The project settings, read through the GitLab API on 8 October 2026, said it was off. The team had read its role as Developer, but a test through the API the same day showed the five students are Maintainer, so I switched Pipelines must succeed on that evening. The document now says it is on, and code conventions rule 11 adds the reviewer rule on top of it.
 3. **The bottleneck watched for: a slow pipeline.** The pipeline of !24 took 4 seconds, plus 2 seconds waiting for a runner (pipeline 583862, 8 October 2026). The limit in the task is ten minutes.
 4. **Checked before the push.** The file was valid in the GitLab CI lint of the project (the same check as Build, Pipeline editor) before the first push.
+5. **The rule written where the team reads it first.** Rule 11 already said a red or running pipeline blocks the merge and that a reviewer never approves it. Merge request !42, branch `docs/1-sprint1-checklist-fixes`, adds the same sentence to the part Branches and merge requests of `docs/team/codeConventions.md`, the part a teammate reads first for the flow of a change: "A merge request with a red or running pipeline cannot be merged, and a reviewer never approves it. A red job is fixed on the branch first (rule 11)."
 
 ## MS4 Making the work fit with the work of the team
 

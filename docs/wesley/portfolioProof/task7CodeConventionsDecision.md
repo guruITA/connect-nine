@@ -11,7 +11,8 @@ School asks: "You give well-founded advice in which you weigh alternatives, iden
 
 1. **The proposal per choice.** Four choices, each with two options in a table and a source: frontend folders by kind or per feature (React, n.d.), snake_case or PascalCase in the database (PostgreSQL 16 documentation on identifiers), plural nouns or verbs in server addresses (Microsoft, Web API design best practices), Conventional Commits or free text (Conventional Commits 1.0.0). Every source was read on 8 October 2026, and every quote it is based on was checked on the page itself.
 2. **The risk of each recommendation.** Folders by kind can get crowded past sprint 3, written in Consequences with the way out (a new decision file). snake_case costs one package. The other two have no real cost for this team.
-3. **What the team chose and where it differed from the advice.**
+3. **Agreed by, filled in part.** Merge request !42, branch `docs/1-sprint1-checklist-fixes`, adds my own date, 10 October 2026, to the Agreed by table of `001-codeConventions.md`. The rows for Bayon Eerhart, Nick Hoebe, Gurpreet Singh and Kelvin van Voorst are still blank.
+4. **What the team chose and where it differed from the advice.**
    - TODO Wesley: after the team moment, write what the team chose per point and where it differed, with the reason.
 
 ## AA5 Adapting the message to who reads it
@@ -28,7 +29,7 @@ School asks: "You adapt your communication to different target groups in form an
 
 - [ ] Whole team: walk the four choices and point 5 at a stand up, then each fills in their date in Agreed by.
 - [x] Whole team: each confirms in a comment on #1 that they can follow the rules. On 9 October 2026 every teammate told Wesley that it is good, written down in #7.
-- [ ] Wesley: fill in AA4 point 3 and AA5 point 4 after the team moment.
+- [ ] Wesley: fill in AA4 point 4 and AA5 point 4 after the team moment.
 
 ## AI use
 

@@ -27,6 +27,7 @@ School asks: "You give well-founded advice in which you weigh alternatives, iden
 1. **Two tables with five rows each.** Files for one new feature, what a beginner must learn, how a rule is unit tested without the database, what catches a mistake and the source. Every claim names a Microsoft page or is marked as an opinion.
 2. **The compiler proof.** Run on 8 October 2026 with the .NET SDK 10.0.401 on a throwaway copy: Domain gives CS0234 on `Connect.Infrastructure.Persistence.ConnectDbContext`, the project Connect builds the same line with 0 errors. Pasted in the decision file.
 3. **The .NET versions with their risk.** .NET 8 and .NET 9 run out on 10 November 2026, .NET 10 is newer with fewer examples for beginners. Next upgrade planned no later than May 2028.
+4. **Agreed by, filled in part.** Merge request !42, branch `docs/1-sprint1-checklist-fixes`, adds my own date, 10 October 2026, to the Agreed by table of both `002-layeredArchitecture.md` and `003-dotnet10.md`, and my own line of `dotnet --list-sdks` in `003-dotnet10.md`: `10.0.401`. The rows for Bayon Eerhart, Nick Hoebe, Gurpreet Singh and Kelvin van Voorst are still blank in both files.
 
 ## AA5 Adapting the communication to each audience
 
