@@ -10,6 +10,7 @@ import "@fontsource/space-grotesk/700.css";
 import "./styles/tokens.css";
 import "./styles/base.css";
 import App from "./App";
+debugger;
 
 const rootElement = document.getElementById("root");
 if (!rootElement) {
