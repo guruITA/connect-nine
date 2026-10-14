@@ -51,6 +51,12 @@ Making an account, `POST /api/accounts`, the first slice (#14):
 
 **Recommendation in two lines.** Four projects, because the compiler guards the layers for a team that is new to .NET. CQRS by feature in its light form, because the code splits per use case, with more files per feature and a reviewer watching for handlers that grow too big as the risks the team accepts.
 
+### Preference of each team member
+
+One line per team member: the option they prefer for each choice, and why.
+
+- Wesley Oerlemans: four separate projects and CQRS by feature, because the compiler then stops a wrong reference between the layers, and each use case keeps its own folder instead of one class that keeps growing.
+
 ## Decision
 
 Four layer projects and CQRS by feature, decided by the team on 1 October 2026, over one project with four folders and over the repository pattern. Per `docs/architecture/architecture.md`, the reason is that the code splits by feature instead of by one class per kind of data.
