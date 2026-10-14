@@ -70,7 +70,7 @@ What GitLab holds after the change on 9 October 2026. The weight counts the open
 |---|---|
 | Bayon Eerhart | |
 | Nick Hoebe | |
-| Wesley Oerlemans | |
+| Wesley Oerlemans | 14 October 2026 |
 | Gurpreet Singh | |
 | Kelvin van Voorst | |
 
