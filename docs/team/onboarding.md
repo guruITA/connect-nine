@@ -166,6 +166,8 @@ Once per clone, before the first `dotnet ef` command, restore the pinned tool:
 dotnet tool restore
 ```
 
+You should see `Tool 'dotnet-ef' (version '10.0.12') was restored.` and then `Restore was successful.`
+
 The database context is in `api/Connect.Infrastructure`, while `api/Connect` is the startup
 project that loads the connection string. Create a migration with both projects specified:
 
@@ -176,6 +178,8 @@ dotnet ef migrations add <MigrationName> \
   --output-dir Persistence/Migrations
 ```
 
+You should see `Build succeeded.` and then `Done. To undo this action, use 'ef migrations remove'`. EF Core adds two new files for your migration under `Persistence/Migrations` and updates the model snapshot.
+
 Apply all pending migrations to the local PostgreSQL database:
 
 ```
@@ -183,6 +187,8 @@ dotnet ef database update \
   --project api/Connect.Infrastructure/Connect.Infrastructure.csproj \
   --startup-project api/Connect/Connect.csproj
 ```
+
+You should see `Applying migration '<name>'.` for each migration not yet applied, one line per migration, ending with `Done.`
 
 List migrations before changing database state:
 
@@ -192,6 +198,8 @@ dotnet ef migrations list \
   --startup-project api/Connect/Connect.csproj
 ```
 
+You should see every migration printed on its own line, oldest first, for example `20261009065814_AddAccountTable`.
+
 To go back one migration, use the migration immediately before the current one from that list.
 Never put a fixed old migration name in a shared command:
 
@@ -200,6 +208,8 @@ dotnet ef database update <MigrationBeforeYours> \
   --project api/Connect.Infrastructure/Connect.Infrastructure.csproj \
   --startup-project api/Connect/Connect.csproj
 ```
+
+You should see `Reverting migration '<name>'.` for each migration undone back to the one you chose, ending with `Done.`
 
 Do not edit a migration already on `dev`; add a new migration instead. The local test factory
 runs `Database.Migrate()` once when its host starts. Infrastructure table tests use PostgreSQL,
@@ -214,6 +224,8 @@ kubectl create secret generic connect-backend \
   --namespace connect \
   --from-literal='ConnectionStrings__DefaultConnection=Host=<host>;Database=connect;Username=connect;Password=<the production password>'
 ```
+
+You should see `secret/connect-backend created`.
 
 A nested setting uses a double underscore in the name of an environment variable, because a colon is not allowed in a variable name outside Windows. `ConnectionStrings__DefaultConnection` is the same setting as `ConnectionStrings:DefaultConnection`.
 
@@ -460,6 +472,8 @@ A member who already has a user sends their public key, the line that starts wit
 ```
 sudo nano /home/<name>/.ssh/authorized_keys   # paste the key on a new line, keep the old lines
 ```
+
+You should see nano open with the file already on screen, keeping every line that is there. Press Ctrl+O then Enter to write the file, and Ctrl+X to close nano.
 
 Save, and the member logs in with the new key. Delete the line of a laptop the member no longer has, so a lost laptop is no way in.
 
