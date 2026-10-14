@@ -16,11 +16,18 @@ What kind of Strato server it is, checked on the server on 10 October 2026:
 - It has 4 cores, 8 GB of memory and a disk of 240 GB. That is the package Strato sells today as VPS L (Strato, n.d.-d).
 - The main part of the disk is `/dev/vda1`. The steps of the rescue system below use exactly that name.
 
+## During the project
+
+- Only the five team members log in to the server, each with their own key. Password login is off.
+- The client does not log in to the server and does not work with the code. He has the Strato customer login, where he can reset the whole server.
+- The server holds no real data during the project, so a reset loses nothing that matters.
+- In the last sprint, when the project is done, the team switches password login back on, with step 6 of At the handover.
+
 ## The normal way in: a personal login with a key
 
 Every person who works on the server has a login of their own, and that login opens only with a key. A key is a small pair of files on a laptop. The private half stays on the laptop like a house key, and the public half is put on the server like the lock that fits it.
 
-A login with a password over the internet is refused, for everyone.
+During the project, a login with a password over the internet is refused, for everyone.
 
 Why: the server can be reached from the whole internet, and computers try passwords on servers like this all day. A key cannot be guessed. The team decided this for security (issue #237), and the foundation checks it in issue #10: "I see that the server refuses a login with a password".
 
@@ -74,8 +81,9 @@ The handover session gets a date before the last sprint review, see [deliveryPla
 3. The foundation decides per team member whether they keep access. Whoever leaves is removed with section Someone leaves in part 10, including their line in the sudo file.
 4. When GitLab no longer puts new versions on the server, the key of the user deploy is removed from `/home/deploy/.ssh/authorized_keys`, and the variables SSH_PRIVATE_KEY, SSH_KNOWN_HOSTS and TEST_SERVER_HOST are deleted in GitLab.
 5. The person who looks after the server next gets a login of their own with their key, through section New team member.
+6. The team switches the login with a password back on, the way the server came: `PasswordAuthentication yes` and `PermitRootLogin yes` in `/etc/ssh/sshd_config.d/10-connect.conf`, checked with `sudo sshd -t` before `sudo systemctl reload ssh`. The foundation then logs in with the new root password of step 2.
 
-A login with a password over the internet stays off after the handover. Turning it on is up to the foundation and whoever looks after the server then. Issue #10 asks for it to stay off.
+During the project a login with a password over the internet stays off, as issue #10 asks. It comes back on with step 6, once the project is done.
 
 ## References
 

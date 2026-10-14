@@ -18,8 +18,7 @@ School asks: "You anticipate risks and bottlenecks in the process before they be
 7. **A server inherited with somebody else's access (9.1, merge request !5).** The server given on 2 October 2026 had carried an earlier project's whole stack: Dokploy as a Docker Swarm with Traefik, Postgres and Redis, a leftover Strapi volume, container images that were not Connect's, six ssh keys that were not the team's, and root logins from six addresses since May 2026. Ports 3000, 8080 and 8081 were open to the internet. Wesley Oerlemans wiped it the same day: left the swarm, removed every container, image and volume, removed every foreign key from root's authorized_keys, closed those ports, added fail2ban and rebooted. Disk use dropped from 21 GB to 2.9 GB, and the scripts and the log of the rebuild stay on the server.
 8. **Open ports and the Docker version written down, so the next person checks instead of asking (9.3, merge request !42).** Part Open ports now holds the `sudo ufw status verbose` output of 9 October 2026 and the installed `docker --version`, `docker compose version` and a run of `hello-world`, which closes both open lines of #238's checklist.
    - TODO Wesley: tick the two lines of #238 in GitLab now that part 10 holds both.
-9. **The client told about key-only access, written but not yet sent (9.2, merge request !42).** Part 10 now says why there is no password login and that the client's own access to the server also needs a key. Nobody has sent this text to the client yet, and part Who logged in still has no `last -n 20` output next to the five signed first-login lines.
-   - TODO Wesley: send the client the text on why password login is off, then tick that line of #237.
+9. **Password login and the client (9.2, merge request !42).** Part 10 now says why there is no password login. The client does not log in to the server and does not work with the code: he has the Strato customer login, where he can reset the whole server, and the server holds no real data during the project. Decided on 14 October 2026: password login comes back on in the last sprint, step 6 of At the handover in `docs/client/serverHandover.md`. Part Who logged in still has no `last -n 20` output next to the five signed first-login lines.
    - TODO teammates: paste `last -n 20` in part Who logged in next to your signed first-login line.
 
 ## MS4 Making the work fit with the work of the team
@@ -43,7 +42,7 @@ School asks: "You ensure that your work aligns with that of others and contribut
 - [x] Team: choose the second member of the group sudo. Gurpreet Singh, 9 October 2026.
 - [ ] Teammates: first login and signed line, screenshot of the padlock on a phone (9.4 and 9.6).
 - [ ] Owner of #267: read part The pipeline on the server and write your name and the date in #10.
-- [ ] Wesley: send the client the text on why password login is off and that his own access needs a key, then tick that line of #237.
+- [ ] Team, in the last sprint: switch password login back on with step 6 of At the handover in `docs/client/serverHandover.md`.
 - [ ] Teammates: paste `last -n 20` in part Who logged in (#237).
 - [ ] Wesley: tick both lines of #238 in GitLab, now that part 10 holds the ufw output and the Docker version.
 - [ ] Wesley: paste the written request to the client, the three questions of #236, in #236.
