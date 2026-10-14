@@ -37,7 +37,6 @@ Decisions the team, or the team with the client, still has to make.
 | The code quality tool that stops a change, and the line it stops at, also for tested new code (the coverage ambition) | Whole team | Issue 88 The team picks the code quality tool and issue 89 A change that lowers code quality is stopped, both sprint 4 | `docs/testing/testingStrategy.md` |
 | Whether pre-commit hooks are worth the setup time. No issue on the board holds this yet | Whole team | Open, no issue yet | The old code conventions document |
 | The learning outcomes and success criteria each student proves in the DevOps advanced track, which replaces the earlier question about the optional study-points path | Each student, with the DevOps teacher | Issue 84 The DevOps learning outcomes agreed with the teacher, sprint 1 stretch | `docs/architecture/infrastructure.md` |
-| The order of the epics as the client sees it, which may move issues between sprints. Every issue already has a MoSCoW priority and a sprint on the board | Whole team, with the client | Issue 10 The client's priorities for the epics, client question 1 | `docs/project/requirements.md` |
 | Whether Connect gets a webshop this semester (FR10 is not confirmed by the client) | The client | Issue 10, client question 2 | `docs/project/requirements.md` |
 | Numeric page speed and uptime targets | Whole team, with the client | Issue 10, client question 5 | `docs/project/requirements.md`, `docs/project/productVision.md` |
 | Success measures for Connect, for the client and for the team. No issue on the board holds this yet | Whole team, with the client | Open, no issue yet | `docs/project/productVision.md`, `docs/project/problemAnalysis.md` |
@@ -49,7 +48,6 @@ Decisions the team, or the team with the client, still has to make.
 | A temporary test address with a padlock before the client's DNS record: a wildcard DNS name such as sslip.io, a free dynamic DNS name, an own domain, or a Let's Encrypt certificate for the bare IP address. In use since 9 October 2026: https://31-70-66-186.sslip.io, to be confirmed by the team | Whole team | A stand up in sprint 1, owner Nick Hoebe, inside issue 09 task 9.4 | `docs/architecture/infrastructure.md` |
 | How much weight sprint 2 takes on. Sprint 1 finished 38 of its 48 weight, and 30 of those 38 is preparation logged afterwards (#1500 to #1515). Sprint 2 holds 63 and decision 004 plans about 60 per sprint. The teacher asked on 9 October 2026 to plan on the weight a sprint really finished | Whole team | The sprint 2 planning | `docs/project/sprintGoals.md`, `docs/decisions/004-replanAfterSprint1.md` |
 | Which sprint the research reports and the DevOps evidence land in. `docs/school/datapointPlan.md` names DevOps and Testing as a datapoint in sprint 2 and the review of the R and D report in sprint 3. Decision 004 puts the research issues 107 to 110, the peer review of issue 112 and the DevOps evidence of issues 86 and 87 in sprint 4 | Whole team | The sprint 2 planning, issue 180 (#1516) | `docs/school/datapointPlan.md`, `docs/decisions/004-replanAfterSprint1.md` |
-| The tables Agreed by of decisions 001 to 004. Each member writes the date they agreed | Whole team | A stand up, issues 01, 11 and 180 | `docs/decisions/` |
 
 ## Needs asking
 
@@ -129,6 +127,22 @@ Dated items the team has to schedule.
 
 Kept here so the history stays findable.
 
+- **The order of the epics.** The client answered question 1 at the sprint 1 review on 9 October
+  2026: he is happy with the order in which the team takes the features in, so the order on the
+  board stands. Written in `docs/client/clientQuestions.md` and in decision 004.
+- **Decisions 001 to 004 agreed.** Decision 002 was decided by the whole team on 1 October 2026,
+  and decisions 001, 003 and 004 were agreed by the whole team at the sprint 1 review on 9
+  October 2026. Every table Agreed by in `docs/decisions/` carries those dates. Still open is the
+  line of `dotnet --list-sdks` of Bayon, Nick, Gurpreet and Kelvin in issue 11 (#12).
+- **Names follow the code.** Where the code and the documents differed, the documents follow the
+  code since 14 October 2026: the DbContext is `ConnectDbContext`, the tables of ASP.NET
+  Identity keep their own names such as `AspNetUsers`, and a rule in Domain is tested in
+  `Connect.Application.Tests/Domain`, because there is no `Connect.Domain.Tests`.
+- **Login on the server.** Decided on 14 October 2026: during the project only the five of us log
+  in, each with our own key, and password login is off. The client does not log in to the server.
+  He keeps the Strato customer login, where he can reset the whole server, and the server holds
+  no real data. In the last sprint the team switches password login back on, step 6 of At the
+  handover in `docs/client/serverHandover.md`.
 - **Sprint 1 review.** Held with the client on 9 October 2026 (#1519). Sprint 1 closed 21 of its
   26 issues. Open are 01, 09, 11, 106 and 180: they wait on the tables Agreed by, the first login
   of each member, the domain of the client and the research proposals. Sprints 2 to 5 were
