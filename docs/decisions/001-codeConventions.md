@@ -1,6 +1,6 @@
 # 001 Code conventions: names and layout
 
-**Status.** Proposed on 8 October 2026, waiting for the team. It becomes Accepted when all five names at the bottom have a date.
+**Status.** Accepted. Proposed on 8 October 2026 and agreed by the whole team at the sprint 1 review on 9 October 2026.
 **Issue.** 01 The repository, the pipeline and the team rules (#1), task 1.6 (#7).
 **Who decides.** The whole team, at a stand up or a meeting. Drafted by Wesley Oerlemans.
 
@@ -49,7 +49,14 @@ C# names (the Microsoft conventions), one component per file, secrets only in `.
 
 ## Decision
 
-Proposed: the first column of every table, which is what `docs/team/codeConventions.md` already says (frontend rule 7, database rules 1 and 6, backend rule 10, general rule 7). An objection to point 5 is written here with what changes.
+Decided: the first column of every table, which is what `docs/team/codeConventions.md` already says (frontend rule 7, database rules 1 and 6, backend rule 10, general rule 7). The team agreed it at the sprint 1 review on 9 October 2026, with no objection to point 5.
+
+Why the other options lost, from the tables above:
+
+- Folders per feature fit a large app where one feature has many files. Connect is small in sprint 1 and 2, and by kind asks only one question for a new file.
+- PascalCase in the database needs double quotes around every name in SQL typed by hand.
+- Verbs in the server addresses say the action twice, and no source recommends them.
+- Free text commit messages are written differently by every author and do not link GitLab to the issue.
 
 ## Consequences
 
@@ -61,11 +68,11 @@ Proposed: the first column of every table, which is what `docs/team/codeConventi
 
 | Name | Date agreed | Objection |
 |---|---|---|
-| Bayon Eerhart | | |
-| Nick Hoebe | | |
-| Wesley Oerlemans | 10 October 2026 | |
-| Gurpreet Singh | | |
-| Kelvin van Voorst | | |
+| Bayon Eerhart | 9 October 2026 | |
+| Nick Hoebe | 9 October 2026 | |
+| Wesley Oerlemans | 9 October 2026 | |
+| Gurpreet Singh | 9 October 2026 | |
+| Kelvin van Voorst | 9 October 2026 | |
 
 ## References
 

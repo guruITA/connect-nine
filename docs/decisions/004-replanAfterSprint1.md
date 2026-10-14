@@ -1,6 +1,6 @@
 # 004 Sprints 2 to 5 planned again after sprint 1
 
-**Status.** Proposed on 9 October 2026, waiting for the team. It becomes Accepted when all five names at the bottom have a date.
+**Status.** Accepted. Proposed on 9 October 2026 and agreed by the whole team at the sprint 1 review the same day.
 **Issue.** 180 Sprints 2 to 5 planned again after sprint 1 (#1516), task 180.1 (#1517).
 **Who decides.** The whole team. Proposed by Wesley Oerlemans, Scrum Master of sprint 1.
 
@@ -68,11 +68,11 @@ What GitLab holds after the change on 9 October 2026. The weight counts the open
 
 | Name | Date agreed |
 |---|---|
-| Bayon Eerhart | |
-| Nick Hoebe | |
-| Wesley Oerlemans | 14 October 2026 |
-| Gurpreet Singh | |
-| Kelvin van Voorst | |
+| Bayon Eerhart | 9 October 2026 |
+| Nick Hoebe | 9 October 2026 |
+| Wesley Oerlemans | 9 October 2026 |
+| Gurpreet Singh | 9 October 2026 |
+| Kelvin van Voorst | 9 October 2026 |
 
 ## AI use declaration
 

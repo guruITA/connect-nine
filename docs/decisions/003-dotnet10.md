@@ -1,6 +1,6 @@
 # 003 The .NET version of the server: .NET 10
 
-**Status.** Proposed on 8 October 2026, waiting for the team. It becomes Accepted when all five names at the bottom have a date and a line from `dotnet --list-sdks`.
+**Status.** Accepted. Proposed on 8 October 2026 and agreed by the whole team at the sprint 1 review on 9 October 2026. Each team member adds their line from `dotnet --list-sdks` below.
 **Issue.** 11 The team agrees on the layered architecture (#12), task 11.3 (#255).
 **Who decides.** The whole team. Drafted by Wesley Oerlemans.
 
@@ -37,11 +37,11 @@ Each member runs `dotnet --list-sdks` and writes the line that starts with 10.
 
 | Name | Date agreed | Line from dotnet --list-sdks |
 |---|---|---|
-| Bayon Eerhart | | |
-| Nick Hoebe | | |
-| Wesley Oerlemans | 10 October 2026 | 10.0.401 |
-| Gurpreet Singh | | |
-| Kelvin van Voorst | | |
+| Bayon Eerhart | 9 October 2026 | |
+| Nick Hoebe | 9 October 2026 | |
+| Wesley Oerlemans | 9 October 2026 | 10.0.401 |
+| Gurpreet Singh | 9 October 2026 | |
+| Kelvin van Voorst | 9 October 2026 | |
 
 ## References
 

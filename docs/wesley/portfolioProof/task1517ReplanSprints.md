@@ -25,7 +25,7 @@ Sprint 1 ended on 9 October 2026 with 19 of its issues open, 18 of them must, an
 - [ ] Wesley: the weight finished in sprint 2 and what it changed in the plan of sprints 3 to 5 (MS1).
 - [x] Wesley: check the datapoints of #69, #72 and #187 against their new sprint (MS4, 10 October 2026).
 - [ ] Gurpreet Singh: check the datapoints of #65 and #67 against their new sprint (MS4).
-- [ ] Every team member: write the date in the table Agreed by of decision 004.
+- [x] Every team member: decision 004 agreed at the sprint 1 review on 9 October 2026, all five dates in Agreed by.
 - [x] After the merge: make the Figma page Issue pyramid again from GitLab (#1498). Done on 9 October 2026: the pages Issue pyramid and Epics and features were drawn again from GitLab after the new plan, 250 cards, no text over the edge of a card.
 - [x] After !35 and !37: add the row for this file to docs/wesley/README.md, which those two merge requests also change. Done on 9 October 2026.
 
