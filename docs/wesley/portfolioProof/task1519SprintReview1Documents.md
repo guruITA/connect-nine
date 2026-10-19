@@ -12,11 +12,23 @@ The deck of the Sprint 1 review of 9 October 2026 and the Sprint Review form the
 - What I made: the deck with its speaker notes and the client's form are in one folder that the whole team and the coach can open, next to the other documents, instead of on one laptop. The next sprint reviews go in the same folder.
 - Alternative I did not choose: only uploading the files to Portflow. Then each student has a copy, but the team and the coach have no shared one, and DLO asks for the copy on the team repository.
 
+## Second merge request: the Portflow texts and the template
+
+The texts the whole team pastes into Portflow for the Sprint 1 review now stand in docs/sprintReviews/sprint1PortflowGuide.md: two pieces of evidence as GitLab links, one comment per evidence with the feedback of the client and the teacher in a section per sub-goal, the level of every sub-goal with its reason, and in step 9 a personal part per student with every sub-goal of their own profile that their own work on GitLab proves. docs/sprintReviews/portflowSprintReviewTemplate.md holds the same structure with placeholders and the rules, so the next sprint reviews start from it.
+
+**MS1 Seeing risks early and keeping the work transferable**
+- What I made: one guide in the repository instead of five students each writing their own texts, and a template with the rules we found (the level rule, which form row goes to which sub-goal, only proof in a section, no level without proof, weights from the current board, a personal part per student, every text measured against level 3), so the next review is not built from scratch.
+- Alternative I did not choose: sending the texts in Teams. Then they are hard to find again and nobody can see which version is the final one.
+
 ## TODO
 
 - [x] Shared with the team coach: merged into dev on 9 October 2026 (!43), so the coach finds the form on the team repository. DLO asks to share the form "by putting a copy on the team repo", so no separate message is needed.
 - [x] Approved by Gurpreet Singh and Nick Hoebe (!43).
+- [ ] A teammate who is not the author: approve !45. Gurpreet Singh approved it on 10 October 2026, lost that approval when a later commit reset it, then approved it again on 12 October 2026 and withdrew it the same day. No approval stands (GitLab API, one approval still needed).
 - [ ] Wesley Oerlemans: after !42 is merged, add the row for this file to docs/wesley/README.md (left out here, because !42 changes the same table).
+- [ ] Kelvin van Voorst: follow step 8 of the guide for the Security Specialist profile before pasting into Portflow.
+- [ ] Bayon Eerhart, Nick Hoebe, Gurpreet Singh and Kelvin van Voorst: add the own personal part from step 9 of the guide in Portflow, with the numbers measured again on the day of pasting.
+- [x] Level: every text is measured against level 3, also for Bayon and Kelvin, who are assessed on level 2 (decision Wesley Oerlemans, 10 October 2026).
 
 ## AI use
 
