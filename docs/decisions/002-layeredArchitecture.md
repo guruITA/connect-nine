@@ -13,7 +13,7 @@ After January 2027 the students leave, and someone else must understand and chan
 Making an account, `POST /api/accounts`, the first slice (#14):
 
 1. **Presentation** reads the form, checks it with FluentValidation and calls one handler. It knows nothing about the database.
-2. **Application** holds the handler `CreateAccountHandler` with its `CreateAccountCommand`. It decides: is this email address already taken, then hash the password and save. It reaches the data only through the contract `IAppDbContext`.
+2. **Application** holds the handler `CreateAccountCommandHandler` with its `CreateAccountCommand`. It decides: is this email address already taken, then hash the password and save. It reaches the data only through the contract `IAppDbContext`.
 3. **Domain** holds the account itself and its rules, for example what a valid email address is. It uses nothing else.
 4. **Infrastructure** holds `ConnectDbContext`, the EF Core class that implements `IAppDbContext` and talks to PostgreSQL.
 
@@ -61,13 +61,13 @@ We decided this together on 1 October 2026. Wesley Oerlemans, who drafted this f
 
 Four layer projects and CQRS by feature, decided by the team on 1 October 2026, over one project with four folders and over the repository pattern. Per `docs/architecture/architecture.md`, the reason is that the code splits by feature instead of by one class per kind of data.
 
-The structure, as the code on dev and task 3.1 (#259) have it, and as `docs/team/codeConventions.md` backend rules 7 and 8 now state it:
+The structure, as the code on dev, task 3.1 (#259) and the account code of #262 (!47) have it, and as `docs/team/codeConventions.md` backend rules 7 and 8 now state it:
 
 - Four layer projects, `api/Connect.Presentation`, `api/Connect.Application`, `api/Connect.Domain` and `api/Connect.Infrastructure`, and the start project `api/Connect`, which starts the server and connects the layers.
 - References point inward: Connect uses Presentation and Infrastructure. Presentation uses Application. Infrastructure uses Application, because it implements contracts of Application such as `IAppDbContext`. Application uses Domain. Domain uses nothing.
 - Test projects per layer: `Connect.Application.Tests`, `Connect.Infrastructure.Tests` and `Connect.Presentation.Tests`, each using only the project it tests, plus `Connect.Tests` for tests across projects. There is no `Connect.Domain.Tests` (task 3.1, #259), so a rule in Domain is tested without any database in `Connect.Application.Tests/Domain`.
-- One folder per use case in `api/Connect.Application/Features/<Feature>/<UseCase>/`, with its command or query and its handler. The handler reaches the data through `IAppDbContext` in `api/Connect.Application/Abstractions`, implemented by `ConnectDbContext` in Infrastructure. No repository classes, no `IXRepository` contracts, no Repositories folder, no use case written as a Service class.
-- A handler is unit tested with an in-memory SQLite `ConnectDbContext` in `Connect.Application.Tests`. A rule that depends on PostgreSQL is tested against a real PostgreSQL in `Connect.Infrastructure.Tests` (`<Feature>DatabaseTests`). A rule in Domain is tested without any database.
+- One folder per use case in `api/Connect.Application/<Area>/<UseCase>/`, for example `api/Connect.Application/Accounts/CreateAccount/` with `CreateAccountCommand.cs`, `CreateAccountCommandHandler.cs` and `CreateAccountResponse.cs`. A write is a command with a `<UseCase>CommandHandler`, a read is a query with a `<UseCase>QueryHandler`. The handler reaches the data through `IAppDbContext` in `api/Connect.Application/Common/Abstractions`, which gives each table as an `IQueryable<T>` with `Add`, `Remove` and `SaveChangesAsync`, implemented by `ConnectDbContext` in Infrastructure. The handler contracts sit beside it, and the results `Result` and `Result<T>` in `api/Connect.Application/Common/Results`. No repository classes, no `IXRepository` contracts, no Repositories folder, no use case written as a Service class.
+- A handler is unit tested with an in-memory SQLite `ConnectDbContext` in `Connect.Application.Tests/<Area>/<UseCase>/<UseCase>HandlerTests.cs`. An endpoint test that starts the whole server sits in `Connect.Tests/<Area>/Endpoints`. A rule that depends on PostgreSQL is tested against a real PostgreSQL in `Connect.Infrastructure.Tests` (`<Feature>DatabaseTests`). A rule in Domain is tested without any database.
 
 ### Proof that the compiler guards the layers
 

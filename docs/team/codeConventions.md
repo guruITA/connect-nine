@@ -90,7 +90,7 @@ React is the library the screens are built with. A component is one piece of scr
 
 ## Backend: C#, ASP.NET Core
 
-Three examples: the file `Features/Account/CreateAccount/CreateAccountHandler.cs`, the method `CreateAccountAsync`, the address `POST /api/accounts`.
+Three examples: the file `Accounts/CreateAccount/CreateAccountCommandHandler.cs`, the method `CreateAccountAsync`, the address `POST /api/accounts`.
 
 C# is the language. .NET is the platform it runs on. ASP.NET Core is the part of .NET that turns C# into a web server. The four layers (Presentation, Application, Domain, Infrastructure) are four projects, explained in docs/team/onboarding.md.
 
@@ -108,12 +108,12 @@ C# is the language. .NET is the platform it runs on. ASP.NET Core is the part of
 
 ### Structure
 
-7. Four layer projects in api: Connect.Presentation, Connect.Application, Connect.Domain and Connect.Infrastructure, plus the start project Connect, which starts the server and connects the layers. Application holds one folder per feature in Features, one feature per epic, and inside it one folder per use case with its command or query and its handler: api/Connect.Application/Features/Account/CreateAccount/CreateAccountCommand.cs with CreateAccountHandler.cs. A write is a command, a read is a query, never both in one handler. A handler reaches the data only through the contract IAppDbContext in api/Connect.Application/Abstractions, which ConnectDbContext in Infrastructure implements. There are no repository classes, no IXRepository interfaces, no Repositories folder and no use case written as a Service class. (reviewer)
+7. Four layer projects in api: Connect.Presentation, Connect.Application, Connect.Domain and Connect.Infrastructure, plus the start project Connect, which starts the server and connects the layers. Application holds one folder per area, named in the plural such as Accounts, and inside it one folder per use case with its command or query, its handler and its result: api/Connect.Application/Accounts/CreateAccount/CreateAccountCommand.cs with CreateAccountCommandHandler.cs and CreateAccountResponse.cs. A write is a command with a `<UseCase>CommandHandler`, a read is a query with a `<UseCase>QueryHandler`, never both in one handler. A handler reaches the data only through the contract IAppDbContext in api/Connect.Application/Common/Abstractions, which gives each table as an `IQueryable<T>` with Add, Remove and SaveChangesAsync and which ConnectDbContext in Infrastructure implements. There are no repository classes, no IXRepository interfaces, no Repositories folder and no use case written as a Service class. (reviewer)
 8. References point inward: Connect uses Presentation and Infrastructure, Presentation uses Application, Infrastructure uses Application (it implements contracts such as IAppDbContext), Application uses Domain, and Domain uses nothing. Each test project uses only the project it tests. Because they are separate projects, the compiler refuses code that breaks this, so a beginner cannot break the layers by accident. The decision, the options that lost and the compiler proof: docs/decisions/002-layeredArchitecture.md. (tool: the compiler, through the project references)
 
 ### Web addresses (endpoints)
 
-9. Minimal APIs. One static class per feature, for example StatusEndpoints with one method MapStatusEndpoints. An endpoint stays thin: read the request, call the handler, return the answer. (reviewer)
+9. Minimal APIs. One static class per feature, for example StatusEndpoints with one method MapStatusEndpoints. Presentation keeps the areas of Application: api/Connect.Presentation/Accounts/Endpoints/AccountEndpoints.cs, with DTO, Mappers and Validators beside Endpoints. An endpoint stays thin: read the request, call the handler, return the answer. (reviewer)
 10. Addresses start with /api, are lower case and use plural nouns: /api/members, /api/members/{id}. Words are joined with a -: /api/member-profiles. (reviewer)
 11. What goes in and out are records named ...Request and ...Response: CreateAccountRequest, StatusResponse. A database class (entity) is never sent straight to the browser. (reviewer)
 12. Errors use the built in ProblemDetails format (web standard RFC 9457): `Results.Problem(...)`, and for a wrong form `Results.ValidationProblem(...)` with one message per field. Status codes: 200 OK, 201 created, 204 done without content, 400 wrong input, 401 not logged in, 403 not allowed, 404 not found, 409 conflict, 503 not available. (reviewer)
@@ -176,7 +176,7 @@ These rules join the parts above. When an older text disagrees, these win.
 ### Files and folders
 
 11. A record ...Request or ...Response may sit in the endpoint file of its feature (an agreed exception to "one class per file"). A component used on one page only may sit in components under a folder named after the page. (reviewer)
-12. Test projects per layer: api/Connect.Application.Tests/Features/<Feature> with a handler test named <UseCase>HandlerTests.cs, api/Connect.Application.Tests/Domain with a rule tested without any database, api/Connect.Infrastructure.Tests/Persistence with a database test against a real PostgreSQL named <Feature>DatabaseTests.cs, api/Connect.Presentation.Tests/<Feature>/Endpoints with the endpoint tests, and api/Connect.Tests for tests across projects. There is no Connect.Domain.Tests (task 3.1, #259). Shared helpers go in a Fixtures folder of the test project. (reviewer)
+12. Test projects per layer: api/Connect.Application.Tests/<Area>/<UseCase> with a handler test named <UseCase>HandlerTests.cs, api/Connect.Application.Tests/Domain with a rule tested without any database, api/Connect.Infrastructure.Tests/Persistence with a database test against a real PostgreSQL named <Feature>DatabaseTests.cs, api/Connect.Presentation.Tests/<Area> with the tests of one Presentation part such as a validator, and api/Connect.Tests for tests across projects, such as an endpoint test that starts the whole server in api/Connect.Tests/<Area>/Endpoints. There is no Connect.Domain.Tests (task 3.1, #259). Shared helpers go in a Fixtures folder of the test project. (reviewer)
 
 ### Commands
 

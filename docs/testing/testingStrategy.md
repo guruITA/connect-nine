@@ -34,8 +34,9 @@ layered architecture records: the business rules inside a handler, for example w
 still has an open spot, unit tested with an in-memory SQLite ConnectDbContext, and a rule in Domain
 unit tested without any database. **NUnit**
 is decided, not xUnit, with `dotnet new nunit -o TestProject1` scaffolding a test project
-directly from the .NET SDK (NUnit, n.d.). The tests live in the project Connect.Tests, in the
-folders Domain, Application, Infrastructure, Presentation and Fixtures, and are named
+directly from the .NET SDK (NUnit, n.d.). The tests live in one test project per layer, Connect.Application.Tests,
+Connect.Infrastructure.Tests and Connect.Presentation.Tests, plus Connect.Tests for tests across
+projects, as rule 12 of `docs/team/codeConventions.md` sets out, and are named
 Method_Situation_ExpectedResult with the three parts Arrange, Act and Assert
 (`docs/team/codeConventions.md`). On the frontend, this is pure TypeScript functions and hooks
 with no DOM involved, the same category `testing-example`'s `lib/todos.ts` occupies. **Vitest**

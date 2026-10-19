@@ -48,6 +48,7 @@ School asks: "You ensure that your work aligns with that of others and contribut
 
 1. **The code wins over the documents.** Nick Hoebe named the class `ConnectDbContext` in !11 and !36 (#261), while five documents said `AppDbContext`. The documents now follow the code: `docs/decisions/002-layeredArchitecture.md`, `docs/architecture/architecture.md`, `docs/team/codeConventions.md`, `docs/testing/testingStrategy.md` and `docs/wesley/securityAndArchitecture.md`. The contract keeps its name, `IAppDbContext`, which #262 adds. My comment on !36 names the documents I updated.
 2. **Where a Domain rule is tested.** The code of task 3.1 (#259) has no `Connect.Domain.Tests`. Decision 002 and the code conventions now say that a rule in Domain is tested without any database in `Connect.Application.Tests/Domain`.
+3. **The folders follow the account code.** The account code of #262 (!47) puts a use case in `api/Connect.Application/Accounts/CreateAccount/` with `CreateAccountCommandHandler`, the contracts in `Common/Abstractions` and `IAppDbContext` with `IQueryable<T>`. Decision 002, the code conventions, the architecture and the testing strategy now say the same. My comment on !47 names the documents I updated.
 
 ### AA2 Questioning sources and my own assumptions
 

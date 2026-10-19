@@ -136,8 +136,8 @@ explain the layers with a restaurant.
 
 | Layer | On the cards | What it holds | Folders |
 | --- | --- | --- | --- |
-| Presentation | the waiter | The endpoints, the validators of what comes in, the session guard, the rate limit, the health address. It reads a request, calls a handler and returns the answer. | `Program.cs`, `Features/<Feature>/<Feature>Endpoints.cs`, `Validators/<Name>RequestValidator.cs`, `Authentication/`, `RateLimiting/` |
-| Application | the chef | The commands, queries and handlers with the business rules, for example that an email address must still be free. | `DependencyInjection.cs`, `Abstractions/ICommandHandler.cs`, `IQueryHandler.cs`, `IAppDbContext.cs`, `Features/<Feature>/<UseCase>/<UseCase>Command.cs` or `Query.cs` with `<UseCase>Handler.cs` |
+| Presentation | the waiter | The endpoints, the validators of what comes in, the session guard, the rate limit, the health address. It reads a request, calls a handler and returns the answer. | `Program.cs`, `<Area>/Endpoints/<Feature>Endpoints.cs`, `<Area>/DTO/`, `<Area>/Mappers/`, `<Area>/Validators/<Name>RequestValidator.cs`, `Common/`, `Authentication/`, `RateLimiting/` |
+| Application | the chef | The commands, queries and handlers with the business rules, for example that an email address must still be free. | `DependencyInjection.cs`, `Common/Abstractions/ICommandHandler.cs`, `IQueryHandler.cs`, `IAppDbContext.cs`, `Common/Results/`, `<Area>/<UseCase>/<UseCase>Command.cs` with `<UseCase>CommandHandler.cs`, or `<UseCase>Query.cs` with `<UseCase>QueryHandler.cs` |
 | Domain | the menu | The entities and the contracts that are not about data access, for example `IMailSender`. It uses nothing. | `Entities/<Entity>.cs`, `Accounts/PasswordRules.cs` |
 | Infrastructure | the storeroom | Holds the database connection, the table settings, the migrations and the mail sender. The chef reaches the data through the hatch IAppDbContext. | `Persistence/ConnectDbContext.cs`, `Persistence/Migrations/`, `Mail/` |
 
@@ -534,10 +534,10 @@ place in the Layers drawing above. That page is the source for the patterns. The
 The candidates the board already names (issue 103 task 103.1):
 
 1. **CQRS.** CQRS splits the model that writes from the model that reads (Microsoft, n.d.-b):
-   `CreateAccountCommand` with `CreateAccountHandler` in
-   `api/Application/Features/Account/CreateAccount` (issues 03 and 11), reaching the data
-   through `IAppDbContext` in `api/Application/Abstractions`. `ConnectDbContext` in
-   `api/Infrastructure/Persistence` implements it. EF Core's own `DbContext` already
+   `CreateAccountCommand` with `CreateAccountCommandHandler` in
+   `api/Connect.Application/Accounts/CreateAccount` (issues 03 and 11), reaching the data
+   through `IAppDbContext` in `api/Connect.Application/Common/Abstractions`. `ConnectDbContext` in
+   `api/Connect.Infrastructure/Persistence` implements it. EF Core's own `DbContext` already
    "implements both the Repository and the Unit of Work patterns" (Microsoft, n.d.-d), so
    `IAppDbContext` is a thin, testable contract in front of it, one handler per use case instead
    of one repository per kind of data.
