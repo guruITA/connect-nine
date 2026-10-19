@@ -302,5 +302,5 @@ The team signs here once the final version is agreed. Until then the table stays
 | Bayon Eerhart | | |
 | Nick Hoebe | | |
 | Wesley Oerlemans | | |
-| Gurpreet Singh | | |
+| Gurpreet Singh | Gurpreet Singh | 19 October 2026 |
 | Kelvin van Voorst | | |
