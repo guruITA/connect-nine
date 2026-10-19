@@ -46,7 +46,7 @@ Only the database. The check opens one connection to PostgreSQL and closes it ag
 }
 ```
 
-`failing` names only the checks that failed. The answer never holds an error text, a description, a duration, a version or a connection string, because the address is open to everyone. The real error goes to the log of the server, and the `traceId` finds that log line.
+`failing` names only the checks that failed. The answer never holds an error text, a description, a duration, a version or a connection string, because the address is open to everyone. The real error goes to the log of the server. The log line does not carry the `traceId` yet: linking an answer to its log line comes with the request id of #312.
 
 ### Agreed exception to the answer form
 
