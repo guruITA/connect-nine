@@ -63,7 +63,7 @@ Why the other options lost, from the tables above:
 - The four choices are closed for the rest of the project. Changing one later is a new decision file that replaces this one.
 - `docs/team/codeConventions.md` stays the rulebook. When it disagrees with this file after the agreement, the code conventions are changed in the same merge request.
 - The frontend folders by kind may get crowded when Connect grows past sprint 3. Moving to folders per feature is then a new decision.
-- The tables of ASP.NET Identity keep the names Identity gives them, such as `AspNetUsers` and `AspNetRoles`, as the code of !36 (#261) creates them, and so do their indexes `RoleNameIndex` and `UserNameIndex`. Their columns and keys are snake_case like every other table. This is not a new choice that reopens point 2: the code came first, and where the code and this file differ, the documents follow the code. A query on one of them writes the table name in double quotes: `SELECT email FROM "AspNetUsers"`.
+- The tables of ASP.NET Identity keep the names Identity gives them, such as `AspNetUsers` and `AspNetRoles`, as the code of !36 (#261) creates them, and so do their indexes `RoleNameIndex` and `UserNameIndex`. Their columns and keys are snake_case like every other table. A query on one of them writes the table name in double quotes: `SELECT email FROM "AspNetUsers"`. This is an exception to point 2, and the team agreed on it the way Nick Hoebe built it. It holds only for the tables Identity owns. Every table of our own stays snake_case.
 
 ## Agreed by
 
