@@ -17,15 +17,17 @@ Sprint 1 ended on 9 October 2026 with 19 of its issues open, 18 of them must, an
 **MS4 Making your work fit with the work of the team**
 - What I made: GitLab, the sprint goals, the delivery plan and the five milestones tell the same plan. Sprint 2 holds the first slice of sprint 1, the security analysis of Kelvin van Voorst and six school goals. Sprints 2, 3 and 4 hold 6, 13 and 12 school goals, so no sprint carries all school work: production and its monitoring in sprint 3, the DevOps demo, the architecture and the research in sprint 4.
 - How I checked it: after the change every open issue was read back from GitLab and compared with the plan, with its milestone and its sprint label. A check over all Is blocked by links finds one issue in a sprint before an issue it waits for: issue 106 (#38), which stays in Verify because its research proposals are done, while issues 85 and 10 moved to sprint 2. It finds no should or could in a sprint before the last must unless a must or a school goal waits for it.
-- TODO teammates: each owner of a moved datapoint issue (#65 and #67 Gurpreet Singh, #69, #72 and #187 Wesley Oerlemans) checks whether the datapoint still fits its new sprint, and every team member writes the date in decision 004.
+- Checked on 10 October 2026 for my own datapoint issues: #187, my custom datapoint of sprint 2, moved back from sprint 4 to sprint 2, because its experiment runs on a small program of its own and does not need the events of #129. That link is removed, and decision 004, the sprint goals and the delivery plan say so. #69 and #72 are back in sprint 2 too, where my personal development plan has them for the DevOps and Testing datapoint. School work follows the school planning and runs ahead of it: the research issues #188 to #190 and the peer review #192 moved from sprint 4 to sprint 2, before the review of the R and D report in sprint 3. A check over every Is blocked by link afterwards finds no issue before an issue it waits for, apart from #38.
+- TODO teammates: Gurpreet Singh checks whether the datapoints of #65 and #67 still fit their new sprint, and every team member writes the date in decision 004.
 
 ## TODO
 
 - [ ] Wesley: the weight finished in sprint 2 and what it changed in the plan of sprints 3 to 5 (MS1).
-- [ ] Gurpreet Singh and Wesley: check the datapoints of #65, #67, #69, #72 and #187 against their new sprint (MS4).
-- [ ] Every team member: write the date in the table Agreed by of decision 004.
-- [ ] After the merge: make the Figma page Issue pyramid again from GitLab (#1498).
-- [ ] After !35 and !37: add the row for this file to docs/wesley/README.md, which those two merge requests also change.
+- [x] Wesley: check the datapoints of #69, #72 and #187 against their new sprint (MS4, 10 October 2026).
+- [ ] Gurpreet Singh: check the datapoints of #65 and #67 against their new sprint (MS4).
+- [x] Every team member: decision 004 agreed at the sprint 1 review on 9 October 2026, all five dates in Agreed by.
+- [x] After the merge: make the Figma page Issue pyramid again from GitLab (#1498). Done on 9 October 2026: the pages Issue pyramid and Epics and features were drawn again from GitLab after the new plan, 250 cards, no text over the edge of a card.
+- [x] After !35 and !37: add the row for this file to docs/wesley/README.md, which those two merge requests also change. Done on 9 October 2026.
 
 ## AI use
 

@@ -41,4 +41,6 @@ Details per line: docs/team/definitionOfDone.md
 - [ ] Deploy: pipeline deploys without manual steps, MR names the version to go back to, health check OK, new settings in .env.example
 - [ ] Docs: architecture and address list up to date, choices in docs/decisions, BoKSA proof in the MR, AI use declared, lessons added to the issue
 
-<!-- Tasks are child items (template task), one per layer. Is blocked by and Blocks are Linked items, not text. Labels on the issue: type, epic, prio, sprint, and blocked when it applies. -->
+<!-- Tasks are child items (template task), one per layer. Is blocked by and Blocks are Linked items, not text. Labels on the issue: type, epic, prio, sprint, and blocked when it applies, plus project (added below). School work that adds nothing to Connect gets school-only instead of project. -->
+
+/label ~project

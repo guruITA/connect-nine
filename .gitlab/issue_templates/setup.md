@@ -20,4 +20,6 @@ Details per line: docs/team/definitionOfDone.md
 - [ ] A teammate checked it and wrote their name and the date in the issue.
 - [ ] The BoKSA proof is collected, and AI use is declared.
 
-<!-- Tasks are child items (template task). Is blocked by and Blocks are Linked items, not text. Labels on the issue: type, epic, prio, sprint, and blocked when it applies. -->
+<!-- Tasks are child items (template task). Is blocked by and Blocks are Linked items, not text. Labels on the issue: type, epic, prio, sprint, and blocked when it applies, plus project (added below). School work that adds nothing to Connect gets school-only instead of project. -->
+
+/label ~project

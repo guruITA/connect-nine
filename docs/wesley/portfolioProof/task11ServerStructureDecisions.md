@@ -27,6 +27,7 @@ School asks: "You give well-founded advice in which you weigh alternatives, iden
 1. **Two tables with five rows each.** Files for one new feature, what a beginner must learn, how a rule is unit tested without the database, what catches a mistake and the source. Every claim names a Microsoft page or is marked as an opinion.
 2. **The compiler proof.** Run on 8 October 2026 with the .NET SDK 10.0.401 on a throwaway copy: Domain gives CS0234 on `Connect.Infrastructure.Persistence.ConnectDbContext`, the project Connect builds the same line with 0 errors. Pasted in the decision file.
 3. **The .NET versions with their risk.** .NET 8 and .NET 9 run out on 10 November 2026, .NET 10 is newer with fewer examples for beginners. Next upgrade planned no later than May 2028.
+4. **Agreed by.** Merge request !42, branch `docs/1-sprint1-checklist-fixes`, fills the Agreed by table of `002-layeredArchitecture.md` for all five of us with 1 October 2026, the day the whole team decided the structure and CQRS. The whole team agreed `003-dotnet10.md` at the sprint 1 review on 9 October 2026, and all five rows carry that date. My own line of `dotnet --list-sdks` is in it: `10.0.401`. The lines of Bayon Eerhart, Nick Hoebe, Gurpreet Singh and Kelvin van Voorst are still open.
 
 ## AA5 Adapting the communication to each audience
 
@@ -39,7 +40,9 @@ School asks: "You adapt your communication to different target groups in form an
 
 ## TODO
 
-- [ ] Whole team: confirm both files at a stand up and fill in Agreed by. Write in #12 the date and who was there.
+- [x] Whole team: decision 002, decided together on 1 October 2026, Agreed by filled in.
+- [x] Whole team: `003-dotnet10.md` agreed at the sprint 1 review on 9 October 2026, written in #12.
+- [ ] Bayon, Nick, Gurpreet and Kelvin: your line of `dotnet --list-sdks` in #12.
 - [ ] Whole team: each writes the line of `dotnet --list-sdks` that starts with 10 in `003-dotnet10.md` and in #12.
 - [ ] Owner of #259: link both decision files from `docs/architecture/architecture.md`.
 

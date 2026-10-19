@@ -21,14 +21,14 @@ label of its sprint.
 
 | Sprint | Start | End | Issues | Must | Should | Could |
 |---|---|---|---|---|---|---|
-| Sprint 1 | Mon 21 Sep 2026 | Fri 9 Oct 2026 | 25 | 23 | 2 | 0 |
-| Sprint 2 | Mon 19 Oct 2026 | Fri 6 Nov 2026 | 30 | 25 | 5 | 0 |
-| Sprint 3 | Mon 9 Nov 2026 | Fri 27 Nov 2026 | 36 | 29 | 7 | 0 |
+| Sprint 1 | Mon 21 Sep 2026 | Fri 9 Oct 2026 | 26 | 24 | 2 | 0 |
+| Sprint 2 | Mon 19 Oct 2026 | Fri 6 Nov 2026 | 44 | 39 | 5 | 0 |
+| Sprint 3 | Mon 9 Nov 2026 | Fri 27 Nov 2026 | 38 | 31 | 7 | 0 |
 | Sprint 4 | Mon 30 Nov 2026 | Fri 18 Dec 2026 | 36 | 15 | 19 | 2 |
-| Sprint 5 | Mon 4 Jan 2027 | Fri 8 Jan 2027 | 20 | 20 | 0 | 0 |
+| Sprint 5 | Mon 4 Jan 2027 | Fri 8 Jan 2027 | 19 | 19 | 0 | 0 |
 | Without a sprint | | | 103 | 0 | 34 | 69 |
 
-Together that is all 250 issues of the board, in 21 epics, as GitLab holds them after the team
+Together that is all 266 issues of the board, in 21 epics, as GitLab holds them after the team
 planned sprints 2 to 5 again on 9 October 2026 in
 [decision 004](../decisions/004-replanAfterSprint1.md). The rules of that plan: what is done or
 waits in an open merge request stays, school goals come first and are spread over sprints 2
@@ -150,18 +150,24 @@ three account questions. The answers go under Client feedback in the sprint 1 mi
   than finished. The portfolio labels (outcome, level and direction) are on every task, and at
   datapoint time each member finds their evidence by filtering GitLab on those labels.
 
+School work that adds nothing to Connect has the label school-only and stands on the School board of its sprint, apart from the project board. Overview issues 183 to 188 (one per workshop and the sprint 4 check) and 189 to 195 (one per datapoint) list what the school asks and which issues belong to it, without deadlines of their own. School research is done locally, outside Connect.
+
 ## Sprint 2, 19 October to 6 November 2026
 
 The first slice of sprint 1 and what makes an account safe: issues 03 Create an account to 08
-See my own profile page, 03b, 04b, 06b, 14, 15, issue 113 Delete my account and all my data,
+See my own profile page, 03b, 04b, 06b, 14, 15, the tags on a profile and on another member's
+page of issues 36 and 36c, issue 113 Delete my account and all my data,
 the password reset of issues 21 and 22, the password change of issue 114, the check
 against leaked passwords of issue 116, and issue 130 A young person under 16 asks a parent for
 permission. Issue 20 starts Connect with one command, issue 17 adds the health check and issue
 16 the security scan. The security analysis of Kelvin van Voorst (issues 12, 13, 18 and 19) and
-the client meeting of issue 10 move here from sprint 1. School goals: issue 84 The DevOps
+the client meeting of issue 10 move here from sprint 1. School goals: issue 181 Knowledge test 1 in week 9 (26 to 30 October), issue 84 The DevOps
 learning outcomes agreed, issue 85 the evidence table per student, issue 176 the Scrum Master
-proof of sprint 2, issue 177 four ways of loading a profile, and issue 111 Two end to end test
-tools compared on one flow.
+proof of sprint 2, issue 177 four ways of loading a profile, issue 107 Three ways to give out the
+last event place, measured on a small program of its own, issues 108 to 110 (paging, image
+formats and the cost of password hashing), issue 111 Two end to end test tools compared on one
+flow, and issue 112 Every research report reviewed by a fellow student. The research runs ahead
+of the review of the R and D report in sprint 3.
 
 ## Sprint 3, 9 to 27 November 2026
 
@@ -178,34 +184,35 @@ deactivate and reactivate.
 What young people find, and the rest of the school deliverables:
 
 - **Events, opportunities, projects and news.** Issues 65 to 68b, 54 and 55, 60 to 64 with 61b and
-  62b, 48, and 71 and 71b. They are here in the same sprint as the research and the threat
-  model that measure them.
+  62b, 48, and 71 and 71b. They stay here for the MVP of this sprint. The research that measures
+  them moved to sprint 2 on 10 October 2026, because its experiments run on programs of their own.
 - **Site pages and admin.** Issues 50, 50b and 51, the friendly page of issue 53, and the
   activity log of issue 32.
 - **Production extras.** Issues 173 and 174, and the alert email of issue 100.
+- **Knowledge test 2.** Issue 182, in week 16 (14 to 18 December).
 - **DevOps evidence.** Issue 86 A recording of one change from commit to production and issue
   87 The live demo to the teacher.
 - **Architecture and security.** Issues 102 The architecture drawn in layers, parts and places,
   103 The design patterns Connect uses, where and why, 104 A threat model of adding an image to
   a project, and 105.
-- **Research.** Issues 107 Three ways to give out the last event place, 108 Two ways of paging
-  the showcases, 109 Image formats for project pictures, and 110 The cost of password hashing,
-  measured. Issue 112 Every research report reviewed by a fellow student closes the research in
-  this sprint.
 
 ## Sprint 5, 4 to 8 January 2027
 
-The last 20 musts of the project, all of them for the foundation: editing a profile and its tags
-(issues 33, 36b, 36c and 36d), the rest of the parent permission (130b and 131), the lock and
+First, repair and improvement before the final evaluation of week 17: what the sprint 4 review
+and the teachers ask is fixed, and every portfolio is completed. School work is finished in sprint
+4, so nothing of school is planned here. With the time that is left, the last 19 musts of the
+project, all of them for the foundation: editing a profile and its tags
+(issues 33, 36b and 36d), the rest of the parent permission (130b and 131), the lock and
 the email after fifteen wrong passwords (31, 31b and 29b), the rest of Discover and the requests
 (37b, 38 and 41c), searching members and the usage numbers (45b and 47), the privacy statement in
 Dutch (51b), the house rules (52), the rule that an account is a young person or an organisation
 (34b), member pages hidden from search engines (15b), the region message (07b) and issue 105b.
-With 23 weight in one week this sprint is 3 above the pace of decision 004. The team checks at
+With 22 weight in one week this sprint is 2 above the pace of decision 004. The team checks at
 the sprint 4 review whether that still holds.
 
 A handover session with the client, if he wants one, gets a date before the last sprint review
-as a GitLab milestone Handover (issue 10, task 10.7).
+as a GitLab milestone Handover (issue 10, task 10.7). What happens with the access to the server in
+that session is in [serverHandover.md](../client/serverHandover.md).
 
 ## Without a sprint
 
@@ -219,9 +226,10 @@ wait for a yes of the client in questions 9 and up of `docs/client/clientQuestio
 **Wesley Oerlemans, Research & Design.** The earlier plan had a draft R&D research piece to the
 learning group teacher by 5 October 2026. The approval of every student's research topic is now
 issue 106, in sprint 1. The event capacity race of the earlier plan is issue 107 Three ways to
-give out the last event place, measured, in sprint 4, because it waits
-for the events of sprint 3. The peer review of every report is issue
-112, in sprint 4. The research schedule was moved forward on 27 September 2026 so that it sits
+give out the last event place, measured, in sprint 2. Decision 004 first put it in sprint 4 to
+wait for the events, but on 10 October 2026 it moved back, because the experiment runs on a small
+program of its own with invented data. The peer review of every report is issue
+112, in sprint 2 since 10 October 2026, ahead of the review of the R and D report in sprint 3. The research schedule was moved forward on 27 September 2026 so that it sits
 closer to the level 3 datapoint sheet (Research & Design in sprint 1, Review of R&D Report in
 sprint 3). The exact Portflow deadlines for the proposal and the report are not in the
 material the team holds. Route: coach Karthik Srinivasan.
@@ -318,9 +326,7 @@ gantt
 
     section Research
     85 table and 106 topics     :r1, 2026-09-21, 2026-10-10
-    110 and 111 measured           :r2, 2026-10-19, 2026-11-07
-    107 measured                   :r3, 2026-11-09, 2026-11-28
-    108 and 109 measured, 112     :r4, 2026-11-30, 2026-12-19
+    107 to 111 measured, 112       :r2, 2026-10-19, 2026-11-07
 ```
 
 *Figure: the five sprints of the board, the four sprint review deadlines from DLO, the breaks,
