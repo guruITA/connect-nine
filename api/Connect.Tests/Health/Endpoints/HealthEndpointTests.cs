@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using NUnit.Framework;
 
-namespace Connect.Tests.Health;
+namespace Connect.Tests.Health.Endpoints;
 
 public sealed class HealthEndpointTests
 {
