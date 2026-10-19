@@ -23,7 +23,7 @@ Every step below ticks a box of #241. The point is that each of us can work on t
 
 1. Each of us follows Logging in: `ssh <your first name>@<the address in Logging in>`, and compares the fingerprint with the three in the guide.
 2. You should see a prompt such as `nick@connect:~$`.
-3. Each of us says the date of their first login with their own user. Wesley writes the five dates in the table First login per team member.
+3. Wesley's and Gurpreet's lines are already in the table First login per team member. Bayon, Nick and Kelvin each tell Wesley the date of their first login with their own user, and Wesley writes their lines, unless they add their own line through a small merge request, as part 10 of onboarding says and as Gurpreet did in !61.
 4. One of us runs `last -n 20` and `sudo journalctl -u ssh --since "7 days ago" | grep Accepted`. The output goes in the part Who logged in, and it shows our first names.
 
 ### 2. The padlock, on a phone and on a laptop
@@ -55,7 +55,7 @@ Gurpreet and Nick, who work on #14, and Gurpreet, who works on #23, hear that th
 
 ## After the meeting
 
-Wesley writes one comment on #241 with the date and who was there, ticks the boxes of #241, #239 and #10 that the meeting closed, and fills in the two tables of part 10.
+Wesley writes one comment on #241 with the date and who was there, ticks the boxes of #241, #239 and #10 that the meeting closed, and fills in the lines that are still missing in the two tables of part 10.
 
 ## AI use
 
