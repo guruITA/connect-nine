@@ -179,7 +179,7 @@ apiSpacer["⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
         handlers["[Component: Application]<br/>Command and query<br/>handlers per feature<br/>One folder per use<br/>case.<br/>Hand written handler<br/>contracts."]
         matching["[Component: Application]<br/>Matching<br/>MatchingService with<br/>IMatchStrategy.<br/>Proposal for FR2<br/>(community interaction<br/>and matching)."]
         domain["[Component: Domain]<br/>Entities and rules<br/>For example<br/>ProfileVisibility."]
-        infra["[Component: Infrastructure]<br/>AppDbContext and<br/>adapters<br/>EF Core with Npgsql,<br/>implements<br/>IAppDbContext.<br/>Adapters for the<br/>external services."]
+        infra["[Component: Infrastructure]<br/>ConnectDbContext and<br/>adapters<br/>EF Core with Npgsql,<br/>implements<br/>IAppDbContext.<br/>Adapters for the<br/>external services."]
     end
     spa -->|"JSON over HTTPS"| authn
     authn -->|"User with claims"| authz
@@ -250,7 +250,7 @@ The architecture workshop asks for at least three patterns, where each is used a
 | Pattern | Problem in Connect | Where it lives | Why it fits | The simpler option it beat |
 | --- | --- | --- | --- | --- |
 | CQRS by feature | In my assessment, Connect reads far more than it writes | One folder per use case in Application | In my assessment, a query selecting only public columns keeps private fields safe | One model for reads and writes (Microsoft, 2025a), though a profile read needs fewer columns |
-| Dependency injection | A handler must reach the data without depending on EF Core, so tests can swap it | The built-in service container of ASP.NET Core (Microsoft, 2026b) | Built in, nothing extra to maintain (Microsoft, 2026b) | A handler building its own AppDbContext, swappable only via constructor injection |
+| Dependency injection | A handler must reach the data without depending on EF Core, so tests can swap it | The built-in service container of ASP.NET Core (Microsoft, 2026b) | Built in, nothing extra to maintain (Microsoft, 2026b) | A handler building its own ConnectDbContext, swappable only via constructor injection |
 | Strategy for matching | Matching for FR2 is not designed yet | An IMatchStrategy in Application, injected into a MatchingService | A new algorithm can be added without changing the context (Refactoring.Guru, n.d.), though one strategy risks over-engineering (Hogeschool van Amsterdam, n.d.-a) | One method in MatchingService, rewritten at the first rule change |
 | Repository pattern, the option that lost | Data access, with one repository per aggregate holding that logic (Microsoft, 2018) | Nowhere, since the team chose CQRS on 1 October 2026 | I accept that EF Core's DbContext already gives one typed set per table, so a repository passes calls through | It lost to CQRS, at the price of a handler test on an in-memory SQLite database |
 

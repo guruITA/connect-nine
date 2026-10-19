@@ -21,7 +21,7 @@ This file is the source. When it changes, the templates in .gitlab/issue_templat
 - [ ] **No leftover code: nothing commented out, no debug output, and every TODO names an issue.**
   How to check: search the change for commented out code, console.log, Console.WriteLine and TODO. Every TODO names an issue number.
 - [ ] **The server keeps its layers apart: a handler reaches the data only through the contract IAppDbContext.**
-  How to check: no file in api/Connect.Presentation uses the database context or SQL. A handler in api/Connect.Application uses IAppDbContext, never AppDbContext, Npgsql or SQL text. The compiler already refuses Domain code that uses another project. See docs/decisions/002-layeredArchitecture.md.
+  How to check: no file in api/Connect.Presentation uses the database context or SQL. A handler in api/Connect.Application uses IAppDbContext, never ConnectDbContext, Npgsql or SQL text. The compiler already refuses Domain code that uses another project. See docs/decisions/002-layeredArchitecture.md.
 
 ### Tests
 

@@ -741,7 +741,7 @@ Key: a solid arrow points from a project or folder to what it holds, the dotted 
 
 **Cost.** In my assessment the compiler does not catch a missing registration, so it only shows when the app runs. AddDbContext registers a DbContext with a scoped lifetime by default (Microsoft, 2025b), and the framework creates a scope per request that stays valid as long as the request is active (Microsoft, 2026c). This means, in my assessment, that a longer-living service must not hold one.
 
-**Simpler option.** A handler that builds its own ConnectDbContext with new. Per the team's architecture document, that lost because only constructor injection makes a handler swappable in a test, against an in-memory SQLite ConnectDbContext. In my assessment, a handler that builds its own context always reaches the real database, so its test needs one too.
+**Simpler option.** A handler that builds its own ConnectDbContext with new. Per the team's architecture document, that lost because only constructor injection makes a handler swappable in a test, against an in-memory SQLite database behind IAppDbContext. In my assessment, a handler that builds its own context always reaches the real database, so its test needs one too.
 
 ### 7.3 Strategy for matching
 
@@ -864,7 +864,7 @@ Two neighbouring decisions have no record here. The React and .NET stack, which 
 
 **Options that lost.** The repository pattern. The team's architecture document grants it a real strength: EF Core's DbContext already does much of what a repository does, so a thin interface would have cost little. The same document names the price of CQRS, two models to maintain where the repository pattern has one. What tipped the balance, per that document, is Nick Hoebe's interest in CQRS. Section 7.4 gives my own reasons to accept the choice.
 
-**Consequences.** Per the team's architecture document, there are no repository classes or interfaces, and a handler is unit tested against an in-memory SQLite ConnectDbContext. In my assessment the cost is more files per feature and two shapes to learn, as section 7.1 says.
+**Consequences.** Per the team's architecture document, there are no repository classes or interfaces, and a handler is unit tested against an in-memory SQLite database behind IAppDbContext. In my assessment the cost is more files per feature and two shapes to learn, as section 7.1 says.
 
 ### 8.7 Hosting on the foundation's server
 
