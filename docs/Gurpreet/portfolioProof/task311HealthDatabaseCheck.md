@@ -147,7 +147,7 @@ What the address answers in each situation, measured on my laptop with the real 
 - **The test site.** I tested everything on my own laptop. Whether it also works on the test site, I can only show after the merge, when the pipeline puts it there.
 - **The tests in the pipeline.** The pipeline of the team does not run `dotnet test` yet. So my 20 green tests ran on my laptop, not in GitLab. That is a weak point of the pipeline, not of my code.
 
-> Write here: what you conclude about the quality, and what you would improve.
+**My conclusion.** The solution does what the task asks, and I can prove it. I measured instead of guessed: that is how I found the 15.45 seconds of `CanConnectAsync`. My tests really catch a mistake, because one failed when I broke the rule on purpose. But my own tests missed the pool problem; the review found it. From that I learned to also test what happens when something breaks after it first worked. What I would improve: the pipeline should run `dotnet test`, so the tests do not only run on my laptop. And with [#312](https://gitlab.fdmci.hva.nl/studio/social-impact-apps/onderwijs/projects/2026-2027-semester-1/projects/project-9-wail-salutem-foundation-project-2/connect-nine/-/work_items/312) every log line should get a request id, so the team can find the error of one request.
 
 ## OR5 Impact on users and society
 
@@ -159,13 +159,14 @@ I made sure the answer protects the people behind the platform: it never shows a
 
 Other facts: every call opens one connection to the database. The planned rate limit of [#1163](https://gitlab.fdmci.hva.nl/studio/social-impact-apps/onderwijs/projects/2026-2027-semester-1/projects/project-9-wail-salutem-foundation-project-2/connect-nine/-/work_items/1163) (sprint 4) leaves this address out.
 
-> Write here: your own judgment on the trade-off. Open, behind a key, or answering less? And what would change your mind?
+**My judgment.** I keep `/api/health` open. The pipeline and k3s must be able to check the platform without an account or a key, and a stranger learns almost nothing from it: only "works" or "does not work", no error, no password and no data of young people. My tests prove that. A key would also be extra work: it has to be stored safely somewhere, and once it leaks it is worth nothing.
+
+I would change my mind in two cases. If the address ever shows more, such as the number of members, that is sensitive information and it should go behind a key. And if someone misuses the address by calling it very often: every call opens a connection to the database, so that could put a heavy load on it. Then I would limit how often one visitor may call it, or put it behind a key.
 
 ## TODO
 
 What is still needed before this proof is complete. Tick a line when it is done.
 
-- [ ] Me: fill in the "Write here" parts under OR4 and OR5.
 - [ ] Me: after the merge, add the green pipeline and the curl answer of the test server under OR4.
 - [ ] Me: after [#312](https://gitlab.fdmci.hva.nl/studio/social-impact-apps/onderwijs/projects/2026-2027-semester-1/projects/project-9-wail-salutem-foundation-project-2/connect-nine/-/work_items/312), check that the log line of a failed check carries the request id.
 - [ ] Me: link merge request [!65](https://gitlab.fdmci.hva.nl/studio/social-impact-apps/onderwijs/projects/2026-2027-semester-1/projects/project-9-wail-salutem-foundation-project-2/connect-nine/-/merge_requests/65) and this file in Portflow under OR1, OR2, OR4 and OR5.
