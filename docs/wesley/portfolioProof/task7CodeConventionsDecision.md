@@ -1,7 +1,7 @@
 # Proof: task 1.6 The team confirms the code conventions (#7)
 
 Branch `docs/7-code-conventions-decision`. Issue: 01 The repository, the pipeline and the team rules (#1). File: `docs/decisions/001-codeConventions.md`.
-Profile: Full Stack Software Developer, level 3. Portflow: Analysing and Advising, AA4 and AA5.
+Profile: Full Stack Software Developer, level 3. Portflow: Analysing and Advising, AA4 and AA5, and for !59 Managing and Collaborating, MS4.
 
 A point that needs someone else is marked TODO with who and what.
 
@@ -24,6 +24,20 @@ School asks: "You adapt your communication to different target groups in form an
 3. **Left out on purpose.** The split of the server into layers, because that is #12 and a second place for the same choice would drift apart.
 4. **The question that showed a first explanation did not land.**
    - TODO Wesley: after the team moment, write the question and what changed in the file.
+
+## Merge request !59: the tables of ASP.NET Identity keep their own names
+
+Branch `docs/7-identity-table-names`. Files: `docs/decisions/001-codeConventions.md`, `docs/team/codeConventions.md` and `docs/architecture/architecture.md`.
+
+### MS4 Making the work fit with the work of the team
+
+School asks: "You ensure that your work aligns with that of others and contributes to the joint result."
+
+1. **The code and the documents differed.** The code of !36 (#261) creates the tables of ASP.NET Identity with the names Identity gives them, such as `AspNetUsers` and `AspNetRoles`, with snake_case columns and keys. Decision 001 and the code conventions said that every name in the database is snake_case.
+2. **The documents follow the code.** We do it the way Nick Hoebe built it, and fix it later if it turns out to be a problem (my decision of 14 October 2026). Decision 001 names the exception under Consequences, and so do database rule 1 of the code conventions and the short list of database rules in the architecture.
+3. **Told where the code was made.** My comment on !36 names the documents I updated.
+
+- TODO Wesley: after the merge, add !59 and MS4 to the row of this file in `docs/wesley/README.md`.
 
 ## TODO
 
