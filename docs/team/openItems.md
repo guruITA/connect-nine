@@ -134,10 +134,13 @@ Kept here so the history stays findable.
   and decisions 001, 003 and 004 were agreed by the whole team at the sprint 1 review on 9
   October 2026. Every table Agreed by in `docs/decisions/` carries those dates. Still open is the
   line of `dotnet --list-sdks` of Bayon, Nick, Gurpreet and Kelvin in issue 11 (#12).
-- **Names follow the code.** Where the code and the documents differed, the documents follow the
-  code since 14 October 2026: the DbContext is `ConnectDbContext`, the tables of ASP.NET
-  Identity keep their own names such as `AspNetUsers`, and a rule in Domain is tested in
-  `Connect.Application.Tests/Domain`, because there is no `Connect.Domain.Tests`.
+- **Nick's .NET code sets the way.** Nick Hoebe has the most experience with .NET in the team,
+  so the team agreed that where his .NET code and a document differ, the document is updated to
+  his code, and whoever updates it names the documents in a comment on his merge request. Since
+  14 October 2026 that gave: the DbContext is `ConnectDbContext`, the tables of ASP.NET Identity
+  keep their own names such as `AspNetUsers`, and a rule in Domain is tested in
+  `Connect.Application.Tests/Domain`, because there is no `Connect.Domain.Tests`. Other code
+  does not change a decision file by landing first: the team decides such a difference.
 - **Login on the server.** Decided on 14 October 2026: during the project only the five of us log
   in, each with our own key, and password login is off. The client does not log in to the server.
   He keeps the Strato customer login, where he can reset the whole server, and the server holds
