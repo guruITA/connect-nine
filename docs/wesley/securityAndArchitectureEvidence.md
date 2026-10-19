@@ -51,14 +51,14 @@ The datapoint description names five kinds of evidence, taken one by one below.
 
 Per the team's architecture document, the backend is a layered architecture in four projects: Presentation, Application, Domain and Infrastructure, where layers may only talk to those allowed (Microsoft, 2021). My project references enforce that, meeting issue 12 (one clear structure for new developers), so a forbidden reference does not compile. Inside Application the whole team chose CQRS by feature on 1 October 2026.
 
-The diagram below draws the dependency rule of section 5.1 of the architecture document, for the four projects and the test project Connect.Tests. Every solid arrow points inward, towards Domain.
+The diagram below draws the dependency rule of section 5.1 of the architecture document, for the four projects and their test projects. Every solid arrow points inward, towards Domain.
 
 ```mermaid
 %%{init: {'flowchart': {'wrappingWidth': 220, 'padding': 20, 'nodeSpacing': 40, 'rankSpacing': 60}, 'themeVariables': {'fontSize': '14px'}}}%%
 flowchart TB
 presentation["Presentation<br/>Minimal API endpoints and<br/>checks on the shape of<br/>the input."]
-tests["Connect.Tests<br/>Handler tests on an<br/>in-memory SQLite database,<br/>integration tests on a<br/>real PostgreSQL."]
-infrastructure["Infrastructure<br/>The only project that<br/>reaches the database and<br/>the external services,<br/>through AppDbContext."]
+tests["The test projects<br/>One per layer, handler tests<br/>on an in-memory SQLite<br/>database, Connect.Tests for<br/>the whole server."]
+infrastructure["Infrastructure<br/>The only project that<br/>reaches the database and<br/>the external services,<br/>through ConnectDbContext."]
 application["Application<br/>The rules of each feature,<br/>CQRS by feature. Owns<br/>the contract IAppDbContext."]
 domain["Domain<br/>What things are and which<br/>rules always hold, such as<br/>ProfileVisibility.<br/>References nothing."]
 presentation -->|"Calls"| application
@@ -217,7 +217,7 @@ participant caddy as Caddy
 participant authn as Authentication
 participant authz as Policies and handlers
 participant ep as MemberProfileEndpoints
-participant qh as GetPublicMemberProfileHandler
+participant qh as GetPublicMemberProfileQueryHandler
 participant ctx as IAppDbContext
 participant db as PostgreSQL 16
 spa->>caddy: GET /api/member-profiles/{id}

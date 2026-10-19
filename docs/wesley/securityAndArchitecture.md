@@ -142,7 +142,7 @@ The table lists the architecture decisions taken so far, who took them, when, an
 | CQRS (command query responsibility segregation) by functionality over the repository pattern, in four projects | The whole team | 1 October 2026 | The team's architecture document |
 | A Strato VPS (virtual private server) in Germany, lent by the foundation | The foundation | Received 2 October 2026 | The team's infrastructure and onboarding documents |
 
-Per the team's architecture document, the backend is layered in four projects, Presentation, Application, Domain and Infrastructure, with the tests in Connect.Tests. Per the team's onboarding guide (`docs/team/onboarding.md`, section 10), the server runs Ubuntu 24.04 LTS (long-term support) with Docker and Docker Compose and has no containers yet. Per the team's infrastructure document (`docs/architecture/infrastructure.md`), Caddy is already chosen as the front door for both environments, task 9.4 for the test site and kept for production by task 95.3, and issue 239 (Caddy at the front door with a self-renewing certificate) asks for its self-renewing certificate. Records 8.8 and 8.11 add that production now plans to run Traefik, k3s's own reverse proxy, behind Caddy. Neither is set up on the server yet.
+Per the team's architecture document, the backend is layered in four projects, Presentation, Application, Domain and Infrastructure, with one test project per layer and Connect.Tests for the tests across projects. Per the team's onboarding guide (`docs/team/onboarding.md`, section 10), the server runs Ubuntu 24.04 LTS (long-term support) with Docker and Docker Compose and has no containers yet. Per the team's infrastructure document (`docs/architecture/infrastructure.md`), Caddy is already chosen as the front door for both environments, task 9.4 for the test site and kept for production by task 95.3, and issue 239 (Caddy at the front door with a self-renewing certificate) asks for its self-renewing certificate. Records 8.8 and 8.11 add that production now plans to run Traefik, k3s's own reverse proxy, behind Caddy. Neither is set up on the server yet.
 
 Two points that touch the architecture are open. Per the team's delivery plan, the authorization design for NFR1 (authentication and authorization) is owned by Kelvin van Voorst and due at the latest at the sprint 1 review, week of 5 October 2026. Per the requirements document, it includes whether minors' profiles are restricted differently from adults' profiles. The role table per module still has to be confirmed by the team in issue 337 (confirming the role table). Per the requirements document, our users are 15 to 30, so some of them are minors, and NFR2 (GDPR footing) adds GDPR (General Data Protection Regulation) obligations for their data.
 
@@ -237,13 +237,13 @@ Per the team's architecture document, the backend is a layered architecture with
 
 In my design the dependencies point inward: Domain references nothing, Application references Domain and owns the contract IAppDbContext, and Infrastructure implements it. Presentation calls Application and, in my design, registers Infrastructure at start-up only. A layered architecture lets an application enforce which layers may communicate with which (Microsoft, 2021). In my design the project references do that, so a reference the design forbids does not compile. That is what issue 12 (one clear structure for new developers) asks for: a structure four new developers can follow and a later developer can keep.
 
-The diagram below draws this rule for the four projects and Connect.Tests, the test project of record 8.2. Each arrow points from the project that holds the reference to the project it depends on. Every solid arrow points inward, towards Domain.
+The diagram below draws this rule for the four projects and their test projects of record 8.2. Each arrow points from the project that holds the reference to the project it depends on. Every solid arrow points inward, towards Domain.
 
 ```mermaid
 %%{init: {'flowchart': {'wrappingWidth': 220, 'padding': 20, 'nodeSpacing': 40, 'rankSpacing': 60}, 'themeVariables': {'fontSize': '14px'}}}%%
 flowchart TB
 presentation["Presentation<br/>Minimal API endpoints and<br/>checks on the shape of<br/>the input."]
-tests["Connect.Tests<br/>Handler tests on an<br/>in-memory SQLite database,<br/>integration tests on a<br/>real PostgreSQL."]
+tests["The test projects<br/>One per layer, handler tests<br/>on an in-memory SQLite<br/>database, Connect.Tests for<br/>the whole server."]
 infrastructure["Infrastructure<br/>The only project that<br/>reaches the database and<br/>the external services,<br/>through ConnectDbContext."]
 application["Application<br/>The rules of each feature,<br/>CQRS by feature. Owns<br/>the contract IAppDbContext."]
 domain["Domain<br/>What things are and which<br/>rules always hold, such as<br/>ProfileVisibility.<br/>References nothing."]
@@ -466,7 +466,7 @@ classDiagram
         <<Application>>
         +Guid ProfileId
     }
-    class GetPublicMemberProfileHandler {
+    class GetPublicMemberProfileQueryHandler {
         <<Application>>
         -IAppDbContext db
         +HandleAsync(query, ct) Task~PublicMemberProfileDto~
@@ -484,11 +484,11 @@ classDiagram
     }
     class IAppDbContext {
         <<interface>>
-        +DbSet~MemberProfile~ MemberProfiles
+        +IQueryable~MemberProfile~ MemberProfiles
     }
     class ConnectDbContext {
         <<Infrastructure>>
-        +DbSet~MemberProfile~ MemberProfiles
+        +IQueryable~MemberProfile~ MemberProfiles
     }
     class MemberProfile {
         <<Domain>>
@@ -510,15 +510,15 @@ classDiagram
         From18To21
         From22To30
     }
-    MemberProfileEndpoints ..> GetPublicMemberProfileHandler
+    MemberProfileEndpoints ..> GetPublicMemberProfileQueryHandler
     MemberProfileEndpoints ..> ViewMemberProfileRequirement
     ViewMemberProfileHandler ..> ViewMemberProfileRequirement
     ViewMemberProfileHandler ..> PublicMemberProfileDto
-    IQueryHandler <|.. GetPublicMemberProfileHandler
-    GetPublicMemberProfileHandler ..> GetPublicMemberProfileQuery
-    GetPublicMemberProfileHandler ..> PublicMemberProfileDto
-    GetPublicMemberProfileHandler --> IAppDbContext
-    GetPublicMemberProfileHandler ..> ProfileVisibility
+    IQueryHandler <|.. GetPublicMemberProfileQueryHandler
+    GetPublicMemberProfileQueryHandler ..> GetPublicMemberProfileQuery
+    GetPublicMemberProfileQueryHandler ..> PublicMemberProfileDto
+    GetPublicMemberProfileQueryHandler --> IAppDbContext
+    GetPublicMemberProfileQueryHandler ..> ProfileVisibility
     IAppDbContext <|.. ConnectDbContext
     IAppDbContext ..> MemberProfile
     MemberProfile --> AgeBand
@@ -527,15 +527,15 @@ classDiagram
 
 Key: the stereotype of each class names its project. A dotted arrow is a use, a solid arrow is a field, a hollow triangle is an implementation. Region and Bio may be empty. The diagram leaves every relationship unlabelled so no line is drawn through its own text, and this list carries the names instead, source to target.
 
-- MemberProfileEndpoints to GetPublicMemberProfileHandler: calls.
+- MemberProfileEndpoints to GetPublicMemberProfileQueryHandler: calls.
 - MemberProfileEndpoints to ViewMemberProfileRequirement: checks through IAuthorizationService.
 - ViewMemberProfileHandler to ViewMemberProfileRequirement: handles.
 - ViewMemberProfileHandler to PublicMemberProfileDto: resource.
-- GetPublicMemberProfileHandler to IQueryHandler: implements.
-- GetPublicMemberProfileHandler to GetPublicMemberProfileQuery: handles.
-- GetPublicMemberProfileHandler to PublicMemberProfileDto: returns.
-- GetPublicMemberProfileHandler to IAppDbContext: reads through.
-- GetPublicMemberProfileHandler to ProfileVisibility: applies.
+- GetPublicMemberProfileQueryHandler to IQueryHandler: implements.
+- GetPublicMemberProfileQueryHandler to GetPublicMemberProfileQuery: handles.
+- GetPublicMemberProfileQueryHandler to PublicMemberProfileDto: returns.
+- GetPublicMemberProfileQueryHandler to IAppDbContext: reads through.
+- GetPublicMemberProfileQueryHandler to ProfileVisibility: applies.
 - ConnectDbContext to IAppDbContext: implements.
 
 In my design a request runs through five steps:
@@ -562,7 +562,7 @@ participant caddy as Caddy
 participant authn as Authentication
 participant authz as Policies and handlers
 participant ep as MemberProfileEndpoints
-participant qh as GetPublicMemberProfileHandler
+participant qh as GetPublicMemberProfileQueryHandler
 participant ctx as IAppDbContext
 participant db as PostgreSQL 16
 spa->>caddy: GET /api/member-profiles/{id}
@@ -701,7 +701,7 @@ The architecture workshop asks for at least three meaningful patterns, with wher
 
 **Problem.** As I see it, Connect reads far more than it writes. In my design a read needs only the public columns, fast, and a write needs validation and rules. Microsoft names the catch of one model for both: the read and write representations of data often differ, and fields a write needs can be unnecessary for a read (Microsoft, 2025a).
 
-**Where.** Per the team's architecture document, in Application, in the layout Features/Feature/UseCase, with the command or query and its handler in one folder. The document gives CreateAccountCommand beside CreateAccountHandler as its example, and mine is GetPublicMemberProfileQuery beside its handler. In the same document the contracts ICommandHandler and IQueryHandler are hand written, without a library. Both sides use the same database.
+**Where.** Per the team's architecture document, in Application, in the layout Area/UseCase, with the command or query, its handler and its result in one folder. The document gives CreateAccountCommand beside CreateAccountCommandHandler in Accounts/CreateAccount as its example, the way the account code of the team has it, and mine is GetPublicMemberProfileQuery beside its handler in Profiles. In the same document the contracts ICommandHandler and IQueryHandler are hand written in Common/Abstractions, without a library. Both sides use the same database.
 
 The tree below draws this layout, with my example in one use case folder.
 
@@ -709,20 +709,18 @@ The tree below draws this layout, with my example in one use case folder.
 %%{init: {'flowchart': {'wrappingWidth': 220, 'padding': 20, 'nodeSpacing': 40, 'rankSpacing': 50}, 'themeVariables': {'fontSize': '14px'}}}%%
 flowchart TB
 application["Application"]
-features["Features"]
-feature["Feature"]
+area["Area<br/>For example Profiles"]
 useCase["UseCase<br/>One folder per use case"]
 query["The command or query<br/>For example<br/>GetPublicMemberProfileQuery"]
-handler["Its handler<br/>For example<br/>GetPublicMemberProfileHandler"]
-contracts["ICommandHandler or<br/>IQueryHandler<br/>Hand written contracts,<br/>without a library."]
-application --> features
-features --> feature
-feature --> useCase
+handler["Its handler<br/>For example<br/>GetPublicMemberProfileQueryHandler"]
+contracts["ICommandHandler or<br/>IQueryHandler<br/>Hand written contracts<br/>in Common/Abstractions,<br/>without a library."]
+application --> area
+area --> useCase
 useCase --> query
 useCase --> handler
 handler -.->|"Implements"| contracts
 classDef component fill:#85bbf0,color:#000000,stroke:#5d82a8
-class application,features,feature,useCase,query,handler,contracts component
+class application,area,useCase,query,handler,contracts component
 ```
 
 Key: a solid arrow points from a project or folder to what it holds, the dotted arrow is an implementation.
@@ -814,7 +812,7 @@ Two neighbouring decisions have no record here. The React and .NET stack, which 
 
 **Context.** Per the team's architecture document, four of five developers are new to .NET. Issue 12 (one clear structure for new developers) asks for a structure they can follow and a later developer can keep.
 
-**Decision.** Four projects, Presentation, Application, Domain and Infrastructure, plus Connect.Tests, with the references of section 5.1.
+**Decision.** Four projects, Presentation, Application, Domain and Infrastructure, plus a test project per layer and Connect.Tests for the tests across projects, with the references of section 5.1.
 
 **Options that lost.** One project with four folders. The team's architecture document first proposed it, as realistic for the skill level of the team. Issue 254 (recording the chosen server structure) gives the reason it lost. In my assessment, a project can only use another project through a reference in its project file, so the compiler refuses a wrong dependency. In my assessment, with one project and four folders only a reviewer would notice that mistake, and a beginner under time pressure would not. Issue 253 (one real request through the four projects) asks the team to compare the options side by side while walking one real request through the projects. Sections 6.3 and 6.4 give the same kind of walk for the profile request of issue 343 (viewing another member's public profile).
 
