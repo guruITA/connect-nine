@@ -133,15 +133,15 @@ PostgreSQL is the database. EF Core (Entity Framework Core) is the C# library th
 
 ### Names
 
-1. Everything in lower case with _ between words (snake_case), which PostgreSQL handles best: member_profile, created_at. The tables of ASP.NET Identity are the one exception: they keep the names Identity gives them, such as AspNetUsers and AspNetRoles, so a query writes them in double quotes. Their columns are snake_case. (tool: EFCore.NamingConventions)
-2. Tables in the singular: account, member_profile, event. A table that links two others gets both names: event_member. (reviewer)
+1. Everything in lower case with _ between words (snake_case), which PostgreSQL handles best: member_profile, created_at. The tables of ASP.NET Identity are the one exception: they keep the names Identity gives them, such as AspNetUsers and AspNetRoles, and so do their indexes RoleNameIndex and UserNameIndex, so a query writes them in double quotes. Their columns are snake_case. (tool: EFCore.NamingConventions)
+2. Tables in the singular: member_profile, event. A table that links two others gets both names: event_member. The tables of ASP.NET Identity keep their own names (rule 1), so the accounts are in AspNetUsers. (reviewer)
 3. Primary key: id. A column that points to another table: `<other table>_id`, for example member_profile.account_id. (reviewer)
 4. Time columns end in _at and are timestamptz in UTC: created_at, updated_at. Yes or no columns start with is_ or has_: is_active. (reviewer)
 5. Indexes: `ix_<table>_<columns>`, and unique ones `ux_<table>_<columns>`: ux_account_email. (reviewer)
 
 ### How we work with it
 
-6. C# stays PascalCase and the database stays snake_case. The package EFCore.NamingConventions with UseSnakeCaseNamingConvention() translates between the two, so nobody types a table name by hand. (tool: EFCore.NamingConventions)
+6. C# stays PascalCase and the database stays snake_case. The package EFCore.NamingConventions with UseSnakeCaseNamingConvention() translates between the two, so nobody types a table name by hand. The one exception is the table names of ASP.NET Identity of rule 1. (tool: EFCore.NamingConventions)
 7. Tables only change through EF Core migrations, named after the change: AddAccountTable, AddIsActiveToAccount. A migration that is already on dev is never edited, you add a new one. (reviewer)
 8. Ids are uuid, so nobody can find the next member by counting up. Text is text, not varchar(n), unless the length is a real rule. Email addresses are citext, so upper and lower case count as the same address. (reviewer)
 9. Queries only through EF Core. Raw SQL only with parameters, never by gluing text together. A query that only reads uses AsNoTracking(). A list is always fetched in pages. (reviewer)
