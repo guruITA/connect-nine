@@ -1,9 +1,9 @@
 # Proof: task 17.1 The health address checks the database (#311)
 
-Merge request: the merge request of branch `feature/311-health-database-check` into `dev`. Issue: 17 Connect says plainly whether it is healthy (#23).
+Merge request: !65, branch `feature/311-health-database-check` into `dev`. Issue: 17 Connect says plainly whether it is healthy (#23).
 Profile: Full Stack Software Developer, level 3. Link the merge request and this file in Portflow under the codes below.
 
-What I made: `GET /api/health` now answers `200 {"status":"healthy"}` only when the server can reach PostgreSQL. When it cannot, it answers `503` as ProblemDetails that names only the failing check. The check is `api/Connect.Infrastructure/Health/DatabaseHealthCheck.cs`, the answer is `api/Connect.Presentation/Health/Endpoints/HealthAnswerWriter.cs`, and `docs/architecture/api.md` describes both answers.
+What I made: `GET /api/health` now answers `200 {"status":"healthy"}` only when the server can reach PostgreSQL at the moment of the call: every call opens a new connection, not one from the pool. When it cannot, it answers `503` as ProblemDetails that names only the failing check. The check is `api/Connect.Infrastructure/Health/DatabaseHealthCheck.cs`, the answer is `api/Connect.Presentation/Health/Endpoints/HealthAnswerWriter.cs`, and `docs/architecture/api.md` describes both answers.
 
 ## Which codes this task proves
 
@@ -37,6 +37,8 @@ School asks: "You design and realize in a systematic way, justify choices in rel
 
 3. **What I changed after a test.** The task asked for `Database.CanConnectAsync`. I measured it with the test `CheckHealthAsync_DatabaseNeverAnswers_ReturnsUnhealthyWithinFourSeconds`, which starts a server that accepts the connection and never answers, like a database that hangs. With `CanConnectAsync` the check took **15.45 seconds**, because Npgsql keeps waiting for its own default timeout of 15 seconds and ignores the cancel of the health check. That breaks the rule of the task: down after three seconds, and a 503 within five seconds. `CanConnectAsync` also swallows the error, so the log could not say why. The check now opens its own `NpgsqlConnection` with `Timeout=3`. With that, the same test passes, and the real app answers `503` after 3.55 seconds.
 
+4. **What I changed after the review.** The review of the merge request found that the check still said healthy after the database went down. Npgsql keeps closed connections in a pool and hands one back on the next open without asking the server. I reproduced it: the real app answered `200` while the database ran, I stopped the database, and the next three calls still answered `200`. All my tests started with a database that was never reachable, so none of them showed this. The check now sets `Pooling=false`, so every check opens a real new connection. The new test `CheckHealthAsync_DatabaseGoesDownAfterHealthyCheck_ReturnsUnhealthy` puts a relay in front of the real database, checks once, takes the relay away, and checks again. Without `Pooling=false` it failed with `Expected: Unhealthy, But was: Healthy`. With it, it passes, and the real app answers `503` right after the database stops.
+
 ## OR2 Choosing standards and methods
 
 School asks: "You select relevant standards and methods and explain why they fit."
@@ -58,7 +60,7 @@ School asks: "You validate the solution systematically, evaluate the quality cri
 | `HealthAnswerWriterTests.WriteAsync_UnhealthyWithSecretInException_LeavesOutEveryDetail` | The 503 holds no exception, description, duration or password |
 | `HealthAnswerWriterTests.WriteAsync_AnyStatus_SetsNoStore` | Every answer has `Cache-Control: no-store` |
 | `HealthEndpointTests` (Presentation) | 200 without login, 503 naming `database`, `POST` gives 405 |
-| `HealthDatabaseTests` (Infrastructure) | Healthy against the real database, Unhealthy when nothing listens, Unhealthy within four seconds when the database never answers |
+| `HealthDatabaseTests` (Infrastructure) | Healthy against the real database, Unhealthy when nothing listens, Unhealthy within four seconds when the database never answers, Unhealthy when the database goes down after a healthy check |
 | `Connect.Tests.Health.HealthEndpointTests` | The whole app with `Port=5499` answers 503 naming `database` within five seconds, without `secret` in the body |
 
 `dotnet test` on 19 October 2026, against PostgreSQL 16:
@@ -67,7 +69,7 @@ School asks: "You validate the solution systematically, evaluate the quality cri
 Passed!  - Failed: 0, Passed: 1, Total: 1 - Connect.Application.Tests.dll
 Passed!  - Failed: 0, Passed: 8, Total: 8 - Connect.Presentation.Tests.dll
 Passed!  - Failed: 0, Passed: 2, Total: 2 - Connect.Tests.dll
-Passed!  - Failed: 0, Passed: 8, Total: 8 - Connect.Infrastructure.Tests.dll
+Passed!  - Failed: 0, Passed: 9, Total: 9 - Connect.Infrastructure.Tests.dll
 ```
 
 **The test that fails when its rule is removed.** I put the message of the exception into the 503 body. `WriteAsync_UnhealthyWithSecretInException_LeavesOutEveryDetail` failed:
@@ -86,6 +88,7 @@ Database up:          HTTP/1.1 200 OK, Cache-Control: no-store, {"status":"healt
 Database down:        HTTP/1.1 503 Service Unavailable, Content-Type: application/problem+json, Cache-Control: no-store
                       {"type":"https://tools.ietf.org/html/rfc9110#section-15.6.4","title":"Connect is not healthy","status":503,"failing":["database"],"traceId":"00-..."}
 Database never answers: 503 after 3.55 seconds
+Database stops while the app runs: 200 before the stop, 503 on each of the three calls after it
 POST /api/health:     HTTP/1.1 405 Method Not Allowed, Allow: GET
 ```
 
@@ -110,6 +113,7 @@ What is still needed before this proof is complete. Tick a line when it is done.
 - [ ] Me: fill in the "Write here" parts under OR1, OR2, OR4 and OR5.
 - [ ] Me: after the merge, add the green pipeline and the curl answer of the test server under OR4.
 - [ ] Me: after #312, check that the log line of a failed check carries the request id.
+- [ ] Me: link merge request !65 and this file in Portflow under OR1, OR2, OR4 and OR5.
 
 ## AI use
 
