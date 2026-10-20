@@ -32,8 +32,8 @@ One file per task I did, with the proof block of the task filled in. A point tha
 | `portfolioProof/task3MainOnlyFromDev.md` | Task 1.2 Dev and main protected (#3), merge request !2 | Managing and Collaborating MS1 and MS4 |
 | `portfolioProof/task16DependencyScan.md` | Task 16.1 The security scan (#308), merge request !30, and task 16.2 The red scan on purpose (#309), merge request !31 | Managing and Collaborating (#308), Designing and Realising (#309) |
 | `portfolioProof/task1519SprintReview1Documents.md` | Issue 1519 The sprint 1 review documents in the repository (#1519), merge requests !43, !44 and !45 | Managing and Collaborating MS1 |
-| `portfolioProof/task1465CqrsRewording.md` | Task 11.4 The tasks of every next sprint reworded to the CQRS shape (#1465), merge request !62 | Managing and Collaborating MS4 |
 | `portfolioProof/task1543TestsAndMocking.md` | Task 3.12 The code conventions for tests and NSubstitute (#1543), merge request !77 | Managing and Collaborating MS1 and MS4 |
+| `portfolioProof/task1465CqrsRewording.md` | Task 11.4 The tasks of every next sprint reworded to the CQRS shape (#1465), merge request !62 | Managing and Collaborating MS4 |
 
 ## The full documents behind them
 
