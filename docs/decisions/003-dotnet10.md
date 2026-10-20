@@ -38,7 +38,7 @@ Each member runs `dotnet --list-sdks` and writes the line that starts with 10.
 | Name | Date agreed | Line from dotnet --list-sdks |
 |---|---|---|
 | Bayon Eerhart | 9 October 2026 | |
-| Nick Hoebe | 9 October 2026 | |
+| Nick Hoebe | 9 October 2026 | 10.0.401 [C:\Program Files\dotnet\sdk] |
 | Wesley Oerlemans | 9 October 2026 | 10.0.401 |
 | Gurpreet Singh | 9 October 2026 | |
 | Kelvin van Voorst | 9 October 2026 | |

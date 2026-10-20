@@ -353,6 +353,27 @@ audit of 27 September 2026. The endpoints themselves are listed in `docs/archite
    `/api/member-profiles/{id}`. What goes in and out are records named `...Request` and
    `...Response`, and a database entity is never sent straight to the browser.
 
+### Application results and HTTP errors
+
+Expected business outcomes cross from Application to Presentation through the shared
+`Result`/`Result<T>` types in `api/Connect.Application/Common/Results`. Application returns a
+semantic `ErrorCode`, such as `Conflict` or `NotFound`, without knowing about HTTP. Presentation
+maps that code to an RFC 9457 `ProblemDetails` response. A conflict therefore remains HTTP 409,
+but its body is still `ProblemDetails`, as required by rule 3 above.
+
+Unexpected exceptions are handled at the HTTP boundary by the global exception middleware in
+`api/Connect.Presentation/Common/Errors`. It returns a generic 500 `ProblemDetails` for unknown
+exceptions and a 503 `ProblemDetails` when a database exception is present in the exception chain.
+Database-specific constraint translation stays in Infrastructure: the account identity adapter
+checks PostgreSQL's structured SQL state and constraint name before returning `Error.Conflict`.
+
+Application handlers normally use `IAppDbContext` for persistence. The account handler currently
+uses `UserManager<Account>` in Application as a deliberate semester-sized compromise: its
+business decisions and Result mapping remain in Application, while the Identity implementation
+is supplied by Infrastructure's dependency registration. The future Identity abstraction remains
+only a proposal in `docs/future-improvements/003-abstract-aspnet-identity.md`. Unexpected database
+exceptions pass to the global exception middleware and become 503 responses.
+
 Research issue 108 Two ways of paging the showcases, measured compares paging by page number with
 paging by cursor. Connect keeps page numbers unless that result shows a real problem, and then only
 through a new issue.

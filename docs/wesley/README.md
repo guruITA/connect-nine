@@ -18,6 +18,7 @@ One file per task I did, with the proof block of the task filled in. A point tha
 | --- | --- | --- |
 | `portfolioProof/task266BuildAndTest.md` | Task 3.8 Build and test in the pipeline (#266), merge request !54 | Managing and Collaborating MS1 and MS4 |
 | `portfolioProof/task1499FigmaBoardInTeamDocs.md` | Task 179.1 The team documents follow the new Figma board (#1499), merge request !37 | Managing and Collaborating MS1 and MS4 |
+| `portfolioProof/task38CollaborationAgreementDeclaration.md` | Issue 106 My documents end with the text of section 9.1 of the collaboration agreement (#38), merge request !57 | Managing and Collaborating MS4 |
 | `portfolioProof/task2RepositorySkeleton.md` | Task 1.1 The starting structure (#2), merge request !13 | Managing and Collaborating MS1 and MS4 |
 | `portfolioProof/task1497PrototypeInPageDocs.md` | Task 178.1 The page documents point to the prototype screens (#1497), merge request !35 | Managing and Collaborating MS1 and MS4 |
 | `portfolioProof/task9LoggedAfterwards.md` | Task 9 Templates and rules (#9), work logged afterwards as issues #1500 to #1515, merge request !39 | Managing and Collaborating MS1 and MS4 |
@@ -33,6 +34,7 @@ One file per task I did, with the proof block of the task filled in. A point tha
 | `portfolioProof/task16DependencyScan.md` | Task 16.1 The security scan (#308), merge request !30, and task 16.2 The red scan on purpose (#309), merge request !31 | Managing and Collaborating (#308), Designing and Realising (#309) |
 | `portfolioProof/task1519SprintReview1Documents.md` | Issue 1519 The sprint 1 review documents in the repository (#1519), merge requests !43, !44 and !45 | Managing and Collaborating MS1 |
 | `portfolioProof/task1465CqrsRewording.md` | Task 11.4 The tasks of every next sprint reworded to the CQRS shape (#1465), merge request !62 | Managing and Collaborating MS4 |
+| `portfolioProof/task1537IdentityTables.md` | Task 3.10 The database rules say what the Identity tables have (#1537), merge request !66 | Managing and Collaborating MS4 |
 
 ## The full documents behind them
 
@@ -50,4 +52,5 @@ One file per task I did, with the proof block of the task filled in. A point tha
 
 ## AI use declaration
 
-AI was used as a writing support tool while working on this document. I used AI to draft the formulation of sentences, the structure of wording, readability, and clarity from content that I had provided. The content itself, including my experiences, reflections, learning goals, decisions, self-assessments, and conclusions, is my own. I reviewed the drafts and decided which text to include.
+AI was used as a writing support tool while working on this document. We used AI to improve the formulation of sentences, the structure of wording, readability, and clarity of text that we had written. The content itself, including our experiences, reflections, learning goals, decisions, self-assessments, and conclusions, is our own. We reviewed the suggested changes and decided as a team
+which improvements to include.

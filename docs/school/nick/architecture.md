@@ -1,9 +1,32 @@
-# Backend Architecture
+# Nick's Architecture Evidence: Backend Architecture
 
 > **Scope:** The current backend in `api/`  
 > **Purpose:** Explain why the backend is structured this way and how a request moves
 > through it. This document focuses on the main ideas instead of listing every
 > implementation detail.
+
+## My contribution
+
+I led the design and documentation of the backend architecture. I created this
+architecture explanation, the project dependency diagram, and the user-creation request
+flow. I compared the explanation with most of the files in `api/` and used the implemented
+create-user flow as a concrete example of how the architecture works in practice.
+
+The architecture was not decided by me in isolation. I discussed the structure with the
+team, asked for feedback, and used that collaboration to shape an architecture that the
+team can understand and work with. My contribution was to lead the design, explain the
+reasoning, and turn it into documentation that can be used by the team and future
+developers.
+
+The design is inspired by Clean Architecture and combines project-level separation with
+a feature-oriented, vertical-slice-like organisation. The goal is to gain clarity,
+maintainability, and a design benefit for scaling the system later without introducing
+more architecture than the current project needs. The architecture can be extended when
+the product grows or new requirements justify it.
+
+The wider team architecture is documented in
+[`docs/architecture/architecture.md`](../../architecture/architecture.md). This document
+is my focused evidence for the backend architecture contribution.
 
 ## 1. The main idea
 
@@ -217,7 +240,117 @@ The user-creation example demonstrates the backend pattern: requests enter throu
 Presentation, use cases are coordinated by Application, business concepts are represented
 by Domain, and technical operations are implemented by Infrastructure.
 
-## 8. AI use declaration
+## What I made
+
+| Contribution | Result |
+| --- | --- |
+| Backend architecture design | Defined and explained the separation between the host, Presentation, Application, Domain, and Infrastructure projects. |
+| Architecture communication | Explained why the separation improves clarity and maintainability without over-engineering the current backend. |
+| Dependency diagram | Created a diagram showing how the backend projects and PostgreSQL relate to each other. |
+| User-flow diagram | Created a sequence diagram for the implemented `POST /api/users` flow. |
+| Code comparison | Compared the explanation with most of the source files in `api/`. |
+| Team collaboration | Discussed the architecture with the team and incorporated their feedback. |
+
+## Evidence in the repository
+
+The architecture contribution is supported by the following implementation files:
+
+- [Application entry point](../../../api/Connect/Program.cs)
+- [Presentation dependency injection](../../../api/Connect.Presentation/DependencyInjection.cs)
+- [User endpoint](../../../api/Connect.Presentation/Users/UserEndpoints.cs)
+- [User request validator](../../../api/Connect.Presentation/Users/CreateUserRequestValidator.cs)
+- [Application dependency injection](../../../api/Connect.Application/DependencyInjection.cs)
+- [User application service](../../../api/Connect.Application/Users/Services/UserService.cs)
+- [Create-user command](../../../api/Connect.Application/Users/DTO/CreateUserCommand.cs)
+- [Create-user handler contract](../../../api/Connect.Application/Users/Contracts/ICreateUserHandler.cs)
+- [Create-user handler](../../../api/Connect.Infrastructure/Persistence/Users/CreateUserCommandHandler.cs)
+- [Password hasher contract](../../../api/Connect.Application/Users/Contracts/IPasswordHasher.cs)
+- [Password hasher implementation](../../../api/Connect.Infrastructure/Persistence/Users/PasswordHasher.cs)
+- [User domain entity](../../../api/Connect.Domain/Users/User.cs)
+- [Database context](../../../api/Connect.Infrastructure/Persistence/ConnectDbContext.cs)
+- [Initial database migration](../../../api/Connect.Infrastructure/Migrations/20261002101413_InitialCreate.cs)
+
+The architecture document was added in commit `c304b3d` with the message
+`docs: add backend architecture documentation`.
+
+## Implementation status
+
+The create-user flow is implemented and serves as the current example of the architecture.
+The broader architecture is a direction for applying the same separation to future
+features; it should not be read as proof that every planned Connect feature already exists.
+
+| Part of the architecture | Status |
+| --- | --- |
+| Host and four backend projects | Implemented |
+| Minimal API endpoint | Implemented through `POST /api/users` |
+| Server-side request validation | Implemented |
+| Application service and command | Implemented |
+| User creation handler | Implemented in Infrastructure |
+| Domain user entity | Implemented |
+| PostgreSQL persistence and migration | Implemented |
+| Password hashing | Implemented |
+| Duplicate-email protection | Implemented through application and database checks |
+| Dependency injection | Implemented |
+| Full query side of CQRS | Not yet implemented; the current example is a create command |
+| Authentication and authorization | Not implemented in the current slice |
+| Profile visibility and matching | Not implemented in the current slice |
+| Email sending and deployment infrastructure | Outside the current implemented slice |
+
+## How I verified the contribution
+
+I compared the document with most of the files in the `api/` folder, previewed the Mermaid
+diagrams, ran the application, and tested the `POST /api/users` flow. I also discussed the
+architecture with the team and used that review to improve the explanation.
+
+The verification focused on whether the documented flow matches the current implementation:
+the endpoint validates the request, the application coordinates the operation, the handler
+creates the user and hashes the password, and Infrastructure persists the result in
+PostgreSQL.
+
+## Why this was my contribution
+
+I focused on explaining the backend through one implemented vertical slice instead of
+only describing planned components. The create-user example demonstrates the separation
+in practice:
+
+- Presentation owns the HTTP request and validation.
+- Application coordinates the use case.
+- Domain represents the user being created.
+- Infrastructure performs password hashing and database persistence.
+- The host connects the projects through dependency injection.
+
+This makes the architecture understandable to developers who are new to the backend and
+gives the team a repeatable structure for future features. The design aims to support
+maintainability and future scaling as design benefits; no scalability benchmark is claimed
+by this document.
+
+## Related architecture evidence
+
+The detailed discussion of design patterns is documented in
+[`patterns.md`](patterns.md). It covers patterns visible in the current `api/` code,
+such as dependency injection, interfaces, and the command/use-case handler structure,
+while clearly marking proposed patterns as planned rather than implemented.
+
+## Portfolio mapping
+
+**BoKSA topic:** Architecture and Design Patterns
+
+**Evidence provided:**
+
+- A documented backend architecture
+- A justified separation of backend responsibilities
+- A project dependency diagram
+- A request-flow sequence diagram
+- A comparison between the architecture explanation and the current code
+- Direct links to the implementation files
+- A clear distinction between implemented and planned features
+
+**Personal contribution:** I led the backend architecture design and documentation,
+created the diagrams, explained the reasoning behind the structure, and verified the
+create-user example against the running application. The team contributed feedback and
+was involved in the decision-making process.
+
+## AI use declaration
 
 AI was used as a writing support tool while working on this document. We used AI to draft
 the formulation of sentences, the structure of wording, readability, and clarity from
