@@ -1,4 +1,4 @@
-# 003 Abstract ASP.NET Core Identity from Application
+# 003 Review the ASP.NET Core Identity abstraction
 
 **Status.** Proposed on 13 October 2026. This is a possible improvement for a future team to consider, not work that must be completed this semester.
 
@@ -10,19 +10,19 @@
 
 ## Context
 
-Connect uses ASP.NET Core Identity to manage user accounts. Its `UserManager<TUser>` provides operations such as creating users, finding users and validating passwords.
+Connect uses ASP.NET Core Identity to manage user accounts. Its `UserManager<Account>` provides operations such as creating users, finding users and validating passwords.
 
-If Application handlers depend directly on `UserManager<AppUser>`, they become coupled to ASP.NET Core Identity. This may be acceptable for a small application, but it can make application use cases harder to separate from the identity implementation.
+Account creation now depends on the application-owned `IAccountRegistrationService` interface. Infrastructure implements that interface through `AccountRegistrationService`, which delegates account creation to `UserManager<Account>` and translates Identity and database uniqueness failures into application-owned results.
 
-A possible improvement is to define an application-owned interface that exposes only the identity operations required by the application. Infrastructure can implement that interface by delegating to ASP.NET Core Identity.
+This is a useful boundary for the current use case. A future team can review whether additional identity use cases should use similarly focused application-owned interfaces.
 
 This would not require introducing a repository or query service. The intention is to abstract user-management operations, not to create another layer for database queries.
 
 ## Options
 
-### 1. Use UserManager directly
+### 1. Keep using UserManager in Application
 
-Application handlers inject `UserManager<AppUser>` and call its methods directly.
+Application handlers inject `UserManager<Account>` and call its methods directly.
 
 | Advantages | Disadvantages |
 |---|---|
@@ -30,9 +30,9 @@ Application handlers inject `UserManager<AppUser>` and call its methods directly
 | Provides access to the full functionality of UserManager. | Application handlers may be harder to test without framework-specific setup. |
 | Familiar to developers working with ASP.NET Core Identity. | Changes to the identity implementation may affect application handlers. |
 
-### 2. Introduce an application-owned identity abstraction
+### 2. Keep focused application-owned abstractions
 
-Application defines an interface containing only the operations required by its use cases. Infrastructure implements it using `UserManager<AppUser>`.
+Application defines interfaces containing only the operations required by each use case. Infrastructure implements them using `UserManager<Account>`. `IAccountRegistrationService` and `AccountRegistrationService` are the current example.
 
 | Advantages | Disadvantages |
 |---|---|
@@ -40,9 +40,9 @@ Application defines an interface containing only the operations required by its 
 | The identity dependency can be substituted in unit tests. | Identity errors may need to be translated into application-level results. |
 | The underlying implementation can change with less impact on handlers. | The abstraction requires maintenance as requirements evolve. |
 
-### 3. Introduce smaller interfaces for individual capabilities
+### 3. Introduce broader or smaller interfaces only when needed
 
-Define separate interfaces for distinct requirements, such as account creation and password verification.
+Keep account creation separate from other identity capabilities, such as password verification, unless a concrete use case requires combining them. Avoid adding interfaces without a meaningful boundary.
 
 | Advantages | Disadvantages |
 |---|---|
@@ -51,32 +51,30 @@ Define separate interfaces for distinct requirements, such as account creation a
 
 ## Proposed recommendation
 
-**Option 2: introduce an application-owned identity abstraction if the existing framework coupling justifies it.**
+**Keep the existing focused abstraction and extend it only when a concrete use case justifies it.** The move of account registration behind `IAccountRegistrationService` already removes direct `UserManager` usage from the account-creation handler.
 
 The following guidelines could be applied if the team decides to pursue this improvement.
 
 ### 1. Define the interface in Application
 
-For example, an interface named `IUserIdentityService` could live in `Application/Abstractions/Identity`.
-
-It should describe the identity capabilities needed by application use cases, rather than reproduce the entire `UserManager<TUser>` API.
+`IAccountRegistrationService` lives with the account-creation use case in Application. Future interfaces should follow the same pattern: describe only the capability needed by an application use case, rather than reproduce the entire `UserManager<TUser>` API.
 
 Potential operations include:
 
-- Finding a user by an identifier.
-- Finding a user by email when a use case requires it.
 - Creating an account.
-- Validating a user's password when needed.
+- Finding a user by an identifier when a use case requires it.
+- Finding a user by email when a use case requires it.
+- Validating a user's password when a use case requires it.
 
 The interface should only include operations that the application actually uses.
 
 ### 2. Implement the interface in Infrastructure
 
-Infrastructure would provide an implementation that delegates to `UserManager<AppUser>`.
+Infrastructure provides `AccountRegistrationService`, which delegates account creation to `UserManager<Account>`.
 
-For example, `IdentityUserService` could implement `IUserIdentityService` and translate the results of Identity operations into application-owned result types.
+The service translates Identity failures and database unique-constraint failures into application-owned `Result<CreateAccountResult>` values.
 
-Application handlers would depend on `IUserIdentityService`, while the concrete implementation would remain an Infrastructure concern.
+Application handlers depend on `IAccountRegistrationService`, while the concrete implementation remains an Infrastructure concern.
 
 ### 3. Keep Identity-specific results behind the boundary
 
@@ -86,15 +84,15 @@ If the goal is to keep Application independent of Identity, the interface should
 
 The abstraction should preserve useful error information without leaking the framework's result types.
 
-### 4. Consider the AppUser dependency
+### 4. Consider the Account dependency
 
 **An interface around `UserManager` does not automatically remove every dependency on ASP.NET Core Identity.**
 
-If `AppUser` inherits from `IdentityUser`, an Application interface that accepts or returns `AppUser` still depends on an Identity-specific type. The interface hides the service dependency, but not the user model dependency.
+If `Account` inherits from `IdentityUser<Guid>`, an Application interface that accepts or returns `Account` still depends on an Identity-specific type. The current registration interface avoids this by accepting primitive input and returning an application result containing the account ID and email.
 
 There are several possible approaches:
 
-- **Accept the dependency.** Keep using `AppUser` if the coupling is limited and the benefits of introducing a separate model do not justify the additional work.
+- **Accept the dependency.** Keep using `Account` if the coupling is limited and the benefits of introducing a separate model do not justify the additional work.
 - **Use an application-facing model.** Expose only the user information required by a use case through an application-owned model, such as a user summary containing an ID and email address.
 - **Separate the domain model from the Identity model.** Consider this only if the application has meaningful domain requirements for users that should be independent of authentication and identity management.
 
@@ -102,26 +100,26 @@ These approaches are alternatives, not mandatory steps. A separate user model in
 
 ### 5. Keep the abstraction focused
 
-Do not expose every method available on `UserManager<TUser>`. Avoid turning `IUserIdentityService` into a duplicate of the original framework API.
+Do not expose every method available on `UserManager<TUser>`. Avoid turning application-owned identity interfaces into duplicates of the original framework API.
 
 If different use cases eventually need substantially different capabilities, the team can consider smaller interfaces at that point.
 
-### 6. Register the implementation through dependency injection
+### 6. Register implementations through dependency injection
 
-Infrastructure should register the implementation of `IUserIdentityService`. The startup project should compose the application using the relevant dependency registration methods.
+Infrastructure registers `AccountRegistrationService` for `IAccountRegistrationService`. Future identity abstractions should use the same dependency-injection boundary. The startup project should compose the application using the relevant dependency registration methods.
 
 ## Consequences
 
-If this improvement is adopted:
+The current account-registration abstraction provides these benefits:
 
-- Application handlers can avoid a direct dependency on `UserManager<AppUser>`.
+- The account-creation handler avoids a direct dependency on `UserManager<Account>`.
 - Identity operations can be substituted in unit tests.
 - The underlying identity implementation can potentially be changed with less impact on Application.
 - Additional interfaces, result mappings and registration code may be needed.
-- Application may still depend on Identity if it continues to use `AppUser` or other Identity-specific types.
+- Application may still depend on Identity if it continues to use `Account` or other Identity-specific types.
 - Introducing separate user models may add complexity that is not justified by the current requirements.
 
-A future team should first identify where `UserManager` is used and whether that coupling creates a meaningful problem. If an abstraction is introduced, it should address those concrete needs without creating an unnecessary identity layer.
+A future team should identify remaining `UserManager` usage and whether that coupling creates a meaningful problem. Extend the existing focused abstraction only when it addresses a concrete need without creating an unnecessary identity layer.
 
 ## References
 

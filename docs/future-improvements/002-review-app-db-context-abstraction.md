@@ -8,11 +8,11 @@
 
 ## Context
 
-Connect defines `IAppDbContext` in Application and implements it through `ConnectDbContext` in Infrastructure. This allows application handlers to depend on an abstraction instead of the concrete EF Core database context.
+Connect defines `IAppDbContext` in Application and implements it through `ConnectDbContext` in Infrastructure. The current interface exposes `IQueryable<Account> Accounts`, `IQueryable<Profile> Profiles`, generic `Add` and `Remove` operations, and `SaveChangesAsync`. This allows application handlers to depend on an abstraction instead of the concrete EF Core database context.
 
 However, the level of separation depends on what `IAppDbContext` exposes.
 
-If the interface exposes `DbSet<T>`, `IQueryable<T>` or generic persistence operations, Application may still depend on EF Core's query and persistence model. Although these types provide flexibility, they can make it harder to change the persistence implementation without affecting application code.
+The interface does not expose `DbSet<T>`, but its `IQueryable<T>` members and generic persistence operations still expose parts of EF Core's query and persistence model. Although these types provide flexibility, they can make it harder to change the persistence implementation without affecting application code.
 
 This does not automatically make the current design wrong. EF Core is designed to support application development with `DbContext`, and exposing query capabilities can be a pragmatic choice, particularly for CQRS query handlers.
 
@@ -56,7 +56,7 @@ Use repositories where they provide a meaningful abstraction, such as aggregate 
 
 ## Proposed recommendation
 
-**Review the existing IAppDbContext before changing it.** Do not automatically replace it with repositories or remove `IQueryable<T>` everywhere.
+**Review the existing IAppDbContext before changing it.** The current abstraction is already narrower than a concrete `DbContext`, but it still exposes query construction and generic persistence operations. Do not automatically replace it with repositories or remove `IQueryable<T>` everywhere.
 
 A future team should:
 

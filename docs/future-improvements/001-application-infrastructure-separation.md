@@ -10,7 +10,7 @@
 
 Connect uses four main projects: Presentation, Application, Domain and Infrastructure. The team chose this layered architecture to give each project a clear responsibility and use project references to enforce the intended dependency direction.
 
-The existing architecture already applies dependency inversion in some areas. For example, Application defines `IAppDbContext`, while Infrastructure provides the EF Core implementation through `ConnectDbContext`.
+The existing architecture already applies dependency inversion in some areas. For example, Application defines `IAppDbContext`, while Infrastructure provides the EF Core implementation through `ConnectDbContext`. Account creation follows the same direction: Application defines `IAccountRegistrationService`, while Infrastructure implements it through ASP.NET Core Identity in `AccountRegistrationService`.
 
 However, introducing an interface does not automatically remove coupling. An abstraction can still expose implementation-specific types, and Application can remain dependent on a particular framework even when that framework is accessed through an interface.
 
@@ -81,7 +81,7 @@ Review `IAppDbContext` and other Application-facing interfaces to determine whet
 
 For example, `DbSet<T>` and `IQueryable<T>` are EF Core or LINQ-related abstractions that can expose details of query construction and execution. They may be appropriate for some applications, but they should be an intentional choice.
 
-See improvement 002 for the database abstraction and improvement 003 for ASP.NET Core Identity.
+See improvement 002 for the database abstraction and improvement 003 for the ASP.NET Core Identity boundary.
 
 ### 4. Avoid unnecessary abstractions
 
