@@ -4,6 +4,7 @@ using System.Net.Sockets;
 using Connect.Infrastructure.Health;
 using Connect.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Npgsql;
 using NUnit.Framework;
@@ -15,11 +16,7 @@ public sealed class HealthDatabaseTests
     [Test]
     public async Task CheckHealthAsync_RealDatabase_ReturnsHealthy()
     {
-        string connectionString = Environment.GetEnvironmentVariable(
-                "ConnectionStrings__DefaultConnection")
-            ?? throw new InvalidOperationException(
-                "ConnectionStrings__DefaultConnection is not configured.");
-        await using ConnectDbContext dbContext = CreateDbContext(connectionString);
+        await using ConnectDbContext dbContext = CreateDbContext(TestsConnectionString());
 
         HealthCheckResult result = await new DatabaseHealthCheck(dbContext)
             .CheckHealthAsync(new HealthCheckContext());
@@ -63,11 +60,10 @@ public sealed class HealthDatabaseTests
     public async Task CheckHealthAsync_DatabaseGoesDownAfterHealthyCheck_ReturnsUnhealthy()
     {
         // A relay in front of the real database, so the test can take the database away while the app runs.
-        NpgsqlConnectionStringBuilder realDatabase = new(Environment.GetEnvironmentVariable(
-                "ConnectionStrings__DefaultConnection")
-            ?? throw new InvalidOperationException(
-                "ConnectionStrings__DefaultConnection is not configured."));
-        DatabaseRelay relay = new(realDatabase.Host!, realDatabase.Port);
+        NpgsqlConnectionStringBuilder realDatabase = new(TestsConnectionString());
+        string databaseHost = realDatabase.Host
+            ?? throw new InvalidOperationException("ConnectionStrings:TestsConnection has no Host.");
+        DatabaseRelay relay = new(databaseHost, realDatabase.Port);
         realDatabase.Host = "127.0.0.1";
         realDatabase.Port = relay.Port;
         await using ConnectDbContext dbContext = CreateDbContext(realDatabase.ConnectionString);
@@ -83,6 +79,11 @@ public sealed class HealthDatabaseTests
             Assert.That(after.Status, Is.EqualTo(HealthStatus.Unhealthy));
         }
     }
+
+    // The same test database as the other database tests, through user secrets or the environment.
+    private static string TestsConnectionString() =>
+        TestConfiguration.Create().GetConnectionString("TestsConnection")
+            ?? throw new InvalidOperationException("ConnectionStrings:TestsConnection is not configured.");
 
     private static string ConnectionStringFor(int port)
     {

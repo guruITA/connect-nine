@@ -21,8 +21,8 @@ public sealed class LoggingTests
 
     private const string RequestLineCategory = "Microsoft.AspNetCore.HttpLogging.HttpLoggingMiddleware";
 
-    private CapturingLoggerProvider _capture = null!;
-    private WebApplicationFactory<Program> _factory = null!;
+    private CapturingLoggerProvider _capture;
+    private WebApplicationFactory<Program> _factory;
 
     [SetUp]
     public void SetUp()
