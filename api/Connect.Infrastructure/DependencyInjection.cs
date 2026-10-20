@@ -1,4 +1,6 @@
+using Connect.Application.Accounts.CreateAccount;
 using Connect.Domain.Users;
+using Connect.Infrastructure.Identity;
 using Connect.Infrastructure.Persistence;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -29,6 +31,8 @@ public static class DependencyInjection
 
         services.Configure<IdentityOptions>(options =>
         {
+            options.User.RequireUniqueEmail = true;
+
             options.Password.RequiredLength = 15;
             options.Password.RequireDigit = true;
             options.Password.RequireLowercase = true;
@@ -36,6 +40,8 @@ public static class DependencyInjection
             options.Password.RequireNonAlphanumeric = true;
             options.Password.RequiredUniqueChars = 1;
         });
+
+        services.AddScoped<IAccountRegistrationService, AccountRegistrationService>();
 
         return services;
     }

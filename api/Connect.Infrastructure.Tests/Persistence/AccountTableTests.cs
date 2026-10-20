@@ -9,16 +9,16 @@ namespace Connect.Infrastructure.Tests.Persistence;
 
 public sealed class AccountDatabaseTests
 {
-    private ConnectDbContext dbContext = null!;
-    private string connectionString = null!;
+    private ConnectDbContext dbContext;
+    private string connectionString = string.Empty;
 
     [SetUp]
     public void SetUp()
     {
         IConfiguration configuration = TestConfiguration.Create();
-        string connectionString = configuration.GetConnectionString("DefaultConnection")
+        connectionString = configuration.GetConnectionString("TestsConnection")
             ?? throw new InvalidOperationException(
-                "ConnectionStrings:DefaultConnection is not configured.");
+                "ConnectionStrings:TestsConnection is not configured.");
 
         DbContextOptions<ConnectDbContext> options = new DbContextOptionsBuilder<ConnectDbContext>()
             .UseNpgsql(connectionString)
@@ -84,13 +84,16 @@ public sealed class AccountDatabaseTests
         dbContext.Add(account);
 
         DbUpdateException exception = Assert.Throws<DbUpdateException>(
-            () => dbContext.SaveChanges())!;
+            () => dbContext.SaveChanges());
         PostgresException postgresException = FindPostgresException(exception);
 
-        Assert.That(postgresException.SqlState, Is.EqualTo(PostgresErrorCodes.CheckViolation));
-        Assert.That(
-            postgresException.ConstraintName,
-            Is.EqualTo("ck_asp_net_users_password_hash_not_empty"));
+        using (Assert.EnterMultipleScope())
+        {
+            Assert.That(postgresException.SqlState, Is.EqualTo(PostgresErrorCodes.CheckViolation));
+            Assert.That(
+                postgresException.ConstraintName,
+                Is.EqualTo("ck_asp_net_users_password_hash_not_empty"));
+        }
     }
 
     [Test]

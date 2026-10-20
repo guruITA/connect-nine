@@ -60,9 +60,6 @@ public sealed class ConnectDbContext(DbContextOptions<ConnectDbContext> options)
             entity.ToTable(table => table.HasCheckConstraint(
                 "ck_asp_net_users_password_hash_not_empty",
                 "\"password_hash\" IS NULL OR length(\"password_hash\") > 0"));
-            entity.HasIndex(user => user.NormalizedEmail)
-                .IsUnique()
-                .HasDatabaseName("ux_account_email");
         });
 
         modelBuilder.Entity<Profile>(entity =>
@@ -77,6 +74,9 @@ public sealed class ConnectDbContext(DbContextOptions<ConnectDbContext> options)
                 .IsRequired()
                 .OnDelete(DeleteBehavior.Cascade);
         });
+
+        modelBuilder.ApplyConfiguration(
+            new Configurations.AccountIdentityConfiguration());
     }
 
     private void UpdateAuditProperties()

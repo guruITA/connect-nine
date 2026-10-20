@@ -133,7 +133,7 @@ That writes a `<UserSecretsId>` into the project file. Then set a value. The ser
 `ConnectionStrings:DefaultConnection` setting:
 
 ```
-dotnet user-secrets set "ConnectionStrings:Default" "Host=localhost;Port=5432;Database=connect;Username=connect;Password=<your local password>"
+dotnet user-secrets set "ConnectionStrings:DefaultConnection" "Host=localhost;Port=5432;Database=connect;Username=connect;Password=<your local password>"
 dotnet user-secrets list
 ```
 
