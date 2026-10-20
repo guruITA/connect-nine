@@ -32,7 +32,7 @@ flowchart TD
 |---|---|
 | docs/project | productVision.md, problemAnalysis.md, requirements.md, deliveryPlan.md, and later houseRules.md |
 | docs/client | clientBrief.md, clientBriefConcept.jpeg, clientQuestions.md, serverHandover.md, and later clientContact.md |
-| docs/architecture | architecture.md, techStack.md, stackResearch.md, infrastructure.md, and later api.md, designPatterns.md, socialLogin.md, concurrencyRegistration.md |
+| docs/architecture | architecture.md, techStack.md, stackResearch.md, infrastructure.md, api.md, and later designPatterns.md, socialLogin.md, concurrencyRegistration.md |
 | docs/team | collaborationAgreement.md, codeConventions.md, definitionOfDone.md, gitlabSetup.md, issueRules.md, boardNumbers.md, openItems.md, actionOverview.md, and later onboarding.md |
 | docs/testing | testingStrategy.md, and later testData.md |
 | docs/school | workshopCoverage.md, issueMapping.md, documentGuide.md, and later devopsLearningOutcomes.md, workshopEvidenceMap.md, recordingScript.md, liveDemoPlan.md |
@@ -138,7 +138,7 @@ For the studio, it serves **AA** and **OR**, and it is the main evidence for the
 
 For the team, it is the reference before touching the pipeline or a server. Where production runs exactly, and on which address, is decided by the client in issue 91 The director agrees where production runs.
 
-### api.md (made later)
+### api.md
 
 The list of server addresses, what each one expects and answers, and who may use it. Issue 03 Create an account starts it (task 3.1), and every slice that adds an endpoint adds its lines.
 
