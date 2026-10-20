@@ -7,6 +7,7 @@
   <Project Path="Connect/Connect.csproj" />
   <Project Path="Connect.Tests/Connect.Tests.csproj" />
   <Project Path="Connect.Presentation.Tests/Connect.Presentation.Tests.csproj" />
+  <Folder Name="/test/" />
   <Project Path="Connect.Application.Tests/Connect.Application.Tests.csproj" />
   <Project Path="Connect.Infrastructure.Tests/Connect.Infrastructure.Tests.csproj" />
 </Solution>

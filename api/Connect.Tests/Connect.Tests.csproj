@@ -17,4 +17,9 @@
   <ItemGroup>
     <ProjectReference Include="..\Connect\Connect.csproj" />
   </ItemGroup>
+  <ItemGroup>
+    <Content Include="Fixtures\wwwroot\**\*">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
 </Project>

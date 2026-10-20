@@ -239,6 +239,16 @@ marks what is not built yet as planned.
 - **The server.** One image `server` serves the built screen and every address under `/api` from
   one port, 8080 (issue 20 Dockerfiles for the server and the frontend). A second image
   `migrations` brings the tables up to date and stops.
+
+### How the screen is sent
+
+ASP.NET Core serves static files with `ScreenCacheRules.Options`. Files under `/assets/` have
+`Cache-Control: public, max-age=31536000, immutable`: the build puts a content code in each asset
+name, so a changed file has a new address and the browser can safely reuse the old copy for a year.
+`index.html` has `Cache-Control: no-cache`, including when the fallback serves it for screen routes;
+the browser checks for a fresh entry page on every visit so a deploy's new asset names take effect.
+Other files keep ASP.NET Core's default caching behavior, and API responses do not use these screen
+file rules.
 - **The database.** PostgreSQL 16, one per environment.
 - **The mail server.** Every email goes through `IMailSender`. The request only queues the email,
   and `MailSendingWorker` hands it over SMTP with `SmtpMailSender` (MailKit) (issue 21). On a
