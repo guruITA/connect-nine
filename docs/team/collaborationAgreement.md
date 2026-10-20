@@ -1,6 +1,6 @@
 # Team 9, Connect Nine, Collaboration Agreement
 
-**Status: draft, not signed yet. The team is still working on the final version.**
+**Status: signed by the whole team on 19 October 2026.**
 
 | | |
 | --- | --- |
@@ -299,8 +299,8 @@ The team signs here once the final version is agreed. Until then the table stays
 
 | Name | Signed | Date |
 | --- | --- | --- |
-| Bayon Eerhart | | |
-| Nick Hoebe | | |
-| Wesley Oerlemans | | |
-| Gurpreet Singh | | |
-| Kelvin van Voorst | | |
+| Bayon Eerhart | Bayon Eerhart | 19 October 2026 |
+| Nick Hoebe | Nick Hoebe | 19 October 2026 |
+| Wesley Oerlemans | Wesley Oerlemans | 19 October 2026 |
+| Gurpreet Singh | Gurpreet Singh | 19 October 2026 |
+| Kelvin van Voorst | Kelvin van Voorst | 19 October 2026 |

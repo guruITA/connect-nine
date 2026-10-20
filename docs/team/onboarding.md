@@ -310,6 +310,22 @@ You should see no lint errors, `All matched files use Prettier code style!` and 
 
 The pipeline runs the same checks. A merge request cannot be accepted while any of them is red.
 
+### Reading a red pipeline
+
+Five jobs run these checks in the pipeline, split so a red run points at one thing. Each job also runs on `dev` after a merge, so the merged result is checked too.
+
+| Job | What it checks | The same check on your laptop |
+|---|---|---|
+| backend-build | The server compiles, and `dotnet format` finds no layout difference | `dotnet build api/Connect.slnx` then `dotnet format api/Connect.slnx --verify-no-changes` |
+| frontend-build | TypeScript has no type error, and Vite builds the screen | `cd web` then `npm run build` |
+| backend-test | Every `dotnet test` in `api/Connect.slnx` passes, against a real PostgreSQL | `dotnet test api/Connect.slnx`, with `ConnectionStrings__DefaultConnection` set as in this section, and your database running (`docker compose up -d`, section 3) |
+| frontend-lint | ESLint finds no rule break, and Prettier finds no layout difference | `cd web` then `npm run lint` and `npx prettier --check .` |
+| frontend-test | Every Vitest test passes | `cd web` then `npm test` |
+
+A job that needs a database (backend-test) gets its own throwaway PostgreSQL inside the pipeline, under the alias `database`. The user, password and name of that database are CI/CD variables of the project (Settings, CI/CD, Variables), never written in `.gitlab-ci.yml`, and a value on your laptop never has to match them.
+
+On a red run: open the merge request, tab Pipelines, click the red run, then the red job. The last lines of the log name what failed, the same text the command above prints on your laptop. Fix it on your branch, run the command again until it passes, then push.
+
 ## 7. Your first change
 
 1. Take an issue from the board of the sprint and drag it to the list In progress.

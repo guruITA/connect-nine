@@ -16,6 +16,7 @@ One file per task I did, with the proof block of the task filled in. A point tha
 
 | File | Task | Portflow |
 | --- | --- | --- |
+| `portfolioProof/task266BuildAndTest.md` | Task 3.8 Build and test in the pipeline (#266), merge request !54 | Managing and Collaborating MS1 and MS4 |
 | `portfolioProof/task1499FigmaBoardInTeamDocs.md` | Task 179.1 The team documents follow the new Figma board (#1499), merge request !37 | Managing and Collaborating MS1 and MS4 |
 | `portfolioProof/task2RepositorySkeleton.md` | Task 1.1 The starting structure (#2), merge request !13 | Managing and Collaborating MS1 and MS4 |
 | `portfolioProof/task1497PrototypeInPageDocs.md` | Task 178.1 The page documents point to the prototype screens (#1497), merge request !35 | Managing and Collaborating MS1 and MS4 |
@@ -31,6 +32,7 @@ One file per task I did, with the proof block of the task filled in. A point tha
 | `portfolioProof/task3MainOnlyFromDev.md` | Task 1.2 Dev and main protected (#3), merge request !2 | Managing and Collaborating MS1 and MS4 |
 | `portfolioProof/task16DependencyScan.md` | Task 16.1 The security scan (#308), merge request !30, and task 16.2 The red scan on purpose (#309), merge request !31 | Managing and Collaborating (#308), Designing and Realising (#309) |
 | `portfolioProof/task1519SprintReview1Documents.md` | Issue 1519 The sprint 1 review documents in the repository (#1519), merge requests !43, !44 and !45 | Managing and Collaborating MS1 |
+| `portfolioProof/task1465CqrsRewording.md` | Task 11.4 The tasks of every next sprint reworded to the CQRS shape (#1465), merge request !62 | Managing and Collaborating MS4 |
 
 ## The full documents behind them
 
