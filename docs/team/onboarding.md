@@ -133,18 +133,14 @@ A real password, key, token or connection string that carries credentials never 
 `api/Connect/Connect.csproj` already holds a `<UserSecretsId>`, so you do not run `dotnet user-secrets init`. Every clone on your laptop shares the same secrets file. In the folder `api/Connect`, set the value the server reads, `ConnectionStrings:DefaultConnection`, with the password from your `.env`:
 
 ```
-dotnet user-secrets init
-```
-
-That writes a `<UserSecretsId>` into the project file. Then set a value. The server reads the
-`ConnectionStrings:DefaultConnection` setting:
-
-```
 dotnet user-secrets set "ConnectionStrings:DefaultConnection" "Host=localhost;Port=5432;Database=connect;Username=connect;Password=<your local password>"
+dotnet user-secrets set "ConnectionStrings:TestsConnection" "Host=localhost;Port=5432;Database=connect_test;Username=connect;Password=<your local password>"
 dotnet user-secrets list
 ```
 
-You should see `Successfully saved ConnectionStrings:DefaultConnection to the secret store.` and the list shows the value. Older examples that use `ConnectionStrings:Default` are obsolete.
+You should see `Successfully saved ConnectionStrings:DefaultConnection to the secret store.` and the same for `ConnectionStrings:TestsConnection`, and the list shows both values. Older examples that use `ConnectionStrings:Default` are obsolete.
+
+`ConnectionStrings:TestsConnection` is what the database tests read, through `TestConfiguration`. It names a database of its own, `connect_test`, never the `connect` database the server runs on, because a database test runs every migration of your branch on its database and leaves its rows behind. The first test run creates `connect_test`. The rules are in `docs/team/codeConventions.md`, part Tests and mocking.
 
 Two things to know about User Secrets:
 
@@ -295,11 +291,11 @@ dotnet format api/Connect.slnx --verify-no-changes
 dotnet test api/Connect.slnx
 ```
 
-The tests in `Connect.Infrastructure.Tests` talk to your local database and do not read User Secrets. Give them the same connection string as an environment variable in the terminal where you run `dotnet test`, or they fail with `ConnectionStrings__DefaultConnection is not configured`:
+The database tests read `ConnectionStrings:TestsConnection` from your User Secrets (section 4), or they fail with `ConnectionStrings:TestsConnection is not configured`. The two tests in `HealthDatabaseTests` still read `ConnectionStrings__DefaultConnection` from the environment, until Gurpreet Singh moves them to `TestsConnection` (named on #1541, 20 October 2026). Until then, give them the test database in the terminal where you run `dotnet test`:
 
 ```
-$env:ConnectionStrings__DefaultConnection="Host=localhost;Port=5432;Database=connect;Username=connect;Password=<your local password>"   # PowerShell
-export ConnectionStrings__DefaultConnection="Host=localhost;Port=5432;Database=connect;Username=connect;Password=<your local password>"   # macOS, Linux
+$env:ConnectionStrings__DefaultConnection="Host=localhost;Port=5432;Database=connect_test;Username=connect;Password=<your local password>"   # PowerShell
+export ConnectionStrings__DefaultConnection="Host=localhost;Port=5432;Database=connect_test;Username=connect;Password=<your local password>"   # macOS, Linux
 ```
 
 You should see `Build succeeded` with `0 Warning(s)` and `0 Error(s)`, no output from the format check, and `Passed!` with `Failed: 0` for the tests.
@@ -325,7 +321,7 @@ Five jobs run these checks in the pipeline, split so a red run points at one thi
 |---|---|---|
 | backend-build | The server compiles, and `dotnet format` finds no layout difference | `dotnet build api/Connect.slnx` then `dotnet format api/Connect.slnx --verify-no-changes` |
 | frontend-build | TypeScript has no type error, and Vite builds the screen | `cd web` then `npm run build` |
-| backend-test | Every `dotnet test` in `api/Connect.slnx` passes, against a real PostgreSQL | `dotnet test api/Connect.slnx`, with `ConnectionStrings__DefaultConnection` set as in this section, and your database running (`docker compose up -d`, section 3) |
+| backend-test | Every `dotnet test` in `api/Connect.slnx` passes, against a real PostgreSQL | `dotnet test api/Connect.slnx`, with `ConnectionStrings:TestsConnection` and `ConnectionStrings__DefaultConnection` set as in this section, and your database running (`docker compose up -d`, section 3) |
 | frontend-lint | ESLint finds no rule break, and Prettier finds no layout difference | `cd web` then `npm run lint` and `npx prettier --check .` |
 | frontend-test | Every Vitest test passes | `cd web` then `npm test` |
 

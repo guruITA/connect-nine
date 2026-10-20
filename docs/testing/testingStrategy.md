@@ -32,7 +32,10 @@ Core on .NET 10 with PostgreSQL 16, rather than onto Next.js.
 Application and Domain layers of the four backend projects that issue 11 The team agrees on the
 layered architecture records: the business rules inside a handler, for example whether an event
 still has an open spot, unit tested with an in-memory SQLite AppDbContext, and a rule in Domain
-unit tested without any database. **NUnit**
+unit tested without any database. What a class gets through its constructor is replaced in a
+unit test by a substitute of **NSubstitute**, never by a stand-in written by hand, and the
+database is never replaced by a substitute (`docs/team/codeConventions.md`, part Tests and
+mocking). **NUnit**
 is decided, not xUnit, with `dotnet new nunit -o TestProject1` scaffolding a test project
 directly from the .NET SDK (NUnit, n.d.). The tests live in the project Connect.Tests, in the
 folders Domain, Application, Infrastructure, Presentation and Fixtures, and are named
@@ -50,7 +53,8 @@ in production," such as the database, and ASP.NET Core supports this "using a un
 framework with a test web host and an in-memory test server" (Microsoft, n.d.-a). This is
 `WebApplicationFactory`, run through NUnit, exercising a Minimal API endpoint through the real
 request pipeline against a real PostgreSQL 16 test database rather than an in-memory SQLite
-AppDbContext. In the
+AppDbContext. The tests reach that database through `ConnectionStrings:TestsConnection`, never
+through the connection string of the database the server runs on. In the
 pipeline the job backend-test gets a service postgres:16 under the name database, and the
 factory applies the EF Core migrations before the tests (issue 03 Create an account, task 3.8).
 On the frontend, this is a React component plus a fake server answer, the same shape
