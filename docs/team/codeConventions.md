@@ -28,6 +28,8 @@ flowchart LR
 5. Before a sprint review, dev goes into main through a merge request, approved by one teammate who is not the author. (reviewer)
 6. An urgent repair of the live site is `hotfix/<short name>`, made from the newest dev. It also goes through dev: a merge request into dev, then right away a merge request from dev into main, because main only takes merge requests from dev. (tool: branch-flow, #5)
 
+A merge request with a red or running pipeline cannot be merged, and a reviewer never approves it. A red job is fixed on the branch first (rule 11). (reviewer)
+
 Nobody pushes directly to dev or main: both are protected, and the pipeline job branch-flow refuses a merge request into main from any branch other than dev, see docs/team/gitlabSetup.md.
 
 ## General and Git

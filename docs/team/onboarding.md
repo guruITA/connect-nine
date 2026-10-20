@@ -13,6 +13,7 @@ Read three documents first, in this order: [collaborationAgreement.md](collabora
 | Docker | current | The database and the test site run in containers |
 | Git | current | Every change reaches dev through a merge request |
 | An editor | Visual Studio, Rider or Visual Studio Code | Any of the three is fine |
+| dotnet-ef | matches the Entity Framework Core packages, pinned in `.config/dotnet-tools.json` | Creates and applies database migrations, part 4 |
 
 Check that each one answers before you go on:
 
@@ -23,7 +24,9 @@ docker --version
 git --version
 ```
 
-You should see four version numbers. `dotnet --version` starts with 10. `node --version` starts with v and the number of the current LTS. The other two print a line that starts with `Docker version` and `git version`. A line such as `command not found` means the tool is not installed or not on your path.
+You should see four version numbers. `dotnet --version` starts with 10. `node --version` starts with v22. The other two print a line that starts with `Docker version` and `git version`. A line such as `command not found` means the tool is not installed or not on your path.
+
+`dotnet-ef` is not installed by itself: it is a local tool, pinned to one version per repository in `.config/dotnet-tools.json`, and part 4 restores it before the first use.
 
 ## 2. Get the code
 
@@ -38,6 +41,8 @@ git switch dev
 You should see `Cloning into 'connect-nine'...`, and after the last command `Already on 'dev'`.
 
 Nobody pushes to `dev` or `main`. Both are protected. Every change starts on its own branch and reaches `dev` through a merge request that a teammate approves.
+
+Two clones on the same laptop in folders named `connect-nine`? Docker Compose names the containers and the volume after the folder, so a second clone in a folder with the same name shares the containers and the volume of the first instead of getting its own. Clone the second copy into a folder with another name, or start it with `docker compose -p <name> up -d`.
 
 ## 3. Start the database
 
@@ -61,7 +66,7 @@ docker compose stop               # stop both; your data stays
 
 Look inside in one of two ways:
 
-- **pgAdmin:** open http://localhost:5050. No login. The server Connect (local) is already on the left. The first time it asks for a password: that is `POSTGRES_PASSWORD` from your `.env`. Tick Save password.
+- **pgAdmin:** open http://localhost:5050. No login. Wait about half a minute after `docker compose ps` says the database is healthy before the page answers: pgAdmin itself still needs to start. The server Connect (local) is already on the left. The first time it asks for a password: that is `POSTGRES_PASSWORD` from your `.env`. Tick Save password.
 - **psql:** `docker compose exec database psql -U connect -d connect`, and `\q` to leave. Use your own `POSTGRES_USER` and `POSTGRES_DB` if you changed them in `.env`.
 
 The data lives in the volume `connect-data`, so a table you made is still there after `docker compose down` and `docker compose up -d`.
@@ -79,10 +84,12 @@ docker ps --filter publish=5050
 
 On Windows, `netstat -ano | findstr :5432` shows the process id, and Task Manager shows which program it is. On macOS and Linux, use `lsof -i :5432`.
 
+On Windows, the message can instead be `bind: An attempt was made to access a socket in a way forbidden by its access permissions`. That is not another program on the port: Windows itself reserves a range of ports for Hyper-V and WinNAT. Check the reserved ranges with `netsh interface ipv4 show excludedportrange protocol=tcp`. Windows can reserve a range such as 5358 to 5457, so 5432 or a nearby port can fall inside it.
+
 There are two fixes:
 
 1. **Stop the other one.** Stop that container with `docker stop <name>`, or stop the locally installed PostgreSQL service, and run `docker compose up -d` again. A container that has a restart policy starts again with Docker Desktop, so stop it again after a restart, or switch its restart policy off with `docker update --restart no <name>`.
-2. **Use another port.** Need the other PostgreSQL to keep running? In `docker-compose.yml`, change `"127.0.0.1:5432:5432"` into `"127.0.0.1:5433:5432"` and run `docker compose up -d` again. The database is then on `localhost:5433`, so use `Port=5433` in your own connection string. Keep this change on your laptop and do not commit it: the rest of the team uses 5432.
+2. **Use another port.** Need the other PostgreSQL to keep running, or did Windows reserve 5432 for itself? In `docker-compose.yml`, change `"127.0.0.1:5432:5432"` into `"127.0.0.1:15432:5432"` and run `docker compose up -d` again. The database is then on `localhost:15432`, so use `Port=15432` in your own connection string. Keep this change on your laptop and do not commit it: the rest of the team uses 5432.
 
 The seed accounts and the seed data of the test site are described in the testing folder.
 
@@ -123,7 +130,7 @@ A real password, key, token or connection string that carries credentials never 
 
 ### Set up your local secrets
 
-Once per clone, in the startup project of the backend (`api/Connect/Connect.csproj`):
+`api/Connect/Connect.csproj` already holds a `<UserSecretsId>`, so you do not run `dotnet user-secrets init`. Every clone on your laptop shares the same secrets file. In the folder `api/Connect`, set the value the server reads, `ConnectionStrings:DefaultConnection`, with the password from your `.env`:
 
 ```
 dotnet user-secrets init
@@ -137,14 +144,7 @@ dotnet user-secrets set "ConnectionStrings:DefaultConnection" "Host=localhost;Po
 dotnet user-secrets list
 ```
 
-For this repository, the complete command is:
-
-```
-dotnet user-secrets set "ConnectionStrings:DefaultConnection" "Host=localhost;Port=5432;Database=connect;Username=connect;Password=your-local-password"
-```
-
-Use `ConnectionStrings:DefaultConnection` for this repository; older examples using
-`ConnectionStrings:Default` are obsolete.
+You should see `Successfully saved ConnectionStrings:DefaultConnection to the secret store.` and the list shows the value. Older examples that use `ConnectionStrings:Default` are obsolete.
 
 Two things to know about User Secrets:
 
@@ -152,6 +152,14 @@ Two things to know about User Secrets:
 - It is plain text. User Secrets keeps a secret out of Git. It does not protect the value on your disk, and it is only read when the environment is Development.
 
 ### Create and apply migrations
+
+Once per clone, before the first `dotnet ef` command, restore the pinned tool:
+
+```
+dotnet tool restore
+```
+
+You should see `Tool 'dotnet-ef' (version '10.0.12') was restored.` and then `Restore was successful.`
 
 The database context is in `api/Connect.Infrastructure`, while `api/Connect` is the startup
 project that loads the connection string. Create a migration with both projects specified:
@@ -163,6 +171,8 @@ dotnet ef migrations add <MigrationName> \
   --output-dir Persistence/Migrations
 ```
 
+You should see `Build succeeded.` and then `Done. To undo this action, use 'ef migrations remove'`. EF Core adds two new files for your migration under `Persistence/Migrations` and updates the model snapshot.
+
 Apply all pending migrations to the local PostgreSQL database:
 
 ```
@@ -170,6 +180,8 @@ dotnet ef database update \
   --project api/Connect.Infrastructure/Connect.Infrastructure.csproj \
   --startup-project api/Connect/Connect.csproj
 ```
+
+You should see `Applying migration '<name>'.` for each migration not yet applied, one line per migration, ending with `Done.`
 
 List migrations before changing database state:
 
@@ -179,6 +191,8 @@ dotnet ef migrations list \
   --startup-project api/Connect/Connect.csproj
 ```
 
+You should see every migration printed on its own line, oldest first, for example `20261009065814_AddAccountTable`.
+
 To go back one migration, use the migration immediately before the current one from that list.
 Never put a fixed old migration name in a shared command:
 
@@ -187,6 +201,8 @@ dotnet ef database update <MigrationBeforeYours> \
   --project api/Connect.Infrastructure/Connect.Infrastructure.csproj \
   --startup-project api/Connect/Connect.csproj
 ```
+
+You should see `Reverting migration '<name>'.` for each migration undone back to the one you chose, ending with `Done.`
 
 Do not edit a migration already on `dev`; add a new migration instead. The local test factory
 runs `Database.Migrate()` once when its host starts. Infrastructure table tests use PostgreSQL,
@@ -199,10 +215,12 @@ Production runs on k3s. A production secret is a Kubernetes Secret in the namesp
 ```
 kubectl create secret generic connect-backend \
   --namespace connect \
-  --from-literal='ConnectionStrings__Default=Host=<host>;Database=connect;Username=connect;Password=<the production password>'
+  --from-literal='ConnectionStrings__DefaultConnection=Host=<host>;Database=connect;Username=connect;Password=<the production password>'
 ```
 
-A nested setting uses a double underscore in the name of an environment variable, because a colon is not allowed in a variable name outside Windows. `ConnectionStrings__Default` is the same setting as `ConnectionStrings:Default`.
+You should see `secret/connect-backend created`.
+
+A nested setting uses a double underscore in the name of an environment variable, because a colon is not allowed in a variable name outside Windows. `ConnectionStrings__DefaultConnection` is the same setting as `ConnectionStrings:DefaultConnection`.
 
 A Kubernetes Secret is base64 encoded, and base64 is not encryption. Anyone allowed to read secrets in the namespace reads the value. Keep that right to the members who deploy, and turn on encryption at rest for etcd on the cluster.
 
@@ -277,6 +295,13 @@ dotnet format api/Connect.slnx --verify-no-changes
 dotnet test api/Connect.slnx
 ```
 
+The tests in `Connect.Infrastructure.Tests` talk to your local database and do not read User Secrets. Give them the same connection string as an environment variable in the terminal where you run `dotnet test`, or they fail with `ConnectionStrings__DefaultConnection is not configured`:
+
+```
+$env:ConnectionStrings__DefaultConnection="Host=localhost;Port=5432;Database=connect;Username=connect;Password=<your local password>"   # PowerShell
+export ConnectionStrings__DefaultConnection="Host=localhost;Port=5432;Database=connect;Username=connect;Password=<your local password>"   # macOS, Linux
+```
+
 You should see `Build succeeded` with `0 Warning(s)` and `0 Error(s)`, no output from the format check, and `Passed!` with `Failed: 0` for the tests.
 
 In the folder `web`:
@@ -292,15 +317,46 @@ You should see no lint errors, `All matched files use Prettier code style!` and 
 
 The pipeline runs the same checks. A merge request cannot be accepted while any of them is red.
 
+### Reading a red pipeline
+
+Five jobs run these checks in the pipeline, split so a red run points at one thing. Each job also runs on `dev` after a merge, so the merged result is checked too.
+
+| Job | What it checks | The same check on your laptop |
+|---|---|---|
+| backend-build | The server compiles, and `dotnet format` finds no layout difference | `dotnet build api/Connect.slnx` then `dotnet format api/Connect.slnx --verify-no-changes` |
+| frontend-build | TypeScript has no type error, and Vite builds the screen | `cd web` then `npm run build` |
+| backend-test | Every `dotnet test` in `api/Connect.slnx` passes, against a real PostgreSQL | `dotnet test api/Connect.slnx`, with `ConnectionStrings__DefaultConnection` set as in this section, and your database running (`docker compose up -d`, section 3) |
+| frontend-lint | ESLint finds no rule break, and Prettier finds no layout difference | `cd web` then `npm run lint` and `npx prettier --check .` |
+| frontend-test | Every Vitest test passes | `cd web` then `npm test` |
+
+A job that needs a database (backend-test) gets its own throwaway PostgreSQL inside the pipeline, under the alias `database`. The user, password and name of that database are CI/CD variables of the project (Settings, CI/CD, Variables), never written in `.gitlab-ci.yml`, and a value on your laptop never has to match them.
+
+On a red run: open the merge request, tab Pipelines, click the red run, then the red job. The last lines of the log name what failed, the same text the command above prints on your laptop. Fix it on your branch, run the command again until it passes, then push.
+
 ## 7. Your first change
 
 1. Take an issue from the board of the sprint and drag it to the list In progress.
-2. Branch from `dev`, named `<type>/<issue number>-<short name>`.
-3. Commit as `<type>(<scope>): <what changed> (#<issue number>)`.
+2. Branch from `dev`, named `<type>/<issue number>-<short name>`:
+
+   ```
+   git switch dev
+   git pull
+   git switch -c feature/14-create-an-account
+   ```
+
+   You should see `Switched to a new branch 'feature/14-create-an-account'`.
+3. Commit as `<type>(<scope>): <what changed> (#<issue number>)`:
+
+   ```
+   git add <the files you changed>
+   git commit -m "feat(backend): add account endpoint (#14)"
+   ```
+
+   You should see a line such as `[feature/14-create-an-account 3f2a1b9] feat(backend): add account endpoint (#14)` and how many files changed.
 4. Push the branch with `git push -u origin <your branch>`. You should see a line with a link to make a merge request.
-5. Open the link, choose `dev` as the target and ask a teammate who did not write it to approve. The template fills the description: start it with `Relates to #<issue number>`.
-6. Wait for the pipeline of the merge request. Green means you can ask for the review. Red: click the red run, then the red job, and read the last lines of its log. They say what failed. The part Pipeline of [gitlabSetup.md](gitlabSetup.md) explains each job.
-7. Walk the Definition of Done of the type of the issue, line by line.
+5. Open the link, choose `dev` as the target and ask a teammate who did not write it to approve. The template fills the description: start it with `Relates to #<issue number>`. You should see the merge request page with your title and the template in the description.
+6. Wait for the pipeline of the merge request. Green means you can ask for the review. Red: click the red run, then the red job, and read the last lines of its log. They say what failed. The part Pipeline of [gitlabSetup.md](gitlabSetup.md) explains each job. You should see a green check next to the pipeline of the merge request when every job passed.
+7. Walk the Definition of Done of the type of the issue, line by line. You should see every line of the list in the issue ticked before you ask for the merge.
 
 ## 8. Check that no secret leaked
 
@@ -335,12 +391,13 @@ You should see only lines where the word is a name, a placeholder or an explanat
 
 ## 10. The client's server
 
-Issue 09 Every team member on the client's server (task 9.2) prepares the foundation's server for the team.
+Issue 09 Every team member on the client's server (task 9.2) prepares the foundation's server for the team. How the foundation gets in without the team, and what changes at the handover, is in [serverHandover.md](../client/serverHandover.md).
 
 ### The machine
 
 | Fact | Value |
 |---|---|
+| Owner | The WailSalutem Foundation, the client (director Rachid Kherrazi) |
 | Provider and country | Strato, Germany |
 | CPU | 4 vCPU, AMD EPYC Milan, 2.0 GHz |
 | Memory | 7.7 GiB |
@@ -350,27 +407,65 @@ Issue 09 Every team member on the client's server (task 9.2) prepares the founda
 | Hostname | connect |
 | Time zone | Europe/Amsterdam |
 
+The facts above come from these commands, run on the server on 9 October 2026:
+
+```
+$ nproc
+4
+$ free -h
+               total        used        free      shared  buff/cache   available
+Mem:           7.7Gi       833Mi       5.9Gi       1.0Mi       1.2Gi       6.9Gi
+Swap:             0B          0B          0B
+$ df -h /
+Filesystem      Size  Used Avail Use% Mounted on
+/dev/vda1       232G  3.1G  229G   2% /
+$ head -4 /etc/os-release
+PRETTY_NAME="Ubuntu 24.04.5 LTS"
+NAME="Ubuntu"
+VERSION_ID="24.04"
+VERSION="24.04.5 LTS (Noble Numbat)"
+```
+
 The server is IPv4 only today. The client's sheet names an IPv6 address, 2a01:239:4b8:db00::1, but it is not configured on the interface yet.
 
 ### Logging in
 
-Every team member has a user of their own, named after their first name in lower case, reachable only with their own ssh key. The keys came from each member's GitLab profile (User settings, SSH keys) on 9 October 2026, so a key you added on GitLab is a key that works here.
+Every team member has a user of their own, named after their first name in lower case, reachable only with their own ssh key. On 9 October 2026 the keys were copied once from each member's GitLab profile (User settings, SSH keys). A key you add to GitLab after that date does not reach the server by itself: send it to an admin, see A new laptop or a new key below.
 
-```
-ssh <your first name>@31.70.66.186
-```
+Your first login, step by step:
 
-You should see a prompt such as `nick@connect:~$`. On your first login, check the host key fingerprint against these three:
+1. Check that you have a key. `ls ~/.ssh` lists a file that ends in `.pub`, such as `id_ed25519.pub`. The same command works in PowerShell on Windows. No such file? Make one with `ssh-keygen -t ed25519` and press Enter to keep the default file name. Give it a passphrase: whoever copies a key without one can log in as you.
+2. Log in with your own first name in lower case:
 
-```
-ED25519 SHA256:jZUye4ZjNvmKksJkDOtlQ94+O/jKnpsfWvzAhqj2Nbk
-ECDSA SHA256:jFBiJlKA3mGbIo0c5qv3sqeLa3xRRGyXRuGp9mSYLCI
-RSA SHA256:CmuGqwCHzubotlbA2rp/Ocg/P4yHMlochwTAXRxr35U
-```
+   ```
+   ssh <your first name>@31.70.66.186
+   ```
+
+3. The first time, ssh shows a fingerprint and asks `Are you sure you want to continue connecting (yes/no/[fingerprint])?`. Compare the fingerprint with these three. It must match one of them exactly, then type `yes`. This proves you reached the client's server and not a machine in between.
+
+   ```
+   ED25519 SHA256:jZUye4ZjNvmKksJkDOtlQ94+O/jKnpsfWvzAhqj2Nbk
+   ECDSA SHA256:jFBiJlKA3mGbIo0c5qv3sqeLa3xRRGyXRuGp9mSYLCI
+   RSA SHA256:CmuGqwCHzubotlbA2rp/Ocg/P4yHMlochwTAXRxr35U
+   ```
+
+4. You should see a prompt such as `nick@connect:~$`. Type `exit` to leave.
+5. Write your date in First login per team member below, through a small merge request.
+
+Your key has another file name? Point ssh at it: `ssh -i ~/.ssh/<file> <your first name>@31.70.66.186`.
+
+When the login fails:
+
+- `Permission denied (publickey)`: the server does not know the key on this laptop. Most often it is a new laptop, or a key made after 9 October 2026. Send the content of your public key (`cat ~/.ssh/id_ed25519.pub`) to an admin, a member of the group sudo named below. A public key is not a secret, so the team chat is fine. Never send the file without `.pub`: that is your private key. The admin adds it with the steps of A new laptop or a new key.
+- `WARNING: REMOTE HOST IDENTIFICATION HAS CHANGED!`: the server answered with another fingerprint than the one your laptop saved. Do not log in. Tell the team, because either the server was reinstalled or something sits in between. Only after the team knows why, remove the old fingerprint with `ssh-keygen -R 31.70.66.186` and start again at step 2.
+
+How access works on this server:
 
 - Password login is off for everyone: `/etc/ssh/sshd_config.d/10-connect.conf` sets `PasswordAuthentication no` and `KbdInteractiveAuthentication no`. A try with a password answers `Permission denied (publickey)` (tried on 9 October 2026).
-- Root may still log in, but only with a key (`PermitRootLogin prohibit-password`), until a member of the group sudo has a sudo password. Then the same file gets `PermitRootLogin no`, checked with `sudo sshd -t` before `sudo systemctl reload ssh`.
-- The group sudo holds wesley. The second member of the group sudo is still to be chosen by the team. Each of the two sets their own sudo password in person on the server, never in a chat or a file.
+- Why no password login: the team decided this for security (#237). A password can be guessed or leaked, a key cannot be guessed. The client does not log in to the server during the project: he has the Strato customer login, where he can reset the whole server, and the server holds no real data. In the last sprint, when the project is done, the team switches password login back on, step 6 of At the handover in [serverHandover.md](../client/serverHandover.md).
+- Root never logs in over ssh: the same file sets `PermitRootLogin no` since 9 October 2026, checked with `sshd -t` before `systemctl reload ssh`. A try answers `root@31.70.66.186: Permission denied (publickey).`
+- Every team member is an admin: the group sudo holds wesley, gurpreet, bayon, nick and kelvin. They become root with `sudo -i` after logging in with their own key, without a password (`/etc/sudoers.d/20-connect-admins`). Wesley decided this for wesley and gurpreet on 9 October 2026 and for the whole team on 10 October 2026. Every user has a locked password, so the ssh key is the only way in, and whoever holds a member's key is root. Guard that key.
+- Add an admin with `sudo usermod -aG sudo <name>` and a line `<name> ALL=(ALL) NOPASSWD:ALL` in that file through `sudo visudo -f /etc/sudoers.d/20-connect-admins`.
 
 ### New team member
 
@@ -386,6 +481,18 @@ sudo chmod 600 /home/<name>/.ssh/authorized_keys
 
 You should see no output from the last two commands. The new member then logs in with `ssh <name>@31.70.66.186`.
 
+### A new laptop or a new key
+
+A member who already has a user sends their public key, the line that starts with `ssh-ed25519`. On the server, as a member of the group sudo:
+
+```
+sudo nano /home/<name>/.ssh/authorized_keys   # paste the key on a new line, keep the old lines
+```
+
+You should see nano open with the file already on screen, keeping every line that is there. Press Ctrl+O then Enter to write the file, and Ctrl+X to close nano.
+
+Save, and the member logs in with the new key. Delete the line of a laptop the member no longer has, so a lost laptop is no way in.
+
 ### Someone leaves
 
 ```
@@ -393,6 +500,8 @@ sudo deluser --remove-home <name>
 ```
 
 You should see `Removing user '<name>'`. Their key and home folder are gone, and a login with their name answers `Permission denied (publickey)`.
+
+Then remove their line from `/etc/sudoers.d/20-connect-admins` with `sudo visudo -f /etc/sudoers.d/20-connect-admins`. Otherwise a new user who later gets the same name is root from the first login.
 
 ### Who logged in
 
@@ -407,7 +516,7 @@ Each member writes their own line after their first login with their own user.
 | Wesley Oerlemans | 9 October 2026 |
 | Bayon Eerhart | |
 | Nick Hoebe | |
-| Gurpreet Singh | |
+| Gurpreet Singh | 19 October 2026 |
 | Kelvin van Voorst | |
 
 ### Open ports
@@ -424,8 +533,27 @@ You should see `Default: deny (incoming), allow (outgoing)` and only these, for 
 | 80/tcp | Web visits, which Caddy sends on to https |
 | 443/tcp | Web visits with the padlock |
 
+The output on 9 October 2026:
+
+```
+Status: active
+Logging: on (low)
+Default: deny (incoming), allow (outgoing), deny (routed)
+New profiles: skip
+
+To                         Action      From
+--                         ------      ----
+22/tcp                     ALLOW IN    Anywhere
+80/tcp                     ALLOW IN    Anywhere
+443/tcp                    ALLOW IN    Anywhere
+22/tcp (v6)                ALLOW IN    Anywhere (v6)
+80/tcp (v6)                ALLOW IN    Anywhere (v6)
+443/tcp (v6)               ALLOW IN    Anywhere (v6)
+```
+
 - A scan from outside on 9 October 2026 found only 22 answering. 80 and 443 answer since Caddy runs.
-- Docker 29.8.2 with Compose 5.5.1 comes from Docker's own package source (download.docker.com).
+- Docker 29.8.2 with Compose 5.5.1 comes from Docker's own package source (download.docker.com). Checked on 9 October 2026: `docker --version` answers `Docker version 29.8.2, build 7fc2dff`, `docker compose version` answers `Docker Compose version v5.5.1`, and `docker run --rm hello-world` prints `Hello from Docker!`.
+- The programs on the server and their licence, so hosting costs no licence money (NFR3): Docker Engine (Apache 2.0, github.com/moby/moby), the Docker Compose plugin (Apache 2.0, github.com/docker/compose), Caddy (Apache 2.0, github.com/caddyserver/caddy) and ufw (GPL 3.0, launchpad.net/ufw).
 - Docker opens ports past ufw. So every container publishes its port only on 127.0.0.1, for example `"127.0.0.1:8080:8080"`. That holds for the database and the test mailbox of #39 as well, which are reached only through Caddy with a login.
 - The group docker equals full administrator rights on the server. Only the user deploy is in it, a team member only when needed.
 - `/srv/connect-test` holds the test site, owned by deploy.
@@ -448,7 +576,7 @@ The test site is at https://31-70-66-186.sslip.io until the foundation sets the 
 - The job ssh-check in `.gitlab-ci.yml` starts by hand on dev, or in a pipeline started with the variable RUN_SSH_CHECK set to yes. It logs in as deploy and prints the name of the server, `connect`.
 - The secret settings of the test site are in `/srv/connect-test/.env` on the server, rights 600, owner deploy. The database password was made on the server with `openssl rand -hex 24` and is not written anywhere else. `deploy/.env.example` lists every name.
 - **A new deploy key after a leak.** Make a new pair with `ssh-keygen -t ed25519`, put the public part in `/home/deploy/.ssh/authorized_keys` instead of the old one, the private part base64 encoded in SSH_PRIVATE_KEY, delete the private part from your laptop, and run ssh-check.
-- **Change the database password.** Change POSTGRES_PASSWORD and the password inside ConnectionStrings__Connect in `/srv/connect-test/.env` together. The database keeps its first password on its volume, so also change it in PostgreSQL itself, or start the test database over.
+- **Change the database password.** Change POSTGRES_PASSWORD and the password inside ConnectionStrings__DefaultConnection in `/srv/connect-test/.env` together. The database keeps its first password on its volume, so also change it in PostgreSQL itself, or start the test database over.
 
 ## 11. The security scan
 

@@ -31,7 +31,7 @@ flowchart TD
 | Folder | Documents |
 |---|---|
 | docs/project | productVision.md, problemAnalysis.md, requirements.md, deliveryPlan.md, and later houseRules.md |
-| docs/client | clientBrief.md, clientBriefConcept.jpeg, clientQuestions.md, and later clientContact.md |
+| docs/client | clientBrief.md, clientBriefConcept.jpeg, clientQuestions.md, serverHandover.md, and later clientContact.md |
 | docs/architecture | architecture.md, techStack.md, stackResearch.md, infrastructure.md, and later api.md, designPatterns.md, socialLogin.md, concurrencyRegistration.md |
 | docs/team | collaborationAgreement.md, codeConventions.md, definitionOfDone.md, gitlabSetup.md, issueRules.md, boardNumbers.md, openItems.md, actionOverview.md, and later onboarding.md |
 | docs/testing | testingStrategy.md, and later testData.md |
@@ -95,6 +95,14 @@ Every open question for the client, the director of the foundation, in one numbe
 For the studio, it serves **AA** and **MS**: the questions are analysis of what is still unknown, and keeping them in one place with dates is transparent work with the client.
 
 For the team, it is the list to take to every meeting with the client, and the place to look before starting an issue that is blocked by the client.
+
+### serverHandover.md
+
+How the foundation gets into its own server after the project: the normal way with a personal key, the rescue system of Strato when nobody with access is left, the root password, and what the team and the foundation do at the handover session.
+
+For the studio, it serves **MS**: the work stays transferable, and the foundation does not depend on the team to reach its own server.
+
+For the team, it is the agenda for the server part of the handover session, with one TODO to fill in during that session.
 
 ## docs/architecture
 

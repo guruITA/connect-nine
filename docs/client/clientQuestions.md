@@ -6,7 +6,7 @@ Questions 1 to 8 are written in full by the tasks of issue 10. Questions 9 and u
 
 | Nr | Card | Question | Answer | Date |
 |---|---|---|---|---|
-| 1 | 10 | The order of the epics: which epics the foundation wants first, in plain words. | | |
+| 1 | 10 | The order of the epics: which epics the foundation wants first, in plain words. | At the sprint 1 review he was happy with the order in which the team takes the features in, as planned on the board, so the order stays as it is. His sprint review form of that day (`docs/sprintReviews/sprint1ReviewForm.pdf`) rates "Clear on what will be delivered in next sprint" beyond expectation. | 9 October 2026 |
 | 2 | 10 | Does Connect get a webshop this semester, and which of the three alternatives. | No webshop is required. It would be nice to have, and a static version or a few images would be enough for now. | 24 September 2026 |
 | 3 | 10 | Real data of young people on the test site or only made up data. | Only made-up test data may be used. | 24 September 2026 |
 | 4 | 10 | Who owns the showcases and projects, how they may be shown, and what always stays out. | The team may use the code to show the project, like on GitHub. The project may also be used for school evidence and showing the work. | 24 September 2026 |

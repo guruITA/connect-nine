@@ -20,4 +20,4 @@ Details per line: docs/team/definitionOfDone.md
 - [ ] The issues that need the answer are linked and told.
 - [ ] The BoKSA proof is collected, and AI use is declared.
 
-<!-- Tasks are child items (template task). Is blocked by and Blocks are Linked items, not text. Labels on the issue: type, epic, prio, sprint, and blocked when it applies. -->
+<!-- Tasks are child items (template task). Is blocked by and Blocks are Linked items, not text. Labels on the issue: type, epic, prio, sprint, and blocked when it applies, plus project, or school-only instead when it is school research done outside Connect. -->

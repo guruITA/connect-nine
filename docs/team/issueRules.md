@@ -95,7 +95,7 @@ Definition of done: the line "Details per line: docs/team/definitionOfDone.md", 
 
 ### C8
 
-Not in the text, because GitLab already holds it: the tasks (child items), is blocked by and blocks (linked items, set both ways), and the labels. Labels on an issue: type, epic, priority, sprint, and blocked with its reason when it applies. The portfolio labels (outcome, level, direction) are never on the issue. An issue that exists because of a school workshop also gets school::required.
+Not in the text, because GitLab already holds it: the tasks (child items), is blocked by and blocks (linked items, set both ways), and the labels. Labels on an issue: type, epic, priority, sprint, and blocked with its reason when it applies. The portfolio labels (outcome, level, direction) are never on the issue. An issue that exists because of a school workshop also gets school::required. Every other issue gets project, which puts it on the sprint board. A school issue that adds nothing to Connect itself (a test, research outside Connect, a proposal, a peer review, portfolio evidence, a workshop issue) gets school-only instead of project and stands on the School board of its sprint.
 
 ## The parts of a task, in this order
 
