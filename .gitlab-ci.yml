@@ -26,6 +26,60 @@ stages:
   - scan
   - deploy
 
+# The NuGet cache key below. GitLab takes at most two files for a cache key, so it uses the two
+# .csproj files with the most package references. A package change elsewhere reuses the old cache,
+# and dotnet restore fetches what is missing.
+.backend-nuget-cache:
+  variables:
+    NUGET_PACKAGES: $CI_PROJECT_DIR/.nuget/packages
+  cache:
+    key:
+      files:
+        - api/Connect.Infrastructure/Connect.Infrastructure.csproj
+        - api/Connect.Tests/Connect.Tests.csproj
+    paths:
+      - .nuget/packages
+
+# web/node_modules, keyed on the lock file, so every job with this changes cache together (#266).
+.frontend-node-cache:
+  cache:
+    key:
+      files:
+        - web/package-lock.json
+    paths:
+      - web/node_modules
+
+# Compiles the server and checks its layout, then builds the screen. Both run on every merge
+# request and on dev, the same rule as env-file-check below (task 3.8, #266).
+backend-build:
+  stage: build
+  image: mcr.microsoft.com/dotnet/sdk:10.0
+  tags:
+    - hva
+  extends: .backend-nuget-cache
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "schedule"
+      when: never
+    - when: on_success
+  script:
+    - dotnet build api/Connect.slnx
+    - dotnet format api/Connect.slnx --verify-no-changes
+
+frontend-build:
+  stage: build
+  image: node:22-alpine
+  tags:
+    - hva
+  extends: .frontend-node-cache
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "schedule"
+      when: never
+    - when: on_success
+  script:
+    - cd web
+    - npm ci
+    - npm run build
+
 # Fails on any committed .env file and names it, so no password reaches Git (rule 3 of the code conventions).
 env-file-check:
   stage: test
@@ -63,6 +117,68 @@ branch-flow:
         echo "main only takes merge requests from dev. Merge your branch into dev first."
         exit 1
       fi
+
+# Runs the test suite of the server against a real PostgreSQL, the same major version as
+# docker-compose.yml. TEST_POSTGRES_USER, TEST_POSTGRES_PASSWORD and TEST_POSTGRES_DB are CI/CD
+# variables of the project (Settings, CI/CD, Variables), throwaway values used only inside this
+# pipeline. ConnectWebApplicationFactory and the PostgreSQL table tests both read
+# ConnectionStrings__DefaultConnection, built from those three below, never written out here
+# (task 3.8, #266).
+backend-test:
+  stage: test
+  image: mcr.microsoft.com/dotnet/sdk:10.0
+  tags:
+    - hva
+  extends: .backend-nuget-cache
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "schedule"
+      when: never
+    - when: on_success
+  services:
+    - name: postgres:16
+      alias: database
+  variables:
+    POSTGRES_USER: $TEST_POSTGRES_USER
+    POSTGRES_PASSWORD: $TEST_POSTGRES_PASSWORD
+    POSTGRES_DB: $TEST_POSTGRES_DB
+    ConnectionStrings__DefaultConnection: "Host=database;Port=5432;Database=$TEST_POSTGRES_DB;Username=$TEST_POSTGRES_USER;Password=$TEST_POSTGRES_PASSWORD"
+    ConnectionStrings__TestsConnection: "Host=database;Port=5432;Database=$TEST_POSTGRES_DB;Username=$TEST_POSTGRES_USER;Password=$TEST_POSTGRES_PASSWORD"
+  script:
+    - dotnet test api/Connect.slnx
+
+# ESLint, then Prettier (docs/team/codeConventions.md, Frontend rule 2). No test database needed,
+# so no postgres service here (task 3.8, #266).
+frontend-lint:
+  stage: test
+  image: node:22-alpine
+  tags:
+    - hva
+  extends: .frontend-node-cache
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "schedule"
+      when: never
+    - when: on_success
+  script:
+    - cd web
+    - npm ci
+    - npm run lint
+    - npx prettier --check .
+
+# The Vitest suite of the screen, once per merge request and once on dev (task 3.8, #266).
+frontend-test:
+  stage: test
+  image: node:22-alpine
+  tags:
+    - hva
+  extends: .frontend-node-cache
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "schedule"
+      when: never
+    - when: on_success
+  script:
+    - cd web
+    - npm ci
+    - npm test
 
 # Stops a package of the server with a known high or critical advisory (#22).
 # NuGet audit in api/Directory.Build.props turns such a package into error NU1903 or NU1904 during the restore,

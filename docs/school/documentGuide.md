@@ -31,8 +31,8 @@ flowchart TD
 | Folder | Documents |
 |---|---|
 | docs/project | productVision.md, problemAnalysis.md, requirements.md, deliveryPlan.md, and later houseRules.md |
-| docs/client | clientBrief.md, clientBriefConcept.jpeg, clientQuestions.md, and later clientContact.md |
-| docs/architecture | architecture.md, techStack.md, stackResearch.md, infrastructure.md, and later api.md, designPatterns.md, socialLogin.md, concurrencyRegistration.md |
+| docs/client | clientBrief.md, clientBriefConcept.jpeg, clientQuestions.md, serverHandover.md, and later clientContact.md |
+| docs/architecture | architecture.md, techStack.md, stackResearch.md, infrastructure.md, api.md, and later designPatterns.md, socialLogin.md, concurrencyRegistration.md |
 | docs/team | collaborationAgreement.md, codeConventions.md, definitionOfDone.md, gitlabSetup.md, issueRules.md, boardNumbers.md, openItems.md, actionOverview.md, and later onboarding.md |
 | docs/testing | testingStrategy.md, and later testData.md |
 | docs/school | workshopCoverage.md, issueMapping.md, documentGuide.md, and later devopsLearningOutcomes.md, workshopEvidenceMap.md, recordingScript.md, liveDemoPlan.md |
@@ -96,6 +96,14 @@ For the studio, it serves **AA** and **MS**: the questions are analysis of what 
 
 For the team, it is the list to take to every meeting with the client, and the place to look before starting an issue that is blocked by the client.
 
+### serverHandover.md
+
+How the foundation gets into its own server after the project: the normal way with a personal key, the rescue system of Strato when nobody with access is left, the root password, and what the team and the foundation do at the handover session.
+
+For the studio, it serves **MS**: the work stays transferable, and the foundation does not depend on the team to reach its own server.
+
+For the team, it is the agenda for the server part of the handover session, with one TODO to fill in during that session.
+
 ## docs/architecture
 
 ### architecture.md
@@ -130,7 +138,7 @@ For the studio, it serves **AA** and **OR**, and it is the main evidence for the
 
 For the team, it is the reference before touching the pipeline or a server. Where production runs exactly, and on which address, is decided by the client in issue 91 The director agrees where production runs.
 
-### api.md (made later)
+### api.md
 
 The list of server addresses, what each one expects and answers, and who may use it. Issue 03 Create an account starts it (task 3.1), and every slice that adds an endpoint adds its lines.
 

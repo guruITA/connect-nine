@@ -1,6 +1,6 @@
 namespace Connect.Domain.Common;
 
-public abstract class Entity : IAuditable
+public abstract class Entity : IEntity, IAuditable
 {
     public Guid Id { get; private set; }
 

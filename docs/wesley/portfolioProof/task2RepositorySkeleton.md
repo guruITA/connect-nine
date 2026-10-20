@@ -37,6 +37,8 @@ School asks: "You ensure that your work aligns with that of others and contribut
 
 4. **Lines that exist for later tasks.** `api/**/wwwroot/` is for task 3.9 (#267), where the pipeline copies the built screen into the server; the task names `backend/Presentation/wwwroot`, the folder is now under `api`. `test-results/` and `playwright-report/` are for task 3.7 (#265), the Playwright test that makes an account in a real browser.
 
+5. **Confirmed after the merge.** Merge request !23, branch `chore/2-editorconfig-css`, merged 9 October 2026. Gurpreet Singh checked it on 9 October 2026, and I noted the check in the merge request: `.editorconfig` on dev lists `css` in the 2-space block together with `ts`, `tsx`, `js`, `jsx`, `json`, `yml`, `yaml` and `md`, and 4 spaces for `cs`, matching rule 2 of `docs/team/codeConventions.md`. The `.editorconfig` line of the checklist of #2 is ticked.
+
 ## TODO
 
 What is still needed before this proof is complete. Tick a line when it is done.

@@ -24,7 +24,7 @@ On 9 October 2026 the Figma board went from 82 to 14 pages. The 21 pages with fu
 - [ ] Wesley: how the team used the page Issue pyramid in the planning of sprint 2 (MS1).
 - [ ] Every team member: confirm in #1498 that the issues they own stand in the right epic and sprint on both pages (MS4).
 - [ ] Reviewer: read group H next to the page Issue pyramid and check that every rule matches what the page shows.
-- [ ] After !35: add the rows for board numbers 175, 176 and 179 to docs/team/boardNumbers.md.
+- [x] After !35: add the rows for board numbers 175, 176 and 179 to docs/team/boardNumbers.md. Done on 9 October 2026, with 177 and 180 as well.
 
 ## AI use
 

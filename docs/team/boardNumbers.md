@@ -231,7 +231,27 @@ The cards name each other by their board number. GitLab gives its own numbers.
 | 133 | #233 | Add a logo to my organisation profile |
 | 159 | #234 | Remove the picture of my project |
 | 152 | #235 | See the reports about members |
+| 175 | #1466 | Gurpreet Singh's own design of the data, built and tested |
+| 177 | #1475 | Four ways of loading a profile compared |
+| 176 | #1483 | Gurpreet Singh's work as Scrum Master in sprint 2 |
 | 178 | #1496 | The page descriptions point to the screens of the prototype |
+| 179 | #1498 | The team rules describe the Figma board as it is now |
+| 180 | #1516 | Sprints 2 to 5 planned again after sprint 1 |
+| 181 | #1521 | Knowledge test 1, week 9 (26 to 30 October 2026) |
+| 182 | #1522 | Knowledge test 2, week 16 (14 to 18 December 2026) |
+| 183 | #1523 | Workshop DevOps, overview |
+| 184 | #1524 | Workshop Testing, overview |
+| 185 | #1525 | Workshop Architecture and Patterns, overview |
+| 186 | #1526 | Workshop Security, overview |
+| 187 | #1527 | Workshop R&D, overview |
+| 188 | #1528 | Review of Security & Testing, every workshop checked in sprint 4 |
+| 189 | #1529 | Datapoint DevOps & Testing, level 3, sprint 2 |
+| 190 | #1530 | Datapoint Security & Architecture, level 2, sprint 2 |
+| 191 | #1531 | Datapoint Threat Model, Security Specialist, sprint 2 |
+| 192 | #1532 | Datapoint Review of R&D Report, level 3, sprint 3 |
+| 193 | #1533 | Datapoint DevOps & Testing, level 2, sprint 3 |
+| 194 | #1534 | Datapoint Vulnerability detection & mitigation, Security Specialist, sprint 3 |
+| 195 | #1535 | Datapoint Security Hardening, Security Specialist, sprint 4 |
 
 ## AI use declaration
 
