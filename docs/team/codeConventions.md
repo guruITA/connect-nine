@@ -207,7 +207,7 @@ These rules join backend rule 16 and rule 12 of the part above.
    ```
 
    The first test run makes the database and its tables, because a database test applies the migrations itself. The tests stop with a message when both names point at the same database. (tool: the check in TestConfiguration, #1541)
-3. A database test makes its own rows with values no other test uses, such as an email address with a Guid in it: `$"account-{Guid.NewGuid():N}@example.com"`. The tests then pass in any order and on a database that still holds the rows of earlier runs. (reviewer)
+3. A database test makes its own rows with values no other test uses, such as an email address with a Guid in it: `$"account-{Guid.NewGuid():N}@example.com"`. The tests then pass in any order and on a database that still holds the rows of earlier runs. PostgreSQL keeps a time to the microsecond and .NET to 100 nanoseconds, so a time read back from the database is compared with `.Within(TimeSpan.FromMicroseconds(1))`, as `ConnectDbContextDatabaseTests` does. (reviewer)
 
 ### Substitutes with NSubstitute
 
@@ -240,7 +240,7 @@ A substitute is a stand-in object a test makes for an interface or a class. The 
 
 5. Substitute an interface. Substitute a class only when the members the test needs are virtual, such as `UserManager<Account>` of ASP.NET Core Identity, created with its constructor arguments as in `AccountRegistrationServiceTests`. NSubstitute can only replace the members a class lets it override, so the rest of the class still runs inside the test. The package NSubstitute.Analyzers.CSharp sits next to NSubstitute in every test project that uses it, and turns a member NSubstitute cannot replace into a build error, because every project has TreatWarningsAsErrors (backend rule 2). (tool: NSubstitute.Analyzers.CSharp)
 6. NSubstitute and NSubstitute.Analyzers.CSharp have the same versions in every test project as in Connect.Infrastructure.Tests. A test project that gets its first substitute adds both. (reviewer)
-7. The database is never substituted: not `IAppDbContext`, not `ConnectDbContext` and not a `DbSet`. A query is written with LINQ, and EF Core turns it into SQL. Microsoft's guide on testing with EF Core says a substitute cannot do that for a query (https://learn.microsoft.com/en-us/ef/core/testing/choosing-a-testing-strategy), so a test on a substitute can pass where PostgreSQL fails. A handler that reads or writes data is tested as backend rule 16 says. (reviewer)
+7. The database is never substituted: not `IAppDbContext`, not `ConnectDbContext`, not a `DbSet` and not the in-memory provider of EF Core (`UseInMemoryDatabase`). A query is written with LINQ, and EF Core turns it into SQL. Microsoft's guide on testing with EF Core says a substitute cannot do that for a query, and calls the in-memory provider as a stand-in database highly discouraged (https://learn.microsoft.com/en-us/ef/core/testing/choosing-a-testing-strategy). A test on either can pass where PostgreSQL fails. A test that needs the database uses the test database of rule 1, and a handler is tested as backend rule 16 says. (reviewer)
 
 ## Kept from the collaboration agreement
 
