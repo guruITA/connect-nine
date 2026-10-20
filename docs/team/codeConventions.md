@@ -193,6 +193,55 @@ These rules join the parts above. When an older text disagrees, these win.
 20. Playwright logs in with page.request.post or context.request.post, never the separate request fixture, so the page gets the cookie. (reviewer)
 21. A test account that must be visible to others is confirmed through Mailpit in the test setup, as docs/testing/testData.md describes. (reviewer)
 
+## Tests and mocking
+
+These rules join backend rule 16 and rule 12 of the part above.
+
+### The test database
+
+1. A test that needs PostgreSQL reads the connection string `ConnectionStrings:TestsConnection` through `TestConfiguration` in api/Connect.Infrastructure.Tests, which reads the user secrets of api/Connect and the environment variables. A test never reads `ConnectionStrings:DefaultConnection`. On a laptop that is the database the server runs on, and a database test runs every migration of its branch on its database and leaves its rows behind. (tool: backend-test of #266, once it sets only `ConnectionStrings__TestsConnection`, #1541)
+2. `TestsConnection` points at a database of its own, never at the database of `DefaultConnection`: on a laptop `connect_test` next to `connect`, in the pipeline the PostgreSQL service of backend-test. Set it once, in the folder api/Connect:
+
+   ```
+   dotnet user-secrets set "ConnectionStrings:TestsConnection" "Host=localhost;Port=5432;Database=connect_test;Username=connect;Password=<your local password>"
+   ```
+
+   The first test run makes the database and its tables, because a database test applies the migrations itself. The tests stop with a message when both names point at the same database. (tool: the check in TestConfiguration, #1541)
+3. A database test makes its own rows with values no other test uses, such as an email address with a Guid in it: `$"account-{Guid.NewGuid():N}@example.com"`. The tests then pass in any order and on a database that still holds the rows of earlier runs. (reviewer)
+
+### Substitutes with NSubstitute
+
+A substitute is a stand-in object a test makes for an interface or a class. The test says what it answers, and checks afterwards how it was called. NSubstitute is the package that makes them.
+
+4. A unit test replaces what its class gets through the constructor (backend rule 14) with a substitute of NSubstitute, not with a stub class written by hand. `Substitute.For<...>()` makes it, `.Returns(...)` says what it answers, and `.Received(1)` checks that it was called once with these values, `.DidNotReceive()` that it was not called. `AccountRegistrationServiceTests` shows more: an answer worked out from the call, an exception as the answer, and the calls to a logger. An endpoint test puts the substitute in place of the handler through `ConfigureTestServices`. A stub class that is already there stays until its test file changes for another reason. (reviewer)
+
+   ```csharp
+   [Test]
+   public async Task HandleAsync_ValidCommand_PassesItToTheRegistrationService()
+   {
+       // Arrange
+       var expected = Result<CreateAccountResult>.Success(
+           new CreateAccountResult(Guid.NewGuid(), "member@example.com"));
+       var service = Substitute.For<IAccountRegistrationService>();
+       service.RegisterAsync("member@example.com", "password", Arg.Any<CancellationToken>())
+           .Returns(expected);
+       var handler = new CreateAccountCommandHandler(service);
+
+       // Act
+       Result<CreateAccountResult> result = await handler.HandleAsync(
+           new CreateAccountCommand("member@example.com", "password"), CancellationToken.None);
+
+       // Assert
+       Assert.That(result, Is.EqualTo(expected));
+       await service.Received(1).RegisterAsync(
+           "member@example.com", "password", CancellationToken.None);
+   }
+   ```
+
+5. Substitute an interface. Substitute a class only when the members the test needs are virtual, such as `UserManager<Account>` of ASP.NET Core Identity, created with its constructor arguments as in `AccountRegistrationServiceTests`. NSubstitute can only replace the members a class lets it override, so the rest of the class still runs inside the test. The package NSubstitute.Analyzers.CSharp sits next to NSubstitute in every test project that uses it, and turns a member NSubstitute cannot replace into a build error, because every project has TreatWarningsAsErrors (backend rule 2). (tool: NSubstitute.Analyzers.CSharp)
+6. NSubstitute and NSubstitute.Analyzers.CSharp have the same versions in every test project as in Connect.Infrastructure.Tests. A test project that gets its first substitute adds both. (reviewer)
+7. The database is never substituted: not `IAppDbContext`, not `ConnectDbContext` and not a `DbSet`. A query is written with LINQ, and EF Core turns it into SQL. Microsoft's guide on testing with EF Core says a substitute cannot do that for a query (https://learn.microsoft.com/en-us/ef/core/testing/choosing-a-testing-strategy), so a test on a substitute can pass where PostgreSQL fails. A handler that reads or writes data is tested as backend rule 16 says. (reviewer)
+
 ## Kept from the collaboration agreement
 
 These rules come from section 6 of the collaboration agreement (Code Conventions). They hold for every layer, next to the rules above.
