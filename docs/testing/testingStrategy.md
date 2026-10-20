@@ -32,7 +32,7 @@ Core on .NET 10 with PostgreSQL 16, rather than onto Next.js.
 Application and Domain layers of the four backend projects that issue 11 The team agrees on the
 layered architecture records: the business rules inside a handler, for example whether an event
 still has an open spot, unit tested with a test database of its own on in-memory SQLite behind
-IAppDbContext, as the account test of #262 does, and a rule in Domain
+IAppDbContext, and a rule in Domain
 unit tested without any database. **NUnit**
 is decided, not xUnit, with `dotnet new nunit -o TestProject1` scaffolding a test project
 directly from the .NET SDK (NUnit, n.d.). The tests live in one test project per layer, Connect.Application.Tests,

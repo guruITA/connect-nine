@@ -194,9 +194,11 @@ slice copies it:
    `web/src/api/client.ts` to `POST /api/accounts`.
 2. Presentation: `CreateAccountRequestValidator` (FluentValidation) checks the input and answers
    wrong input with one message per field.
-3. Application: the handler checks that the email address is still free and turns the password
-   into a hash.
-4. Infrastructure: `ConnectDbContext` saves one row in the Identity table `AspNetUsers`.
+3. Application: the handler hands the email address and password to `IAccountRegistrationService`.
+4. Infrastructure: `AccountRegistrationService` creates the account with `UserManager<Account>` of
+   ASP.NET Identity, which checks that the email address is still free, turns the password into a
+   hash and saves one row in the Identity table `AspNetUsers`. An address that is already taken,
+   also in other capitals, comes back as a conflict, 409.
 5. The answer goes back the same way and the page shows "Your account is made".
 
 The diagram below shows the same request as messages between the screen, the layers and the database.
@@ -214,13 +216,13 @@ sequenceDiagram
         P-->>Page: ValidationProblem, one message per field
     else right input
         P->>A: create the account
-        A->>I: is this email address still free
-        I->>DB: look for the address
+        A->>I: register the email address and password
+        I->>DB: is this email address still free
         DB-->>I: not found
-        I-->>A: the address is free
-        A->>A: turn the password into a hash
-        A->>I: save the account
-        I->>DB: one row in the table account
+        I->>I: UserManager turns the password into a hash
+        I->>DB: one row in the table AspNetUsers
+        I-->>A: the new account
+        A-->>P: Result with the account
         P-->>Page: 201 created, the page shows Your account is made
     end
 ```
@@ -367,11 +369,11 @@ exceptions and a 503 `ProblemDetails` when a database exception is present in th
 Database-specific constraint translation stays in Infrastructure: the account identity adapter
 checks PostgreSQL's structured SQL state and constraint name before returning `Error.Conflict`.
 
-Application handlers normally use `IAppDbContext` for persistence. The account handler currently
-uses `UserManager<Account>` in Application as a deliberate semester-sized compromise: its
-business decisions and Result mapping remain in Application, while the Identity implementation
-is supplied by Infrastructure's dependency registration. The future Identity abstraction remains
-only a proposal in `docs/future-improvements/003-abstract-aspnet-identity.md`. Unexpected database
+Application handlers normally use `IAppDbContext` for persistence. The account handler hands its
+work to the contract `IAccountRegistrationService` in Application, and `AccountRegistrationService`
+in Infrastructure implements it with `UserManager<Account>`, so the Identity implementation stays
+in Infrastructure. The future Identity abstraction remains only a proposal in
+`docs/future-improvements/003-abstractAspnetIdentity.md`. Unexpected database
 exceptions pass to the global exception middleware and become 503 responses.
 
 Research issue 108 Two ways of paging the showcases, measured compares paging by page number with
