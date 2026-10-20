@@ -209,48 +209,40 @@ These rules join backend rule 16 and rule 12 of the part above.
    The first test run makes the database and its tables, because a database test applies the migrations itself. The tests stop with a message when both names point at the same database. (tool: the check in TestConfiguration, #1541)
 3. A database test makes its own rows with values no other test uses, such as an email address with a Guid in it: `$"account-{Guid.NewGuid():N}@example.com"`. The tests then pass in any order and on a database that still holds the rows of earlier runs. PostgreSQL keeps a time to the microsecond and .NET to 100 nanoseconds, so a time read back from the database is compared with `.Within(TimeSpan.FromMicroseconds(1))`, as `ConnectDbContextDatabaseTests` does. (reviewer)
 
-### Stub classes and NSubstitute
+### Substitutes with NSubstitute
 
-A stand-in takes the place of what a class gets through its constructor (backend rule 14) in a test. The test says what it answers, and checks afterwards how it was called.
+A substitute is a stand-in object a test makes for an interface or a class. The test says what it answers, and checks afterwards how it was called. NSubstitute is the package that makes them, and every stand-in in a test is one.
 
-4. The standard stand-in is a stub class written by hand: a small private sealed class at the bottom of the test class, which implements the interface, answers what the test gives it and keeps what it was called with. `CreateAccountHandlerTests` (`StubRegistrationService`) and `AccountEndpointTests` (`StubCreateAccountHandler`) do this. An endpoint test puts the stub in place of the handler through `ConfigureTestServices`. (reviewer)
+4. A unit test replaces what its class gets through the constructor (backend rule 14) with a substitute of NSubstitute, never with a stub class written by hand. `Substitute.For<...>()` makes it, `.Returns(...)` says what it answers, `.ThrowsAsync(...)` throws, and `.Received(1)` and `.DidNotReceive()` check how it was called. An endpoint test puts the substitute in place of the handler through `ConfigureTestServices`, as `AccountEndpointTests` does. (reviewer)
 
    ```csharp
    [Test]
-   public async Task HandleAsync_ValidCommand_PassesItToTheRegistrationService()
+   public async Task HandleAsync_DelegatesRegistrationToService()
    {
-       // Arrange
        var expected = Result<CreateAccountResult>.Success(
            new CreateAccountResult(Guid.NewGuid(), "member@example.com"));
-       var service = new StubRegistrationService(expected);
+       var service = Substitute.For<IAccountRegistrationService>();
        var handler = new CreateAccountCommandHandler(service);
+       var command = new CreateAccountCommand("member@example.com", "password");
+       using var cancellationTokenSource = new CancellationTokenSource();
+       service.RegisterAsync(command.Email, command.Password, cancellationTokenSource.Token)
+           .Returns(expected);
 
-       // Act
        Result<CreateAccountResult> result = await handler.HandleAsync(
-           new CreateAccountCommand("member@example.com", "password"), CancellationToken.None);
+           command,
+           cancellationTokenSource.Token);
 
-       // Assert
        Assert.That(result, Is.EqualTo(expected));
-       Assert.That(service.Email, Is.EqualTo("member@example.com"));
-   }
-
-   private sealed class StubRegistrationService(Result<CreateAccountResult> result)
-       : IAccountRegistrationService
-   {
-       public string? Email { get; private set; }
-
-       public Task<Result<CreateAccountResult>> RegisterAsync(
-           string email, string password, CancellationToken cancellationToken)
-       {
-           Email = email;
-           return Task.FromResult(result);
-       }
+       await service.Received(1).RegisterAsync(
+           command.Email,
+           command.Password,
+           cancellationTokenSource.Token);
    }
    ```
 
-5. NSubstitute only where a stub class would be impractical: a class of a framework that needs many constructor arguments and whose members the test needs are virtual, such as `UserManager<Account>` of ASP.NET Core Identity with its nine. The same test may then use substitutes for the other things its class gets, as `AccountRegistrationServiceTests` does. `Substitute.For<...>()` makes a substitute, `.Returns(...)` says what it answers, and `.Received(1)` and `.DidNotReceive()` check how it was called. NSubstitute can only replace the members a class lets it override, so the rest of the class still runs inside the test. The package NSubstitute.Analyzers.CSharp sits next to NSubstitute in every test project that uses it, and turns a member NSubstitute cannot replace into a build error, because every project has TreatWarningsAsErrors (backend rule 2). (tool: NSubstitute.Analyzers.CSharp)
-6. NSubstitute and NSubstitute.Analyzers.CSharp have the same versions in every test project as in Connect.Infrastructure.Tests. A test project that gets its first substitute adds both. (reviewer)
-7. The database is never replaced: not by a stub class or a substitute of `IAppDbContext`, `ConnectDbContext` or a `DbSet`, and not by the in-memory provider of EF Core (`UseInMemoryDatabase`). A query is written with LINQ, and EF Core turns it into SQL. Microsoft's guide on testing with EF Core says a stand-in cannot do that for a query, and calls the in-memory provider as a stand-in database highly discouraged (https://learn.microsoft.com/en-us/ef/core/testing/choosing-a-testing-strategy). A test on any of these can pass where PostgreSQL fails. A test that needs the database uses the test database of rule 1, and a handler is tested as backend rule 16 says. (reviewer)
+5. Substitute an interface. Substitute a class only when the members the test needs are virtual, such as `UserManager<Account>` of ASP.NET Core Identity, created with its constructor arguments as in `AccountRegistrationServiceTests`. NSubstitute can only replace the members a class lets it override, so the rest of the class still runs inside the test. The package NSubstitute.Analyzers.CSharp sits next to NSubstitute in every test project, and turns a member NSubstitute cannot replace into a build error, because every project has TreatWarningsAsErrors (backend rule 2). (tool: NSubstitute.Analyzers.CSharp)
+6. NSubstitute and NSubstitute.Analyzers.CSharp have the same versions in every test project. A new test project gets both from the start. (reviewer)
+7. The database is never replaced: not by a substitute of `IAppDbContext`, `ConnectDbContext` or a `DbSet`, and not by the in-memory provider of EF Core (`UseInMemoryDatabase`). A query is written with LINQ, and EF Core turns it into SQL. Microsoft's guide on testing with EF Core says a substitute cannot do that for a query, and calls the in-memory provider as a stand-in database highly discouraged (https://learn.microsoft.com/en-us/ef/core/testing/choosing-a-testing-strategy). A test on any of these can pass where PostgreSQL fails. A test that needs the database uses the test database of rule 1, and a handler is tested as backend rule 16 says. (reviewer)
 
 ## Kept from the collaboration agreement
 
