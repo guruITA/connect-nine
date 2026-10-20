@@ -7,10 +7,11 @@ using NUnit.Framework;
 
 namespace Connect.Infrastructure.Tests.Persistence;
 
+[TestFixture]
 public sealed class AccountDatabaseTests
 {
     private ConnectDbContext dbContext;
-    private string connectionString = string.Empty;
+    private string connectionString;
 
     [SetUp]
     public void SetUp()
