@@ -1,7 +1,9 @@
+using Connect.Infrastructure.Persistence;
 using Connect.Tests.Fixtures;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.AspNetCore.TestHost;
+using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Console;
@@ -59,6 +61,17 @@ public sealed class LoggingTests
             Assert.That(json.TimestampFormat, Is.Not.Null.And.EndsWith("Z"));
             Assert.That(providers, Is.EqualTo(new[] { nameof(ConsoleLoggerProvider) }));
         }
+    }
+
+    [Test]
+    public void DbContext_ServerStarted_NeverLogsSensitiveData()
+    {
+        using IServiceScope scope = _factory.Services.CreateScope();
+        ConnectDbContext dbContext = scope.ServiceProvider.GetRequiredService<ConnectDbContext>();
+
+        CoreOptionsExtension? core = dbContext.GetService<IDbContextOptions>().FindExtension<CoreOptionsExtension>();
+
+        Assert.That(core?.IsSensitiveDataLoggingEnabled, Is.False);
     }
 
     [Test]
