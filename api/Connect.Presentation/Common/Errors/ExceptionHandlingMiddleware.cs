@@ -20,7 +20,7 @@ public sealed class ExceptionHandlingMiddleware(
         }
         catch (Exception exception)
         {
-            logger.LogError(exception, "Unhandled exception while processing an HTTP request.");
+            logger.LogError(exception, "Request {RequestId} failed", context.TraceIdentifier);
 
             if (context.Response.HasStarted)
             {
