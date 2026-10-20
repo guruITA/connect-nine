@@ -107,7 +107,7 @@ namespace Connect.Infrastructure.Persistence.Migrations
 
                     b.HasIndex("NormalizedUserName")
                         .IsUnique()
-                        .HasDatabaseName("UserNameIndex");
+                        .HasDatabaseName("ux_account_username");
 
                     b.ToTable("AspNetUsers", null, t =>
                         {

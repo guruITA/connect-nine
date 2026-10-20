@@ -1,3 +1,4 @@
+using Connect.Application.Common.Abstractions;
 using Connect.Domain.Common;
 using Connect.Domain.Users;
 using Microsoft.AspNetCore.Identity;
@@ -7,11 +8,21 @@ using Microsoft.EntityFrameworkCore;
 namespace Connect.Infrastructure.Persistence;
 
 public sealed class ConnectDbContext(DbContextOptions<ConnectDbContext> options)
-    : IdentityDbContext<Account, IdentityRole<Guid>, Guid>(options)
+    : IdentityDbContext<Account, IdentityRole<Guid>, Guid>(options), IAppDbContext
 {
     public IQueryable<Account> Accounts => Set<Account>();
 
     public IQueryable<Profile> Profiles => Set<Profile>();
+
+    void IAppDbContext.Add<TEntity>(TEntity entity) where TEntity : class
+    {
+        Set<TEntity>().Add(entity);
+    }
+
+    void IAppDbContext.Remove<TEntity>(TEntity entity) where TEntity : class
+    {
+        Set<TEntity>().Remove(entity);
+    }
 
     public override int SaveChanges(bool acceptAllChangesOnSuccess)
     {
@@ -49,9 +60,6 @@ public sealed class ConnectDbContext(DbContextOptions<ConnectDbContext> options)
             entity.ToTable(table => table.HasCheckConstraint(
                 "ck_asp_net_users_password_hash_not_empty",
                 "\"password_hash\" IS NULL OR length(\"password_hash\") > 0"));
-            entity.HasIndex(user => user.NormalizedEmail)
-                .IsUnique()
-                .HasDatabaseName("ux_account_email");
         });
 
         modelBuilder.Entity<Profile>(entity =>
@@ -66,6 +74,9 @@ public sealed class ConnectDbContext(DbContextOptions<ConnectDbContext> options)
                 .IsRequired()
                 .OnDelete(DeleteBehavior.Cascade);
         });
+
+        modelBuilder.ApplyConfiguration(
+            new Configurations.AccountIdentityConfiguration());
     }
 
     private void UpdateAuditProperties()

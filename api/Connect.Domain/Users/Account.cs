@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Identity;
 
 namespace Connect.Domain.Users;
 
-public sealed class Account : IdentityUser<Guid>, IAuditable
+public sealed class Account : IdentityUser<Guid>, IEntity, IAuditable
 {
     public DateTimeOffset CreatedAt { get; private set; }
 
