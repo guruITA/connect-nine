@@ -246,7 +246,7 @@ Infrastructure handles external systems such as the database. The start project
 dotnet run --project api/Connect/Connect.csproj
 ```
 
-You should see `Now listening on: http://localhost:5000`. Open http://localhost:5000/api/health in a browser: you should see `{"status":"healthy"}`. Stop the server with Ctrl+C.
+You should see a JSON line with `"Message":"Now listening on: http://localhost:5000"` (every line is JSON since #312, see part 12). Open http://localhost:5000/api/health in a browser: you should see `{"status":"healthy"}`. Stop the server with Ctrl+C.
 
 ### Start the frontend
 
@@ -591,7 +591,146 @@ Every merge request, every run on dev and main, and once a week on dev, the pipe
 - **The weekly run.** Build, Pipeline schedules, every Monday morning on dev. Only the two scan jobs run, nothing is deployed. One member per sprint reads the result on Monday and tells the stand up when it is red. Proposal: sprint 2 Wesley Oerlemans, sprint 3 Kelvin van Voorst, sprint 4 Nick Hoebe, sprint 5 Gurpreet Singh, decided at each sprint planning.
 - **Proof that it stops a change.** On 8 October 2026 the closed merge request !31 added `Newtonsoft.Json` 12.0.3 to the server on purpose. backend-scan turned red with NU1903 and the advisory GHSA-5crp-9r3c-p9vr (pipeline 583877), and turned green again after the package was removed. The screen half of this test follows once `web/package.json` exists.
 
+## 12. Logs
+
+Since #312 the server writes every log line as one JSON object, with the request id of the visit in it. A program can search the lines, and the team can pick out every line of one visit.
+
+### What a line holds
+
+This is the request line of one visit, from a local run on 20 October 2026 with the database stopped:
+
+```json
+{
+  "Timestamp": "2026-10-20T12:35:51.200Z",
+  "EventId": 9,
+  "LogLevel": "Information",
+  "Category": "Microsoft.AspNetCore.HttpLogging.HttpLoggingMiddleware",
+  "Message": "Request and Response:\nMethod: GET\nPathBase: \nPath: /api/health\nStatusCode: 503\nDuration: 30.7247",
+  "State": {
+    "Method": "GET",
+    "PathBase": "",
+    "Path": "/api/health",
+    "StatusCode": 503,
+    "Duration": 30.7247
+  },
+  "Scopes": [
+    {
+      "Message": "SpanId:bde9ffba6cf23a10, TraceId:5e23629a8f68c058946e48e752c131e3, ParentId:0000000000000000",
+      "SpanId": "bde9ffba6cf23a10",
+      "TraceId": "5e23629a8f68c058946e48e752c131e3",
+      "ParentId": "0000000000000000"
+    },
+    {
+      "Message": "ConnectionId:0HNPEKQLR24NN",
+      "ConnectionId": "0HNPEKQLR24NN"
+    },
+    {
+      "Message": "RequestPath:/api/health RequestId:0HNPEKQLR24NN:00000001",
+      "RequestId": "0HNPEKQLR24NN:00000001",
+      "RequestPath": "/api/health"
+    }
+  ]
+}
+```
+
+| Field | What it says |
+|---|---|
+| `Timestamp` | When, always in UTC, so the server and your laptop write the same time |
+| `LogLevel`, `Category` | How serious it is, and which part of the server wrote it |
+| `Message`, `State` | The text, and the values of its message template as separate fields |
+| `Scopes` | The visit the line belongs to: `RequestId`, `RequestPath` (never the query string), `TraceId` and `SpanId`. Every line written during that visit carries them |
+| `Exception` | Only on an error line: the error with its stack trace |
+
+Lines written outside a visit, such as the start and the stop of the server, have no `RequestId`.
+
+### What never goes in a line, and why
+
+The log stays on the server longer than a visit lasts, and the platform is for young people of 15 to 30. A line that holds their data or a secret is a leak waiting to happen. The [OWASP Logging Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/Logging_Cheat_Sheet.html), part Data to exclude, names among others access tokens, authentication passwords, database connection strings and sensitive personal data.
+
+- **The query string, headers and bodies.** That is where passwords, emails and tokens travel. The request line only holds `Method`, `Path`, `StatusCode` and `Duration` (`AddHttpLogging` in `api/Connect.Presentation/DependencyInjection.cs`). The framework line "Request starting" would print the whole address with its query string, so `Microsoft.AspNetCore.Hosting.Diagnostics` stays on `Warning` in `api/Connect/appsettings.json`.
+- **A password, a full email address or a connection string.** Log an account by its uuid, never by its email address. `EnableSensitiveDataLogging` of EF Core is never switched on; the test `DbContext_ServerStarted_NeverLogsSensitiveData` fails when someone does.
+- **Glued text.** A log line always uses a message template (rule 15 of [codeConventions.md](codeConventions.md)): `_logger.LogWarning("Account {AccountId} locked", accountId)`, never `$"..."`. The build stops on `$"..."` in a log call with CA2254, set in `.editorconfig`.
+
+The tests in `api/Connect.Tests/Logging/LoggingTests.cs` check these rules on the lines the whole server writes.
+
+### The levels
+
+Set in `api/Connect/appsettings.json`:
+
+| Category | Level | Why |
+|---|---|---|
+| `Default` | Information | Our own lines and the start and stop of the server |
+| `Microsoft.AspNetCore` | Warning | The framework writes several lines per visit, too many to find anything |
+| `Microsoft.AspNetCore.Hosting.Diagnostics` | Warning | Its "Request starting" line holds the query string |
+| `Microsoft.AspNetCore.HttpLogging.HttpLoggingMiddleware` | Information | The one request line per visit |
+| `Microsoft.EntityFrameworkCore.Database.Command` | Warning | Every SQL command at Information is noise |
+
+### Find one visit
+
+Start the server as in part 5, but keep its lines in a file:
+
+```
+dotnet run --project api/Connect/Connect.csproj | tee connect.log
+```
+
+- **By `RequestId`.** `grep '"RequestId":"0HNPEKQLR24NN:00000001"' connect.log` prints every line of that visit.
+- **From an error answer.** Every error answer has a `traceId` like `00-5e23629a8f68c058946e48e752c131e3-bde9ffba6cf23a10-00`. The middle part is the `TraceId` in the log: `grep 5e23629a8f68c058946e48e752c131e3 connect.log`. The lines you find also show the `RequestId`.
+
+### Check it yourself
+
+A reviewer of #312 does this once, with the server started as above:
+
+1. `curl -i "http://localhost:5000/api/health?token=abc123secret"`. You should see `200` and `{"status":"healthy"}`.
+2. `grep abc123secret connect.log`. You should see nothing: the token never reaches the log.
+3. `docker compose stop database`, then `curl -i http://localhost:5000/api/health`. You should see `503` with a `traceId`.
+4. `grep <the middle part of that traceId> connect.log`. You should see two lines with the same `RequestId`: the `Error` line of the health check with the database error, and the request line with `"StatusCode":503`.
+5. The error line names the address of the database, but no line holds your database password. `docker compose start database` to go on working.
+
+### On the test server
+
+The server of Connect does not run on the test server yet; that comes with task 3.9 (#267), where it listens on `127.0.0.1:8080` behind Caddy. The plan for its log: it stays on the server, and only team members who log in with their own ssh key (part 10) and the user deploy of the pipeline, through the deploy key in GitLab (The pipeline on the server), can read it. Caddy writes no log of every visit, and no web address should lead to the log. This is not checked yet: task 3.9 confirms or corrects it once the server runs there. How to read the log there, and how long lines stay (#315), is added to this part with those tasks.
+
+### Twenty real lines
+
+From a local run on 20 October 2026 (environment Production, a local test database): the start, eleven visits (one with `?token=abc123secret`, a `POST` and a `PUT` that get `405`, two unknown addresses that get `404`), two visits with the database stopped, and the stop. No line holds the token, the database password or personal data.
+
+<details>
+<summary>The twenty lines</summary>
+
+```
+{"Timestamp":"2026-10-20T12:35:48.518Z","EventId":14,"LogLevel":"Information","Category":"Microsoft.Hosting.Lifetime","Message":"Now listening on: http://127.0.0.1:5310","State":{"address":"http://127.0.0.1:5310","{OriginalFormat}":"Now listening on: {address}"},"Scopes":[]}
+{"Timestamp":"2026-10-20T12:35:48.521Z","EventId":0,"LogLevel":"Information","Category":"Microsoft.Hosting.Lifetime","Message":"Application started. Press Ctrl\u002BC to shut down.","State":{"{OriginalFormat}":"Application started. Press Ctrl\u002BC to shut down."},"Scopes":[]}
+{"Timestamp":"2026-10-20T12:35:48.521Z","EventId":0,"LogLevel":"Information","Category":"Microsoft.Hosting.Lifetime","Message":"Hosting environment: Production","State":{"EnvName":"Production","{OriginalFormat}":"Hosting environment: {EnvName}"},"Scopes":[]}
+{"Timestamp":"2026-10-20T12:35:48.521Z","EventId":0,"LogLevel":"Information","Category":"Microsoft.Hosting.Lifetime","Message":"Content root path: /mnt/c/projects/connect-nine/api/Connect","State":{"ContentRoot":"/mnt/c/projects/connect-nine/api/Connect","{OriginalFormat}":"Content root path: {ContentRoot}"},"Scopes":[]}
+{"Timestamp":"2026-10-20T12:35:49.598Z","EventId":9,"LogLevel":"Information","Category":"Microsoft.AspNetCore.HttpLogging.HttpLoggingMiddleware","Message":"Request and Response:\nMethod: GET\nPathBase: \nPath: /api/health\nStatusCode: 200\nDuration: 590.9726","State":{"Method":"GET","PathBase":"","Path":"/api/health","StatusCode":200,"Duration":590.9726},"Scopes":[{"Message":"SpanId:6a8fdfe3ddcee0b2, TraceId:193964abb799904e77df9f09a55cff88, ParentId:0000000000000000","SpanId":"6a8fdfe3ddcee0b2","TraceId":"193964abb799904e77df9f09a55cff88","ParentId":"0000000000000000"},{"Message":"ConnectionId:0HNPEKQLR24NC","ConnectionId":"0HNPEKQLR24NC"},{"Message":"RequestPath:/api/health RequestId:0HNPEKQLR24NC:00000001","RequestId":"0HNPEKQLR24NC:00000001","RequestPath":"/api/health"}]}
+{"Timestamp":"2026-10-20T12:35:49.630Z","EventId":9,"LogLevel":"Information","Category":"Microsoft.AspNetCore.HttpLogging.HttpLoggingMiddleware","Message":"Request and Response:\nMethod: GET\nPathBase: \nPath: /api/health\nStatusCode: 200\nDuration: 22.2447","State":{"Method":"GET","PathBase":"","Path":"/api/health","StatusCode":200,"Duration":22.2447},"Scopes":[{"Message":"SpanId:a66606c81c22a77e, TraceId:c5561206021598505b9a0191eca40e43, ParentId:0000000000000000","SpanId":"a66606c81c22a77e","TraceId":"c5561206021598505b9a0191eca40e43","ParentId":"0000000000000000"},{"Message":"ConnectionId:0HNPEKQLR24ND","ConnectionId":"0HNPEKQLR24ND"},{"Message":"RequestPath:/api/health RequestId:0HNPEKQLR24ND:00000001","RequestId":"0HNPEKQLR24ND:00000001","RequestPath":"/api/health"}]}
+{"Timestamp":"2026-10-20T12:35:49.696Z","EventId":9,"LogLevel":"Information","Category":"Microsoft.AspNetCore.HttpLogging.HttpLoggingMiddleware","Message":"Request and Response:\nMethod: GET\nPathBase: \nPath: /api/health\nStatusCode: 200\nDuration: 57.0299","State":{"Method":"GET","PathBase":"","Path":"/api/health","StatusCode":200,"Duration":57.0299},"Scopes":[{"Message":"SpanId:e39cb062d9117304, TraceId:f7b50931c7c61be411f17002a790fb7d, ParentId:0000000000000000","SpanId":"e39cb062d9117304","TraceId":"f7b50931c7c61be411f17002a790fb7d","ParentId":"0000000000000000"},{"Message":"ConnectionId:0HNPEKQLR24NE","ConnectionId":"0HNPEKQLR24NE"},{"Message":"RequestPath:/api/health RequestId:0HNPEKQLR24NE:00000001","RequestId":"0HNPEKQLR24NE:00000001","RequestPath":"/api/health"}]}
+{"Timestamp":"2026-10-20T12:35:49.704Z","EventId":9,"LogLevel":"Information","Category":"Microsoft.AspNetCore.HttpLogging.HttpLoggingMiddleware","Message":"Request and Response:\nMethod: POST\nPathBase: \nPath: /api/health\nStatusCode: 405\nDuration: 0.3035","State":{"Method":"POST","PathBase":"","Path":"/api/health","StatusCode":405,"Duration":0.3035},"Scopes":[{"Message":"SpanId:7d3badfcec1c209e, TraceId:c0de947fe3734c571dcc2eb5b54089ae, ParentId:0000000000000000","SpanId":"7d3badfcec1c209e","TraceId":"c0de947fe3734c571dcc2eb5b54089ae","ParentId":"0000000000000000"},{"Message":"ConnectionId:0HNPEKQLR24NF","ConnectionId":"0HNPEKQLR24NF"},{"Message":"RequestPath:/api/health RequestId:0HNPEKQLR24NF:00000001","RequestId":"0HNPEKQLR24NF:00000001","RequestPath":"/api/health"}]}
+{"Timestamp":"2026-10-20T12:35:49.712Z","EventId":9,"LogLevel":"Information","Category":"Microsoft.AspNetCore.HttpLogging.HttpLoggingMiddleware","Message":"Request and Response:\nMethod: PUT\nPathBase: \nPath: /api/health\nStatusCode: 405\nDuration: 0.1","State":{"Method":"PUT","PathBase":"","Path":"/api/health","StatusCode":405,"Duration":0.1},"Scopes":[{"Message":"SpanId:0ae9405ce6530a9e, TraceId:ca6793c5e83398b1e539e8db73126a77, ParentId:0000000000000000","SpanId":"0ae9405ce6530a9e","TraceId":"ca6793c5e83398b1e539e8db73126a77","ParentId":"0000000000000000"},{"Message":"ConnectionId:0HNPEKQLR24NG","ConnectionId":"0HNPEKQLR24NG"},{"Message":"RequestPath:/api/health RequestId:0HNPEKQLR24NG:00000001","RequestId":"0HNPEKQLR24NG:00000001","RequestPath":"/api/health"}]}
+{"Timestamp":"2026-10-20T12:35:49.720Z","EventId":9,"LogLevel":"Information","Category":"Microsoft.AspNetCore.HttpLogging.HttpLoggingMiddleware","Message":"Request and Response:\nMethod: GET\nPathBase: \nPath: /api/members\nStatusCode: 404\nDuration: 0.1842","State":{"Method":"GET","PathBase":"","Path":"/api/members","StatusCode":404,"Duration":0.1842},"Scopes":[{"Message":"SpanId:94d1e5213d903785, TraceId:d4835c901d993f4ec2347ac6480a1018, ParentId:0000000000000000","SpanId":"94d1e5213d903785","TraceId":"d4835c901d993f4ec2347ac6480a1018","ParentId":"0000000000000000"},{"Message":"ConnectionId:0HNPEKQLR24NH","ConnectionId":"0HNPEKQLR24NH"},{"Message":"RequestPath:/api/members RequestId:0HNPEKQLR24NH:00000001","RequestId":"0HNPEKQLR24NH:00000001","RequestPath":"/api/members"}]}
+{"Timestamp":"2026-10-20T12:35:49.730Z","EventId":9,"LogLevel":"Information","Category":"Microsoft.AspNetCore.HttpLogging.HttpLoggingMiddleware","Message":"Request and Response:\nMethod: GET\nPathBase: \nPath: /api/members/42\nStatusCode: 404\nDuration: 0.0958","State":{"Method":"GET","PathBase":"","Path":"/api/members/42","StatusCode":404,"Duration":0.0958},"Scopes":[{"Message":"SpanId:f735aeb0af156ac0, TraceId:7cf77440e4c73c4b9f032077790ac603, ParentId:0000000000000000","SpanId":"f735aeb0af156ac0","TraceId":"7cf77440e4c73c4b9f032077790ac603","ParentId":"0000000000000000"},{"Message":"ConnectionId:0HNPEKQLR24NI","ConnectionId":"0HNPEKQLR24NI"},{"Message":"RequestPath:/api/members/42 RequestId:0HNPEKQLR24NI:00000001","RequestId":"0HNPEKQLR24NI:00000001","RequestPath":"/api/members/42"}]}
+{"Timestamp":"2026-10-20T12:35:49.745Z","EventId":9,"LogLevel":"Information","Category":"Microsoft.AspNetCore.HttpLogging.HttpLoggingMiddleware","Message":"Request and Response:\nMethod: GET\nPathBase: \nPath: /api/health\nStatusCode: 200\nDuration: 6.4747","State":{"Method":"GET","PathBase":"","Path":"/api/health","StatusCode":200,"Duration":6.4747},"Scopes":[{"Message":"SpanId:8b4534a96aa9e3d6, TraceId:6ce82d9652f267ca11f26af19f511a47, ParentId:0000000000000000","SpanId":"8b4534a96aa9e3d6","TraceId":"6ce82d9652f267ca11f26af19f511a47","ParentId":"0000000000000000"},{"Message":"ConnectionId:0HNPEKQLR24NJ","ConnectionId":"0HNPEKQLR24NJ"},{"Message":"RequestPath:/api/health RequestId:0HNPEKQLR24NJ:00000001","RequestId":"0HNPEKQLR24NJ:00000001","RequestPath":"/api/health"}]}
+{"Timestamp":"2026-10-20T12:35:49.760Z","EventId":9,"LogLevel":"Information","Category":"Microsoft.AspNetCore.HttpLogging.HttpLoggingMiddleware","Message":"Request and Response:\nMethod: GET\nPathBase: \nPath: /api/health\nStatusCode: 200\nDuration: 6.0035","State":{"Method":"GET","PathBase":"","Path":"/api/health","StatusCode":200,"Duration":6.0035},"Scopes":[{"Message":"SpanId:ad7f3e0b5e72a641, TraceId:c62e5e54ba0a7445193a6479a22aa71b, ParentId:0000000000000000","SpanId":"ad7f3e0b5e72a641","TraceId":"c62e5e54ba0a7445193a6479a22aa71b","ParentId":"0000000000000000"},{"Message":"ConnectionId:0HNPEKQLR24NK","ConnectionId":"0HNPEKQLR24NK"},{"Message":"RequestPath:/api/health RequestId:0HNPEKQLR24NK:00000001","RequestId":"0HNPEKQLR24NK:00000001","RequestPath":"/api/health"}]}
+{"Timestamp":"2026-10-20T12:35:49.772Z","EventId":9,"LogLevel":"Information","Category":"Microsoft.AspNetCore.HttpLogging.HttpLoggingMiddleware","Message":"Request and Response:\nMethod: GET\nPathBase: \nPath: /api/health\nStatusCode: 200\nDuration: 5.2372","State":{"Method":"GET","PathBase":"","Path":"/api/health","StatusCode":200,"Duration":5.2372},"Scopes":[{"Message":"SpanId:249454d42ef84c06, TraceId:2fbb3835947d4137270895592f9a3357, ParentId:0000000000000000","SpanId":"249454d42ef84c06","TraceId":"2fbb3835947d4137270895592f9a3357","ParentId":"0000000000000000"},{"Message":"ConnectionId:0HNPEKQLR24NL","ConnectionId":"0HNPEKQLR24NL"},{"Message":"RequestPath:/api/health RequestId:0HNPEKQLR24NL:00000001","RequestId":"0HNPEKQLR24NL:00000001","RequestPath":"/api/health"}]}
+{"Timestamp":"2026-10-20T12:35:49.788Z","EventId":9,"LogLevel":"Information","Category":"Microsoft.AspNetCore.HttpLogging.HttpLoggingMiddleware","Message":"Request and Response:\nMethod: GET\nPathBase: \nPath: /api/health\nStatusCode: 200\nDuration: 8.128","State":{"Method":"GET","PathBase":"","Path":"/api/health","StatusCode":200,"Duration":8.128},"Scopes":[{"Message":"SpanId:fe125d1e0758e66b, TraceId:b055768346a04ac0bf4b57327c67c398, ParentId:0000000000000000","SpanId":"fe125d1e0758e66b","TraceId":"b055768346a04ac0bf4b57327c67c398","ParentId":"0000000000000000"},{"Message":"ConnectionId:0HNPEKQLR24NM","ConnectionId":"0HNPEKQLR24NM"},{"Message":"RequestPath:/api/health RequestId:0HNPEKQLR24NM:00000001","RequestId":"0HNPEKQLR24NM:00000001","RequestPath":"/api/health"}]}
+{"Timestamp":"2026-10-20T12:35:51.175Z","EventId":103,"LogLevel":"Error","Category":"Microsoft.Extensions.Diagnostics.HealthChecks.DefaultHealthCheckService","Message":"Health check database with status Unhealthy completed after 3.4642ms with message \u0027The database cannot be reached.\u0027","Exception":"Npgsql.NpgsqlException (0x80004005): Failed to connect to 127.0.0.1:5498\n ---\u003E System.Net.Sockets.SocketException (111): Connection refused\n   at System.Net.Sockets.Socket.AwaitableSocketAsyncEventArgs.ThrowException(SocketError error, CancellationToken cancellationToken)\n   at System.Net.Sockets.Socket.AwaitableSocketAsyncEventArgs.System.Threading.Tasks.Sources.IValueTaskSource.GetResult(Int16 token)\n   at Npgsql.Internal.NpgsqlConnector.ConnectAsync(NpgsqlTimeout timeout, CancellationToken cancellationToken)\n   at Npgsql.Internal.NpgsqlConnector.ConnectAsync(NpgsqlTimeout timeout, CancellationToken cancellationToken)\n   at Npgsql.Internal.NpgsqlConnector.RawOpen(NpgsqlTimeout timeout, Boolean async, CancellationToken cancellationToken)\n   at Npgsql.Internal.NpgsqlConnector.\u003COpen\u003Eg__OpenCore|209_0(NpgsqlConnector conn, String username, SslMode sslMode, GssEncryptionMode gssEncMode, NpgsqlTimeout timeout, Boolean async, CancellationToken cancellationToken)\n   at Npgsql.Internal.NpgsqlConnector.Open(NpgsqlTimeout timeout, Boolean async, CancellationToken cancellationToken)\n   at Npgsql.UnpooledDataSource.Get(NpgsqlConnection conn, NpgsqlTimeout timeout, Boolean async, CancellationToken cancellationToken)\n   at Npgsql.NpgsqlConnection.\u003COpen\u003Eg__OpenAsync|42_0(Boolean async, CancellationToken cancellationToken)\n   at Connect.Infrastructure.Health.DatabaseHealthCheck.CheckHealthAsync(HealthCheckContext context, CancellationToken cancellationToken) in /mnt/c/projects/connect-nine/api/Connect.Infrastructure/Health/DatabaseHealthCheck.cs:line 31\n   at Connect.Infrastructure.Health.DatabaseHealthCheck.CheckHealthAsync(HealthCheckContext context, CancellationToken cancellationToken) in /mnt/c/projects/connect-nine/api/Connect.Infrastructure/Health/DatabaseHealthCheck.cs:line 32","State":{"HealthCheckName":"database","HealthStatus":"Unhealthy","ElapsedMilliseconds":3.4642,"HealthCheckDescription":"The database cannot be reached.","{OriginalFormat}":"Health check {HealthCheckName} with status {HealthStatus} completed after {ElapsedMilliseconds}ms with message \u0027{HealthCheckDescription}\u0027"},"Scopes":[{"Message":"SpanId:bde9ffba6cf23a10, TraceId:5e23629a8f68c058946e48e752c131e3, ParentId:0000000000000000","SpanId":"bde9ffba6cf23a10","TraceId":"5e23629a8f68c058946e48e752c131e3","ParentId":"0000000000000000"},{"Message":"ConnectionId:0HNPEKQLR24NN","ConnectionId":"0HNPEKQLR24NN"},{"Message":"RequestPath:/api/health RequestId:0HNPEKQLR24NN:00000001","RequestId":"0HNPEKQLR24NN:00000001","RequestPath":"/api/health"},{"Message":"Microsoft.Extensions.Diagnostics.HealthChecks.HealthCheckLogScope","HealthCheckName":"database"}]}
+{"Timestamp":"2026-10-20T12:35:51.200Z","EventId":9,"LogLevel":"Information","Category":"Microsoft.AspNetCore.HttpLogging.HttpLoggingMiddleware","Message":"Request and Response:\nMethod: GET\nPathBase: \nPath: /api/health\nStatusCode: 503\nDuration: 30.7247","State":{"Method":"GET","PathBase":"","Path":"/api/health","StatusCode":503,"Duration":30.7247},"Scopes":[{"Message":"SpanId:bde9ffba6cf23a10, TraceId:5e23629a8f68c058946e48e752c131e3, ParentId:0000000000000000","SpanId":"bde9ffba6cf23a10","TraceId":"5e23629a8f68c058946e48e752c131e3","ParentId":"0000000000000000"},{"Message":"ConnectionId:0HNPEKQLR24NN","ConnectionId":"0HNPEKQLR24NN"},{"Message":"RequestPath:/api/health RequestId:0HNPEKQLR24NN:00000001","RequestId":"0HNPEKQLR24NN:00000001","RequestPath":"/api/health"}]}
+{"Timestamp":"2026-10-20T12:35:51.207Z","EventId":103,"LogLevel":"Error","Category":"Microsoft.Extensions.Diagnostics.HealthChecks.DefaultHealthCheckService","Message":"Health check database with status Unhealthy completed after 0.7366ms with message \u0027The database cannot be reached.\u0027","Exception":"Npgsql.NpgsqlException (0x80004005): Failed to connect to 127.0.0.1:5498\n ---\u003E System.Net.Sockets.SocketException (111): Connection refused\n   at System.Net.Sockets.Socket.AwaitableSocketAsyncEventArgs.ThrowException(SocketError error, CancellationToken cancellationToken)\n   at System.Net.Sockets.Socket.AwaitableSocketAsyncEventArgs.System.Threading.Tasks.Sources.IValueTaskSource.GetResult(Int16 token)\n   at Npgsql.Internal.NpgsqlConnector.ConnectAsync(NpgsqlTimeout timeout, CancellationToken cancellationToken)\n   at Npgsql.Internal.NpgsqlConnector.ConnectAsync(NpgsqlTimeout timeout, CancellationToken cancellationToken)\n   at Npgsql.Internal.NpgsqlConnector.RawOpen(NpgsqlTimeout timeout, Boolean async, CancellationToken cancellationToken)\n   at Npgsql.Internal.NpgsqlConnector.\u003COpen\u003Eg__OpenCore|209_0(NpgsqlConnector conn, String username, SslMode sslMode, GssEncryptionMode gssEncMode, NpgsqlTimeout timeout, Boolean async, CancellationToken cancellationToken)\n   at Npgsql.Internal.NpgsqlConnector.Open(NpgsqlTimeout timeout, Boolean async, CancellationToken cancellationToken)\n   at Npgsql.UnpooledDataSource.Get(NpgsqlConnection conn, NpgsqlTimeout timeout, Boolean async, CancellationToken cancellationToken)\n   at Npgsql.NpgsqlConnection.\u003COpen\u003Eg__OpenAsync|42_0(Boolean async, CancellationToken cancellationToken)\n   at Connect.Infrastructure.Health.DatabaseHealthCheck.CheckHealthAsync(HealthCheckContext context, CancellationToken cancellationToken) in /mnt/c/projects/connect-nine/api/Connect.Infrastructure/Health/DatabaseHealthCheck.cs:line 31\n   at Connect.Infrastructure.Health.DatabaseHealthCheck.CheckHealthAsync(HealthCheckContext context, CancellationToken cancellationToken) in /mnt/c/projects/connect-nine/api/Connect.Infrastructure/Health/DatabaseHealthCheck.cs:line 32","State":{"HealthCheckName":"database","HealthStatus":"Unhealthy","ElapsedMilliseconds":0.7366,"HealthCheckDescription":"The database cannot be reached.","{OriginalFormat}":"Health check {HealthCheckName} with status {HealthStatus} completed after {ElapsedMilliseconds}ms with message \u0027{HealthCheckDescription}\u0027"},"Scopes":[{"Message":"SpanId:1d73bf52722a0d5e, TraceId:940d3d9d13ff2ed0146005ae691681a7, ParentId:0000000000000000","SpanId":"1d73bf52722a0d5e","TraceId":"940d3d9d13ff2ed0146005ae691681a7","ParentId":"0000000000000000"},{"Message":"ConnectionId:0HNPEKQLR24NO","ConnectionId":"0HNPEKQLR24NO"},{"Message":"RequestPath:/api/health RequestId:0HNPEKQLR24NO:00000001","RequestId":"0HNPEKQLR24NO:00000001","RequestPath":"/api/health"},{"Message":"Microsoft.Extensions.Diagnostics.HealthChecks.HealthCheckLogScope","HealthCheckName":"database"}]}
+{"Timestamp":"2026-10-20T12:35:51.208Z","EventId":9,"LogLevel":"Information","Category":"Microsoft.AspNetCore.HttpLogging.HttpLoggingMiddleware","Message":"Request and Response:\nMethod: GET\nPathBase: \nPath: /api/health\nStatusCode: 503\nDuration: 2.3608","State":{"Method":"GET","PathBase":"","Path":"/api/health","StatusCode":503,"Duration":2.3608},"Scopes":[{"Message":"SpanId:1d73bf52722a0d5e, TraceId:940d3d9d13ff2ed0146005ae691681a7, ParentId:0000000000000000","SpanId":"1d73bf52722a0d5e","TraceId":"940d3d9d13ff2ed0146005ae691681a7","ParentId":"0000000000000000"},{"Message":"ConnectionId:0HNPEKQLR24NO","ConnectionId":"0HNPEKQLR24NO"},{"Message":"RequestPath:/api/health RequestId:0HNPEKQLR24NO:00000001","RequestId":"0HNPEKQLR24NO:00000001","RequestPath":"/api/health"}]}
+{"Timestamp":"2026-10-20T12:35:52.219Z","EventId":0,"LogLevel":"Information","Category":"Microsoft.Hosting.Lifetime","Message":"Application is shutting down...","State":{"{OriginalFormat}":"Application is shutting down..."},"Scopes":[]}
+```
+
+</details>
+
 ## References
+
+Microsoft. (2026). *CA2254: Template should be a static expression*. Microsoft Learn. https://learn.microsoft.com/en-us/dotnet/fundamentals/code-analysis/quality-rules/ca2254
+
+Microsoft. (2026). *Console log formatting*. Microsoft Learn. https://learn.microsoft.com/en-us/dotnet/core/extensions/console-log-formatter
+
+Microsoft. (2026). *HTTP logging in ASP.NET Core*. Microsoft Learn. https://learn.microsoft.com/en-us/aspnet/core/fundamentals/http-logging/
+
+OWASP Foundation. (2026). *Logging Cheat Sheet*. OWASP Cheat Sheet Series. https://cheatsheetseries.owasp.org/cheatsheets/Logging_Cheat_Sheet.html
 
 Microsoft. (2026). *Configuration in ASP.NET Core*. Microsoft Learn. https://learn.microsoft.com/en-us/aspnet/core/fundamentals/configuration/
 
