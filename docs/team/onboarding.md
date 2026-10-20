@@ -146,6 +146,15 @@ dotnet user-secrets list
 
 You should see `Successfully saved ConnectionStrings:DefaultConnection to the secret store.` and the list shows the value. Older examples that use `ConnectionStrings:Default` are obsolete.
 
+The database tests in `api/Connect.Infrastructure.Tests` read a second value, `ConnectionStrings:TestsConnection`, through `TestConfiguration`. They save accounts and never remove them, so point it at a separate database, `connect_test`, and your working database `connect` stays clean. Make it once, in the root of the repository (use your own `POSTGRES_USER` if you changed it in `.env`), then set it in the folder `api/Connect`. The tests create the tables themselves with the migrations:
+
+```
+docker compose exec database createdb -U connect connect_test
+dotnet user-secrets set "ConnectionStrings:TestsConnection" "Host=localhost;Port=5432;Database=connect_test;Username=connect;Password=<your local password>"
+```
+
+The pipeline sets both values as variables of the job `backend-test` in `.gitlab-ci.yml`.
+
 Two things to know about User Secrets:
 
 - The file lives outside the repository, at `~/.microsoft/usersecrets/<UserSecretsId>/secrets.json` on Linux and macOS, and at `%APPDATA%\Microsoft\UserSecrets\<UserSecretsId>\secrets.json` on Windows.

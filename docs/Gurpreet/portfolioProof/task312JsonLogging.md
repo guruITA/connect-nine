@@ -87,15 +87,17 @@ BoKSA asks: "You validate the solution and draw conclusions for improvement."
 | No query string in any line | `GetHealth_TokenInQueryString_NoLineHoldsTheToken` | Yes, red with `Hosting.Diagnostics` on `Information` (tried on purpose) |
 | An error line with a `RequestId` when the database is down | `GetHealth_DatabaseUnreachable_LogsErrorLineWithRequestId` | Green before my code too, see OR1 point 3 |
 | `EnableSensitiveDataLogging` is never used | `DbContext_ServerStarted_NeverLogsSensitiveData` | Yes, red with `EnableSensitiveDataLogging()` added on purpose |
+| No password or full email address after `POST /api/accounts` | `PostAccount_AccountCreated_NoLineHoldsPasswordOrEmail` | Yes, red with `HttpLoggingFields.RequestBody` added on purpose |
+| An error reaching the error handler of !50 is logged once, with its `RequestId`, and without personal data | `PostAccount_HandlerThrows_LogsErrorOnceWithRequestIdAndNoPersonalData` | Yes, red with `HttpLoggingFields.RequestBody` added on purpose |
 | Log lines use a message template | CA2254 in `.editorconfig` | Yes, the build stopped with `error CA2254` on a `$"..."` log call added on purpose |
 
-`dotnet test api/Connect.slnx` on 20 October 2026, with a local PostgreSQL 16:
+`dotnet test api/Connect.slnx` on 20 October 2026, after merging !50 of Nick from `dev`, with a local PostgreSQL 16:
 
 ```
-Passed!  - Failed:     0, Passed:     1, Skipped:     0, Total:     1 - Connect.Application.Tests.dll (net10.0)
-Passed!  - Failed:     0, Passed:     8, Skipped:     0, Total:     8 - Connect.Presentation.Tests.dll (net10.0)
-Passed!  - Failed:     0, Passed:     8, Skipped:     0, Total:     8 - Connect.Tests.dll (net10.0)
-Passed!  - Failed:     0, Passed:     9, Skipped:     0, Total:     9 - Connect.Infrastructure.Tests.dll (net10.0)
+Passed!  - Failed:     0, Passed:     6, Skipped:     0, Total:     6 - Connect.Application.Tests.dll (net10.0)
+Passed!  - Failed:     0, Passed:    21, Skipped:     0, Total:    21 - Connect.Presentation.Tests.dll (net10.0)
+Passed!  - Failed:     0, Passed:    14, Skipped:     0, Total:    14 - Connect.Tests.dll (net10.0)
+Passed!  - Failed:     0, Passed:    61, Skipped:     0, Total:    61 - Connect.Infrastructure.Tests.dll (net10.0)
 ```
 
 **The twenty real lines.** They are in `docs/team/onboarding.md`, part 12. What I checked in them: `abc123secret` is in no line, the database password is in no line, every request line has a `RequestId`, and the two visits with the database stopped each have an `Error` line and a request line with the same `RequestId` and `TraceId`. The `TraceId` matched the middle part of the `traceId` that curl got back.
@@ -118,7 +120,7 @@ How long the lines stay on the server is decided in [#315](https://gitlab.fdmci.
 
 What is still needed before this proof is complete. Tick a line when it is done.
 
-- [ ] Me: after !50 of Nick is on `dev`, add the test that no password or full email address is in any line after `POST /api/accounts`, and make sure an error reaching the error handler of !50 is logged once with its request id.
+- [x] Me: after !50 of Nick is on `dev`, add the test that no password or full email address is in any line after `POST /api/accounts`, and make sure an error reaching the error handler of !50 is logged once with its request id.
 - [ ] Me: after [#315](https://gitlab.fdmci.hva.nl/studio/social-impact-apps/onderwijs/projects/2026-2027-semester-1/projects/project-9-wail-salutem-foundation-project-2/connect-nine/-/work_items/315), add to OR5 how long lines stay on the server and my judgment on it.
 - [x] Me: write the section Logs in `docs/team/onboarding.md` (build step 6): what a line looks like, what never goes in it and why, how to find one visit by `RequestId`, with twenty pasted log lines without personal data.
 - [ ] Me: after task 3.9 ([#267](https://gitlab.fdmci.hva.nl/studio/social-impact-apps/onderwijs/projects/2026-2027-semester-1/projects/project-9-wail-salutem-foundation-project-2/connect-nine/-/work_items/267)) puts the server on the test server, check that only team members with a login and the user deploy of the pipeline can read its log, and that no address reaches it, and add how to read it to part 12 of `docs/team/onboarding.md`.
