@@ -133,7 +133,7 @@ PostgreSQL is the database. EF Core (Entity Framework Core) is the C# library th
 
 ### Names
 
-1. Everything in lower case with _ between words (snake_case), which PostgreSQL handles best: member_profile, created_at. The tables of ASP.NET Identity are the one exception: they keep the names Identity gives them, such as AspNetUsers and AspNetRoles, and so do their indexes RoleNameIndex and UserNameIndex, so a query writes them in double quotes. Their columns are snake_case. (tool: EFCore.NamingConventions)
+1. Everything in lower case with _ between words (snake_case), which PostgreSQL handles best: member_profile, created_at. The tables of ASP.NET Identity are the one exception: they keep the names Identity gives them, such as AspNetUsers and AspNetRoles, and so does their index RoleNameIndex, so a query writes them in double quotes. Their columns are snake_case, and the unique indexes on the user name and the email address are ux_account_username and ux_account_email (rule 5). (tool: EFCore.NamingConventions)
 2. Tables in the singular: member_profile, event. A table that links two others gets both names: event_member. The tables of ASP.NET Identity keep their own names (rule 1), so the accounts are in AspNetUsers. (reviewer)
 3. Primary key: id. A column that points to another table: `<other table>_id`, for example member_profile.account_id. (reviewer)
 4. Time columns end in _at and are timestamptz in UTC: created_at, updated_at. Yes or no columns start with is_ or has_: is_active. (reviewer)
