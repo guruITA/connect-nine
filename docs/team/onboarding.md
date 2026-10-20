@@ -133,6 +133,13 @@ A real password, key, token or connection string that carries credentials never 
 `api/Connect/Connect.csproj` already holds a `<UserSecretsId>`, so you do not run `dotnet user-secrets init`. Every clone on your laptop shares the same secrets file. In the folder `api/Connect`, set the value the server reads, `ConnectionStrings:DefaultConnection`, with the password from your `.env`:
 
 ```
+dotnet user-secrets init
+```
+
+That writes a `<UserSecretsId>` into the project file. Then set a value. The server reads the
+`ConnectionStrings:DefaultConnection` setting:
+
+```
 dotnet user-secrets set "ConnectionStrings:DefaultConnection" "Host=localhost;Port=5432;Database=connect;Username=connect;Password=<your local password>"
 dotnet user-secrets list
 ```
