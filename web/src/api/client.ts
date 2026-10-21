@@ -2,10 +2,7 @@ export class RequestError extends Error {
   public readonly status: number;
   public readonly body: unknown;
 
-  constructor(
-    status: number,
-    body: unknown,
-  ) {
+  constructor(status: number, body: unknown) {
     super(`Request failed with status ${status}`);
     this.name = "RequestError";
     this.status = status;

@@ -29,8 +29,14 @@ describe("CreateAccount", () => {
     renderPage();
 
     expect(screen.getByLabelText("Email")).toHaveAttribute("type", "email");
-    expect(screen.getByLabelText("Email")).toHaveAttribute("autocomplete", "email");
-    expect(screen.getByLabelText("Password")).toHaveAttribute("type", "password");
+    expect(screen.getByLabelText("Email")).toHaveAttribute(
+      "autocomplete",
+      "email",
+    );
+    expect(screen.getByLabelText("Password")).toHaveAttribute(
+      "type",
+      "password",
+    );
     expect(screen.getByLabelText("Password")).toHaveAttribute(
       "autocomplete",
       "new-password",
@@ -52,7 +58,9 @@ describe("CreateAccount", () => {
     await user.type(screen.getByLabelText("Password"), "a secure password");
     await user.click(screen.getByRole("button", { name: "Make account" }));
 
-    expect(screen.getByRole("button", { name: "Making your account..." })).toBeDisabled();
+    expect(
+      screen.getByRole("button", { name: "Making your account..." }),
+    ).toBeDisabled();
     resolve({ kind: "made" });
   });
 
@@ -65,23 +73,33 @@ describe("CreateAccount", () => {
     await user.type(screen.getByLabelText("Password"), "a secure password");
     await user.click(screen.getByRole("button", { name: "Make account" }));
 
-    expect(screen.getByRole("status")).toHaveTextContent("Your account is made");
+    expect(screen.getByRole("status")).toHaveTextContent(
+      "Your account is made",
+    );
     expect(screen.queryByLabelText("Password")).not.toBeInTheDocument();
   });
 
   it("shows field messages for invalid input", async () => {
     mockedCreateAccount.mockResolvedValue({
       kind: "invalid",
-      fields: { email: "Fill in a valid email address", password: "Fill in a password" },
+      fields: {
+        email: "Fill in a valid email address",
+        password: "Fill in a password",
+      },
     });
     const user = userEvent.setup();
     renderPage();
 
     await user.click(screen.getByRole("button", { name: "Make account" }));
 
-    expect(screen.getByText("Fill in a valid email address")).toBeInTheDocument();
+    expect(
+      screen.getByText("Fill in a valid email address"),
+    ).toBeInTheDocument();
     expect(screen.getByText("Fill in a password")).toBeInTheDocument();
-    expect(screen.getByLabelText("Email")).toHaveAttribute("aria-describedby", "email-error");
+    expect(screen.getByLabelText("Email")).toHaveAttribute(
+      "aria-describedby",
+      "email-error",
+    );
     expect(screen.getByLabelText("Password")).toHaveAttribute(
       "aria-describedby",
       "password-error",
@@ -95,21 +113,29 @@ describe("CreateAccount", () => {
 
     await user.click(screen.getByRole("button", { name: "Make account" }));
 
-    expect(screen.getByText("This email address already has an account")).toBeInTheDocument();
-    expect(screen.getByLabelText("Email")).toHaveAttribute("aria-describedby", "email-error");
-  });
-
-  it.each(["not reachable"] as const)("shows the not reachable alert", async (kind) => {
-    mockedCreateAccount.mockResolvedValue({ kind });
-    const user = userEvent.setup();
-    renderPage();
-
-    await user.click(screen.getByRole("button", { name: "Make account" }));
-
-    expect(screen.getByRole("alert")).toHaveTextContent(
-      "Connect is not reachable right now, try again later",
+    expect(
+      screen.getByText("This email address already has an account"),
+    ).toBeInTheDocument();
+    expect(screen.getByLabelText("Email")).toHaveAttribute(
+      "aria-describedby",
+      "email-error",
     );
   });
+
+  it.each(["not reachable"] as const)(
+    "shows the not reachable alert",
+    async (kind) => {
+      mockedCreateAccount.mockResolvedValue({ kind });
+      const user = userEvent.setup();
+      renderPage();
+
+      await user.click(screen.getByRole("button", { name: "Make account" }));
+
+      expect(screen.getByRole("alert")).toHaveTextContent(
+        "Connect is not reachable right now, try again later",
+      );
+    },
+  );
 
   it("has no axe violations in the empty state", async () => {
     const { container } = renderPage();

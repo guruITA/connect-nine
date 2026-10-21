@@ -6,7 +6,9 @@ export function useCreateAccount() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [busy, setBusy] = useState(false);
-  const [result, setResult] = useState<CreateAccountResult | undefined>(undefined);
+  const [result, setResult] = useState<CreateAccountResult | undefined>(
+    undefined,
+  );
 
   const submit = async () => {
     setResult(undefined);

@@ -12,7 +12,10 @@ describe("request", () => {
   it.each([201, 400, 409, 500, 502, 503])(
     "returns the body for a %s response",
     async (status) => {
-      vi.stubGlobal("fetch", vi.fn().mockResolvedValue(response(status, { status })));
+      vi.stubGlobal(
+        "fetch",
+        vi.fn().mockResolvedValue(response(status, { status })),
+      );
 
       if (status === 201) {
         await expect(request("/api/accounts")).resolves.toEqual({ status });
@@ -31,7 +34,10 @@ describe("request", () => {
   });
 
   it("exposes the status and body on an HTTP failure", async () => {
-    vi.stubGlobal("fetch", vi.fn().mockResolvedValue(response(400, { errors: {} })));
+    vi.stubGlobal(
+      "fetch",
+      vi.fn().mockResolvedValue(response(400, { errors: {} })),
+    );
 
     await expect(request("/api/accounts")).rejects.toBeInstanceOf(RequestError);
   });
