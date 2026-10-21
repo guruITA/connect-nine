@@ -13,8 +13,6 @@ workflow:
     - if: $CI_COMMIT_BRANCH == "dev" || $CI_COMMIT_BRANCH == "main"
     # The weekly scan of dev (Build, Pipeline schedules). Only the two scan jobs run then.
     - if: $CI_PIPELINE_SOURCE == "schedule"
-    # A pipeline started by hand with RUN_SSH_CHECK=yes, to try the way to the test server (job ssh-check).
-    - if: $RUN_SSH_CHECK == "yes"
 
 # Every job except the two scan jobs starts with the rule
 #   - if: $CI_PIPELINE_SOURCE == "schedule"
@@ -79,6 +77,11 @@ frontend-build:
     - cd web
     - npm ci
     - npm run build
+  # deploy-test copies the built screen into the server (#267). A later stage gets it without a needs line.
+  artifacts:
+    paths:
+      - web/dist
+    expire_in: 1 day
 
 # Fails on any committed .env file and names it, so no password reaches Git (rule 3 of the code conventions).
 env-file-check:
@@ -239,30 +242,86 @@ frontend-scan:
     - npm ci
     - npm audit --audit-level=high
 
-# Proves the pipeline can reach the test server as the user deploy, without a secret in Git or in a log (task 9.5, #240).
-# Started by hand on dev, or in a pipeline started with RUN_SSH_CHECK=yes. The three variables are protected,
-# so a run on a branch that is not protected gets no key and ends red. Task 3.9 (#267) replaces it with deploy-test.
-ssh-check:
+# Puts every green dev on the test site (task 3.9, #267). It runs after every job of build, test and scan,
+# so a red check never reaches the site. It replaces ssh-check of #240 and uses the same three protected
+# variables, which only dev and main get. The secret settings of the site stay in /srv/connect-test/.env
+# on the server. No key, server number or password is written here or in the log.
+deploy-test:
   stage: deploy
-  image: alpine:3.20
+  image: mcr.microsoft.com/dotnet/sdk:10.0
   tags:
     - hva
+  extends: .backend-nuget-cache
+  # One deploy at a time, so two merges in a row never write /srv/connect-test together.
+  resource_group: test-site
   rules:
     - if: $CI_PIPELINE_SOURCE == "schedule"
       when: never
-    - if: $RUN_SSH_CHECK == "yes"
     - if: $CI_COMMIT_BRANCH == "dev"
-      when: manual
-      allow_failure: true
+  variables:
+    TEST_ADDRESS: 31-70-66-186.sslip.io
+    # Only so dotnet ef can make the DbContext while it builds the bundle. Nothing connects with it.
+    # The bundle gets the real connection string on the server, from /srv/connect-test/.env.
+    ConnectionStrings__DefaultConnection: "Host=bundle;Database=bundle"
   script:
     - |
       if [ -z "$SSH_PRIVATE_KEY" ]; then
         echo "No deploy key. This branch is not protected, or the variable is missing."
         exit 1
       fi
-    - apk add --no-cache openssh-client >/dev/null
+    # The server with the screen from frontend-build in wwwroot, and the migrations as one self-contained file.
+    - dotnet publish api/Connect/Connect.csproj --configuration Release --output out/app
+    - cp -r web/dist/. out/app/wwwroot/
+    - dotnet tool restore
+    - dotnet ef migrations bundle --project api/Connect.Infrastructure --startup-project api/Connect --configuration Release --self-contained --target-runtime linux-x64 --output out/efbundle --force
+    - cp deploy/docker-compose.test.yml out/
+    - apt-get update >/dev/null && apt-get install -y --no-install-recommends openssh-client >/dev/null
     - install -d -m 700 ~/.ssh
     - printf '%s' "$SSH_PRIVATE_KEY" | base64 -d > ~/.ssh/id_ed25519
     - chmod 600 ~/.ssh/id_ed25519
     - printf '%s\n' "$SSH_KNOWN_HOSTS" > ~/.ssh/known_hosts
-    - ssh -o BatchMode=yes -o IdentitiesOnly=yes -i ~/.ssh/id_ed25519 "deploy@$TEST_SERVER_HOST" hostname
+    - ssh_deploy="ssh -o BatchMode=yes -o IdentitiesOnly=yes -i $HOME/.ssh/id_ed25519 deploy@$TEST_SERVER_HOST"
+    - tar -C out -czf - app efbundle docker-compose.test.yml | $ssh_deploy 'rm -rf /srv/connect-test/incoming && mkdir /srv/connect-test/incoming && tar -xzf - -C /srv/connect-test/incoming'
+    # Stops the server, applies the migrations and starts the new version (deploy/deployTest.sh).
+    - $ssh_deploy 'sh -s' < deploy/deployTest.sh
+    # Green only when Connect answers healthy within two minutes. Task 17.3 (#313) makes this deploy/waitForHealthy.sh.
+    - |
+      for try in 1 2 3 4 5 6 7 8 9 10 11 12; do
+        if curl --silent --max-time 5 "https://$TEST_ADDRESS/api/health" | grep -q '"status":"healthy"'; then
+          echo "Connect answers healthy on https://$TEST_ADDRESS"
+          exit 0
+        fi
+        sleep 10
+      done
+      echo "Connect did not answer healthy within two minutes, so the test site is down."
+      echo "Tell the team channel at once and follow Going back to the previous version in docs/team/onboarding.md."
+      exit 1
+
+# The browser tests of web/e2e against the test site, right after deploy-test (#267). It starts once
+# web/playwright.config.ts exists (#265). The image is exactly the version of @playwright/test in
+# web/package.json, so the browsers match: change both together.
+e2e-test:
+  stage: deploy
+  image: mcr.microsoft.com/playwright:v1.64.1-noble
+  tags:
+    - hva
+  needs:
+    - deploy-test
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "schedule"
+      when: never
+    - if: $CI_COMMIT_BRANCH == "dev"
+      exists:
+        - web/playwright.config.ts
+  variables:
+    PLAYWRIGHT_BASE_URL: https://31-70-66-186.sslip.io
+  script:
+    - cd web
+    - npm ci
+    - npx playwright test
+  artifacts:
+    when: on_failure
+    paths:
+      - web/playwright-report
+      - web/test-results
+    expire_in: 7 days
