@@ -4,6 +4,7 @@ using Connect.Presentation;
 using Connect.Presentation.Accounts.Endpoints;
 using Connect.Presentation.Common.Errors;
 using Connect.Presentation.Health.Endpoints;
+using Connect.Presentation.Screen;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -31,6 +32,7 @@ var app = builder.Build();
 // First, so the request line also holds the status of an error answer (#312).
 app.UseHttpLogging();
 app.UseMiddleware<ExceptionHandlingMiddleware>();
+app.UseScreen();
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapHealthEndpoints();
