@@ -19,11 +19,13 @@ School asks: "You design and implement systematically, justify choices in relati
 
 School asks: "You systematically validate that the solution does what it should, and draw conclusions for improvement."
 
-1. **Up, back and up again.** On an empty database the migration applied, went back to `AddAccountTable` and applied again. The output is in the merge request.
+1. **Up, back and up again.** On an empty database the migration applied, went back to the migration before it and applied again: on 19 October 2026 back to `AddAccountTable`, and on 21 October 2026, after the rebase onto dev, back to `EnforceNormalizedAccountUniqueness` of !50, which stayed applied. The output is in the merge request.
 2. **A refused insert.** An insert with the age band `From10To14` was refused by `ck_profile_age_band`.
 3. **The database tests.** Eight tests in `ProfileDatabaseTests`: a saved profile leaves one row, a second profile for the same account fails on `ix_profile_account_id` (23505), two saves at the same moment leave one row, the age band is stored as the text `YoungAdult`, an unknown age band, an empty first name and an empty region fail on their checks, and a profile without a bio saves. All 16 tests of the backend pass.
 4. **The red run.** With `ck_profile_age_band` dropped from the test database, `InsertingUnknownAgeBand_FailsOnAgeBandCheck` failed, so the test really watches the check.
 5. **What the table does not check yet.** A street address typed in the region (#26), and the limits of 60, 60 and 280 characters, which the validator of task 7.2 checks. That is fine for now, because no screen or address saves a profile before task 7.2.
+6. **Brought onto dev after !50 (#1542).** Nick's account code reached dev with !50 on 20 October 2026, after this branch was cut. I rebased the branch onto dev on 21 October 2026 and made the migration again, so it is numbered after `EnforceNormalizedAccountUniqueness` of !50: going back one migration now undoes only this one. The new migration has the same Up and Down as the old one, and `dotnet ef migrations has-pending-model-changes` says the model and the snapshot agree.
+7. **The tests read the test database.** `ProfileDatabaseTests` read `ConnectionStrings__DefaultConnection`, which on a laptop is the database the server runs on. It now gets its `ConnectDbContext` from `TestDatabase` next to `TestConfiguration`, which reads `ConnectionStrings:TestsConnection` (rule 1 of Tests and mocking, backend rule 20, #1541), and the check of a refused write comes from the same helper. The eight tests pass with only `TestsConnection` set, and the whole solution passes with both names set as backend-test does: 21, 6, 69 and 14 tests in the four test projects.
 
 - TODO a reviewer: apply the migration on your own machine and write in a comment on !67 what you saw.
 
