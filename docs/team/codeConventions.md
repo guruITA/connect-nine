@@ -117,7 +117,7 @@ C# is the language. .NET is the platform it runs on. ASP.NET Core is the part of
 10. Addresses start with /api, are lower case and use plural nouns: /api/members, /api/members/{id}. Words are joined with a -: /api/member-profiles. (reviewer)
 11. What goes in and out are records named ...Request and ...Response: CreateAccountRequest, StatusResponse. A database class (entity) is never sent straight to the browser. (reviewer)
 12. Errors use the built in ProblemDetails format (web standard RFC 9457): `Results.Problem(...)`, and for a wrong form `Results.ValidationProblem(...)` with one message per field. Status codes: 200 OK, 201 created, 204 done without content, 400 wrong input, 401 not logged in, 403 not allowed, 404 not found, 409 conflict, 503 not available. (reviewer)
-13. Input is checked with FluentValidation before it reaches Application. (reviewer)
+13. Input is checked with FluentValidation before it reaches Application. A validator is tested with the test extensions of FluentValidation, as rule 8 of the part Tests and mocking says. (reviewer)
 
 ### Other
 
@@ -243,6 +243,10 @@ A substitute is a stand-in object a test makes for an interface or a class. The 
 5. Substitute an interface. Substitute a class only when the members the test needs are virtual, such as `UserManager<Account>` of ASP.NET Core Identity, created with its constructor arguments as in `AccountRegistrationServiceTests`. NSubstitute can only replace the members a class lets it override, so the rest of the class still runs inside the test. The package NSubstitute.Analyzers.CSharp sits next to NSubstitute in every test project, and turns a member NSubstitute cannot replace into a build error, because every project has TreatWarningsAsErrors (backend rule 2). (tool: NSubstitute.Analyzers.CSharp)
 6. NSubstitute and NSubstitute.Analyzers.CSharp have the same versions in every test project. A new test project gets both from the start. (reviewer)
 7. The database is never replaced: not by a substitute of `IAppDbContext`, `ConnectDbContext` or a `DbSet`, and not by the in-memory provider of EF Core (`UseInMemoryDatabase`). A query is written with LINQ, and EF Core turns it into SQL. Microsoft's guide on testing with EF Core says a substitute cannot do that for a query, and calls the in-memory provider as a stand-in database highly discouraged (https://learn.microsoft.com/en-us/ef/core/testing/choosing-a-testing-strategy). A test on any of these can pass where PostgreSQL fails. A test that needs the database uses the test database of rule 1, and a handler is tested as backend rule 16 says. (reviewer)
+
+### Validators
+
+8. A validator is tested with the test extensions of FluentValidation, `using FluentValidation.TestHelper;`: `validator.TestValidate(request)` runs it, `ShouldHaveValidationErrorFor(request => request.Email).WithErrorMessage("Fill in a valid email address")` checks the field and the message the member sees, and `ShouldNotHaveAnyValidationErrors()` checks a request that is right, as `CreateAccountRequestValidatorTests` does. Each case reads as one sentence, and a failing check names the field. FluentValidation's guide: "We recommend treating validators as ‘black boxes’ - provide input to them and then assert whether the validation results are correct or incorrect." (https://docs.fluentvalidation.net/en/latest/testing.html). The package FluentValidation already holds these extensions, so nothing extra is installed. (reviewer)
 
 ## Kept from the collaboration agreement
 

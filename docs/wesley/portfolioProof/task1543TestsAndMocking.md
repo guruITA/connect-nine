@@ -1,6 +1,6 @@
 # Proof: task 3.12 The code conventions for tests and NSubstitute (#1543)
 
-Merge request !77, branch `docs/1543-tests-and-mocking`. Issue: 03 Create an account (#14). Files: `docs/team/codeConventions.md`, part Tests and mocking, `docs/team/onboarding.md`, `docs/architecture/configuration.md`, `docs/testing/testingStrategy.md`, in `api/Connect.Infrastructure.Tests` the project file, `DependencyInjectionTests.cs` and `Persistence/ConnectDbContextDatabaseTests.cs`, and the project files, `CreateAccountHandlerTests.cs` and `AccountEndpointTests.cs` of `api/Connect.Application.Tests` and `api/Connect.Tests`.
+Merge request !77, branch `docs/1543-tests-and-mocking`. Issue: 03 Create an account (#14). Files: `docs/team/codeConventions.md`, part Tests and mocking, `docs/team/onboarding.md`, `docs/architecture/configuration.md`, `docs/testing/testingStrategy.md`, `api/Connect.Presentation.Tests/Accounts/Validators/CreateAccountRequestValidatorTests.cs`, in `api/Connect.Infrastructure.Tests` the project file, `DependencyInjectionTests.cs` and `Persistence/ConnectDbContextDatabaseTests.cs`, and the project files, `CreateAccountHandlerTests.cs` and `AccountEndpointTests.cs` of `api/Connect.Application.Tests` and `api/Connect.Tests`.
 Profile: Full Stack Software Developer, level 3. Portflow: Managing and Collaborating MS1 and MS4.
 
 A point that needs someone else is marked TODO with who and what.
@@ -40,14 +40,18 @@ School asks: "You ensure that your work aligns with that of others and contribut
    - `ConnectDbContextTests` is now `ConnectDbContextDatabaseTests`, the name of code conventions rule 12 for a database test. It runs on the test database of rule 1 with `TestConfiguration`, the way `AccountDatabaseTests` does, and compares a time read back within a microsecond. The package of the in-memory provider is out of the project file, because no test uses it any more.
    - `AddInfrastructure_ReturnsServices` read `DefaultConnection` since !50. It only registers services and never opens a connection, so it has its own setting in the test again, as it had before !50.
    - With only `TestsConnection` set, 92 of 94 tests pass. The two that do not are Gurpreet's `HealthDatabaseTests`, which he moves himself (#1541). With both names set, as backend-test does, 94 of 94. The adjusted tests passed five runs in a row on new databases.
+6. **The validators, after Nick's review.** Nick asked in his review of this merge request on 21 October 2026 (note 1992657) to test the validators with `FluentValidation.TestHelper`, because the tests read better. Rule 8 of the new part says so, backend rule 13 points to it, and `docs/testing/testingStrategy.md` no longer says that no test helper is added. FluentValidation's own guide recommends "treating validators as ‘black boxes’ - provide input to them and then assert whether the validation results are correct or incorrect" (FluentValidation, n.d.). His `CreateAccountRequestValidatorTests` now uses `TestValidate`, `ShouldHaveValidationErrorFor`, `WithErrorMessage` with `Only()`, `WithoutErrorMessage` and `ShouldNotHaveAnyValidationErrors`, and `Only()` keeps what `Errors.Single(...)` checked before: one message for the field. The five tests are green, the two email tests turned red when I changed the email message of the validator for one run, and the password test when I changed the password message. My own validator tests follow the rule too: `CreateMemberProfileRequestValidatorTests` (21 tests, from !68) and `AddTagRequestValidatorTests` (5 tests, from !72), one commit per merge request (!68 2ef31bac, !70 dcd284f5, !71 517b9c84, !72 417ebd83, !73 97c08f53, !75 cc3b9b48, !76 a98b348b). Five tests turned red when I changed the age band message and one when I changed the tag length message. `SuggestedTagsQueryValidator` is not a FluentValidation validator, so its tests stay as they are.
 
 ## TODO
 
 - [ ] Nick: confirm in the review that the new part says what `TestConfiguration` and `AccountRegistrationServiceTests` do, and that `ConnectDbContextDatabaseTests`, `AddInfrastructure_ReturnsServices`, `CreateAccountHandlerTests` and `AccountEndpointTests` still test what they tested.
+- [ ] Nick: confirm that rule 8 and the rewritten `CreateAccountRequestValidatorTests` are what he asked for in note 1992657.
 - [ ] A teammate who did not write the rules: set `TestsConnection` with rule 2 alone, run the tests, and write in the review what was unclear.
 - [ ] Wesley and Gurpreet: move the tests that still read `DefaultConnection` to `TestsConnection` (#1541).
 
 ## References
+
+FluentValidation. (n.d.). *Test extensions*. FluentValidation documentation. Retrieved October 21, 2026, from https://docs.fluentvalidation.net/en/latest/testing.html
 
 Microsoft. (2021, November 7). *Choosing a testing strategy*. Microsoft Learn. Retrieved October 20, 2026, from https://learn.microsoft.com/en-us/ef/core/testing/choosing-a-testing-strategy
 

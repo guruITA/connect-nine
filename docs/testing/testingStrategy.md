@@ -172,24 +172,29 @@ this field present, is this string the right length, is this date not in the pas
 Domain layer's business rules and out of the Minimal API endpoint handler itself.
 **FluentValidation** is decided for this, by the team on 2026-09-24: a validator class per request
 model, built on what the library's own documentation calls "a fluent interface and lambda
-expressions for building validation rules" (FluentValidation, n.d.). Input is checked with
+expressions for building validation rules" (FluentValidation, n.d.-a). Input is checked with
 FluentValidation before it reaches Application (`docs/team/codeConventions.md`). An id and a page
 number in the address are bound as text and parsed in the validator, so a wrong value gets a
 ProblemDetails with a message. A registration request's validator, for example, checks the shape
 of the incoming data before the endpoint ever calls the capacity rule the unit tests above cover,
 so a malformed request never reaches business logic at all.
 
-Each validator is itself a unit under test, in plain NUnit. A test calls `Validate()` against a
-request object built for the case under test, valid, missing a required field, a string over
-its length limit, and asserts on the returned `ValidationResult`'s `IsValid` property and
-`Errors` collection with NUnit's own constraints, the same `Assert.That` model the rest of the
-backend suite uses. No FluentValidation-specific test helper is added for this.
+Each validator is itself a unit under test, with the test extensions FluentValidation ships in
+`FluentValidation.TestHelper`. A test calls `TestValidate()` on a request object built for the
+case under test, valid, missing a required field, a string over its length limit, and checks
+the result with `ShouldHaveValidationErrorFor(...)` and `WithErrorMessage(...)`, or with
+`ShouldNotHaveAnyValidationErrors()` for a request that is right. The library's guide
+recommends "treating validators as ‘black boxes’ - provide input to them and then assert
+whether the validation results are correct or incorrect" (FluentValidation, n.d.-b). Decided
+by the team on 21 October 2026, the way Nick Hoebe writes .NET code, which the team agreed sets
+the way: a test then reads as one sentence. The rule is code conventions, Tests and mocking,
+rule 8.
 
-**No FluentAssertions.** Assertions across the backend suite, business logic and validators
-alike, stay NUnit's own constraint-based model, `Assert.That(actual, Is.EqualTo(expected))`,
-rather than adding FluentAssertions as a second assertion syntax, decided by the team on
-2026-09-24: one way to write an assertion is easier for a five-person team to read consistently
-than two side by side in the same codebase.
+**No FluentAssertions.** Assertions across the backend suite stay NUnit's own constraint-based
+model, `Assert.That(actual, Is.EqualTo(expected))`, rather than adding FluentAssertions as a
+second assertion syntax, decided by the team on 2026-09-24: one way to write an assertion is
+easier for a five-person team to read consistently than two side by side in the same codebase.
+Validators are the one exception, with the test extensions of FluentValidation above.
 
 ## A realistic coverage ambition
 
@@ -225,8 +230,11 @@ product.
 
 ## References
 
-FluentValidation. (n.d.). *Installation*. FluentValidation documentation. Retrieved September
+FluentValidation. (n.d.-a). *Installation*. FluentValidation documentation. Retrieved September
 24, 2026, from https://docs.fluentvalidation.net/en/latest/installation.html
+
+FluentValidation. (n.d.-b). *Test extensions*. FluentValidation documentation. Retrieved October
+21, 2026, from https://docs.fluentvalidation.net/en/latest/testing.html
 
 Hogeschool van Amsterdam. (n.d.). *Testing-example* [Course document, example repository].
 

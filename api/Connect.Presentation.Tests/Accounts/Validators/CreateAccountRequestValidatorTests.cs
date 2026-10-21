@@ -1,5 +1,6 @@
 using Connect.Presentation.Accounts.DTO;
 using Connect.Presentation.Accounts.Validators;
+using FluentValidation.TestHelper;
 using NUnit.Framework;
 
 namespace Connect.Presentation.Tests.Accounts.Validators;
@@ -11,56 +12,51 @@ public sealed class CreateAccountRequestValidatorTests
     [Test]
     public void EmptyEmail_ReturnsTheEmailMessage()
     {
-        var result = validator.Validate(new CreateAccountRequest("", "Valid-password-123!"));
+        var result = validator.TestValidate(new CreateAccountRequest("", "Valid-password-123!"));
 
-        Assert.That(
-            result.Errors.Single(error => error.PropertyName == nameof(CreateAccountRequest.Email))
-                .ErrorMessage,
-            Is.EqualTo("Fill in a valid email address"));
+        result.ShouldHaveValidationErrorFor(request => request.Email)
+            .WithErrorMessage("Fill in a valid email address")
+            .Only();
     }
 
     [Test]
     public void InvalidEmail_ReturnsTheEmailMessage()
     {
-        var result = validator.Validate(new CreateAccountRequest("not-an-email", "Valid-password-123!"));
+        var result = validator.TestValidate(new CreateAccountRequest("not-an-email", "Valid-password-123!"));
 
-        Assert.That(
-            result.Errors.Single(error => error.PropertyName == nameof(CreateAccountRequest.Email))
-                .ErrorMessage,
-            Is.EqualTo("Fill in a valid email address"));
+        result.ShouldHaveValidationErrorFor(request => request.Email)
+            .WithErrorMessage("Fill in a valid email address")
+            .Only();
     }
 
     [Test]
     public void EmptyPassword_ReturnsThePasswordMessage()
     {
-        var result = validator.Validate(new CreateAccountRequest("member@example.com", ""));
+        var result = validator.TestValidate(new CreateAccountRequest("member@example.com", ""));
 
-        Assert.That(
-            result.Errors.Single(error => error.PropertyName == nameof(CreateAccountRequest.Password))
-                .ErrorMessage,
-            Is.EqualTo("Fill in a password"));
+        result.ShouldHaveValidationErrorFor(request => request.Password)
+            .WithErrorMessage("Fill in a password")
+            .Only();
     }
 
     [Test]
     public void PasswordMadeOfSpaces_IsRecognizedAsNonAlphanumeric()
     {
-        var result = validator.Validate(new CreateAccountRequest(
+        var result = validator.TestValidate(new CreateAccountRequest(
             "member@example.com",
             "                "));
 
-        Assert.That(
-            result.Errors,
-            Has.None.Matches<FluentValidation.Results.ValidationFailure>(
-                error => error.ErrorMessage == "Password must contain at least one non-alphanumeric character"));
+        result.ShouldHaveValidationErrorFor(request => request.Password)
+            .WithoutErrorMessage("Password must contain at least one non-alphanumeric character");
     }
 
     [Test]
     public void StrongPassword_IsValid()
     {
-        var result = validator.Validate(new CreateAccountRequest(
+        var result = validator.TestValidate(new CreateAccountRequest(
             "member@example.com",
             "Valid-password-123!"));
 
-        Assert.That(result.IsValid, Is.True);
+        result.ShouldNotHaveAnyValidationErrors();
     }
 }
