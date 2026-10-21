@@ -11,6 +11,7 @@ using NUnit.Framework;
 
 namespace Connect.Tests.TestData;
 
+[TestFixture]
 public sealed class TestDataSeedingTests
 {
     private const string TestMemberEmail = "test-member@example.org";
@@ -36,6 +37,7 @@ public sealed class TestDataSeedingTests
     public async Task Start_SeedingOn_AddsTheTestMemberOnceWithAPasswordThatVerifies()
     {
         using WebApplicationFactory<Program> factory = new ConnectWebApplicationFactory().WithWebHostBuilder(webHost => webHost
+                .UseSetting("ConnectionStrings:DefaultConnection", TestDatabase.ConnectionString())
                 .UseSetting("Seeding:TestData", "true")
                 .UseSetting("Seeding:TestMemberPassword", TestMemberPassword));
         using HttpClient client = factory.CreateClient();
@@ -62,6 +64,7 @@ public sealed class TestDataSeedingTests
     public async Task Start_SeedingOff_AddsNoAccount()
     {
         using WebApplicationFactory<Program> factory = new ConnectWebApplicationFactory().WithWebHostBuilder(webHost => webHost
+                .UseSetting("ConnectionStrings:DefaultConnection", TestDatabase.ConnectionString())
                 .UseSetting("Seeding:TestData", "false")
                 .UseSetting("Seeding:TestMemberPassword", TestMemberPassword));
         using HttpClient client = factory.CreateClient();
@@ -79,6 +82,7 @@ public sealed class TestDataSeedingTests
     public async Task Start_Production_AddsNoAccountEvenWithTheSettingOn()
     {
         using WebApplicationFactory<Program> factory = new ConnectWebApplicationFactory().WithWebHostBuilder(webHost => webHost
+                .UseSetting("ConnectionStrings:DefaultConnection", TestDatabase.ConnectionString())
                 .UseEnvironment("Production")
                 .UseSetting("Seeding:TestData", "true")
                 .UseSetting("Seeding:TestMemberPassword", TestMemberPassword));
@@ -110,17 +114,7 @@ public sealed class TestDataSeedingTests
 
     private static void RemoveTestMember()
     {
-        string connectionString = Environment.GetEnvironmentVariable(
-                "ConnectionStrings__DefaultConnection")
-            ?? throw new InvalidOperationException(
-                "ConnectionStrings__DefaultConnection is not configured.");
-
-        DbContextOptions<ConnectDbContext> options = new DbContextOptionsBuilder<ConnectDbContext>()
-            .UseNpgsql(connectionString)
-            .UseSnakeCaseNamingConvention()
-            .Options;
-
-        using ConnectDbContext dbContext = new(options);
+        using ConnectDbContext dbContext = TestDatabase.CreateDbContext();
         dbContext.Database.Migrate();
         Account? existing = dbContext.Accounts
             .SingleOrDefault(account => account.Email == TestMemberEmail);

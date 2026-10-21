@@ -10,21 +10,15 @@ using NUnit.Framework;
 
 namespace Connect.Infrastructure.Tests.Persistence;
 
+[TestFixture]
 public sealed class TestDataSeederTests
 {
     private const string TestMemberEmail = "test-member@example.org";
 
-    private string connectionString;
-
     [SetUp]
     public void SetUp()
     {
-        connectionString = Environment.GetEnvironmentVariable(
-                "ConnectionStrings__DefaultConnection")
-            ?? throw new InvalidOperationException(
-                "ConnectionStrings__DefaultConnection is not configured.");
-
-        using ConnectDbContext dbContext = CreateDbContext();
+        using ConnectDbContext dbContext = TestDatabase.CreateDbContext();
         dbContext.Database.Migrate();
         RemoveTestMember(dbContext);
     }
@@ -32,7 +26,7 @@ public sealed class TestDataSeederTests
     [TearDown]
     public void TearDown()
     {
-        using ConnectDbContext dbContext = CreateDbContext();
+        using ConnectDbContext dbContext = TestDatabase.CreateDbContext();
         RemoveTestMember(dbContext);
     }
 
@@ -43,7 +37,7 @@ public sealed class TestDataSeederTests
 
         await seeder.SeedAsync();
 
-        using ConnectDbContext dbContext = CreateDbContext();
+        using ConnectDbContext dbContext = TestDatabase.CreateDbContext();
         Assert.That(CountTestMembers(dbContext), Is.EqualTo(1));
     }
 
@@ -57,7 +51,7 @@ public sealed class TestDataSeederTests
             CreateSeeder("Correct-Horse-9!");
         await secondSeeder.SeedAsync();
 
-        using ConnectDbContext dbContext = CreateDbContext();
+        using ConnectDbContext dbContext = TestDatabase.CreateDbContext();
         using (Assert.EnterMultipleScope())
         {
             Assert.That(CountTestMembers(dbContext), Is.EqualTo(1));
@@ -73,7 +67,7 @@ public sealed class TestDataSeederTests
 
         await seeder.SeedAsync();
 
-        using ConnectDbContext dbContext = CreateDbContext();
+        using ConnectDbContext dbContext = TestDatabase.CreateDbContext();
         Account account = await dbContext.Accounts.SingleAsync(
             account => account.Email == TestMemberEmail);
         IPasswordHasher<Account> hasher = new PasswordHasher<Account>();
@@ -98,7 +92,7 @@ public sealed class TestDataSeederTests
 
         await seeder.SeedAsync();
 
-        using ConnectDbContext dbContext = CreateDbContext();
+        using ConnectDbContext dbContext = TestDatabase.CreateDbContext();
         Assert.That(CountTestMembers(dbContext), Is.EqualTo(0));
     }
 
@@ -107,7 +101,7 @@ public sealed class TestDataSeederTests
     {
         (TestDataSeeder firstSeeder, _) = CreateSeeder("Correct-Horse-9!");
         await firstSeeder.SeedAsync();
-        using ConnectDbContext before = CreateDbContext();
+        using ConnectDbContext before = TestDatabase.CreateDbContext();
         Account original = await before.Accounts.SingleAsync(
             account => account.Email == TestMemberEmail);
         Guid originalId = original.Id;
@@ -116,7 +110,7 @@ public sealed class TestDataSeederTests
         (TestDataSeeder secondSeeder, _) = CreateSeeder("Another-Password-7!");
         await secondSeeder.SeedAsync();
 
-        using ConnectDbContext after = CreateDbContext();
+        using ConnectDbContext after = TestDatabase.CreateDbContext();
         Account[] accounts = await after.Accounts
             .Where(account => account.Email == TestMemberEmail)
             .ToArrayAsync();
@@ -139,7 +133,7 @@ public sealed class TestDataSeederTests
         IConfiguration configuration = new ConfigurationBuilder()
             .AddInMemoryCollection(new Dictionary<string, string?>
             {
-                ["ConnectionStrings:DefaultConnection"] = connectionString,
+                ["ConnectionStrings:DefaultConnection"] = TestDatabase.ConnectionString(),
                 ["Seeding:TestMemberPassword"] = password,
             })
             .Build();
@@ -150,16 +144,6 @@ public sealed class TestDataSeederTests
 
         ServiceProvider provider = services.BuildServiceProvider();
         return (provider.GetRequiredService<TestDataSeeder>(), logger);
-    }
-
-    private ConnectDbContext CreateDbContext()
-    {
-        DbContextOptions<ConnectDbContext> options = new DbContextOptionsBuilder<ConnectDbContext>()
-            .UseNpgsql(connectionString)
-            .UseSnakeCaseNamingConvention()
-            .Options;
-
-        return new ConnectDbContext(options);
     }
 
     private static int CountTestMembers(ConnectDbContext dbContext)
