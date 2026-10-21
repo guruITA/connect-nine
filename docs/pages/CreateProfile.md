@@ -38,7 +38,7 @@ flowchart LR
    - A text field, autocomplete given-name, label above it.
    - Required. An empty first name shows the message of the server "Fill in your first name" below the field, and nothing is saved (task 7.2).
 3. Field: Age band
-   - A select with exactly three options: 15 to 17, 18 to 21 and 22 to 30. No option is chosen at the start. The labels come from AGE_BAND_LABELS in web/src/api/memberProfiles.ts (From15To17 becomes "15 to 17"), so issues 08 and 14 show the same words.
+   - A select with exactly three options: 15 to 17, 18 to 21 and 22 to 30. No option is chosen at the start. The labels come from AGE_BAND_LABELS in web/src/api/memberProfiles.ts (Adolescent becomes "15 to 17"), so issues 08 and 14 show the same words.
    - Required. No field anywhere asks for a date or an exact age. The database refuses an unknown age band.
 4. Question: "Are you younger than 16?"
    - A fieldset with this legend and two radio buttons Yes and No, directly below Age band. It appears only while the age band is 15 to 17, and nothing is chosen at the start.

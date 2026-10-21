@@ -406,7 +406,7 @@ gives the `profile` table the details of a young person: `first_name`, `age_band
 `bio`, which may be empty. The team agreed on the way Nick Hoebe built the account code, so the
 profile of a young person lives in his `profile` table, one per account through the unique index
 `ix_profile_account_id`, and not in a separate table `member_profile`. `age_band` holds the name
-of the enum `AgeBand`: `From15To17`, `From18To21` or `From22To30`. The check
+of the enum `AgeBand`: `Adolescent` (15 to 17), `YoungAdult` (18 to 21) or `Adult` (22 to 30). The check
 `ck_profile_age_band` refuses any other text, and `ck_profile_first_name_not_empty` and
 `ck_profile_region_not_empty` refuse an empty first name or region. The table holds no birth
 date, exact age, school, street address, phone number or email address. The limits of 60
