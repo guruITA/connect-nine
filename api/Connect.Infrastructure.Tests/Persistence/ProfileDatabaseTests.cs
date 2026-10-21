@@ -8,8 +8,8 @@ namespace Connect.Infrastructure.Tests.Persistence;
 
 public sealed class ProfileDatabaseTests
 {
-    private string connectionString = null!;
-    private ConnectDbContext dbContext = null!;
+    private string connectionString;
+    private ConnectDbContext dbContext;
 
     [SetUp]
     public void SetUp()
@@ -54,7 +54,7 @@ public sealed class ProfileDatabaseTests
         secondContext.Add(CreateProfile(sameAccount));
 
         DbUpdateException exception = Assert.Throws<DbUpdateException>(
-            () => secondContext.SaveChanges())!;
+            () => secondContext.SaveChanges()) ?? throw new AssertionException("Expected PostgreSQL to reject the write.");
         PostgresException postgresException = FindPostgresException(exception);
 
         Assert.That(postgresException.SqlState, Is.EqualTo(PostgresErrorCodes.UniqueViolation));
@@ -105,7 +105,7 @@ public sealed class ProfileDatabaseTests
                 $"""
                 INSERT INTO profile (id, account_id, created_at, updated_at, first_name, age_band, region)
                 VALUES ({Guid.NewGuid()}, {account.Id}, now(), now(), 'Sam', 'From10To14', 'Amstelveen')
-                """))!;
+                """)) ?? throw new AssertionException("Expected PostgreSQL to reject the write.");
 
         Assert.That(exception.SqlState, Is.EqualTo(PostgresErrorCodes.CheckViolation));
         Assert.That(exception.ConstraintName, Is.EqualTo("ck_profile_age_band"));
@@ -120,7 +120,7 @@ public sealed class ProfileDatabaseTests
         dbContext.Add(profile);
 
         DbUpdateException exception = Assert.Throws<DbUpdateException>(
-            () => dbContext.SaveChanges())!;
+            () => dbContext.SaveChanges()) ?? throw new AssertionException("Expected PostgreSQL to reject the write.");
         PostgresException postgresException = FindPostgresException(exception);
 
         Assert.That(postgresException.SqlState, Is.EqualTo(PostgresErrorCodes.CheckViolation));
@@ -136,7 +136,7 @@ public sealed class ProfileDatabaseTests
         dbContext.Add(profile);
 
         DbUpdateException exception = Assert.Throws<DbUpdateException>(
-            () => dbContext.SaveChanges())!;
+            () => dbContext.SaveChanges()) ?? throw new AssertionException("Expected PostgreSQL to reject the write.");
         PostgresException postgresException = FindPostgresException(exception);
 
         Assert.That(postgresException.SqlState, Is.EqualTo(PostgresErrorCodes.CheckViolation));
