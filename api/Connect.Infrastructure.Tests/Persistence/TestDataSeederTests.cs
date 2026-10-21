@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using NSubstitute;
 using NUnit.Framework;
 
 namespace Connect.Infrastructure.Tests.Persistence;
@@ -52,7 +53,7 @@ public sealed class TestDataSeederTests
         (TestDataSeeder firstSeeder, _) = CreateSeeder("Correct-Horse-9!");
         await firstSeeder.SeedAsync();
 
-        (TestDataSeeder secondSeeder, List<string> secondRunWarnings) =
+        (TestDataSeeder secondSeeder, ILogger secondRunLogger) =
             CreateSeeder("Correct-Horse-9!");
         await secondSeeder.SeedAsync();
 
@@ -60,7 +61,7 @@ public sealed class TestDataSeederTests
         using (Assert.EnterMultipleScope())
         {
             Assert.That(CountTestMembers(dbContext), Is.EqualTo(1));
-            Assert.That(secondRunWarnings, Is.Empty);
+            Assert.That(Warnings(secondRunLogger), Is.Empty);
         }
     }
 
@@ -124,9 +125,12 @@ public sealed class TestDataSeederTests
         }
     }
 
-    private (TestDataSeeder Seeder, List<string> Warnings) CreateSeeder(string password)
+    private (TestDataSeeder Seeder, ILogger Logger) CreateSeeder(string password)
     {
-        List<string> warnings = [];
+        ILogger logger = Substitute.For<ILogger>();
+        logger.IsEnabled(LogLevel.Warning).Returns(true);
+        ILoggerProvider loggerProvider = Substitute.For<ILoggerProvider>();
+        loggerProvider.CreateLogger(Arg.Any<string>()).Returns(logger);
         ServiceCollection services = new();
         IConfiguration configuration = new ConfigurationBuilder()
             .AddInMemoryCollection(new Dictionary<string, string?>
@@ -138,10 +142,10 @@ public sealed class TestDataSeederTests
 
         services.AddSingleton(configuration);
         services.AddInfrastructure(configuration);
-        services.AddLogging(logging => logging.AddProvider(new WarningCapturingLoggerProvider(warnings)));
+        services.AddLogging(logging => logging.AddProvider(loggerProvider));
 
         ServiceProvider provider = services.BuildServiceProvider();
-        return (provider.GetRequiredService<TestDataSeeder>(), warnings);
+        return (provider.GetRequiredService<TestDataSeeder>(), logger);
     }
 
     private ConnectDbContext CreateDbContext()
@@ -170,34 +174,15 @@ public sealed class TestDataSeederTests
         }
     }
 
-    // Collects every warning SeedAsync logs, so a test can assert that an existing test member
+    // Every warning the logger got, written out, so a test can assert that an existing test member
     // is left alone without even one log line, not just without a change in the database.
-    private sealed class WarningCapturingLoggerProvider(List<string> warnings) : ILoggerProvider
+    private static string[] Warnings(ILogger logger)
     {
-        public ILogger CreateLogger(string categoryName) => new WarningCapturingLogger(warnings);
-
-        public void Dispose()
-        {
-        }
-
-        private sealed class WarningCapturingLogger(List<string> warnings) : ILogger
-        {
-            public IDisposable? BeginScope<TState>(TState state) where TState : notnull => null;
-
-            public bool IsEnabled(LogLevel logLevel) => logLevel == LogLevel.Warning;
-
-            public void Log<TState>(
-                LogLevel logLevel,
-                EventId eventId,
-                TState state,
-                Exception? exception,
-                Func<TState, Exception?, string> formatter)
-            {
-                if (logLevel == LogLevel.Warning)
-                {
-                    warnings.Add(formatter(state, exception));
-                }
-            }
-        }
+        return logger.ReceivedCalls()
+            .Where(call => call.GetMethodInfo().Name == nameof(ILogger.Log))
+            .Select(call => call.GetArguments())
+            .Where(arguments => Equals(arguments[0], LogLevel.Warning))
+            .Select(arguments => $"{((Delegate)arguments[4]!).DynamicInvoke(arguments[2], arguments[3])}")
+            .ToArray();
     }
 }
