@@ -1,4 +1,4 @@
-# Proof: create-account form (Task 3.6)
+# Proof: create-account form (#264)
 
 Task 3.6, board issue 03, GitLab work item [#264](https://gitlab.fdmci.hva.nl/studio/social-impact-apps/onderwijs/projects/2026-2027-semester-1/projects/project-9-wail-salutem-foundation-project-2/connect-nine/-/work_items/264): create the first account form for Connect. This proof records the frontend plan, implementation boundaries, validation evidence and remaining work. The merge request link will be added when the merge request exists.
 
