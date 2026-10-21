@@ -1,4 +1,4 @@
-import { defineConfig } from "vitest/config";
+import { configDefaults, defineConfig } from "vitest/config";
 import react from "@vitejs/plugin-react";
 
 // The backend runs on http://localhost:5000 (api/Connect/Properties/launchSettings.json).
@@ -14,5 +14,7 @@ export default defineConfig({
   test: {
     environment: "jsdom",
     setupFiles: ["./src/test/setup.ts"],
+    // web/e2e holds the Playwright tests, run with npm run e2e, not by Vitest (#265).
+    exclude: [...configDefaults.exclude, "e2e/**"],
   },
 });
