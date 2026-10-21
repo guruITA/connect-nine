@@ -14,7 +14,7 @@ public sealed class TestDataSeederTests
 {
     private const string TestMemberEmail = "test-member@example.org";
 
-    private string connectionString = null!;
+    private string connectionString;
 
     [SetUp]
     public void SetUp()
@@ -82,7 +82,11 @@ public sealed class TestDataSeederTests
         {
             Assert.That(account.PasswordHash, Is.Not.EqualTo(password));
             Assert.That(
-                hasher.VerifyHashedPassword(account, account.PasswordHash!, password),
+                hasher.VerifyHashedPassword(
+                    account,
+                    account.PasswordHash
+                        ?? throw new AssertionException("Expected the test member to have a password hash."),
+                    password),
                 Is.EqualTo(PasswordVerificationResult.Success));
         }
     }
@@ -182,7 +186,7 @@ public sealed class TestDataSeederTests
             .Where(call => call.GetMethodInfo().Name == nameof(ILogger.Log))
             .Select(call => call.GetArguments())
             .Where(arguments => Equals(arguments[0], LogLevel.Warning))
-            .Select(arguments => $"{((Delegate)arguments[4]!).DynamicInvoke(arguments[2], arguments[3])}")
+            .Select(arguments => $"{(arguments[4] as Delegate)?.DynamicInvoke(arguments[2], arguments[3])}")
             .ToArray();
     }
 }

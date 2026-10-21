@@ -15,16 +15,20 @@ public sealed class TestDataSeeder(
 {
     private const string TestMemberEmail = "test-member@example.org";
 
+    private readonly UserManager<Account> _userManager = userManager;
+    private readonly IConfiguration _configuration = configuration;
+    private readonly ILogger<TestDataSeeder> _logger = logger;
+
     public async Task SeedAsync()
     {
-        string? password = configuration["Seeding:TestMemberPassword"];
+        string? password = _configuration["Seeding:TestMemberPassword"];
         if (string.IsNullOrEmpty(password))
         {
-            logger.LogWarning("Test data: no password for the test member, skipped");
+            _logger.LogWarning("Test data: no password for the test member, skipped");
             return;
         }
 
-        Account? existing = await userManager.FindByEmailAsync(TestMemberEmail);
+        Account? existing = await _userManager.FindByEmailAsync(TestMemberEmail);
         if (existing is not null)
         {
             return;
@@ -38,11 +42,11 @@ public sealed class TestDataSeeder(
             EmailConfirmed = true,
         };
 
-        IdentityResult result = await userManager.CreateAsync(account, password);
+        IdentityResult result = await _userManager.CreateAsync(account, password);
         if (!result.Succeeded)
         {
             string codes = string.Join(", ", result.Errors.Select(error => error.Code));
-            logger.LogWarning("Test data: could not add the test member, {Codes}", codes);
+            _logger.LogWarning("Test data: could not add the test member, {Codes}", codes);
         }
     }
 }
