@@ -156,6 +156,23 @@ Two things to know about User Secrets:
 - The file lives outside the repository, at `~/.microsoft/usersecrets/<UserSecretsId>/secrets.json` on Linux and macOS, and at `%APPDATA%\Microsoft\UserSecrets\<UserSecretsId>\secrets.json` on Windows.
 - It is plain text. User Secrets keeps a secret out of Git. It does not protect the value on your disk, and it is only read when the environment is Development.
 
+### Test member
+
+On start, the server can add one made up test member, `test-member@example.org`, so you have a
+known account to log in with once log in exists (#276, #277). `appsettings.Development.json`
+already turns this on (`Seeding:TestData` is `true`), but the password is a secret, so it is
+missing until you set it yourself, in `api/Connect`, with a password that meets the password rules of
+the account code (#262):
+
+```
+dotnet user-secrets set "Seeding:TestMemberPassword" "<a password of your own>"
+```
+
+You should see `Successfully saved Seeding:TestMemberPassword to the secret store.` No password
+set? The server starts fine, logs one warning and adds no test member. The test member is added
+once and never changed afterwards, also when you later set another password. See
+`docs/testing/testData.md` for where the same password lives on the test site.
+
 ### Create and apply migrations
 
 Once per clone, before the first `dotnet ef` command, restore the pinned tool:

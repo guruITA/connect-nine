@@ -1,5 +1,6 @@
 using Connect.Application;
 using Connect.Infrastructure;
+using Connect.Infrastructure.Persistence;
 using Connect.Presentation;
 using Connect.Presentation.Accounts.Endpoints;
 using Connect.Presentation.Common.Errors;
@@ -35,5 +36,7 @@ app.UseAuthentication();
 app.UseAuthorization();
 app.MapHealthEndpoints();
 app.MapAccountEndpoints();
+
+await app.SeedTestDataAsync();
 
 app.Run();
