@@ -1,9 +1,9 @@
 # Research proposal: Google OAuth and registration friction
 
-**Project:** Young Amstelland Connect  
-**Research area:** OAuth authentication  
-**Related issue:** Board issue 106, Research and development  
-**Status:** Research proposal draft  
+**Project:** Young Amstelland Connect
+**Research area:** OAuth authentication
+**Related issue:** Board issue 106, Research and development
+**Status:** Research proposal draft
 **Date:** 6 October 2026
 
 ## 1. Problem statement

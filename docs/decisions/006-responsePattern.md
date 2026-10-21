@@ -1,6 +1,6 @@
 # 006 HTTP response pattern
 
-**Status.** Proposed on 13 October 2026, waiting for the team.
+**Status.** Proposed on 9 October 2026, and agreed by the whole team at the sprint 1 review on 9 October 2026.
 **Issue.** The common pattern for successful API responses and HTTP errors.
 **Who decides.** The whole team. Drafted by Nick Hoebe.
 
@@ -122,11 +122,11 @@ flowchart LR
 
 | Name | Date agreed | Objection |
 |---|---|---|
-| Bayon Eerhart | | |
-| Nick Hoebe | | |
-| Wesley Oerlemans | | |
-| Gurpreet Singh | | |
-| Kelvin van Voorst | | |
+| Bayon Eerhart | 9 October 2026 | |
+| Nick Hoebe | 9 October 2026 | |
+| Wesley Oerlemans | 9 October 2026 | |
+| Gurpreet Singh | 9 October 2026 | |
+| Kelvin van Voorst | 9 October 2026 | |
 
 ## References
 
