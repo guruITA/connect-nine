@@ -17,6 +17,7 @@ One file per task I did, with the proof block of the task filled in. A point tha
 | File | Task | Portflow |
 | --- | --- | --- |
 | `portfolioProof/task266BuildAndTest.md` | Task 3.8 Build and test in the pipeline (#266), merge request !54 | Managing and Collaborating MS1 and MS4 |
+| `portfolioProof/task276TestMember.md` | Tasks 4b.1 and 4b.2 The test member (#276, #277), merge request !74 | Designing and Realising OR1, OR2, OR4 and OR5 |
 | `portfolioProof/task1499FigmaBoardInTeamDocs.md` | Task 179.1 The team documents follow the new Figma board (#1499), merge request !37 | Managing and Collaborating MS1 and MS4 |
 | `portfolioProof/task38CollaborationAgreementDeclaration.md` | Issue 106 My documents end with the text of section 9.1 of the collaboration agreement (#38), merge request !57 | Managing and Collaborating MS4 |
 | `portfolioProof/task2RepositorySkeleton.md` | Task 1.1 The starting structure (#2), merge request !13 | Managing and Collaborating MS1 and MS4 |
@@ -37,7 +38,6 @@ One file per task I did, with the proof block of the task filled in. A point tha
 | `portfolioProof/task1543TestsAndMocking.md` | Task 3.12 The code conventions for tests and NSubstitute (#1543), merge request !77 | Managing and Collaborating MS1 and MS4 |
 | `portfolioProof/task1465CqrsRewording.md` | Task 11.4 The tasks of every next sprint reworded to the CQRS shape (#1465), merge request !62 | Managing and Collaborating MS4 |
 | `portfolioProof/task1537IdentityTables.md` | Task 3.10 The database rules say what the Identity tables have (#1537), merge request !66 | Managing and Collaborating MS4 |
-| `portfolioProof/task276TestMember.md` | Tasks 4b.1 and 4b.2 The test member (#276, #277), merge request !74 | Designing and Realising OR1, OR2, OR4 and OR5 |
 
 ## The full documents behind them
 
