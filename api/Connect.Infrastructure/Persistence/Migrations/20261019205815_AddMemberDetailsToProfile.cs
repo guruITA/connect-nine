@@ -40,7 +40,7 @@ namespace Connect.Infrastructure.Persistence.Migrations
             migrationBuilder.AddCheckConstraint(
                 name: "ck_profile_age_band",
                 table: "profile",
-                sql: "\"age_band\" IN ('From15To17', 'From18To21', 'From22To30')");
+                sql: "\"age_band\" IN ('Adolescent', 'YoungAdult', 'Adult')");
 
             migrationBuilder.AddCheckConstraint(
                 name: "ck_profile_first_name_not_empty",

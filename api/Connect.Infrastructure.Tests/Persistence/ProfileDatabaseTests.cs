@@ -84,7 +84,7 @@ public sealed class ProfileDatabaseTests
     {
         Account account = SaveAccount();
         Profile profile = CreateProfile(account);
-        profile.AgeBand = AgeBand.From18To21;
+        profile.AgeBand = AgeBand.YoungAdult;
         dbContext.Add(profile);
         dbContext.SaveChanges();
 
@@ -92,7 +92,7 @@ public sealed class ProfileDatabaseTests
             .SqlQuery<string>($"SELECT age_band AS \"Value\" FROM profile WHERE id = {profile.Id}")
             .Single();
 
-        Assert.That(storedAgeBand, Is.EqualTo("From18To21"));
+        Assert.That(storedAgeBand, Is.EqualTo("YoungAdult"));
     }
 
     [Test]
@@ -189,7 +189,7 @@ public sealed class ProfileDatabaseTests
             AccountId = account.Id,
             Account = account,
             FirstName = "Sam",
-            AgeBand = AgeBand.From15To17,
+            AgeBand = AgeBand.Adolescent,
             Region = "Amstelveen",
             Bio = "I like football."
         };

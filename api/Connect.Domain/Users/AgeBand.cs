@@ -2,7 +2,12 @@ namespace Connect.Domain.Users;
 
 public enum AgeBand
 {
-    From15To17,
-    From18To21,
-    From22To30
+    // 15 to 17 years old
+    Adolescent,
+
+    // 18 to 21 years old
+    YoungAdult,
+
+    // 22 to 30 years old
+    Adult
 }

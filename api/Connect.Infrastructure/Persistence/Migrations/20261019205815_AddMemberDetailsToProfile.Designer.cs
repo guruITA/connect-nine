@@ -165,7 +165,7 @@ namespace Connect.Infrastructure.Persistence.Migrations
 
                     b.ToTable("profile", null, t =>
                         {
-                            t.HasCheckConstraint("ck_profile_age_band", "\"age_band\" IN ('From15To17', 'From18To21', 'From22To30')");
+                            t.HasCheckConstraint("ck_profile_age_band", "\"age_band\" IN ('Adolescent', 'YoungAdult', 'Adult')");
 
                             t.HasCheckConstraint("ck_profile_first_name_not_empty", "length(\"first_name\") > 0");
 

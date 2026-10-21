@@ -80,7 +80,7 @@ public sealed class ConnectDbContext(DbContextOptions<ConnectDbContext> options)
                     "length(\"region\") > 0");
                 table.HasCheckConstraint(
                     "ck_profile_age_band",
-                    "\"age_band\" IN ('From15To17', 'From18To21', 'From22To30')");
+                    "\"age_band\" IN ('Adolescent', 'YoungAdult', 'Adult')");
             });
 
             entity.HasOne(profile => profile.Account)
