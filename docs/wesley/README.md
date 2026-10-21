@@ -37,6 +37,7 @@ One file per task I did, with the proof block of the task filled in. A point tha
 | `portfolioProof/task1543TestsAndMocking.md` | Task 3.12 The code conventions for tests and NSubstitute (#1543), merge request !77 | Managing and Collaborating MS1 and MS4 |
 | `portfolioProof/task1465CqrsRewording.md` | Task 11.4 The tasks of every next sprint reworded to the CQRS shape (#1465), merge request !62 | Managing and Collaborating MS4 |
 | `portfolioProof/task1537IdentityTables.md` | Task 3.10 The database rules say what the Identity tables have (#1537), merge request !66 | Managing and Collaborating MS4 |
+| `portfolioProof/task276TestMember.md` | Tasks 4b.1 and 4b.2 The test member (#276, #277), merge request !74 | Designing and Realising OR1, OR2, OR4 and OR5 |
 
 ## The full documents behind them
 
