@@ -21,6 +21,7 @@ One file per task I did, with the proof block of the task filled in. A point tha
 | `portfolioProof/task38CollaborationAgreementDeclaration.md` | Issue 106 My documents end with the text of section 9.1 of the collaboration agreement (#38), merge request !57 | Managing and Collaborating MS4 |
 | `portfolioProof/task2RepositorySkeleton.md` | Task 1.1 The starting structure (#2), merge request !13 | Managing and Collaborating MS1 and MS4 |
 | `portfolioProof/task1497PrototypeInPageDocs.md` | Task 178.1 The page documents point to the prototype screens (#1497), merge request !35 | Managing and Collaborating MS1 and MS4 |
+| `portfolioProof/task241ServerCheckMeeting.md` | Task 9.6 The plan for the server check with the team (#241), merge request !60 | Managing and Collaborating MS1 and MS4 |
 | `portfolioProof/task9LoggedAfterwards.md` | Task 9 Templates and rules (#9), work logged afterwards as issues #1500 to #1515, merge request !39 | Managing and Collaborating MS1 and MS4 |
 | `portfolioProof/task5Pipeline.md` | Task 1.4 The first pipeline (#5), merge request !24, and task 1.5 The red pipeline on purpose (#6), merge requests !25 and !32 | Managing and Collaborating MS1 and MS4, Organising and Realising OR4 |
 | `portfolioProof/task7CodeConventionsDecision.md` | Task 1.6 The team confirms the code conventions (#7), merge request !26 | Analysing and Advising AA4 and AA5 |
