@@ -48,6 +48,7 @@ public static class DependencyInjection
             .AddCheck<DatabaseHealthCheck>("database", timeout: TimeSpan.FromSeconds(3));
 
         services.AddScoped<IAccountRegistrationService, AccountRegistrationService>();
+        services.AddScoped<TestDataSeeder>();
 
         return services;
     }

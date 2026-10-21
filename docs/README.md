@@ -21,7 +21,7 @@ This page is the way in. Start with the part that fits your question.
 | [team](team/) | How the team works and the rules for every change | [collaborationAgreement.md](team/collaborationAgreement.md), [codeConventions.md](team/codeConventions.md), [definitionOfDone.md](team/definitionOfDone.md), [gitlabSetup.md](team/gitlabSetup.md), [issueRules.md](team/issueRules.md), [boardNumbers.md](team/boardNumbers.md), [openItems.md](team/openItems.md), [actionOverview.md](team/actionOverview.md), [onboarding.md](team/onboarding.md) |
 | [decisions](decisions/) | One file per choice, `<number>-<shortName>.md`, with the date, who decided, the options and why | [001-codeConventions.md](decisions/001-codeConventions.md) |
 | [future-improvements](future-improvements/) | Improvements that could be made in the future | [futureImprovements.md](future-improvements/README.md) |
-| [testing](testing/) | How Connect is tested | [testingStrategy.md](testing/testingStrategy.md) |
+| [testing](testing/) | How Connect is tested | [testingStrategy.md](testing/testingStrategy.md), [testData.md](testing/testData.md) |
 | [pages](pages/) | Every page of the website, one document per page with every element | [pages/README.md](pages/README.md), the overview with a link to each of the 66 page documents |
 | [school](school/) | What the HvA asks and how the issues prove it | [workshopCoverage.md](school/workshopCoverage.md), [issueMapping.md](school/issueMapping.md), [documentGuide.md](school/documentGuide.md), [datapointPlan.md](school/datapointPlan.md) |
 | [sprintReviews](sprintReviews/) | The deck of each sprint review, the review form the client filled in, the texts the team puts in Portflow, and the template for the next reviews | [sprint1ReviewDeck.pptx](sprintReviews/sprint1ReviewDeck.pptx), [sprint1ReviewForm.pdf](sprintReviews/sprint1ReviewForm.pdf), [sprint1PortflowGuide.md](sprintReviews/sprint1PortflowGuide.md), [portflowSprintReviewTemplate.md](sprintReviews/portflowSprintReviewTemplate.md) |
@@ -38,7 +38,6 @@ These folders and files do not exist yet. The issue that makes them says so on i
 | docs/research | The research reports of the experiments (issues 106 to 112) |
 | docs/school | Also the school evidence the workshop issues ask for |
 | docs/architecture | Also designPatterns.md, socialLogin.md and concurrencyRegistration.md |
-| docs/testing | Also testData.md (the seed accounts and seed data of the test site) |
 | docs/client | Also clientContact.md (who asked what and when) |
 | docs/project | Also houseRules.md (the house rules of Connect) |
 
