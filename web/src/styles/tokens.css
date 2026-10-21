@@ -36,6 +36,8 @@
   --color-on-dark-panel: rgb(255 255 255 / 5%);
   --color-focus: var(--color-navy);
   --color-focus-on-dark: var(--color-white);
+  --color-danger: #b42318;
+  --color-danger-background: #fbe9e7;
 
   /* Fonts, served by Connect itself through @fontsource, never from Google */
   /* The variable font, so the browser picks the optical size from the font size, as Figma does. */
@@ -131,12 +133,14 @@
   --closing-text-width: 35rem;
   --footer-text-width: 20.625rem;
   --organisations-actions-width: 15rem;
+  --form-width: 40rem;
   --photo-discover-width: 20.625rem;
   --photo-foundation-width: 33.75rem;
   --photo-foundation-height: 27.5rem;
   --emblem-width: 30rem;
   --emblem-width-small: 20rem;
   --button-height: 3rem;
+  --disabled-opacity: 0.7;
   --step-min-width: 14rem;
   --tile-events-height: 18.125rem;
   --tile-projects-height: 17.5625rem;

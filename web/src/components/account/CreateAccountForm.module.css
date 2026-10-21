@@ -1,0 +1,35 @@
+.form {
+  padding: var(--space-xl);
+  border-radius: var(--radius-tile);
+  background: var(--color-panel);
+}
+
+.fields {
+  display: grid;
+  gap: var(--space-l);
+}
+
+button {
+  width: 100%;
+  min-height: var(--button-height);
+  margin-top: var(--space-xl);
+  padding: var(--space-xs) var(--space-l);
+  border: 0;
+  border-radius: var(--radius-pill);
+  background: var(--color-green);
+  color: var(--color-white);
+  font: inherit;
+  font-weight: var(--font-weight-bold);
+  cursor: pointer;
+}
+
+button:disabled {
+  cursor: wait;
+  opacity: var(--disabled-opacity);
+}
+
+@media (width < 30rem) {
+  .form {
+    padding: var(--space-l);
+  }
+}

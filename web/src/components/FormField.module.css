@@ -1,0 +1,28 @@
+.field {
+  display: grid;
+  gap: var(--space-xs);
+}
+label {
+  color: var(--color-navy);
+  font-weight: var(--font-weight-semibold);
+}
+input {
+  width: 100%;
+  min-height: var(--button-height);
+  padding: var(--space-xs) var(--space-m);
+  border: var(--hairline-width) solid var(--color-text-muted);
+  border-radius: var(--radius-mark);
+  background: var(--color-white);
+  color: var(--color-text);
+  font: inherit;
+}
+input[aria-invalid="true"] {
+  border-color: var(--color-danger);
+}
+.error {
+  margin: 0;
+  color: var(--color-danger);
+  font-size: var(--text-small-size);
+  font-weight: var(--font-weight-semibold);
+  line-height: var(--text-small-line);
+}

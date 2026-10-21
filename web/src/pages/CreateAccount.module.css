@@ -1,0 +1,123 @@
+.page {
+  min-height: calc(100vh - var(--header-height));
+  padding: var(--space-hero) var(--space-page) var(--space-section);
+  background: var(--color-background);
+}
+
+.content {
+  width: min(100%, var(--form-width));
+  margin: 0 auto;
+}
+
+.eyebrow {
+  margin: 0 0 var(--space-xs);
+  color: var(--color-green-text);
+  font-family: var(--font-label);
+  font-size: var(--text-label-size);
+  font-weight: var(--font-weight-bold);
+  line-height: var(--text-label-line);
+  letter-spacing: var(--text-label-tracking);
+  text-transform: uppercase;
+}
+
+h1 {
+  margin: 0 0 var(--space-s);
+  color: var(--color-navy);
+  font-family: var(--font-heading);
+  font-size: var(--text-h2-size);
+  line-height: var(--text-h2-line);
+}
+
+.intro {
+  margin: 0 0 var(--space-xl);
+  color: var(--color-text-muted);
+  font-size: var(--text-large-size);
+  line-height: var(--text-large-line);
+}
+
+.alert,
+.status {
+  margin-bottom: var(--space-m);
+  padding: var(--space-s) var(--space-m);
+  border-radius: var(--radius-mark);
+  font-weight: var(--font-weight-semibold);
+}
+
+.alert {
+  background: var(--color-danger-background);
+  color: var(--color-danger);
+}
+
+.status {
+  background: var(--color-mint-panel);
+  color: var(--color-green-dark);
+}
+
+.form {
+  padding: var(--space-xl);
+  border-radius: var(--radius-tile);
+  background: var(--color-panel);
+}
+
+.fields {
+  display: grid;
+  gap: var(--space-l);
+}
+
+.field {
+  display: grid;
+  gap: var(--space-xs);
+}
+
+label {
+  color: var(--color-navy);
+  font-weight: var(--font-weight-semibold);
+}
+
+input {
+  width: 100%;
+  min-height: var(--button-height);
+  padding: var(--space-xs) var(--space-m);
+  border: var(--hairline-width) solid var(--color-text-muted);
+  border-radius: var(--radius-mark);
+  background: var(--color-white);
+  color: var(--color-text);
+  font: inherit;
+}
+
+input[aria-invalid="true"] {
+  border-color: var(--color-danger);
+}
+
+.error {
+  margin: 0;
+  color: var(--color-danger);
+  font-size: var(--text-small-size);
+  font-weight: var(--font-weight-semibold);
+  line-height: var(--text-small-line);
+}
+
+button {
+  width: 100%;
+  min-height: var(--button-height);
+  margin-top: var(--space-xl);
+  padding: var(--space-xs) var(--space-l);
+  border: 0;
+  border-radius: var(--radius-pill);
+  background: var(--color-green);
+  color: var(--color-white);
+  font: inherit;
+  font-weight: var(--font-weight-bold);
+  cursor: pointer;
+}
+
+button:disabled {
+  cursor: wait;
+  opacity: var(--disabled-opacity);
+}
+
+@media (width < 30rem) {
+  .form {
+    padding: var(--space-l);
+  }
+}
