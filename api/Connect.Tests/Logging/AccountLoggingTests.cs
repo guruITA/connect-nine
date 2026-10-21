@@ -18,6 +18,7 @@ using NUnit.Framework;
 namespace Connect.Tests.Logging;
 
 // The rules of the log of #312 for POST /api/accounts, the first address that receives personal data.
+[TestFixture]
 public sealed class AccountLoggingTests
 {
     private const string Email = "member@example.com";

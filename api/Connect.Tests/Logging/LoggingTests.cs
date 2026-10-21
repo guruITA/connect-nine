@@ -13,6 +13,7 @@ using NUnit.Framework;
 namespace Connect.Tests.Logging;
 
 // The rules of the log of #312, checked on the lines the whole server writes.
+[TestFixture]
 public sealed class LoggingTests
 {
     // Nothing listens on port 5499, so the database check of /api/health fails without a database.

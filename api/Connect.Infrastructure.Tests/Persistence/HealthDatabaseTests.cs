@@ -11,6 +11,7 @@ using NUnit.Framework;
 
 namespace Connect.Infrastructure.Tests.Persistence;
 
+[TestFixture]
 public sealed class HealthDatabaseTests
 {
     [Test]
