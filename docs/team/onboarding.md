@@ -572,16 +572,44 @@ The test site is at https://31-70-66-186.sslip.io until the foundation sets the 
 - Change the file in Git first. After the merge: `scp deploy/Caddyfile <your name>@31.70.66.186:/tmp/Caddyfile`, then `sudo cp /tmp/Caddyfile /etc/caddy/Caddyfile`, `caddy validate --config /etc/caddy/Caddyfile` (you should see `Valid configuration`) and `sudo systemctl reload caddy`.
 - The log: `sudo journalctl -u caddy`. The end date of the certificate: `echo | openssl s_client -connect 31-70-66-186.sslip.io:443 -servername 31-70-66-186.sslip.io 2>/dev/null | openssl x509 -noout -enddate`.
 - Caddy writes no log of every visit, because the Caddyfile has no log directive.
-- Until the Connect server runs on 127.0.0.1:8080 (task 3.9, #267), the address answers 502 with the padlock. See the Caddy documentation on automatic https: https://caddyserver.com/docs/automatic-https
+- Behind Caddy the Connect server listens on 127.0.0.1:8080, put there by the job deploy-test (The test site, below). When it does not run, the address answers 502 with the padlock. See the Caddy documentation on automatic https: https://caddyserver.com/docs/automatic-https
 
 ### The pipeline on the server
 
 - The user deploy has no password, is in the group docker, owns `/srv/connect-test` and accepts only the deploy key of the pipeline. Nobody logs in as deploy by hand.
 - Three protected GitLab variables, under Settings, CI/CD, Variables: SSH_PRIVATE_KEY (the private deploy key, base64 on one line, masked), SSH_KNOWN_HOSTS (the host keys above) and TEST_SERVER_HOST. Protected means only dev and main get them, so a run on another branch gets no key.
-- The job ssh-check in `.gitlab-ci.yml` starts by hand on dev, or in a pipeline started with the variable RUN_SSH_CHECK set to yes. It logs in as deploy and prints the name of the server, `connect`.
+- The job deploy-test in `.gitlab-ci.yml` logs in as deploy with these three on every pipeline of dev (The test site, below). It replaced the job ssh-check of #240, which only proved the login.
 - The secret settings of the test site are in `/srv/connect-test/.env` on the server, rights 600, owner deploy. The database password was made on the server with `openssl rand -hex 24` and is not written anywhere else. `deploy/.env.example` lists every name.
-- **A new deploy key after a leak.** Make a new pair with `ssh-keygen -t ed25519`, put the public part in `/home/deploy/.ssh/authorized_keys` instead of the old one, the private part base64 encoded in SSH_PRIVATE_KEY, delete the private part from your laptop, and run ssh-check.
+- **A new deploy key after a leak.** Make a new pair with `ssh-keygen -t ed25519`, put the public part in `/home/deploy/.ssh/authorized_keys` instead of the old one, the private part base64 encoded in SSH_PRIVATE_KEY, delete the private part from your laptop, and start a pipeline on dev (Build, Pipelines, New pipeline). deploy-test should end green.
 - **Change the database password.** Change POSTGRES_PASSWORD and the password inside ConnectionStrings__DefaultConnection in `/srv/connect-test/.env` together. The database keeps its first password on its volume, so also change it in PostgreSQL itself, or start the test database over.
+
+### The test site
+
+Every merge into dev puts Connect on https://31-70-66-186.sslip.io (task 3.9, #267). Nobody deploys by hand.
+
+What the job deploy-test does, after every job of build, test and scan is green:
+
+1. It publishes the server with `dotnet publish`, copies the screen that frontend-build made (`web/dist`) into its `wwwroot`, and makes the migrations into one file with `dotnet ef migrations bundle`.
+2. It logs in as deploy and unpacks that into `/srv/connect-test/incoming`, next to `deploy/docker-compose.test.yml`.
+3. On the server `deploy/deployTest.sh` stops the server, applies the migrations with `docker compose run --rm migrations`, and starts the new version in a new container. The settings come from `/srv/connect-test/.env`, which never leaves the server.
+4. It asks `https://31-70-66-186.sslip.io/api/health` every ten seconds, and is green only when Connect answers healthy within two minutes.
+5. Then e2e-test runs the browser tests of `web/e2e` against the site, once those exist (#265).
+
+The server serves the screen itself: every address outside `/api` gets the screen, and an unknown `/api` address gets 404 (`docs/architecture/api.md`). On the server, `database` has no published port and `server` listens only on 127.0.0.1:8080, behind Caddy. The site runs with environment `Staging`: not Development, so no developer pages.
+
+- **Reading its log.** Build, Pipelines, the newest pipeline of dev, job deploy-test. The last lines say whether the server started and what /api/health answered. The log holds no key, password or server number.
+- **A red deploy means the site is down.** deploy-test stops the old server before the migrations, so after a red run the test site may answer 502 or 503. Say so in the team channel at once, with the link of the red job, and follow Going back to the previous version below.
+- **Only one at a time.** Two merges in a row wait for each other (resource group test-site), so two deploys never write `/srv/connect-test` together.
+
+### Going back to the previous version
+
+When a merge broke the test site:
+
+1. Open the merge request that broke it and press Revert. GitLab makes a new merge request into dev that takes the change out.
+2. A teammate approves it as any other merge request. After the merge, deploy-test puts the version before it back.
+3. A revert does not undo a migration. The tables and columns that migration made stay in the database. When the broken change had a migration, ask its author first: the fix is then a new migration that takes it back, not a revert alone.
+
+Every merge request names the version to go back to (Definition of Done, Deploy). How to find that version in GitLab comes with task 17.3 (#313).
 
 ## 11. The security scan
 
@@ -700,7 +728,7 @@ A reviewer of #312 does this once, with the server started as above:
 
 ### On the test server
 
-The server of Connect does not run on the test server yet; that comes with task 3.9 (#267), where it listens on `127.0.0.1:8080` behind Caddy. The plan for its log: it stays on the server, and only team members who log in with their own ssh key (part 10) and the user deploy of the pipeline, through the deploy key in GitLab (The pipeline on the server), can read it. Caddy writes no log of every visit, and no web address should lead to the log. This is not checked yet: task 3.9 confirms or corrects it once the server runs there. How to read the log there, and how long lines stay (#315), is added to this part with those tasks.
+The server of Connect runs on the test server in the container `server` of `/srv/connect-test/docker-compose.test.yml`, on `127.0.0.1:8080` behind Caddy (The test site, part 10). Read its newest lines with `sudo docker compose -f /srv/connect-test/docker-compose.test.yml logs --tail 50 server`. The plan for its log: it stays on the server, and only team members who log in with their own ssh key (part 10) and the user deploy of the pipeline, through the deploy key in GitLab (The pipeline on the server), can read it. Caddy writes no log of every visit, and no web address should lead to the log. This is not checked yet: task 3.9 confirms or corrects it once the server runs there. How to read the log there, and how long lines stay (#315), is added to this part with those tasks.
 
 ### Twenty real lines
 

@@ -1,0 +1,23 @@
+# Test data
+
+The accounts and data that exist only to test Connect, on a laptop and on the test site https://31-70-66-186.sslip.io. Every address here is made up and ends in `@example.org`, a domain that never delivers mail (RFC 2606). No real person, email address or password goes into the test site (`docs/pages/CreateAccount.md`, Privacy).
+
+Each task that adds test accounts or seed data adds its lines here, in the same merge request.
+
+## Accounts made by hand on the test site
+
+| Address | Made by | What for |
+|---|---|---|
+| `check-03-<name>@example.org`, for example `check-03-sam@example.org` | Each team member once, through Make an account on the test site | The team check of issue 03 Create an account (GitLab #14), closed by task 3.9 (#267): every acceptance criterion of #14 ticked on a phone and a laptop by someone who built no task of it. |
+
+- `<name>` is the first name of the team member, so the team sees who made which account.
+- The password is one the team member makes up for the check, at least fifteen characters, and never a password used anywhere else. It is not written down in Git.
+- The accounts stay on the test site after the check. They are not in the seed data, so a test site that starts over with an empty database no longer has them.
+
+## AI use declaration
+
+AI was used as a writing support tool while working on this document. We used AI to draft
+the formulation of sentences, the structure of wording, readability, and clarity from
+content that we had provided. The content itself, including our experiences, reflections,
+learning goals, decisions, self-assessments, and conclusions, is our own. We reviewed the
+drafts and decided which text to include.
