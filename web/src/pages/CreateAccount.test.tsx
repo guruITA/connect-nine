@@ -41,7 +41,9 @@ describe("CreateAccount", () => {
       "autocomplete",
       "new-password",
     );
-    expect(screen.getByRole("form")).toHaveAttribute("novalidate");
+    expect(
+      screen.getByRole("form", { name: "Make an account" }),
+    ).toHaveAttribute("novalidate");
   });
 
   it("shows the busy button while the request is pending", async () => {

@@ -34,6 +34,7 @@ export default function CreateAccountForm({
     <form
       className={styles.form}
       noValidate
+      aria-labelledby="create-account-title"
       onSubmit={(event) => {
         event.preventDefault();
         void onSubmit();
