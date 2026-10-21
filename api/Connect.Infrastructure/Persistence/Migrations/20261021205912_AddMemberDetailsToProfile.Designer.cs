@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Connect.Infrastructure.Persistence.Migrations
 {
     [DbContext(typeof(ConnectDbContext))]
-    [Migration("20261019205815_AddMemberDetailsToProfile")]
+    [Migration("20261021205912_AddMemberDetailsToProfile")]
     partial class AddMemberDetailsToProfile
     {
         /// <inheritdoc />
@@ -110,7 +110,7 @@ namespace Connect.Infrastructure.Persistence.Migrations
 
                     b.HasIndex("NormalizedUserName")
                         .IsUnique()
-                        .HasDatabaseName("UserNameIndex");
+                        .HasDatabaseName("ux_account_username");
 
                     b.ToTable("AspNetUsers", null, t =>
                         {
