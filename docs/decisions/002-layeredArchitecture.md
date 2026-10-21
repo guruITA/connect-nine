@@ -23,8 +23,8 @@ Making an account, `POST /api/accounts`, the first slice (#14):
 
 | | Four separate projects | One project with four folders |
 |---|---|---|
-| Files for one new feature | The same files, spread over the projects | The same files, in folders of one project |
-| What a beginner must learn | Project references and five project files | Only folders |
+| Files for one new feature | The same files, spread over the projects. Microsoft's reference application organises "its code into projects" (Microsoft, n.d.-a) | The same files, in folders of one project: "In a single project scenario, separation of concerns is achieved through the use of folders" (Microsoft, n.d.-a) |
+| What a beginner must learn | Project references and five project files, because "Infrastructure should have a reference to the Application Core project" (Microsoft, n.d.-a). That this is more to learn is an opinion | Only folders (opinion) |
 | How a rule is unit tested without the database | A rule in Domain is tested in a project with no reference to Infrastructure or a database driver. In Connect that project is `Connect.Application.Tests/Domain`, because there is no separate `Connect.Domain.Tests` (task 3.1, #259) | There is only one project, so a test for a rule in the Domain folder sits in the same test project as Infrastructure, carrying a reference to the database driver whether that rule needs it or not |
 | What catches a mistake, such as Domain using the database class | The compiler: a project without the reference does not build (proof below) | Only a reviewer who notices it. Microsoft names the risk of this gap: without project-level organisation "there's no clear indication of which classes in which folders should depend on which others", which "frequently leads to spaghetti code" (Microsoft, n.d.-a) |
 | Source | Microsoft describes how applications grow from folders in one project into one project per layer, so layers "can enforce restrictions on which layers can communicate" (Microsoft, n.d.-a) | Microsoft names folders as the single project way (Microsoft, n.d.-a) |

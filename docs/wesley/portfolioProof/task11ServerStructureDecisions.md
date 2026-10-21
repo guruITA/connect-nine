@@ -67,6 +67,16 @@ School asks: "You give well-founded advice in which you weigh alternatives, iden
 
 - TODO Wesley: after the merge, add !58 and MS4 to the row of this file in `docs/wesley/README.md`.
 
+## Every claim of the Structure table has its source (#253, 21 October 2026)
+
+### AA2 Questioning sources and my own assumptions
+
+School asks: "You show an inquisitive and critical attitude by questioning sources, AI results, the problem statement and your own assumptions."
+
+1. **Two rows without a source.** After the merge of !58 I held every cell of the two tables of decision 002 against the second box of #253: every claim names a Microsoft page or is marked as an opinion. Two rows of the Structure table did neither: files for one new feature, and what a beginner must learn.
+2. **Quoted at the source.** I read Microsoft's page Common web application architectures again (Microsoft, n.d.-a) and quoted it for what it says: its reference application organises "its code into projects", "In a single project scenario, separation of concerns is achieved through the use of folders", and "Infrastructure should have a reference to the Application Core project".
+3. **What the page does not say is marked.** The page does not say that project references are more to learn than folders. That part is my judgement, so both cells of that row now say it is an opinion.
+
 ## TODO
 
 - [x] Whole team: decision 002, decided together on 1 October 2026, Agreed by filled in.
