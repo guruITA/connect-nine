@@ -524,7 +524,7 @@ Each member writes their own line after their first login with their own user.
 |---|---|
 | Wesley Oerlemans | 9 October 2026 |
 | Bayon Eerhart | |
-| Nick Hoebe | |
+| Nick Hoebe | 21 October 2026 |
 | Gurpreet Singh | 19 October 2026 |
 | Kelvin van Voorst | |
 
