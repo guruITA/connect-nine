@@ -6,20 +6,15 @@ using NUnit.Framework;
 
 namespace Connect.Infrastructure.Tests.Persistence;
 
+[TestFixture]
 public sealed class ProfileDatabaseTests
 {
-    private string connectionString;
     private ConnectDbContext dbContext;
 
     [SetUp]
     public void SetUp()
     {
-        connectionString = Environment.GetEnvironmentVariable(
-                "ConnectionStrings__DefaultConnection")
-            ?? throw new InvalidOperationException(
-                "ConnectionStrings__DefaultConnection is not configured.");
-
-        dbContext = CreateDbContext();
+        dbContext = TestDatabase.CreateDbContext();
         dbContext.Database.Migrate();
     }
 
@@ -49,13 +44,13 @@ public sealed class ProfileDatabaseTests
         dbContext.Add(CreateProfile(account));
         dbContext.SaveChanges();
 
-        using ConnectDbContext secondContext = CreateDbContext();
+        using ConnectDbContext secondContext = TestDatabase.CreateDbContext();
         Account sameAccount = secondContext.Users.Single(user => user.Id == account.Id);
         secondContext.Add(CreateProfile(sameAccount));
 
         DbUpdateException exception = Assert.Throws<DbUpdateException>(
             () => secondContext.SaveChanges()) ?? throw new AssertionException("Expected PostgreSQL to reject the write.");
-        PostgresException postgresException = FindPostgresException(exception);
+        PostgresException postgresException = TestDatabase.FindPostgresException(exception);
 
         Assert.That(postgresException.SqlState, Is.EqualTo(PostgresErrorCodes.UniqueViolation));
         Assert.That(postgresException.ConstraintName, Is.EqualTo("ix_profile_account_id"));
@@ -72,7 +67,7 @@ public sealed class ProfileDatabaseTests
 
         bool[] saves = await Task.WhenAll(firstSave, secondSave);
 
-        using ConnectDbContext verificationContext = CreateDbContext();
+        using ConnectDbContext verificationContext = TestDatabase.CreateDbContext();
         Assert.That(saves.Count(saved => saved), Is.EqualTo(1));
         Assert.That(
             verificationContext.Set<Profile>().Count(profile => profile.AccountId == account.Id),
@@ -121,7 +116,7 @@ public sealed class ProfileDatabaseTests
 
         DbUpdateException exception = Assert.Throws<DbUpdateException>(
             () => dbContext.SaveChanges()) ?? throw new AssertionException("Expected PostgreSQL to reject the write.");
-        PostgresException postgresException = FindPostgresException(exception);
+        PostgresException postgresException = TestDatabase.FindPostgresException(exception);
 
         Assert.That(postgresException.SqlState, Is.EqualTo(PostgresErrorCodes.CheckViolation));
         Assert.That(postgresException.ConstraintName, Is.EqualTo("ck_profile_first_name_not_empty"));
@@ -137,7 +132,7 @@ public sealed class ProfileDatabaseTests
 
         DbUpdateException exception = Assert.Throws<DbUpdateException>(
             () => dbContext.SaveChanges()) ?? throw new AssertionException("Expected PostgreSQL to reject the write.");
-        PostgresException postgresException = FindPostgresException(exception);
+        PostgresException postgresException = TestDatabase.FindPostgresException(exception);
 
         Assert.That(postgresException.SqlState, Is.EqualTo(PostgresErrorCodes.CheckViolation));
         Assert.That(postgresException.ConstraintName, Is.EqualTo("ck_profile_region_not_empty"));
@@ -152,16 +147,6 @@ public sealed class ProfileDatabaseTests
         dbContext.Add(profile);
 
         Assert.DoesNotThrow(() => dbContext.SaveChanges());
-    }
-
-    private ConnectDbContext CreateDbContext()
-    {
-        DbContextOptions<ConnectDbContext> options = new DbContextOptionsBuilder<ConnectDbContext>()
-            .UseNpgsql(connectionString)
-            .UseSnakeCaseNamingConvention()
-            .Options;
-
-        return new ConnectDbContext(options);
     }
 
     private Account SaveAccount()
@@ -199,7 +184,7 @@ public sealed class ProfileDatabaseTests
     {
         await Task.Yield();
 
-        using ConnectDbContext context = CreateDbContext();
+        using ConnectDbContext context = TestDatabase.CreateDbContext();
         Account account = context.Users.Single(user => user.Id == accountId);
         context.Add(CreateProfile(account));
         barrier.SignalAndWait();
@@ -217,11 +202,5 @@ public sealed class ProfileDatabaseTests
         {
             return false;
         }
-    }
-
-    private static PostgresException FindPostgresException(DbUpdateException exception)
-    {
-        return exception.InnerException as PostgresException
-            ?? throw new AssertionException("Expected PostgreSQL to reject the write.");
     }
 }
