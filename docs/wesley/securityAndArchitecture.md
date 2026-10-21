@@ -142,7 +142,7 @@ The table lists the architecture decisions taken so far, who took them, when, an
 | CQRS (command query responsibility segregation) by functionality over the repository pattern, in four projects | The whole team | 1 October 2026 | The team's architecture document |
 | A Strato VPS (virtual private server) in Germany, lent by the foundation | The foundation | Received 2 October 2026 | The team's infrastructure and onboarding documents |
 
-Per the team's architecture document, the backend is layered in four projects, Presentation, Application, Domain and Infrastructure, with the tests in Connect.Tests. Per the team's onboarding guide (`docs/team/onboarding.md`, section 10), the server runs Ubuntu 24.04 LTS (long-term support) with Docker and Docker Compose and has no containers yet. Per the team's infrastructure document (`docs/architecture/infrastructure.md`), Caddy is already chosen as the front door for both environments, task 9.4 for the test site and kept for production by task 95.3, and issue 239 (Caddy at the front door with a self-renewing certificate) asks for its self-renewing certificate. Records 8.8 and 8.11 add that production now plans to run Traefik, k3s's own reverse proxy, behind Caddy. Neither is set up on the server yet.
+Per the team's architecture document, the backend is layered in four projects, Presentation, Application, Domain and Infrastructure, with one test project per layer and Connect.Tests for the tests across projects. Per the team's onboarding guide (`docs/team/onboarding.md`, section 10), the server runs Ubuntu 24.04 LTS (long-term support) with Docker and Docker Compose and has no containers yet. Per the team's infrastructure document (`docs/architecture/infrastructure.md`), Caddy is already chosen as the front door for both environments, task 9.4 for the test site and kept for production by task 95.3, and issue 239 (Caddy at the front door with a self-renewing certificate) asks for its self-renewing certificate. Records 8.8 and 8.11 add that production now plans to run Traefik, k3s's own reverse proxy, behind Caddy. Neither is set up on the server yet.
 
 Two points that touch the architecture are open. Per the team's delivery plan, the authorization design for NFR1 (authentication and authorization) is owned by Kelvin van Voorst and due at the latest at the sprint 1 review, week of 5 October 2026. Per the requirements document, it includes whether minors' profiles are restricted differently from adults' profiles. The role table per module still has to be confirmed by the team in issue 337 (confirming the role table). Per the requirements document, our users are 15 to 30, so some of them are minors, and NFR2 (GDPR footing) adds GDPR (General Data Protection Regulation) obligations for their data.
 
@@ -233,18 +233,18 @@ Per the team's architecture document, the backend is a layered architecture with
 - **Presentation**: the Minimal API endpoints and the checks on the shape of the input.
 - **Application**: the rules of each feature, as CQRS by feature, with one folder per use case.
 - **Domain**: what things are and which rules always hold, such as ProfileVisibility, the rule for minors.
-- **Infrastructure**: the only project that reaches the database and the external services, through AppDbContext.
+- **Infrastructure**: the only project that reaches the database and the external services, through ConnectDbContext.
 
 In my design the dependencies point inward: Domain references nothing, Application references Domain and owns the contract IAppDbContext, and Infrastructure implements it. Presentation calls Application and, in my design, registers Infrastructure at start-up only. A layered architecture lets an application enforce which layers may communicate with which (Microsoft, 2021). In my design the project references do that, so a reference the design forbids does not compile. That is what issue 12 (one clear structure for new developers) asks for: a structure four new developers can follow and a later developer can keep.
 
-The diagram below draws this rule for the four projects and Connect.Tests, the test project of record 8.2. Each arrow points from the project that holds the reference to the project it depends on. Every solid arrow points inward, towards Domain.
+The diagram below draws this rule for the four projects and their test projects of record 8.2. Each arrow points from the project that holds the reference to the project it depends on. Every solid arrow points inward, towards Domain.
 
 ```mermaid
 %%{init: {'flowchart': {'wrappingWidth': 220, 'padding': 20, 'nodeSpacing': 40, 'rankSpacing': 60}, 'themeVariables': {'fontSize': '14px'}}}%%
 flowchart TB
 presentation["Presentation<br/>Minimal API endpoints and<br/>checks on the shape of<br/>the input."]
-tests["Connect.Tests<br/>Handler tests on an<br/>in-memory SQLite database,<br/>integration tests on a<br/>real PostgreSQL."]
-infrastructure["Infrastructure<br/>The only project that<br/>reaches the database and<br/>the external services,<br/>through AppDbContext."]
+tests["The test projects<br/>One per layer, handler tests<br/>on an in-memory SQLite<br/>database, Connect.Tests for<br/>the whole server."]
+infrastructure["Infrastructure<br/>The only project that<br/>reaches the database and<br/>the external services,<br/>through ConnectDbContext."]
 application["Application<br/>The rules of each feature,<br/>CQRS by feature. Owns<br/>the contract IAppDbContext."]
 domain["Domain<br/>What things are and which<br/>rules always hold, such as<br/>ProfileVisibility.<br/>References nothing."]
 presentation -->|"Calls"| application
@@ -405,7 +405,7 @@ apiSpacer["⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
         handlers["[Component: Application]<br/>Command and query<br/>handlers per feature<br/>One folder per use<br/>case.<br/>Hand written handler<br/>contracts."]
         matching["[Component: Application]<br/>Matching<br/>MatchingService with<br/>IMatchStrategy.<br/>Proposal for FR2<br/>(community interaction<br/>and matching)."]
         domain["[Component: Domain]<br/>Entities and rules<br/>For example<br/>ProfileVisibility."]
-        infra["[Component: Infrastructure]<br/>AppDbContext and<br/>adapters<br/>EF Core with Npgsql,<br/>implements<br/>IAppDbContext.<br/>Adapters for the<br/>external services."]
+        infra["[Component: Infrastructure]<br/>ConnectDbContext and<br/>adapters<br/>EF Core with Npgsql,<br/>implements<br/>IAppDbContext.<br/>Adapters for the<br/>external services."]
     end
     spa -->|"JSON over HTTPS"| authn
     authn -->|"User with claims"| authz
@@ -437,7 +437,7 @@ Key: the lightest boxes are components of the API, the others are its neighbours
 | Endpoints per feature | Presentation | Minimal APIs decided |
 | Command and query handlers, matching | Application | CQRS decided 1 October 2026, matching is a proposal |
 | Entities and rules | Domain | Part of the layered structure in the team's architecture document |
-| AppDbContext and adapters | Infrastructure | Decided with EF Core and CQRS |
+| ConnectDbContext and adapters | Infrastructure | Decided with EF Core and CQRS |
 
 Section 6.4 follows one real request, a member viewing another member's profile, through these components and the four projects. That is the walk issue 253 (one real request through the four projects) asks the team to do together.
 
@@ -466,7 +466,7 @@ classDiagram
         <<Application>>
         +Guid ProfileId
     }
-    class GetPublicMemberProfileHandler {
+    class GetPublicMemberProfileQueryHandler {
         <<Application>>
         -IAppDbContext db
         +HandleAsync(query, ct) Task~PublicMemberProfileDto~
@@ -484,11 +484,11 @@ classDiagram
     }
     class IAppDbContext {
         <<interface>>
-        +DbSet~MemberProfile~ MemberProfiles
+        +IQueryable~MemberProfile~ MemberProfiles
     }
-    class AppDbContext {
+    class ConnectDbContext {
         <<Infrastructure>>
-        +DbSet~MemberProfile~ MemberProfiles
+        +IQueryable~MemberProfile~ MemberProfiles
     }
     class MemberProfile {
         <<Domain>>
@@ -510,16 +510,16 @@ classDiagram
         From18To21
         From22To30
     }
-    MemberProfileEndpoints ..> GetPublicMemberProfileHandler
+    MemberProfileEndpoints ..> GetPublicMemberProfileQueryHandler
     MemberProfileEndpoints ..> ViewMemberProfileRequirement
     ViewMemberProfileHandler ..> ViewMemberProfileRequirement
     ViewMemberProfileHandler ..> PublicMemberProfileDto
-    IQueryHandler <|.. GetPublicMemberProfileHandler
-    GetPublicMemberProfileHandler ..> GetPublicMemberProfileQuery
-    GetPublicMemberProfileHandler ..> PublicMemberProfileDto
-    GetPublicMemberProfileHandler --> IAppDbContext
-    GetPublicMemberProfileHandler ..> ProfileVisibility
-    IAppDbContext <|.. AppDbContext
+    IQueryHandler <|.. GetPublicMemberProfileQueryHandler
+    GetPublicMemberProfileQueryHandler ..> GetPublicMemberProfileQuery
+    GetPublicMemberProfileQueryHandler ..> PublicMemberProfileDto
+    GetPublicMemberProfileQueryHandler --> IAppDbContext
+    GetPublicMemberProfileQueryHandler ..> ProfileVisibility
+    IAppDbContext <|.. ConnectDbContext
     IAppDbContext ..> MemberProfile
     MemberProfile --> AgeBand
     ProfileVisibility ..> AgeBand
@@ -527,16 +527,16 @@ classDiagram
 
 Key: the stereotype of each class names its project. A dotted arrow is a use, a solid arrow is a field, a hollow triangle is an implementation. Region and Bio may be empty. The diagram leaves every relationship unlabelled so no line is drawn through its own text, and this list carries the names instead, source to target.
 
-- MemberProfileEndpoints to GetPublicMemberProfileHandler: calls.
+- MemberProfileEndpoints to GetPublicMemberProfileQueryHandler: calls.
 - MemberProfileEndpoints to ViewMemberProfileRequirement: checks through IAuthorizationService.
 - ViewMemberProfileHandler to ViewMemberProfileRequirement: handles.
 - ViewMemberProfileHandler to PublicMemberProfileDto: resource.
-- GetPublicMemberProfileHandler to IQueryHandler: implements.
-- GetPublicMemberProfileHandler to GetPublicMemberProfileQuery: handles.
-- GetPublicMemberProfileHandler to PublicMemberProfileDto: returns.
-- GetPublicMemberProfileHandler to IAppDbContext: reads through.
-- GetPublicMemberProfileHandler to ProfileVisibility: applies.
-- AppDbContext to IAppDbContext: implements.
+- GetPublicMemberProfileQueryHandler to IQueryHandler: implements.
+- GetPublicMemberProfileQueryHandler to GetPublicMemberProfileQuery: handles.
+- GetPublicMemberProfileQueryHandler to PublicMemberProfileDto: returns.
+- GetPublicMemberProfileQueryHandler to IAppDbContext: reads through.
+- GetPublicMemberProfileQueryHandler to ProfileVisibility: applies.
+- ConnectDbContext to IAppDbContext: implements.
 
 In my design a request runs through five steps:
 
@@ -550,7 +550,7 @@ In my design a request runs through five steps:
 | --- | --- | --- |
 | MemberProfileEndpoints, the requirement and its handler | Presentation | Design. The address and the answers come from issue 343 (viewing another member's public profile), the resource check is my proposal |
 | The query, its handler and the DTO | Application | Design, in the CQRS shape |
-| IAppDbContext, AppDbContext, ProfileVisibility, AgeBand | Application, Infrastructure, Domain | Named in the team's architecture document and in issue 343 (viewing another member's public profile) |
+| IAppDbContext, ConnectDbContext, ProfileVisibility, AgeBand | Application, Infrastructure, Domain | Named in the team's architecture document and in issue 343 (viewing another member's public profile) |
 
 The sequence below follows this request through the components of section 6.3 and the classes above. The notes carry the five steps of the list above.
 
@@ -562,7 +562,7 @@ participant caddy as Caddy
 participant authn as Authentication
 participant authz as Policies and handlers
 participant ep as MemberProfileEndpoints
-participant qh as GetPublicMemberProfileHandler
+participant qh as GetPublicMemberProfileQueryHandler
 participant ctx as IAppDbContext
 participant db as PostgreSQL 16
 spa->>caddy: GET /api/member-profiles/{id}
@@ -701,7 +701,7 @@ The architecture workshop asks for at least three meaningful patterns, with wher
 
 **Problem.** As I see it, Connect reads far more than it writes. In my design a read needs only the public columns, fast, and a write needs validation and rules. Microsoft names the catch of one model for both: the read and write representations of data often differ, and fields a write needs can be unnecessary for a read (Microsoft, 2025a).
 
-**Where.** Per the team's architecture document, in Application, in the layout Features/Feature/UseCase, with the command or query and its handler in one folder. The document gives CreateAccountCommand beside CreateAccountHandler as its example, and mine is GetPublicMemberProfileQuery beside its handler. In the same document the contracts ICommandHandler and IQueryHandler are hand written, without a library. Both sides use the same database.
+**Where.** Per the team's architecture document, in Application, in the layout Area/UseCase, with the command or query, its handler and its result in one folder. The document gives CreateAccountCommand beside CreateAccountCommandHandler in Accounts/CreateAccount as its example, the way the account code of the team has it, and mine is GetPublicMemberProfileQuery beside its handler in Profiles. In the same document the contracts ICommandHandler and IQueryHandler are hand written in Common/Abstractions, without a library. Both sides use the same database.
 
 The tree below draws this layout, with my example in one use case folder.
 
@@ -709,20 +709,18 @@ The tree below draws this layout, with my example in one use case folder.
 %%{init: {'flowchart': {'wrappingWidth': 220, 'padding': 20, 'nodeSpacing': 40, 'rankSpacing': 50}, 'themeVariables': {'fontSize': '14px'}}}%%
 flowchart TB
 application["Application"]
-features["Features"]
-feature["Feature"]
+area["Area<br/>For example Profiles"]
 useCase["UseCase<br/>One folder per use case"]
 query["The command or query<br/>For example<br/>GetPublicMemberProfileQuery"]
-handler["Its handler<br/>For example<br/>GetPublicMemberProfileHandler"]
-contracts["ICommandHandler or<br/>IQueryHandler<br/>Hand written contracts,<br/>without a library."]
-application --> features
-features --> feature
-feature --> useCase
+handler["Its handler<br/>For example<br/>GetPublicMemberProfileQueryHandler"]
+contracts["ICommandHandler or<br/>IQueryHandler<br/>Hand written contracts<br/>in Common/Abstractions,<br/>without a library."]
+application --> area
+area --> useCase
 useCase --> query
 useCase --> handler
 handler -.->|"Implements"| contracts
 classDef component fill:#85bbf0,color:#000000,stroke:#5d82a8
-class application,features,feature,useCase,query,handler,contracts component
+class application,area,useCase,query,handler,contracts component
 ```
 
 Key: a solid arrow points from a project or folder to what it holds, the dotted arrow is an implementation.
@@ -737,13 +735,13 @@ Key: a solid arrow points from a project or folder to what it holds, the dotted 
 
 **Problem.** In my design a handler must reach the data without depending on EF Core, a test must swap in something else, and an endpoint must get its handler without building it.
 
-**Where.** In the built-in service container of ASP.NET Core (Microsoft, 2026c). In my design each project registers its own parts at start-up with one method, for example AddApplication. That follows the convention of one Add extension method per group of related services (Microsoft, 2026c). In my design the container resolves IAppDbContext to AppDbContext and puts each handler into its endpoint.
+**Where.** In the built-in service container of ASP.NET Core (Microsoft, 2026c). In my design each project registers its own parts at start-up with one method, for example AddApplication. That follows the convention of one Add extension method per group of related services (Microsoft, 2026c). In my design the container resolves IAppDbContext to ConnectDbContext and puts each handler into its endpoint.
 
 **Why I chose it.** ASP.NET Core provides it as its built-in container (Microsoft, 2026c), so there is nothing extra for us to maintain. In my design it keeps the projects apart: Application asks for IAppDbContext and never sees Infrastructure. Per the team's architecture document, a handler test gets an in-memory SQLite database, and an integration test a real PostgreSQL.
 
 **Cost.** In my assessment the compiler does not catch a missing registration, so it only shows when the app runs. AddDbContext registers a DbContext with a scoped lifetime by default (Microsoft, 2025b), and the framework creates a scope per request that stays valid as long as the request is active (Microsoft, 2026c). This means, in my assessment, that a longer-living service must not hold one.
 
-**Simpler option.** A handler that builds its own AppDbContext with new. Per the team's architecture document, that lost because only constructor injection makes a handler swappable in a test, against an in-memory SQLite AppDbContext. In my assessment, a handler that builds its own context always reaches the real database, so its test needs one too.
+**Simpler option.** A handler that builds its own ConnectDbContext with new. Per the team's architecture document, that lost because only constructor injection makes a handler swappable in a test, against an in-memory SQLite database behind IAppDbContext. In my assessment, a handler that builds its own context always reaches the real database, so its test needs one too.
 
 ### 7.3 Strategy for matching
 
@@ -814,7 +812,7 @@ Two neighbouring decisions have no record here. The React and .NET stack, which 
 
 **Context.** Per the team's architecture document, four of five developers are new to .NET. Issue 12 (one clear structure for new developers) asks for a structure they can follow and a later developer can keep.
 
-**Decision.** Four projects, Presentation, Application, Domain and Infrastructure, plus Connect.Tests, with the references of section 5.1.
+**Decision.** Four projects, Presentation, Application, Domain and Infrastructure, plus a test project per layer and Connect.Tests for the tests across projects, with the references of section 5.1.
 
 **Options that lost.** One project with four folders. The team's architecture document first proposed it, as realistic for the skill level of the team. Issue 254 (recording the chosen server structure) gives the reason it lost. In my assessment, a project can only use another project through a reference in its project file, so the compiler refuses a wrong dependency. In my assessment, with one project and four folders only a reviewer would notice that mistake, and a beginner under time pressure would not. Issue 253 (one real request through the four projects) asks the team to compare the options side by side while walking one real request through the projects. Sections 6.3 and 6.4 give the same kind of walk for the profile request of issue 343 (viewing another member's public profile).
 
@@ -834,7 +832,7 @@ Two neighbouring decisions have no record here. The React and .NET stack, which 
 
 ### 8.4 EF Core for data access
 
-**Status.** Accepted. I decided it on 24 September 2026 for the team to confirm, per the team's tech stack document. The whole team's CQRS decision of 1 October 2026 builds on it: per the team's architecture document, a handler reaches the data through AppDbContext, the EF Core implementation.
+**Status.** Accepted. I decided it on 24 September 2026 for the team to confirm, per the team's tech stack document. The whole team's CQRS decision of 1 October 2026 builds on it: per the team's architecture document, a handler reaches the data through ConnectDbContext, the EF Core implementation.
 
 **Context.** In my design the handlers need one layer between them and PostgreSQL that a handler test can replace.
 
@@ -842,7 +840,7 @@ Two neighbouring decisions have no record here. The React and .NET stack, which 
 
 **Options that lost.** None. The team never compared EF Core with another way to reach the data, such as SQL written by hand.
 
-**Consequences.** Per the team's architecture document, a handler reaches the data through IAppDbContext, which AppDbContext in Infrastructure implements, and there are no repository classes. A handler test runs against an in-memory SQLite database. Section 3.6 of my security document shows what EF Core means for SQL injection.
+**Consequences.** Per the team's architecture document, a handler reaches the data through IAppDbContext, which ConnectDbContext in Infrastructure implements, and there are no repository classes. A handler test runs against an in-memory SQLite database. Section 3.6 of my security document shows what EF Core means for SQL injection.
 
 ### 8.5 PostgreSQL 16, not SQL Server
 
@@ -866,7 +864,7 @@ Two neighbouring decisions have no record here. The React and .NET stack, which 
 
 **Options that lost.** The repository pattern. The team's architecture document grants it a real strength: EF Core's DbContext already does much of what a repository does, so a thin interface would have cost little. The same document names the price of CQRS, two models to maintain where the repository pattern has one. What tipped the balance, per that document, is Nick Hoebe's interest in CQRS. Section 7.4 gives my own reasons to accept the choice.
 
-**Consequences.** Per the team's architecture document, there are no repository classes or interfaces, and a handler is unit tested against an in-memory SQLite AppDbContext. In my assessment the cost is more files per feature and two shapes to learn, as section 7.1 says.
+**Consequences.** Per the team's architecture document, there are no repository classes or interfaces, and a handler is unit tested against an in-memory SQLite database behind IAppDbContext. In my assessment the cost is more files per feature and two shapes to learn, as section 7.1 says.
 
 ### 8.7 Hosting on the foundation's server
 

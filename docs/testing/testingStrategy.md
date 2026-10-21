@@ -31,11 +31,13 @@ Core on .NET 10 with PostgreSQL 16, rather than onto Next.js.
 **Unit tests.** Pure logic, no database, no network, no browser. On the backend, this is the
 Application and Domain layers of the four backend projects that issue 11 The team agrees on the
 layered architecture records: the business rules inside a handler, for example whether an event
-still has an open spot, unit tested with an in-memory SQLite AppDbContext, and a rule in Domain
+still has an open spot, unit tested with a test database of its own on in-memory SQLite behind
+IAppDbContext, and a rule in Domain
 unit tested without any database. **NUnit**
 is decided, not xUnit, with `dotnet new nunit -o TestProject1` scaffolding a test project
-directly from the .NET SDK (NUnit, n.d.). The tests live in the project Connect.Tests, in the
-folders Domain, Application, Infrastructure, Presentation and Fixtures, and are named
+directly from the .NET SDK (NUnit, n.d.). The tests live in one test project per layer, Connect.Application.Tests,
+Connect.Infrastructure.Tests and Connect.Presentation.Tests, plus Connect.Tests for tests across
+projects, as rule 12 of `docs/team/codeConventions.md` sets out, and are named
 Method_Situation_ExpectedResult with the three parts Arrange, Act and Assert
 (`docs/team/codeConventions.md`). On the frontend, this is pure TypeScript functions and hooks
 with no DOM involved, the same category `testing-example`'s `lib/todos.ts` occupies. **Vitest**
@@ -50,7 +52,7 @@ in production," such as the database, and ASP.NET Core supports this "using a un
 framework with a test web host and an in-memory test server" (Microsoft, n.d.-a). This is
 `WebApplicationFactory`, run through NUnit, exercising a Minimal API endpoint through the real
 request pipeline against a real PostgreSQL 16 test database rather than an in-memory SQLite
-AppDbContext. In the
+ConnectDbContext. In the
 pipeline the job backend-test gets a service postgres:16 under the name database, and the
 factory applies the EF Core migrations before the tests (issue 03 Create an account, task 3.8).
 On the frontend, this is a React component plus a fake server answer, the same shape
@@ -125,7 +127,7 @@ Some modules get extra attention on the board:
 - **Event capacity and registration (FR6).** Issue 68 Register for an event and issue 68b A full
   event refuses a place fairly: a young person never gets a place when there is none, also when
   many people register at the same moment. This is concurrency-sensitive logic that an
-  in-memory SQLite AppDbContext cannot prove, so it is tested against the real test database. Issue 107 Three ways
+  test database on in-memory SQLite cannot prove, so it is tested against the real test database. Issue 107 Three ways
   to give out the last event place, measured compares three ways to do it.
 - **Matching (FR2).** Issue 37 See suggested matches with the reason: unit tests for the rules
   of the suggestions, and an end to end test that a confirmed member sees suggestions with the

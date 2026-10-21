@@ -51,14 +51,14 @@ The datapoint description names five kinds of evidence, taken one by one below.
 
 Per the team's architecture document, the backend is a layered architecture in four projects: Presentation, Application, Domain and Infrastructure, where layers may only talk to those allowed (Microsoft, 2021). My project references enforce that, meeting issue 12 (one clear structure for new developers), so a forbidden reference does not compile. Inside Application the whole team chose CQRS by feature on 1 October 2026.
 
-The diagram below draws the dependency rule of section 5.1 of the architecture document, for the four projects and the test project Connect.Tests. Every solid arrow points inward, towards Domain.
+The diagram below draws the dependency rule of section 5.1 of the architecture document, for the four projects and their test projects. Every solid arrow points inward, towards Domain.
 
 ```mermaid
 %%{init: {'flowchart': {'wrappingWidth': 220, 'padding': 20, 'nodeSpacing': 40, 'rankSpacing': 60}, 'themeVariables': {'fontSize': '14px'}}}%%
 flowchart TB
 presentation["Presentation<br/>Minimal API endpoints and<br/>checks on the shape of<br/>the input."]
-tests["Connect.Tests<br/>Handler tests on an<br/>in-memory SQLite database,<br/>integration tests on a<br/>real PostgreSQL."]
-infrastructure["Infrastructure<br/>The only project that<br/>reaches the database and<br/>the external services,<br/>through AppDbContext."]
+tests["The test projects<br/>One per layer, handler tests<br/>on an in-memory SQLite<br/>database, Connect.Tests for<br/>the whole server."]
+infrastructure["Infrastructure<br/>The only project that<br/>reaches the database and<br/>the external services,<br/>through ConnectDbContext."]
 application["Application<br/>The rules of each feature,<br/>CQRS by feature. Owns<br/>the contract IAppDbContext."]
 domain["Domain<br/>What things are and which<br/>rules always hold, such as<br/>ProfileVisibility.<br/>References nothing."]
 presentation -->|"Calls"| application
@@ -179,7 +179,7 @@ apiSpacer["⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
         handlers["[Component: Application]<br/>Command and query<br/>handlers per feature<br/>One folder per use<br/>case.<br/>Hand written handler<br/>contracts."]
         matching["[Component: Application]<br/>Matching<br/>MatchingService with<br/>IMatchStrategy.<br/>Proposal for FR2<br/>(community interaction<br/>and matching)."]
         domain["[Component: Domain]<br/>Entities and rules<br/>For example<br/>ProfileVisibility."]
-        infra["[Component: Infrastructure]<br/>AppDbContext and<br/>adapters<br/>EF Core with Npgsql,<br/>implements<br/>IAppDbContext.<br/>Adapters for the<br/>external services."]
+        infra["[Component: Infrastructure]<br/>ConnectDbContext and<br/>adapters<br/>EF Core with Npgsql,<br/>implements<br/>IAppDbContext.<br/>Adapters for the<br/>external services."]
     end
     spa -->|"JSON over HTTPS"| authn
     authn -->|"User with claims"| authz
@@ -217,7 +217,7 @@ participant caddy as Caddy
 participant authn as Authentication
 participant authz as Policies and handlers
 participant ep as MemberProfileEndpoints
-participant qh as GetPublicMemberProfileHandler
+participant qh as GetPublicMemberProfileQueryHandler
 participant ctx as IAppDbContext
 participant db as PostgreSQL 16
 spa->>caddy: GET /api/member-profiles/{id}
@@ -250,7 +250,7 @@ The architecture workshop asks for at least three patterns, where each is used a
 | Pattern | Problem in Connect | Where it lives | Why it fits | The simpler option it beat |
 | --- | --- | --- | --- | --- |
 | CQRS by feature | In my assessment, Connect reads far more than it writes | One folder per use case in Application | In my assessment, a query selecting only public columns keeps private fields safe | One model for reads and writes (Microsoft, 2025a), though a profile read needs fewer columns |
-| Dependency injection | A handler must reach the data without depending on EF Core, so tests can swap it | The built-in service container of ASP.NET Core (Microsoft, 2026b) | Built in, nothing extra to maintain (Microsoft, 2026b) | A handler building its own AppDbContext, swappable only via constructor injection |
+| Dependency injection | A handler must reach the data without depending on EF Core, so tests can swap it | The built-in service container of ASP.NET Core (Microsoft, 2026b) | Built in, nothing extra to maintain (Microsoft, 2026b) | A handler building its own ConnectDbContext, swappable only via constructor injection |
 | Strategy for matching | Matching for FR2 is not designed yet | An IMatchStrategy in Application, injected into a MatchingService | A new algorithm can be added without changing the context (Refactoring.Guru, n.d.), though one strategy risks over-engineering (Hogeschool van Amsterdam, n.d.-a) | One method in MatchingService, rewritten at the first rule change |
 | Repository pattern, the option that lost | Data access, with one repository per aggregate holding that logic (Microsoft, 2018) | Nowhere, since the team chose CQRS on 1 October 2026 | I accept that EF Core's DbContext already gives one typed set per table, so a repository passes calls through | It lost to CQRS, at the price of a handler test on an in-memory SQLite database |
 

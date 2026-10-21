@@ -136,8 +136,8 @@ explain the layers with a restaurant.
 
 | Layer | On the cards | What it holds | Folders |
 | --- | --- | --- | --- |
-| Presentation | the waiter | The endpoints, the validators of what comes in, the session guard, the rate limit, the health address. It reads a request, calls a handler and returns the answer. | `Program.cs`, `Features/<Feature>/<Feature>Endpoints.cs`, `Validators/<Name>RequestValidator.cs`, `Authentication/`, `RateLimiting/` |
-| Application | the chef | The commands, queries and handlers with the business rules, for example that an email address must still be free. | `DependencyInjection.cs`, `Abstractions/ICommandHandler.cs`, `IQueryHandler.cs`, `IAppDbContext.cs`, `Features/<Feature>/<UseCase>/<UseCase>Command.cs` or `Query.cs` with `<UseCase>Handler.cs` |
+| Presentation | the waiter | The endpoints, the validators of what comes in, the session guard, the rate limit, the health address. It reads a request, calls a handler and returns the answer. | `Program.cs`, `<Area>/Endpoints/<Feature>Endpoints.cs`, `<Area>/DTO/`, `<Area>/Mappers/`, `<Area>/Validators/<Name>RequestValidator.cs`, `Common/`, `Authentication/`, `RateLimiting/` |
+| Application | the chef | The commands, queries and handlers with the business rules, for example that an email address must still be free. | `DependencyInjection.cs`, `Common/Abstractions/ICommandHandler.cs`, `IQueryHandler.cs`, `IAppDbContext.cs`, `Common/Results/`, `<Area>/<UseCase>/<UseCase>Command.cs` with `<UseCase>CommandHandler.cs`, or `<UseCase>Query.cs` with `<UseCase>QueryHandler.cs` |
 | Domain | the menu | The entities and the contracts that are not about data access, for example `IMailSender`. It uses nothing. | `Entities/<Entity>.cs`, `Accounts/PasswordRules.cs` |
 | Infrastructure | the storeroom | Holds the database connection, the table settings, the migrations and the mail sender. The chef reaches the data through the hatch IAppDbContext. | `Persistence/ConnectDbContext.cs`, `Persistence/Migrations/`, `Mail/` |
 
@@ -162,7 +162,7 @@ flowchart TB
         P["Presentation, the waiter: endpoints and validators"]
         A["Application, the chef: handlers and business rules"]
         D["Domain, the menu: entities and contracts"]
-        I["Infrastructure, the storeroom: AppDbContext, EF Core, mail"]
+        I["Infrastructure, the storeroom: ConnectDbContext, EF Core, mail"]
         C -->|"uses"| P
         C -->|"uses, to register classes"| I
         P -->|"uses"| A
@@ -194,9 +194,11 @@ slice copies it:
    `web/src/api/client.ts` to `POST /api/accounts`.
 2. Presentation: `CreateAccountRequestValidator` (FluentValidation) checks the input and answers
    wrong input with one message per field.
-3. Application: the handler checks that the email address is still free and turns the password
-   into a hash.
-4. Infrastructure: `ConnectDbContext` saves one row in the Identity table `AspNetUsers`.
+3. Application: the handler hands the email address and password to `IAccountRegistrationService`.
+4. Infrastructure: `AccountRegistrationService` creates the account with `UserManager<Account>` of
+   ASP.NET Identity, which checks that the email address is still free, turns the password into a
+   hash and saves one row in the Identity table `AspNetUsers`. An address that is already taken,
+   also in other capitals, comes back as a conflict, 409.
 5. The answer goes back the same way and the page shows "Your account is made".
 
 The diagram below shows the same request as messages between the screen, the layers and the database.
@@ -214,13 +216,13 @@ sequenceDiagram
         P-->>Page: ValidationProblem, one message per field
     else right input
         P->>A: create the account
-        A->>I: is this email address still free
-        I->>DB: look for the address
+        A->>I: register the email address and password
+        I->>DB: is this email address still free
         DB-->>I: not found
-        I-->>A: the address is free
-        A->>A: turn the password into a hash
-        A->>I: save the account
-        I->>DB: one row in the table account
+        I->>I: UserManager turns the password into a hash
+        I->>DB: one row in the table AspNetUsers
+        I-->>A: the new account
+        A-->>P: Result with the account
         P-->>Page: 201 created, the page shows Your account is made
     end
 ```
@@ -367,11 +369,11 @@ exceptions and a 503 `ProblemDetails` when a database exception is present in th
 Database-specific constraint translation stays in Infrastructure: the account identity adapter
 checks PostgreSQL's structured SQL state and constraint name before returning `Error.Conflict`.
 
-Application handlers normally use `IAppDbContext` for persistence. The account handler currently
-uses `UserManager<Account>` in Application as a deliberate semester-sized compromise: its
-business decisions and Result mapping remain in Application, while the Identity implementation
-is supplied by Infrastructure's dependency registration. The future Identity abstraction remains
-only a proposal in `docs/future-improvements/003-abstract-aspnet-identity.md`. Unexpected database
+Application handlers normally use `IAppDbContext` for persistence. The account handler hands its
+work to the contract `IAccountRegistrationService` in Application, and `AccountRegistrationService`
+in Infrastructure implements it with `UserManager<Account>`, so the Identity implementation stays
+in Infrastructure. The future Identity abstraction remains only a proposal in
+`docs/future-improvements/003-abstractAspnetIdentity.md`. Unexpected database
 exceptions pass to the global exception middleware and become 503 responses.
 
 Research issue 108 Two ways of paging the showcases, measured compares paging by page number with
@@ -534,10 +536,10 @@ place in the Layers drawing above. That page is the source for the patterns. The
 The candidates the board already names (issue 103 task 103.1):
 
 1. **CQRS.** CQRS splits the model that writes from the model that reads (Microsoft, n.d.-b):
-   `CreateAccountCommand` with `CreateAccountHandler` in
-   `api/Application/Features/Account/CreateAccount` (issues 03 and 11), reaching the data
-   through `IAppDbContext` in `api/Application/Abstractions`. `AppDbContext` in
-   `api/Infrastructure/Persistence` implements it. EF Core's own `DbContext` already
+   `CreateAccountCommand` with `CreateAccountCommandHandler` in
+   `api/Connect.Application/Accounts/CreateAccount` (issues 03 and 11), reaching the data
+   through `IAppDbContext` in `api/Connect.Application/Common/Abstractions`. `ConnectDbContext` in
+   `api/Connect.Infrastructure/Persistence` implements it. EF Core's own `DbContext` already
    "implements both the Repository and the Unit of Work patterns" (Microsoft, n.d.-d), so
    `IAppDbContext` is a thin, testable contract in front of it, one handler per use case instead
    of one repository per kind of data.

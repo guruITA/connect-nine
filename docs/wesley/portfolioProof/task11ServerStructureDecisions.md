@@ -1,7 +1,7 @@
 # Proof: tasks 11.1, 11.2 and 11.3 The structure and the version of the server (#253, #254, #255)
 
 Branch `docs/12-server-structure-decisions`. Issue: 11 The team agrees on the layered architecture (#12). Files: `docs/decisions/002-layeredArchitecture.md` and `docs/decisions/003-dotnet10.md`.
-Profile: Full Stack Software Developer, level 3. Portflow: Analysing and Advising, AA2, AA3, AA4 and AA5.
+Profile: Full Stack Software Developer, level 3. Portflow: Analysing and Advising, AA2, AA3, AA4 and AA5, and for !58 also Managing and Collaborating, MS4.
 
 A point that needs someone else is marked TODO with who and what.
 
@@ -37,6 +37,35 @@ School asks: "You adapt your communication to different target groups in form an
 2. **For the team.** The exact project names, the direction of the references, the test line and where `net10.0` is set.
 3. **A teammate new to .NET explains the four layers in their own words.**
    - TODO a teammate new to .NET: write a comment in #12 that explains the four layers in your own words.
+
+## Merge request !58: decision 002 follows the code
+
+Branch `docs/12-dbcontext-name-follows-code`. File: `docs/decisions/002-layeredArchitecture.md`, and the name of the class in four more documents.
+
+### MS4 Making the work fit with the work of the team
+
+School asks: "You ensure that your work aligns with that of others and contributes to the joint result."
+
+1. **The documents follow the name we agreed.** Nick Hoebe named the class `ConnectDbContext` in !11 and !36 (#261), while five documents said `AppDbContext`. We agreed on the way Nick built it, so the documents now say `ConnectDbContext`: `docs/decisions/002-layeredArchitecture.md`, `docs/architecture/architecture.md`, `docs/team/codeConventions.md`, `docs/testing/testingStrategy.md` and `docs/wesley/securityAndArchitecture.md`. The contract keeps its name, `IAppDbContext`, which #262 adds. My comment on !36 names the documents I updated.
+2. **Where a Domain rule is tested.** The code of task 3.1 (#259) has no `Connect.Domain.Tests`. Decision 002 and the code conventions now say that a rule in Domain is tested without any database in `Connect.Application.Tests/Domain`.
+3. **The folders follow the account code.** The account code of #262 (!47, merged with !50) puts a use case in `api/Connect.Application/Accounts/CreateAccount/` with `CreateAccountCommandHandler`, the contracts in `Common/Abstractions` and `IAppDbContext` with `IQueryable<T>`. Decision 002, the code conventions, the architecture and the testing strategy now say the same, and so do my own architecture document and its summary. My comment on !47 names the team documents I updated.
+4. **Again after the merge of !50.** Nick's account code reached dev with !50 on 20 October 2026, after this merge request was approved, and it differs from what the documents said in four places. The handler no longer checks the address and hashes the password itself: it hands both to `IAccountRegistrationService`, which `AccountRegistrationService` in Infrastructure implements with `UserManager<Account>`. The result file is `CreateAccountResult.cs`, not `CreateAccountResponse.cs`. The account handler test uses a stand-in for that contract, not SQLite. And `Account` in Domain is built on `IdentityUser<Guid>`, so Domain uses that package. Decision 002, code conventions rules 7 and 16, the Definition of Done, the architecture and the testing strategy now say what the code does, and so does the paragraph on the account handler in the architecture, which still said it used `UserManager<Account>` in Application. I held every line against the code on dev, and named the documents in a comment on !50.
+
+### AA2 Questioning sources and my own assumptions
+
+School asks: "You show an inquisitive and critical attitude by questioning sources, AI results, the problem statement and your own assumptions."
+
+1. **Quotes checked at their source.** The rows on what catches a mistake and where each option fits now quote Microsoft, with the source named, such as (Microsoft, n.d.-a). The data access row on what catches a mistake is marked as an opinion. I read the two Microsoft pages behind the new quotes again on 14 October 2026 and checked the quotes on them.
+
+### AA4 Giving advice that weighs alternatives and risks
+
+School asks: "You give well-founded advice in which you weigh alternatives, identify risks and make a substantiated recommendation."
+
+1. **The missing row (#253).** The Structure table now has the row on how a rule is unit tested without the database.
+2. **Why the options lost (#254).** Consequences say why one project with four folders and the repository pattern lost, each from its own table.
+3. **My preference.** The part Preference holds my preference and why, because I drafted the file. The team decided 002 together on 1 October 2026.
+
+- TODO Wesley: after the merge, add !58 and MS4 to the row of this file in `docs/wesley/README.md`.
 
 ## TODO
 

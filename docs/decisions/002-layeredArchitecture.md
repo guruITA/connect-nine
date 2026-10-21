@@ -13,9 +13,9 @@ After January 2027 the students leave, and someone else must understand and chan
 Making an account, `POST /api/accounts`, the first slice (#14):
 
 1. **Presentation** reads the form, checks it with FluentValidation and calls one handler. It knows nothing about the database.
-2. **Application** holds the handler `CreateAccountHandler` with its `CreateAccountCommand`. It decides: is this email address already taken, then hash the password and save. It reaches the data only through the contract `IAppDbContext`.
-3. **Domain** holds the account itself and its rules, for example what a valid email address is. It uses nothing else.
-4. **Infrastructure** holds `AppDbContext`, the EF Core class that implements `IAppDbContext` and talks to PostgreSQL.
+2. **Application** holds the handler `CreateAccountCommandHandler` with its `CreateAccountCommand`. It hands the email address and password to the contract `IAccountRegistrationService` and returns its `Result`: the new account, or a conflict when the address already has an account. Other handlers reach the data through the contract `IAppDbContext`.
+3. **Domain** holds the account itself, `Account`, built on `IdentityUser<Guid>` of ASP.NET Identity. It uses that package and no other project.
+4. **Infrastructure** holds `ConnectDbContext`, the EF Core class that implements `IAppDbContext` and talks to PostgreSQL, and `AccountRegistrationService`, which implements `IAccountRegistrationService` with `UserManager<Account>` of ASP.NET Identity. Identity hashes the password and saves the account, and a unique violation (23505) on `ux_account_email` or `ux_account_username` becomes a conflict there.
 
 ## Options
 
@@ -25,7 +25,8 @@ Making an account, `POST /api/accounts`, the first slice (#14):
 |---|---|---|
 | Files for one new feature | The same files, spread over the projects | The same files, in folders of one project |
 | What a beginner must learn | Project references and five project files | Only folders |
-| What catches a mistake, such as Domain using the database class | The compiler: a project without the reference does not build (proof below) | Only a reviewer who notices it |
+| How a rule is unit tested without the database | A rule in Domain is tested in a project with no reference to Infrastructure or a database driver. In Connect that project is `Connect.Application.Tests/Domain`, because there is no separate `Connect.Domain.Tests` (task 3.1, #259) | There is only one project, so a test for a rule in the Domain folder sits in the same test project as Infrastructure, carrying a reference to the database driver whether that rule needs it or not |
+| What catches a mistake, such as Domain using the database class | The compiler: a project without the reference does not build (proof below) | Only a reviewer who notices it. Microsoft names the risk of this gap: without project-level organisation "there's no clear indication of which classes in which folders should depend on which others", which "frequently leads to spaghetti code" (Microsoft, n.d.-a) |
 | Source | Microsoft describes how applications grow from folders in one project into one project per layer, so layers "can enforce restrictions on which layers can communicate" (Microsoft, n.d.-a) | Microsoft names folders as the single project way (Microsoft, n.d.-a) |
 
 ### Data access: the repository pattern or CQRS by feature
@@ -34,9 +35,9 @@ Making an account, `POST /api/accounts`, the first slice (#14):
 |---|---|---|
 | Files for one new feature | One method on an existing repository plus a service that calls it | A command or query and a handler, in their own folder |
 | What a beginner must learn | One shape | Two shapes, command and query |
-| How a rule is unit tested without PostgreSQL | Stub the repository. The EF Core team names this its advice when a test double is really needed, with the warning that it "can incur significant cost to implement and maintain", because every query needs its own method (Microsoft, n.d.-b) | The handler gets an `AppDbContext` on SQLite in memory. The EF Core team allows this, but warns that "testing against SQLite does not guarantee the same results" as the real database (Microsoft, n.d.-b) |
-| What catches a mistake | A reviewer: a repository or service can grow into one class that does everything | The folder per use case keeps one use case in one place. A reviewer still has to spot a handler that grows too big |
-| Where it fits | Many screens that read and write the same data in the same way (CRUD) | Reads and writes that differ, for example a list of suggestions against saving a profile |
+| How a rule is unit tested without PostgreSQL | Stub the repository. The EF Core team names this its advice when a test double is really needed, with the warning that it "can incur significant cost to implement and maintain", because every query needs its own method (Microsoft, n.d.-b) | The handler gets a test database of its own on SQLite in memory, behind `IAppDbContext`, as the account test of #262 does, because `Connect.Application.Tests` references only Application. The EF Core team allows this, but warns that "testing against SQLite does not guarantee the same results" as the real database (Microsoft, n.d.-b) |
+| What catches a mistake | A reviewer: a repository or service can grow into one class that does everything (opinion) | The folder per use case keeps one use case in one place. A reviewer still has to spot a handler that grows too big (opinion) |
+| Where it fits | Many screens that read and write the same data in the same way (CRUD). Microsoft calls this the traditional approach, "straightforward" and "suited for basic create, read, update, and delete (CRUD) operations" (Microsoft, n.d.-c) | Reads and writes that differ, for example a list of suggestions against saving a profile. Microsoft names the same split: read and write operations "often have different performance and scaling requirements" (Microsoft, n.d.-c) |
 
 ### What each option is for, and what the sources warn about
 
@@ -50,17 +51,23 @@ Making an account, `POST /api/accounts`, the first slice (#14):
 
 **Recommendation in two lines.** Four projects, because the compiler guards the layers for a team that is new to .NET. CQRS by feature in its light form, because the code splits per use case, with more files per feature and a reviewer watching for handlers that grow too big as the risks the team accepts.
 
+### Preference
+
+We decided this together on 1 October 2026. Wesley Oerlemans, who drafted this file, wrote down his preference and why:
+
+- Wesley Oerlemans: four separate projects and CQRS by feature, because the compiler then stops a wrong reference between the layers, and each use case keeps its own folder instead of one class that keeps growing.
+
 ## Decision
 
 Four layer projects and CQRS by feature, decided by the team on 1 October 2026, over one project with four folders and over the repository pattern. Per `docs/architecture/architecture.md`, the reason is that the code splits by feature instead of by one class per kind of data.
 
-The structure, as the code on dev and task 3.1 (#259) have it, and as `docs/team/codeConventions.md` backend rules 7 and 8 now state it:
+The structure, as the code on dev, task 3.1 (#259) and the account code of #262 (!50, merged on 20 October 2026) have it, with the folders and names of the account code agreed by the whole team on 19 October 2026, and as `docs/team/codeConventions.md` backend rules 7 and 8 now state it:
 
 - Four layer projects, `api/Connect.Presentation`, `api/Connect.Application`, `api/Connect.Domain` and `api/Connect.Infrastructure`, and the start project `api/Connect`, which starts the server and connects the layers.
 - References point inward: Connect uses Presentation and Infrastructure. Presentation uses Application. Infrastructure uses Application, because it implements contracts of Application such as `IAppDbContext`. Application uses Domain. Domain uses nothing.
-- Test projects per layer: `Connect.Application.Tests`, `Connect.Infrastructure.Tests` and `Connect.Presentation.Tests`, each using only the project it tests, plus `Connect.Tests` for tests across projects.
-- One folder per use case in `api/Connect.Application/Features/<Feature>/<UseCase>/`, with its command or query and its handler. The handler reaches the data through `IAppDbContext` in `api/Connect.Application/Abstractions`, implemented by `AppDbContext` in Infrastructure. No repository classes, no `IXRepository` contracts, no Repositories folder, no use case written as a Service class.
-- A handler is unit tested with an in-memory SQLite `AppDbContext` in `Connect.Application.Tests`. A rule that depends on PostgreSQL is tested against a real PostgreSQL in `Connect.Infrastructure.Tests` (`<Feature>DatabaseTests`). A rule in Domain is tested without any database.
+- Test projects per layer: `Connect.Application.Tests`, `Connect.Infrastructure.Tests` and `Connect.Presentation.Tests`, each using only the project it tests, plus `Connect.Tests` for tests across projects. There is no `Connect.Domain.Tests` (task 3.1, #259), so a rule in Domain is tested without any database in `Connect.Application.Tests/Domain`.
+- One folder per use case in `api/Connect.Application/<Area>/<UseCase>/`, for example `api/Connect.Application/Accounts/CreateAccount/` with `CreateAccountCommand.cs`, `CreateAccountCommandHandler.cs` and `CreateAccountResult.cs`. A write is a command with a `<UseCase>CommandHandler`, a read is a query with a `<UseCase>QueryHandler`. The handler reaches the data through `IAppDbContext` in `api/Connect.Application/Common/Abstractions`, which gives each table as an `IQueryable<T>` with `Add`, `Remove` and `SaveChangesAsync`, implemented by `ConnectDbContext` in Infrastructure. The account is the one exception, agreed on the way Nick Hoebe built it: its handler uses `IAccountRegistrationService`, which `AccountRegistrationService` in Infrastructure implements with `UserManager<Account>`. The handler contracts sit beside it, and the results `Result` and `Result<T>` in `api/Connect.Application/Common/Results`. No repository classes, no `IXRepository` contracts, no Repositories folder, no use case written as a Service class.
+- A handler is unit tested in `Connect.Application.Tests/<Area>/<UseCase>/<UseCase>HandlerTests.cs` with a test database of its own on in-memory SQLite behind `IAppDbContext` when it reads or writes data, and with a stand-in for its contract when it hands its work to one, as `CreateAccountHandlerTests` does for `IAccountRegistrationService`. `Connect.Application.Tests` references only Application, so it cannot use `ConnectDbContext`. An endpoint test that starts the whole server sits in `Connect.Tests/<Area>/Endpoints`. A rule that depends on PostgreSQL is tested against a real PostgreSQL in `Connect.Infrastructure.Tests` (`<Feature>DatabaseTests`). A rule in Domain is tested without any database.
 
 ### Proof that the compiler guards the layers
 
@@ -99,6 +106,8 @@ The example on dev (merge request !11) puts the handler `CreateUserCommandHandle
 - **For the team new to .NET.** More files per feature and two shapes to learn. The compiler refuses a wrong reference, so a beginner cannot break the layers without noticing.
 - **For the maintainer after January 2027.** Every use case is one folder with a name that says what it does, so a change starts in one place.
 - **For the foundation.** The consequence weighed heaviest is a platform that is switched off because nobody can change it. A structure the compiler checks lowers that risk more than a rule only a reviewer checks.
+- **One project with four folders.** The Structure table shows the difference that decided it: a wrong reference, for example Domain using the database class, is only caught by a reviewer, while four separate projects let the compiler refuse the build. For a team new to .NET that compiler check outweighed having only folders to learn.
+- **The repository pattern.** The Data access table shows a repository or service can grow into one class that does everything, with a reviewer as the only check, against the folder per use case of CQRS. It lost because the code splits by feature instead of by one class per kind of data, as the Decision states.
 - Task 11.4 (#1465) rewords the tasks of every next sprint that still use the repository or service wording.
 - The Definition of Done line on the layers and the slice template say the same as this file: a handler reaches the data only through `IAppDbContext`.
 - `docs/team/codeConventions.md` links this file under backend rules 7 and 8.
