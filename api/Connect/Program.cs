@@ -7,6 +7,16 @@ using Connect.Presentation.Health.Endpoints;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// One JSON object per line, with the scopes of the request (RequestId, TraceId) and a UTC time (#312).
+builder.Logging
+    .ClearProviders()
+    .AddJsonConsole(options =>
+    {
+        options.IncludeScopes = true;
+        options.UseUtcTimestamp = true;
+        options.TimestampFormat = "yyyy-MM-ddTHH:mm:ss.fffZ";
+    });
+
 builder.Services
     .AddProblemDetails()
     .AddApplication()
@@ -18,6 +28,8 @@ builder.Services.AddAuthorization();
 
 var app = builder.Build();
 
+// First, so the request line also holds the status of an error answer (#312).
+app.UseHttpLogging();
 app.UseMiddleware<ExceptionHandlingMiddleware>();
 app.UseAuthentication();
 app.UseAuthorization();
