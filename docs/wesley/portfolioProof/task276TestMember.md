@@ -38,6 +38,7 @@ School asks: "You systematically validate that the solution does what it should,
 ```
 
 4. **Not covered yet.** Logging in as the test member (204) waits for log in (#15). Writing the password to the test site waits for the deploy of #267.
+5. **Brought onto dev after !50 (#1542).** On 21 October 2026 I rebased the branch onto dev. `TestDataSeederTests` and `TestDataSeedingTests` read `ConnectionStrings__DefaultConnection`, which on a laptop is the database the server runs on. They now read `ConnectionStrings:TestsConnection` through a helper `TestDatabase` in each test project (rule 1 of Tests and mocking, backend rule 20, #1541), and the tests that start the whole server hand that database to it as its `DefaultConnection`. The five and the four tests pass with only `TestsConnection` set, and the whole solution passes with both names set as backend-test does: 21, 6, 66 and 18 tests.
 
 ## OR5 Impact on users and society
 
