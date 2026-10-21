@@ -4,6 +4,7 @@ using Connect.Domain.Common;
 using Connect.Domain.Users;
 using Connect.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using NUnit.Framework;
 
 namespace Connect.Infrastructure.Tests.Persistence;
@@ -11,8 +12,12 @@ namespace Connect.Infrastructure.Tests.Persistence;
 // Assumes Account implements IEntity and IAuditable, has a public parameterless
 // constructor, and exposes a settable Id.
 [TestFixture]
-public sealed class ConnectDbContextTests
+public sealed class ConnectDbContextDatabaseTests
 {
+    // PostgreSQL keeps a time to the microsecond, .NET to 100 nanoseconds,
+    // so a time read back from the database can differ by less than a microsecond.
+    private static readonly TimeSpan DatabasePrecision = TimeSpan.FromMicroseconds(1);
+
     private ConnectDbContext _context;
     private IAppDbContext _appContext;
 
@@ -29,11 +34,18 @@ public sealed class ConnectDbContextTests
     [SetUp]
     public void SetUp()
     {
+        IConfiguration configuration = TestConfiguration.Create();
+        string connectionString = configuration.GetConnectionString("TestsConnection")
+            ?? throw new InvalidOperationException(
+                "ConnectionStrings:TestsConnection is not configured.");
+
         var options = new DbContextOptionsBuilder<ConnectDbContext>()
-            .UseInMemoryDatabase($"ConnectTests-{Guid.NewGuid()}")
+            .UseNpgsql(connectionString)
+            .UseSnakeCaseNamingConvention()
             .Options;
 
         _context = new ConnectDbContext(options);
+        _context.Database.Migrate();
         _appContext = _context;
     }
 
@@ -118,8 +130,8 @@ public sealed class ConnectDbContextTests
             Assert.That(affected, Is.EqualTo(1));
             Assert.That(account.CreatedAt, Is.InRange(before, after));
             Assert.That(account.UpdatedAt, Is.EqualTo(account.CreatedAt));
-            Assert.That(persisted.CreatedAt, Is.EqualTo(account.CreatedAt));
-            Assert.That(persisted.UpdatedAt, Is.EqualTo(account.UpdatedAt));
+            Assert.That(persisted.CreatedAt, Is.EqualTo(account.CreatedAt).Within(DatabasePrecision));
+            Assert.That(persisted.UpdatedAt, Is.EqualTo(account.UpdatedAt).Within(DatabasePrecision));
             Assert.That(_context.Entry(account).State, Is.EqualTo(expectedState));
         }
     }
@@ -149,8 +161,8 @@ public sealed class ConnectDbContextTests
             Assert.That(affected, Is.EqualTo(1));
             Assert.That(account.CreatedAt, Is.EqualTo(originalCreatedAt));
             Assert.That(account.UpdatedAt, Is.InRange(before, after));
-            Assert.That(persisted.CreatedAt, Is.EqualTo(originalCreatedAt));
-            Assert.That(persisted.UpdatedAt, Is.EqualTo(account.UpdatedAt));
+            Assert.That(persisted.CreatedAt, Is.EqualTo(originalCreatedAt).Within(DatabasePrecision));
+            Assert.That(persisted.UpdatedAt, Is.EqualTo(account.UpdatedAt).Within(DatabasePrecision));
             Assert.That(_context.Entry(account).State, Is.EqualTo(expectedState));
         }
     }

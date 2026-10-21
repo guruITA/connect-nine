@@ -10,6 +10,8 @@ using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
+using NSubstitute;
+using NSubstitute.ExceptionExtensions;
 using NUnit.Framework;
 
 namespace Connect.Tests.Accounts.Endpoints;
@@ -22,9 +24,11 @@ public sealed class AccountEndpointTests
         Guid accountId = Guid.NewGuid();
         const string password = "Valid-password-123!";
 
-        using WebApplicationFactory<Program> factory = CreateFactory(_ =>
-            Result<CreateAccountResult>.Success(
+        var handler = NewHandler();
+        handler.HandleAsync(Arg.Any<CreateAccountCommand>(), Arg.Any<CancellationToken>())
+            .Returns(Result<CreateAccountResult>.Success(
                 new CreateAccountResult(accountId, "member@example.com")));
+        using WebApplicationFactory<Program> factory = CreateFactory(handler);
         using HttpClient client = factory.CreateClient();
 
         using HttpResponseMessage response = await client.PostAsync(
@@ -48,13 +52,8 @@ public sealed class AccountEndpointTests
     [Test]
     public async Task PostAccount_InvalidRequest_ReturnsValidationProblemWithCamelCaseKeys()
     {
-        bool handlerCalled = false;
-        using WebApplicationFactory<Program> factory = CreateFactory(_ =>
-        {
-            handlerCalled = true;
-            return Result<CreateAccountResult>.Success(
-                new CreateAccountResult(Guid.NewGuid(), "unused@example.com"));
-        });
+        var handler = NewHandler();
+        using WebApplicationFactory<Program> factory = CreateFactory(handler);
         using HttpClient client = factory.CreateClient();
 
         using HttpResponseMessage response = await client.PostAsync(
@@ -72,16 +71,21 @@ public sealed class AccountEndpointTests
                 Is.EqualTo("Fill in a password"));
             Assert.That(errors.EnumerateObject().Select(property => property.Name),
                 Is.EquivalentTo(new[] { "email", "password" }));
-            Assert.That(handlerCalled, Is.False);
         }
+
+        await handler.DidNotReceive().HandleAsync(
+            Arg.Any<CreateAccountCommand>(),
+            Arg.Any<CancellationToken>());
     }
 
     [Test]
     public async Task PostAccount_ConflictResult_ReturnsConflictProblemDetails()
     {
-        using WebApplicationFactory<Program> factory = CreateFactory(_ =>
-            Result<CreateAccountResult>.Failure(
+        var handler = NewHandler();
+        handler.HandleAsync(Arg.Any<CreateAccountCommand>(), Arg.Any<CancellationToken>())
+            .Returns(Result<CreateAccountResult>.Failure(
                 Error.Conflict("This email address already has an account")));
+        using WebApplicationFactory<Program> factory = CreateFactory(handler);
         using HttpClient client = factory.CreateClient();
 
         using HttpResponseMessage response = await client.PostAsync(
@@ -104,7 +108,10 @@ public sealed class AccountEndpointTests
     [Test]
     public async Task PostAccount_DatabaseException_ReturnsServiceUnavailableProblemDetails()
     {
-        using WebApplicationFactory<Program> factory = CreateFactory(_ => throw new TestDatabaseException());
+        var handler = NewHandler();
+        handler.HandleAsync(Arg.Any<CreateAccountCommand>(), Arg.Any<CancellationToken>())
+            .ThrowsAsync(new TestDatabaseException());
+        using WebApplicationFactory<Program> factory = CreateFactory(handler);
         using HttpClient client = factory.CreateClient();
 
         using HttpResponseMessage response = await client.PostAsync(
@@ -123,11 +130,14 @@ public sealed class AccountEndpointTests
         }
     }
 
-    private static WebApplicationFactory<Program> CreateFactory(
-        Func<CreateAccountCommand, Result<CreateAccountResult>> resultFactory)
+    private static ICommandHandler<CreateAccountCommand, Result<CreateAccountResult>> NewHandler()
     {
-        var handler = new StubCreateAccountHandler(resultFactory);
+        return Substitute.For<ICommandHandler<CreateAccountCommand, Result<CreateAccountResult>>>();
+    }
 
+    private static WebApplicationFactory<Program> CreateFactory(
+        ICommandHandler<CreateAccountCommand, Result<CreateAccountResult>> handler)
+    {
         return new WebApplicationFactory<Program>().WithWebHostBuilder(builder =>
         {
             builder
@@ -157,18 +167,6 @@ public sealed class AccountEndpointTests
     {
         string content = await response.Content.ReadAsStringAsync();
         return JsonDocument.Parse(content, new JsonDocumentOptions());
-    }
-
-    private sealed class StubCreateAccountHandler(
-        Func<CreateAccountCommand, Result<CreateAccountResult>> resultFactory)
-        : ICommandHandler<CreateAccountCommand, Result<CreateAccountResult>>
-    {
-        public Task<Result<CreateAccountResult>> HandleAsync(
-            CreateAccountCommand command,
-            CancellationToken cancellationToken)
-        {
-            return Task.FromResult(resultFactory(command));
-        }
     }
 
     private sealed class TestDatabaseException : DbException

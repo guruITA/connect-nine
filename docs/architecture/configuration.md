@@ -30,8 +30,13 @@ machine:
 ```powershell
 dotnet user-secrets init
 dotnet user-secrets set "ConnectionStrings:DefaultConnection" "<local connection string>"
+dotnet user-secrets set "ConnectionStrings:TestsConnection" "<connection string of the test database>"
 dotnet user-secrets list
 ```
+
+`ConnectionStrings:TestsConnection` is read only by the database tests, through
+`TestConfiguration`. It names a test database of its own, never the database the
+server runs on (`docs/team/codeConventions.md`, part Tests and mocking).
 
 User Secrets are stored outside the repository and are only loaded for the
 Development environment. They are not encrypted, so protect access to the

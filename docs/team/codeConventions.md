@@ -117,7 +117,7 @@ C# is the language. .NET is the platform it runs on. ASP.NET Core is the part of
 10. Addresses start with /api, are lower case and use plural nouns: /api/members, /api/members/{id}. Words are joined with a -: /api/member-profiles. (reviewer)
 11. What goes in and out are records named ...Request and ...Response: CreateAccountRequest, StatusResponse. A database class (entity) is never sent straight to the browser. (reviewer)
 12. Errors use the built in ProblemDetails format (web standard RFC 9457): `Results.Problem(...)`, and for a wrong form `Results.ValidationProblem(...)` with one message per field. Status codes: 200 OK, 201 created, 204 done without content, 400 wrong input, 401 not logged in, 403 not allowed, 404 not found, 409 conflict, 503 not available. (reviewer)
-13. Input is checked with FluentValidation before it reaches Application. (reviewer)
+13. Input is checked with FluentValidation before it reaches Application. A validator is tested with the test extensions of FluentValidation, as rule 8 of the part Tests and mocking says. (reviewer)
 
 ### Other
 
@@ -192,6 +192,61 @@ These rules join the parts above. When an older text disagrees, these win.
 19. "Wait a day" is never a check step: the seed data holds an item with a date in the past, listed in docs/testing/testData.md. (reviewer)
 20. Playwright logs in with page.request.post or context.request.post, never the separate request fixture, so the page gets the cookie. (reviewer)
 21. A test account that must be visible to others is confirmed through Mailpit in the test setup, as docs/testing/testData.md describes. (reviewer)
+
+## Tests and mocking
+
+These rules join backend rule 16 and rule 12 of the part above.
+
+### The test database
+
+1. A test that needs PostgreSQL reads the connection string `ConnectionStrings:TestsConnection` through `TestConfiguration` in api/Connect.Infrastructure.Tests, which reads the user secrets of api/Connect and the environment variables. A test never reads `ConnectionStrings:DefaultConnection`. On a laptop that is the database the server runs on, and a database test runs every migration of its branch on its database and leaves its rows behind. (tool: backend-test of #266, once it sets only `ConnectionStrings__TestsConnection`, #1541)
+2. `TestsConnection` points at a database of its own, never at the database of `DefaultConnection`: on a laptop `connect_test` next to `connect`, in the pipeline the PostgreSQL service of backend-test. Set it once, in the folder api/Connect:
+
+   ```
+   dotnet user-secrets set "ConnectionStrings:TestsConnection" "Host=localhost;Port=5432;Database=connect_test;Username=connect;Password=<your local password>"
+   ```
+
+   The first test run makes the database and its tables, because a database test applies the migrations itself. The tests stop with a message when both names point at the same database. (tool: the check in TestConfiguration, #1541)
+3. A database test makes its own rows with values no other test uses, such as an email address with a Guid in it: `$"account-{Guid.NewGuid():N}@example.com"`. The tests then pass in any order and on a database that still holds the rows of earlier runs. PostgreSQL keeps a time to the microsecond and .NET to 100 nanoseconds, so a time read back from the database is compared with `.Within(TimeSpan.FromMicroseconds(1))`, as `ConnectDbContextDatabaseTests` does. (reviewer)
+
+### Substitutes with NSubstitute
+
+A substitute is a stand-in object a test makes for an interface or a class. The test says what it answers, and checks afterwards how it was called. NSubstitute is the package that makes them, and every stand-in in a test is one.
+
+4. A unit test replaces what its class gets through the constructor (backend rule 14) with a substitute of NSubstitute, never with a stub class written by hand. `Substitute.For<...>()` makes it, `.Returns(...)` says what it answers, `.ThrowsAsync(...)` throws, and `.Received(1)` and `.DidNotReceive()` check how it was called. An endpoint test puts the substitute in place of the handler through `ConfigureTestServices`, as `AccountEndpointTests` does. (reviewer)
+
+   ```csharp
+   [Test]
+   public async Task HandleAsync_DelegatesRegistrationToService()
+   {
+       var expected = Result<CreateAccountResult>.Success(
+           new CreateAccountResult(Guid.NewGuid(), "member@example.com"));
+       var service = Substitute.For<IAccountRegistrationService>();
+       var handler = new CreateAccountCommandHandler(service);
+       var command = new CreateAccountCommand("member@example.com", "password");
+       using var cancellationTokenSource = new CancellationTokenSource();
+       service.RegisterAsync(command.Email, command.Password, cancellationTokenSource.Token)
+           .Returns(expected);
+
+       Result<CreateAccountResult> result = await handler.HandleAsync(
+           command,
+           cancellationTokenSource.Token);
+
+       Assert.That(result, Is.EqualTo(expected));
+       await service.Received(1).RegisterAsync(
+           command.Email,
+           command.Password,
+           cancellationTokenSource.Token);
+   }
+   ```
+
+5. Substitute an interface. Substitute a class only when the members the test needs are virtual, such as `UserManager<Account>` of ASP.NET Core Identity, created with its constructor arguments as in `AccountRegistrationServiceTests`. NSubstitute can only replace the members a class lets it override, so the rest of the class still runs inside the test. The package NSubstitute.Analyzers.CSharp sits next to NSubstitute in every test project, and turns a member NSubstitute cannot replace into a build error, because every project has TreatWarningsAsErrors (backend rule 2). (tool: NSubstitute.Analyzers.CSharp)
+6. NSubstitute and NSubstitute.Analyzers.CSharp have the same versions in every test project. A new test project gets both from the start. (reviewer)
+7. The database is never replaced: not by a substitute of `IAppDbContext`, `ConnectDbContext` or a `DbSet`, and not by the in-memory provider of EF Core (`UseInMemoryDatabase`). A query is written with LINQ, and EF Core turns it into SQL. Microsoft's guide on testing with EF Core says a substitute cannot do that for a query, and calls the in-memory provider as a stand-in database highly discouraged (https://learn.microsoft.com/en-us/ef/core/testing/choosing-a-testing-strategy). A test on any of these can pass where PostgreSQL fails. A test that needs the database uses the test database of rule 1, and a handler is tested as backend rule 16 says. (reviewer)
+
+### Validators
+
+8. A validator is tested with the test extensions of FluentValidation, `using FluentValidation.TestHelper;`: `validator.TestValidate(request)` runs it, `ShouldHaveValidationErrorFor(request => request.Email).WithErrorMessage("Fill in a valid email address")` checks the field and the message the member sees, and `ShouldNotHaveAnyValidationErrors()` checks a request that is right, as `CreateAccountRequestValidatorTests` does. Each case reads as one sentence, and a failing check names the field. FluentValidation's guide: "We recommend treating validators as ‘black boxes’ - provide input to them and then assert whether the validation results are correct or incorrect." (https://docs.fluentvalidation.net/en/latest/testing.html). The package FluentValidation already holds these extensions, so nothing extra is installed. (reviewer)
 
 ## Kept from the collaboration agreement
 
