@@ -1,6 +1,8 @@
 # Proof: create-account form (#264)
 
-Task 3.6, board issue 03, GitLab work item [#264](https://gitlab.fdmci.hva.nl/studio/social-impact-apps/onderwijs/projects/2026-2027-semester-1/projects/project-9-wail-salutem-foundation-project-2/connect-nine/-/work_items/264): create the first account form for Connect. This proof records the frontend plan, implementation boundaries, validation evidence and remaining work. The merge request link will be added when the merge request exists.
+Task 3.6, board issue 03, GitLab work item [#264](https://gitlab.fdmci.hva.nl/studio/social-impact-apps/onderwijs/projects/2026-2027-semester-1/projects/project-9-wail-salutem-foundation-project-2/connect-nine/-/work_items/264): create the first account form for Connect. This proof records the frontend plan, implementation boundaries, validation evidence and remaining work.
+
+Merge request [!82](https://gitlab.fdmci.hva.nl/studio/social-impact-apps/onderwijs/projects/2026-2027-semester-1/projects/project-9-wail-salutem-foundation-project-2/connect-nine/-/merge_requests/82).
 
 Profile: [Full Stack Software Developer](https://boksa.hbo-ict-hva.nl/profiles/full-stack-developer/), level 3. Portflow candidates: OR1, OR3, OR4 and OR5.
 
@@ -60,7 +62,11 @@ The implementation includes focused tests for the request boundary and page beha
 - [`CreateAccount.test.tsx`](../../../web/src/pages/CreateAccount.test.tsx) covers labels, autocomplete, hidden password input, the busy button, made, invalid, taken and not-reachable states, password clearing and axe output.
 - [`axe.ts`](../../../web/src/test/axe.ts) provides the accessibility check used by the page test.
 
-`npm run build` passed during implementation. The local Vitest process currently hangs before producing a test summary, so this proof does not claim that the frontend test suite is green yet. A completed CI run must be attached before delivery.
+`npm run build` passed during implementation. After the accessible form landmark fix, the focused command `npx vitest run src/pages/CreateAccount.test.tsx --pool=forks --maxWorkers=1 --no-file-parallelism` passed all 7 tests. An earlier full run reported 34 passed and 1 failed because that landmark was missing; a later local run was affected by a temporary Vitest `ENOENT` environment error in unrelated suites. The GitLab CI job [1347898](https://gitlab.fdmci.hva.nl/studio/social-impact-apps/onderwijs/projects/2026-2027-semester-1/projects/project-9-wail-salutem-foundation-project-2/connect-nine/-/jobs/1347898) succeeded.
+
+### Removed-rule experiment
+
+The `aria-labelledby="create-account-title"` rule was temporarily removed from `CreateAccountForm`. The focused CreateAccount test then failed 1 of 7 tests: `has accessible fields and keeps the password hidden` could not find a form named `Make an account`. Restoring the attribute made all 7 focused tests pass. This demonstrates that the accessibility assertion protects a real implementation rule.
 
 The tests do not yet cover pressing Enter in the password field while the request is busy. They also do not replace a real 360-pixel and 1280-pixel browser check or phone screenshots of the success and taken states.
 
@@ -85,12 +91,14 @@ The required 409 message is useful because it tells the person that they should 
 - [x] Implementation and test files linked.
 - [x] Privacy and accessibility choices explained.
 - [x] `npm run build` passed.
-- [ ] Frontend CI test run with CreateAccount tests and axe output.
+- [x] Removed-rule experiment captured: removing the form accessible name caused the focused test to fail.
+- [x] Frontend GitLab CI job [1347898](https://gitlab.fdmci.hva.nl/studio/social-impact-apps/onderwijs/projects/2026-2027-semester-1/projects/project-9-wail-salutem-foundation-project-2/connect-nine/-/jobs/1347898) succeeded.
 - [x] 360px and 1280px browser checks.
 - [ ] Phone screenshots for success and taken states.
 - [ ] Teammate feedback with exact words, name and date.
 - [ ] Feedback from a person outside the team with exact words, name and date.
-- [ ] Merge request link and Portflow links.
+- [x] Merge request [!82](https://gitlab.fdmci.hva.nl/studio/social-impact-apps/onderwijs/projects/2026-2027-semester-1/projects/project-9-wail-salutem-foundation-project-2/connect-nine/-/merge_requests/82) linked.
+- [ ] Link the proof and merge request in Portflow.
 
 ## AI use
 
