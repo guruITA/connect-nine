@@ -295,7 +295,8 @@ server, and familiarity for part of the team. Because EF Core was already the da
 code existed yet, the change touched no code.
 
 The rules for the database are in `docs/team/codeConventions.md`, part Database. In short: names in
-snake_case and tables in the singular, a link table carries both names, ids are uuid, time columns
+snake_case and tables in the singular (the tables of ASP.NET Identity keep their own names, such as
+`AspNetUsers`), a link table carries both names, ids are uuid, time columns
 end in `_at` and are timestamptz in UTC, email addresses are citext, text is text unless the length
 is a real rule, enums are stored as their name in PascalCase in a text column, tables only change
 through migrations, and a list is always fetched in pages.
