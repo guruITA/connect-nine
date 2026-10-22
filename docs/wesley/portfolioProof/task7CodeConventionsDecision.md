@@ -1,7 +1,7 @@
 # Proof: task 1.6 The team confirms the code conventions (#7)
 
 Branch `docs/7-code-conventions-decision`. Issue: 01 The repository, the pipeline and the team rules (#1). File: `docs/decisions/001-codeConventions.md`.
-Profile: Full Stack Software Developer, level 3. Portflow: Analysing and Advising, AA4 and AA5.
+Profile: Full Stack Software Developer, level 3. Portflow: Analysing and Advising, AA4 and AA5, and for !59 Managing and Collaborating, MS4.
 
 A point that needs someone else is marked TODO with who and what.
 
@@ -24,6 +24,21 @@ School asks: "You adapt your communication to different target groups in form an
 3. **Left out on purpose.** The split of the server into layers, because that is #12 and a second place for the same choice would drift apart.
 4. **The question that showed a first explanation did not land.**
    - TODO Wesley: after the team moment, write the question and what changed in the file.
+
+## Merge request !59: the tables of ASP.NET Identity keep their own names
+
+Branch `docs/7-identity-table-names`. Files: `docs/decisions/001-codeConventions.md`, `docs/team/codeConventions.md` and `docs/architecture/architecture.md`.
+
+### MS4 Making the work fit with the work of the team
+
+School asks: "You ensure that your work aligns with that of others and contributes to the joint result."
+
+1. **The code and the documents differed.** The code of !36 (#261) creates the tables of ASP.NET Identity with the names Identity gives them, such as `AspNetUsers` and `AspNetRoles`, with snake_case columns and keys. Decision 001 and the code conventions said that every name in the database is snake_case.
+2. **The documents follow what we agreed.** We do it the way Nick Hoebe built it, and fix it later if it turns out to be a problem (my decision of 14 October 2026). Nick has the most experience with .NET of us, so the team agreed that his .NET code sets the way. It is not a rule that a document gives way to whatever code lands first. Gurpreet Singh pointed that out in his review on 19 October 2026, so I dropped that general sentence and narrowed the exception to the tables Identity owns. Every other table stays snake_case, as point 2 of decision 001 says. Decision 001 names the exception under Consequences, and so do database rules 1, 2 and 6 of the code conventions and the short list of database rules in the architecture.
+3. **Told where the code was made.** My comment on !36 names the documents I updated.
+4. **Again after the merge of !50.** Nick's account code reached dev with !50 on 20 October 2026, after this merge request was approved. Its migration `EnforceNormalizedAccountUniqueness` renamed the Identity index `UserNameIndex` to `ux_account_username`, so rule 1 and decision 001 said a name that no longer exists. They now name `RoleNameIndex` as the one index that keeps the Identity name, and `ux_account_username` and `ux_account_email` as the unique indexes, held against the migrations on dev. My comment on !50 names the documents.
+
+- TODO Wesley: after the merge, add !59 and MS4 to the row of this file in `docs/wesley/README.md`.
 
 ## TODO
 
