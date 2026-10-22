@@ -13,19 +13,21 @@ School asks: "You anticipate risks and bottlenecks in the process before they be
 2. **What I found out about the runners first.** Before writing a job I tried every way to build an image on the HvA runners, on 22 October 2026. Docker in Docker failed on privileged mode, and Buildah, Podman and BuildKit rootless failed on a user namespace. Only kaniko built, and it pushed to the registry of the project, which is on. The kaniko of Google turned out to be archived since June 2025, so I tried the maintained fork, which also builds.
 3. **A conclusion I checked again.** My first conclusion was that only kaniko works. Wesley asked whether GitLab should not work with the others, so I checked it at the sources: a job that read the settings of the runner (pipeline 586259) and GitLab's own documentation. GitLab does support Buildah and BuildKit, and its documentation names our exact BuildKit error: the seccomp profile of the runner blocks the calls. So the limit is the setting of the HvA runners, which only their administrator can change, not GitLab. That changed the decision: it names asking the HvA as the way back to a builder GitLab maintains itself, instead of calling kaniko the only way.
 4. **The decision, with the options that lost.** `docs/decisions/008-kanikoForImages.md` holds every option with its measured result, why each lost, and when the choice is made again.
-5. **The red run and the green run.** Measured in !89, see the TODO below until both runs are written here.
+5. **The red run and the green run.** On 22 October 2026 in !89. A COPY line with a misspelled project file (`Connect.Domian.csproj`) turned image-build red after 78 seconds, in pipeline 586268, with "failed to get fileinfo for .../api/Connect.Domain/Connect.Domian.csproj" in its log, while backend-build and frontend-build stayed green and the jobs of the stage test did not start. The revert made pipeline 586269 green again: image-build in 297 seconds, the whole pipeline in 343 seconds.
 
 ## MS4 Making the work fit with the work of the team
 
 School asks: "You ensure that your work aligns with that of others and contributes to the joint result."
 
 1. **Next to the jobs of #266.** image-build sits in the stage build next to backend-build and frontend-build, and both new jobs start with the rule of #308 that skips the weekly scheduled pipeline, as every job except the two scans does.
-2. **Only on dev.** image-push runs only after a merge into dev, so every image in the registry is a version the team reviewed and the test site (#355) can start by its commit id. Production gets its version from main later: #159 and #162 give the image tag of the commit to Terraform.
-3. **The setup guide.** Part Images and the registry of `docs/team/gitlabSetup.md` says what the runners allow, which builder and why, where the images are and how the cleanup works, and the Pipeline part lists both jobs.
+2. **What it costs a merge request.** The pipeline of !88, without image-build, took 77 seconds on 22 October 2026. With image-build it takes about 345 seconds (pipelines 586265 and 586269), so a merge request waits about four and a half minutes longer, because the jobs of the stage test start only when the stage build is done. kaniko builds each image from the start, so the .NET part is built twice. Letting the tests start without waiting for image-build is a choice for the team, see TODO.
+3. **Only on dev.** image-push runs only after a merge into dev, so every image in the registry is a version the team reviewed and the test site (#355) can start by its commit id. Production gets its version from main later: #159 and #162 give the image tag of the commit to Terraform.
+4. **The setup guide.** Part Images and the registry of `docs/team/gitlabSetup.md` says what the runners allow, which builder and why, where the images are and how the cleanup works, and the Pipeline part lists both jobs.
 
 ## TODO
 
-- [ ] Wesley: the red run with a broken COPY line and the green run after the revert, with the minutes each took and how many minutes image-build adds to a merge request, in this file and in the merge request.
+- [x] Wesley: the red run with a broken COPY line and the green run after the revert, with the minutes each took and how many minutes image-build adds to a merge request, in this file and in the merge request. Done on 22 October 2026, MS1 point 5 and MS4 point 2.
+- [ ] The team: whether the jobs of the stage test may start without waiting for image-build (`needs` on those jobs), which gives back the four and a half minutes.
 - [ ] Wesley: tell the team at the stand up that the registry holds a version of every merge into dev from now on.
 - [ ] A teammate: after the merge, find the image `server` of the merge in Deploy, Container registry, and write your name in the review or on #354.
 - [ ] The team: confirm decision 008 at the stand up and fill in Agreed by.
