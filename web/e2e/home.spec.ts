@@ -1,7 +1,7 @@
 import { expect, test } from "@playwright/test";
 
 // The home page in a real browser (#265). It only reads and clicks a link, so it can run against
-// any address, also while the form of #264 does not exist yet.
+// any address.
 test("a visitor sees the home page and finds the way to make an account", async ({
   page,
 }) => {
