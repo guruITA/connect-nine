@@ -56,6 +56,8 @@ The file is .gitlab-ci.yml in the root. It runs on the HvA runners with the tag 
 - When it runs: once on every merge request, and once more on dev and on main after a merge. A push to a branch that already has an open merge request does not start a second pipeline.
 - Stage build, job backend-build: `dotnet build api/Connect.slnx`, then `dotnet format api/Connect.slnx --verify-no-changes` to catch a layout the editor did not fix.
 - Stage build, job frontend-build: `npm ci` and `npm run build` in `web`, which type checks the screen and bundles it.
+- Stage build, job image-build: only on a merge request. Builds the images server and migrations from the `Dockerfile` with kaniko and pushes nothing, so a broken Dockerfile turns only this job red.
+- Stage build, job image-push: only on dev, after a merge. Builds both images and pushes them to the registry, part Images and the registry below.
 - Stage test, job env-file-check: fails when a .env file is in Git, and names the file in its log. Only .env.example may be committed.
 - Stage test, job branch-flow: only on a merge request. Fails when the target is main and the source branch is not dev.
 - Stage test, job backend-test: `dotnet test api/Connect.slnx` against a real PostgreSQL 16, started for the job under the alias `database`. The user, password and name of that throwaway database are the CI/CD variables TEST_POSTGRES_USER, TEST_POSTGRES_PASSWORD and TEST_POSTGRES_DB (Settings, CI/CD, Variables), never written in `.gitlab-ci.yml`.
@@ -68,6 +70,17 @@ When it is red:
 1. Open the merge request, tab Pipelines, and click the red run.
 2. Click the red job. The last lines of the log say what failed: env-file-check lists the .env file, branch-flow says which branch must go into dev first.
 3. Fix it on your branch and push. The pipeline starts again by itself. A .env you committed by accident: `git rm --cached <file>`, then commit and push. The password in it counts as leaked, so change it.
+
+## Images and the registry
+
+The images of Connect are built in the pipeline and kept in the container registry of the project (Deploy, Container registry). The test site (#355) and production (#159) start these images, so they run exactly the version that was reviewed.
+
+- **What the HvA runners allow.** Every job runs in a Docker container without privileged mode, with Docker's default seccomp profile and AppArmor profile, so a job cannot make a user namespace or mount anything. Docker in Docker, Buildah, Podman and BuildKit rootless are refused there, and kaniko builds, because it needs neither (measured on 22 October 2026, pipelines 586250, 586252, 586254 and 586259). The comparison and the choice are in `docs/decisions/008-kanikoForImages.md`.
+- **The builder.** The maintained fork of kaniko, pinned as `ghcr.io/osscontainertools/kaniko:v1.28.6-debug` in the jobs image-build and image-push. An update of the tag is a merge request of its own.
+- **The images.** `server`, the server with the screen in `wwwroot`, and `migrations`, which brings the tables up to date and stops. Each is stored as `$CI_REGISTRY_IMAGE/server:<short commit id>` and `$CI_REGISTRY_IMAGE/migrations:<short commit id>` of the merge on dev, never only as latest.
+- **The login.** image-push logs in with `CI_REGISTRY_USER` and `CI_REGISTRY_PASSWORD`, the variables GitLab gives every job. kaniko has no login command, so the job writes them into its own config file. No password is in `.gitlab-ci.yml`.
+- **The cleanup.** The registry is on. Its cleanup policy (Settings, Packages and registries) keeps the ten newest versions of each image and removes older ones once they are a week old, so the registry never fills up.
+- **Finding the image of the last merge.** Deploy, Container registry, the image `server`, and the tag with the short commit id of the merge.
 
 ## Labels
 
