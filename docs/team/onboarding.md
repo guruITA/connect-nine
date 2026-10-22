@@ -618,13 +618,13 @@ What the job deploy-test does, after every job of build, test and scan is green:
 2. It logs in as deploy and unpacks that into `/srv/connect-test/incoming`, next to `deploy/docker-compose.test.yml`.
 3. On the server `deploy/deployTest.sh` stops the server, applies the migrations with `docker compose run --rm migrations`, and starts the new version in a new container. The settings come from `/srv/connect-test/.env`, which never leaves the server.
 4. It asks `https://31-70-66-186.sslip.io/api/health` every ten seconds, and is green only when Connect answers healthy within two minutes.
-5. Then e2e-test runs the browser tests of `web/e2e` against the site, once those exist (#265).
+5. Then e2e-test runs the browser tests of `web/e2e` against the site (#265). Usually that is the version deploy-test just put there. When two merges come close together, the deploy of the newer one can come in between, and the e2e-test of the older pipeline then tests the newer version. So a red e2e-test points at the newest deploy of dev, not always at its own merge (Operate, Environments, test shows which one that is).
 
 The server serves the screen itself: every address outside `/api` gets the screen, and an unknown `/api` address gets 404 (`docs/architecture/api.md`). On the server, `database` has no published port and `server` listens only on 127.0.0.1:8080, behind Caddy. The site runs with environment `Staging`: not Development, so no developer pages.
 
 - **Reading its log.** Build, Pipelines, the newest pipeline of dev, job deploy-test. The last lines say whether the server started and what /api/health answered. The log holds no key, password or server number.
 - **A red deploy means the site is down.** deploy-test stops the old server before the migrations, so after a red run the test site may answer 502 or 503. Say so in the team channel at once, with the link of the red job, and follow Going back to the previous version below.
-- **Only one at a time, never an older one.** Two merges in a row wait for each other (resource group test-site), so two deploys never write `/srv/connect-test` together. When the pipeline of an older merge reaches deploy-test after a newer one already deployed, GitLab stops it with "The deployment job is older than the latest deployment" (Operate, Environments, test). That red job is fine: the newer version already holds its change.
+- **Only one at a time, never an older one.** Two merges in a row wait for each other (resource group test-site), so two deploys never write `/srv/connect-test` together. e2e-test holds the same lock, so a newer deploy never stops the site while the browser tests of an older one still run. When the pipeline of an older merge reaches deploy-test after a newer one already deployed, GitLab stops it with "The deployment job is older than the latest deployment" (Operate, Environments, test). That red job is fine: the newer version already holds its change.
 
 ### Going back to the previous version
 
