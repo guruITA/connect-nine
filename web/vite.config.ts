@@ -14,7 +14,7 @@ export default defineConfig({
   test: {
     environment: "jsdom",
     setupFiles: ["./src/test/setup.ts"],
-    // web/e2e holds the Playwright tests, run with npm run e2e, not by Vitest (#265).
+    // web/e2e holds the Playwright tests, run with npm run test:e2e, not by Vitest (#265).
     exclude: [...configDefaults.exclude, "e2e/**"],
   },
 });
