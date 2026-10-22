@@ -6,10 +6,12 @@ import { expect, test } from "@playwright/test";
 test("a person new to Connect makes an account", async ({ page }) => {
   // A new made up address every run, so the test never meets an account it made before.
   const email = `e2e-${Date.now()}@example.org`;
-  // Made up at the start of the run and not in Git, 36 characters, so the test keeps passing after
-  // the rule of at least fifteen characters (#17). The trace of a failed run does show it
+  // Made up at the start of the run and not in Git. 40 characters with Aa1! at the end, so it
+  // always meets every password rule of the server: at least fifteen characters, a digit, a
+  // lowercase letter, an uppercase letter and a sign that is not a letter or digit
+  // (CreateAccountRequestValidator). The trace of a failed run does show it
   // (docs/testing/testData.md), which is fine for a made up account without data.
-  const password = randomUUID();
+  const password = `${randomUUID()}Aa1!`;
 
   // Open the home page.
   await page.goto("/");
