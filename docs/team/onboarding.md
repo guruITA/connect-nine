@@ -282,13 +282,14 @@ It answers `{"status":"healthy"}` when the server runs.
 
 The scripts in `web/package.json`:
 
-| Script           | What it does                                                              |
-| ---------------- | ------------------------------------------------------------------------- |
-| `npm run dev`    | Starts Vite on http://localhost:5173 and reloads the page on every change |
-| `npm run build`  | Checks the types and builds the site into `web/dist`                      |
-| `npm run lint`   | ESLint with the rules for TypeScript, React hooks and accessibility       |
-| `npm run format` | Prettier puts every file in the team layout                               |
-| `npm test`       | Runs every Vitest test once                                               |
+| Script             | What it does                                                                               |
+| ------------------ | ------------------------------------------------------------------------------------------ |
+| `npm run dev`      | Starts Vite on http://localhost:5173 and reloads the page on every change                  |
+| `npm run build`    | Checks the types and builds the site into `web/dist`                                       |
+| `npm run lint`     | ESLint with the rules for TypeScript, React hooks and accessibility                        |
+| `npm run format`   | Prettier puts every file in the team layout                                                |
+| `npm test`         | Runs every Vitest test once                                                                |
+| `npm run test:e2e` | Runs the Playwright tests of `web/e2e` in a real browser (Run the end to end test, part 6) |
 
 ## 6. Run the checks before you push
 
@@ -337,6 +338,28 @@ Five jobs run these checks in the pipeline, split so a red run points at one thi
 A job that needs a database (backend-test) gets its own throwaway PostgreSQL inside the pipeline, under the alias `database`. The user, password and name of that database are CI/CD variables of the project (Settings, CI/CD, Variables), never written in `.gitlab-ci.yml`, and a value on your laptop never has to match them.
 
 On a red run: open the merge request, tab Pipelines, click the red run, then the red job. The last lines of the log name what failed, the same text the command above prints on your laptop. Fix it on your branch, run the command again until it passes, then push.
+
+### Run the end to end test
+
+The tests in `web/e2e` drive a real Chromium through Connect, the way a person does (#265). `npm test` skips them, they have their own script.
+
+Once per laptop, in `web`:
+
+```
+npx playwright install chromium
+```
+
+Then start the database, the server and the frontend as in parts 3 and 5, and in a second terminal in `web`:
+
+```
+npm run test:e2e
+```
+
+You should see `2 passed`: `home.spec.ts` opens the home page and follows Make an account, `createAccount.spec.ts` makes an account with the form of #264. `npm run test:e2e -- e2e/home.spec.ts` runs only the first. The account test makes a new account every run, with a made up address `e2e-<time>@example.org` and a password made up during the run (`docs/testing/testData.md`).
+
+- **Against the test site.** `PLAYWRIGHT_BASE_URL=https://31-70-66-186.sslip.io npm run test:e2e`. Task 3.9 (#267) adds the job e2e-test, which does the same in the pipeline right after every deploy to the test site.
+- **A red test.** The terminal names the step that failed. `test-results/` holds a trace of the run: `npx playwright show-trace test-results/<folder>/trace.zip` shows every step with a screenshot, and also the values the test typed, so the made up password as well. Never share a trace of a test that typed a real password.
+- **The version.** `@playwright/test` in `web/package.json` has a fixed version, 1.64.1. The job e2e-test of #267 runs in the Playwright image of exactly that version, so from then on both change in the same merge request.
 
 ## 7. Your first change
 
