@@ -20,7 +20,7 @@ COPY api/Connect.slnx api/
 COPY api/Connect/Connect.csproj api/Connect/
 COPY api/Connect.Presentation/Connect.Presentation.csproj api/Connect.Presentation/
 COPY api/Connect.Application/Connect.Application.csproj api/Connect.Application/
-COPY api/Connect.Domain/Connect.Domain.csproj api/Connect.Domain/
+COPY api/Connect.Domain/Connect.Domian.csproj api/Connect.Domain/
 COPY api/Connect.Infrastructure/Connect.Infrastructure.csproj api/Connect.Infrastructure/
 COPY api/Directory.Build.props api/
 RUN dotnet restore api/Connect/Connect.csproj && dotnet tool restore
