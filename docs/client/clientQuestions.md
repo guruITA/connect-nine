@@ -175,7 +175,7 @@ Filesystem      Size  Used Avail Use% Mounted on
 /dev/vda1       232G  3.2G  229G   2% /
 ```
 
-In plain words: the server has 7.7 GB of working memory, of which 7.0 GB is free, and 232 GB of storage, of which 229 GB is free. How much memory the test site itself uses (`docker stats`) is measured once Connect runs on it (#267).
+In plain words: the server has 7.7 GB of working memory, of which 7.0 GB is free, and 232 GB of storage, of which 229 GB is free. On the same day `sudo docker stats --no-stream` showed no container at all, because nothing of Connect runs on the server yet. How much memory the test site itself uses is measured the same way once it runs there (#267).
 
 What the new programs need, as their own documentation says:
 

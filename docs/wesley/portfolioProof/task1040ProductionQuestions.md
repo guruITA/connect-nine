@@ -23,7 +23,7 @@ School asks: "You anticipate risks and bottlenecks in the process before they be
    - Building on a server without the agreement of the foundation: question 111 asks first, and names what the team does when the answer is no or not now: a live version on a spare computer of the team, for school only, with no real data.
    - A mail password in an email: question 116 never asks for the password in writing. The director types it into GitLab during a call, and nobody of the team sees it.
    - Real data of young people under 18 before the privacy rules exist: question 114 advises made-up data until #24 is done.
-2. **Measured, with the date and the source.** `free -h` and `df -h` on the server on 22 October 2026. The memory each program needs from its own documentation, read the same day: k3s 2 GB and 2 cores (K3s Project Authors, n.d.), Grafana 512 MB and 1 core (Grafana Labs, n.d.-a), and no minimum given by Prometheus (Prometheus Authors, n.d.) or by Loki for a small setup (Grafana Labs, n.d.-b). The price of a second server like the current one: 20 euros a month including VAT and 9 euros once (STRATO, n.d.).
+2. **Measured, with the date and the source.** `free -h`, `df -h` and `docker stats` on the server on 22 October 2026, the last with no container yet. The memory each program needs from its own documentation, read the same day: k3s 2 GB and 2 cores (K3s Project Authors, n.d.), Grafana 512 MB and 1 core (Grafana Labs, n.d.-a), and no minimum given by Prometheus (Prometheus Authors, n.d.) or by Loki for a small setup (Grafana Labs, n.d.-b). The price of a second server like the current one: 20 euros a month including VAT and 9 euros once (STRATO, n.d.).
 3. **My choice of 22 October 2026.** Production and the test site both run on the foundation's one server, so the advice of the team under question 112 is the same server. The director still chooses: the question keeps both options with their price.
 4. **Kept transferable.** The six questions are in the client's own document, the answers go in the table above them and in #1041, and every unknown says how a later team measures it.
 
@@ -31,7 +31,7 @@ School asks: "You anticipate risks and bottlenecks in the process before they be
 
 - [ ] A teammate: read the part Production as if you were the director, and write in the review which words were unclear, so I can replace them before it goes to the client.
 - [ ] Wesley: send the link to the part Production to the client two working days before the meeting (#1041).
-- [ ] A team member with sudo on the server: add the output of `sudo docker stats --no-stream` under question 112 once the test site of #267 runs.
+- [ ] Wesley: add the output of `sudo docker stats --no-stream` under question 112 again once the test site of #267 runs.
 
 ## References
 
