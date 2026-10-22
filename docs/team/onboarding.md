@@ -355,7 +355,7 @@ Then start the database, the server and the frontend as in parts 3 and 5, and in
 npm run e2e
 ```
 
-You should see `2 passed`: `home.spec.ts` opens the home page and follows Make an account, `createAccount.spec.ts` makes an account. Until the form of #264 exists, the second one fails at the field Email. `npm run e2e -- e2e/home.spec.ts` runs only the first. The account test makes a new account every run, with a made up address `e2e-<time>@example.org` and a password made up during the run (`docs/testing/testData.md`).
+You should see `2 passed`: `home.spec.ts` opens the home page and follows Make an account, `createAccount.spec.ts` makes an account with the form of #264. `npm run e2e -- e2e/home.spec.ts` runs only the first. The account test makes a new account every run, with a made up address `e2e-<time>@example.org` and a password made up during the run (`docs/testing/testData.md`).
 
 - **Against the test site.** `PLAYWRIGHT_BASE_URL=https://31-70-66-186.sslip.io npm run e2e`. Task 3.9 (#267) adds the job e2e-test, which does the same in the pipeline right after every deploy to the test site.
 - **A red test.** The terminal names the step that failed. `test-results/` holds a trace of the run: `npx playwright show-trace test-results/<folder>/trace.zip` shows every step with a screenshot, and also the values the test typed, so the made up password as well. Never share a trace of a test that typed a real password.
