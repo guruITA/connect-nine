@@ -6,6 +6,8 @@
 # From the root of the repository, once you copied .env.example to .env:
 #
 #   docker compose up -d       start the database and pgAdmin; the data stays between starts
+#   docker compose --profile app up -d --build
+#                              all of Connect, see the services migrations and server below
 #   docker compose ps          see whether both run ("healthy" for the database)
 #   docker compose stop        stop both; the data stays
 #   docker compose down        remove the containers; the data stays in the volume connect-data
@@ -147,6 +149,70 @@ services:
     configs:
       - source: pgadmin-servers
         target: /pgadmin4/servers.json
+
+  # All of Connect as containers, only with the profile app (task 20.2, #353):
+  #
+  #   docker compose --profile app up -d --build    the database, pgAdmin, the migrations and the
+  #                                                 server, then Connect on http://localhost:8080
+  #   docker compose up -d                          still only the database and pgAdmin, as above
+  #
+  # Both services below build the images of the Dockerfile in the root, the same images the
+  # pipeline builds and the test site runs. Without --profile app Compose skips them.
+  # Sources: https://docs.docker.com/compose/how-tos/profiles/
+  #          https://docs.docker.com/reference/compose-file/build/
+
+  migrations:
+    # The image migrations of the Dockerfile: the migration bundle, which brings the tables up to
+    # date once and stops with exit code 0.
+    build:
+      context: .
+      target: migrations
+    profiles: ["app"]
+
+    # Start only once the database is "healthy", see its healthcheck above.
+    # Source: https://docs.docker.com/compose/how-tos/startup-order/
+    depends_on:
+      database:
+        condition: service_healthy
+
+    # The connection string the bundle reads, built from the same values in .env as the database
+    # above, so no password is written in this file. Host=database: inside the network of Compose
+    # a container reaches the database by its service name, never at localhost.
+    # Sources: https://docs.docker.com/compose/how-tos/networking/
+    #          https://docs.docker.com/compose/how-tos/environment-variables/variable-interpolation/
+    environment:
+      ConnectionStrings__DefaultConnection: "Host=database;Port=5432;Database=${POSTGRES_DB:?Set POSTGRES_DB in .env, see .env.example};Username=${POSTGRES_USER:?Set POSTGRES_USER in .env, see .env.example};Password=${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD in .env, see .env.example}"
+
+  server:
+    # The image server of the Dockerfile: the server with the screen in wwwroot.
+    build:
+      context: .
+      target: server
+    profiles: ["app"]
+
+    # Start only once the migrations stopped with exit code 0, so the server never runs against
+    # tables that are not up to date. A failed migration leaves the server stopped.
+    # Source: https://docs.docker.com/compose/how-tos/startup-order/
+    depends_on:
+      migrations:
+        condition: service_completed_successfully
+
+    # The same connection string as the migrations. Staging, as on the test site
+    # (deploy/docker-compose.test.yml): not Development, so no developer pages.
+    # Source: https://learn.microsoft.com/en-us/aspnet/core/fundamentals/environments
+    environment:
+      ConnectionStrings__DefaultConnection: "Host=database;Port=5432;Database=${POSTGRES_DB:?Set POSTGRES_DB in .env, see .env.example};Username=${POSTGRES_USER:?Set POSTGRES_USER in .env, see .env.example};Password=${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD in .env, see .env.example}"
+      ASPNETCORE_ENVIRONMENT: Staging
+
+    # Port 8080 inside the container is reachable on this computer as SERVER_PORT from .env, 8080
+    # when it is not set, and only from this computer (127.0.0.1).
+    # Source: https://docs.docker.com/reference/compose-file/services/#ports
+    ports:
+      - "127.0.0.1:${SERVER_PORT:-8080}:8080"
+
+    # Start again after a crash or a reboot of Docker, but not after docker compose stop.
+    # Source: https://docs.docker.com/reference/compose-file/services/#restart
+    restart: unless-stopped
 
 # The named volume that holds the data. Docker keeps it until someone runs docker compose down -v.
 # Source: https://docs.docker.com/reference/compose-file/volumes/
