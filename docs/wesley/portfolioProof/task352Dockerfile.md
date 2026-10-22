@@ -17,6 +17,7 @@ School asks: "You anticipate risks and bottlenecks in the process before they be
 3. **The user app.** The image configuration of `mcr.microsoft.com/dotnet/aspnet:10.0` in Microsoft's registry, read on 22 October 2026 (.NET 10.0.13), sets `APP_UID=1654` and `ASPNETCORE_HTTP_PORTS=8080` but no user, so a container runs as root unless the Dockerfile asks otherwise. Both final stages therefore end with `USER $APP_UID`, the user `app` the image already has.
 4. **The sizes, and what they changed.** Built with Docker 29.1.3 from a clean clone of the branch on 22 October 2026: `server` 391 MB and `migrations` 533 MB. The migrations image was the bigger one, because its bundle is self-contained and carries its own .NET on top of the ASP.NET of `aspnet:10.0`. On `runtime-deps:10.0`, which holds only what a self-contained program needs, the same image is 373 MB and applied both migrations the same way, so the stage migrations uses it now. That is the one place where the `Dockerfile` differs from the card, which names `aspnet:10.0` for both.
 5. **Checked as it runs.** In one Docker network with PostgreSQL 16 as `database`, on 22 October 2026: `whoami` answers `app` in both images, `migrations` applied both migrations and stopped with exit code 0, and `server` answered `{"status":"healthy"}` on `/api/health` on port 8080 with `Host=database`. The home page gives 404 on this branch alone, because serving the screen comes with #267. With the branch of #267 merged into it on my machine only, the same image answered the home page (200, title Connect), a deep link such as `/create-account` (200) and an unknown address under `/api` with the 404 of #267.
+6. **A false error in the log, found with Docker Compose.** Every first connection to the database wrote "Error: libgssapi_krb5.so.2: cannot open shared object file" in the log of both images, although the connection then worked. Npgsql tries a GSSAPI connection first by default (Npgsql, n.d.), and the .NET 10 images do not hold that library. A person who keeps Connect running after January 2027 would read that line as a failure, so both final stages now install `libgssapi-krb5-2`. Measured on 22 October 2026: no such line left in either log, the migrations still applied, and the images grew by 4 MB each, to 395 MB for `server` and 377 MB for `migrations`.
 
 ## MS4 Making the work fit with the work of the team
 
@@ -33,6 +34,10 @@ School asks: "You ensure that your work aligns with that of others and contribut
 
 - [ ] A teammate with Docker: build both images from a clean clone (`docker build --target server .` and `--target migrations .`), run `whoami` in each (it answers `app`) and `docker image ls`, and write the output and the sizes in the review, with your name.
 - [x] Wesley: the check of the home page on port 8080 in one network with `Host=database`. Done on 22 October 2026 with Docker on my machine, MS1 point 5. The home page itself answers once #267 is merged. The compose services of task 20.2 (#353) make the same check one command.
+
+## References
+
+Npgsql. (n.d.). *Security and encryption*. Npgsql documentation. Retrieved October 22, 2026, from https://www.npgsql.org/doc/security.html
 
 ## AI use
 

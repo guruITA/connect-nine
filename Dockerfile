@@ -36,6 +36,11 @@ RUN ConnectionStrings__DefaultConnection="Host=bundle;Database=bundle" \
 # own .NET, so it needs only runtime-deps, 160 MB smaller than aspnet (measured 22 October 2026).
 FROM mcr.microsoft.com/dotnet/runtime-deps:10.0 AS migrations
 WORKDIR /app
+# Npgsql tries a GSSAPI connection first and the .NET 10 images hold no libgssapi_krb5, so without
+# it every first connection writes "Error: libgssapi_krb5.so.2: cannot open shared object file" in
+# the log, although the connection then works. The library keeps the log free of that false error.
+RUN apt-get update && apt-get install -y --no-install-recommends libgssapi-krb5-2 \
+    && rm -rf /var/lib/apt/lists/*
 COPY --from=server-build /app/efbundle ./efbundle
 USER $APP_UID
 # No --connection: the bundle reads ConnectionStrings__DefaultConnection from the environment the
@@ -46,8 +51,10 @@ ENTRYPOINT ["./efbundle"]
 # server: the server with the screen in wwwroot, where UseStaticFiles() of #267 finds it. The default.
 FROM mcr.microsoft.com/dotnet/aspnet:10.0 AS server
 WORKDIR /app
-RUN test -f /usr/share/zoneinfo/Europe/Amsterdam \
-    || (apt-get update && apt-get install -y --no-install-recommends tzdata && rm -rf /var/lib/apt/lists/*)
+# The same library as in the stage migrations, and tzdata only when the zone file is missing.
+RUN apt-get update && apt-get install -y --no-install-recommends libgssapi-krb5-2 \
+    && (test -f /usr/share/zoneinfo/Europe/Amsterdam || apt-get install -y --no-install-recommends tzdata) \
+    && rm -rf /var/lib/apt/lists/*
 COPY --from=server-build /app/publish ./
 COPY --from=frontend-build /src/web/dist ./wwwroot
 ENV ASPNETCORE_HTTP_PORTS=8080
