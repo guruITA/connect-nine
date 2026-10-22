@@ -24,7 +24,7 @@ One file per task I did, with the proof block of the task filled in. A point tha
 | `portfolioProof/task1497PrototypeInPageDocs.md` | Task 178.1 The page documents point to the prototype screens (#1497), merge request !35 | Managing and Collaborating MS1 and MS4 |
 | `portfolioProof/task9LoggedAfterwards.md` | Task 9 Templates and rules (#9), work logged afterwards as issues #1500 to #1515, merge request !39 | Managing and Collaborating MS1 and MS4 |
 | `portfolioProof/task5Pipeline.md` | Task 1.4 The first pipeline (#5), merge request !24, and task 1.5 The red pipeline on purpose (#6), merge requests !25 and !32 | Managing and Collaborating MS1 and MS4, Organising and Realising OR4 |
-| `portfolioProof/task7CodeConventionsDecision.md` | Task 1.6 The team confirms the code conventions (#7), merge request !26 | Analysing and Advising AA4 and AA5 |
+| `portfolioProof/task7CodeConventionsDecision.md` | Task 1.6 The team confirms the code conventions (#7), merge requests !26 and !59 | Analysing and Advising AA4 and AA5, Managing and Collaborating MS4 |
 | `portfolioProof/task8ConventionsAndOnboarding.md` | Task 1.7 The conventions with examples and the getting started guide (#8), merge request !29 | Managing and Collaborating MS1 and MS4 |
 | `portfolioProof/task9Templates.md` | Task 1.8 The templates (#9), merge request !15 | Managing and Collaborating MS1 and MS4 |
 | `portfolioProof/task9CompactIssueTemplates.md` | Task 1.8 The compact issue and task templates (#9), merge request !16 | Managing and Collaborating MS1 and MS4 |
