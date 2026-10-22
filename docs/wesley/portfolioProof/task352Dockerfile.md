@@ -15,7 +15,8 @@ School asks: "You anticipate risks and bottlenecks in the process before they be
    - A secret baked into an image: no password and no real connection string is in the `Dockerfile` or an image. The connection string comes in as `ConnectionStrings__DefaultConnection` when a container starts. The one value in the file, `Host=bundle;Database=bundle`, only lets `dotnet ef` make the DbContext while it builds the bundle, connects with nothing and lives for that one command. `.dockerignore` keeps `.env` out of the build context.
 2. **The option I did not choose.** Two images with a separate web server for the screen, such as nginx next to the server. The server of #267 serves the screen itself under the one address of the test site, so one image needs no second server, no second container and no second route in Caddy.
 3. **The user app.** The image configuration of `mcr.microsoft.com/dotnet/aspnet:10.0` in Microsoft's registry, read on 22 October 2026 (.NET 10.0.13), sets `APP_UID=1654` and `ASPNETCORE_HTTP_PORTS=8080` but no user, so a container runs as root unless the Dockerfile asks otherwise. Both final stages therefore end with `USER $APP_UID`, the user `app` the image already has.
-4. **The sizes.** The base image `aspnet:10.0` is 95.9 MB compressed, and the self-contained migration bundle is 135 MB, measured when I built it on 22 October 2026. The sizes of both finished images need Docker, see TODO.
+4. **The sizes, and what they changed.** Built with Docker 29.1.3 from a clean clone of the branch on 22 October 2026: `server` 391 MB and `migrations` 533 MB. The migrations image was the bigger one, because its bundle is self-contained and carries its own .NET on top of the ASP.NET of `aspnet:10.0`. On `runtime-deps:10.0`, which holds only what a self-contained program needs, the same image is 373 MB and applied both migrations the same way, so the stage migrations uses it now. That is the one place where the `Dockerfile` differs from the card, which names `aspnet:10.0` for both.
+5. **Checked as it runs.** In one Docker network with PostgreSQL 16 as `database`, on 22 October 2026: `whoami` answers `app` in both images, `migrations` applied both migrations and stopped with exit code 0, and `server` answered `{"status":"healthy"}` on `/api/health` on port 8080 with `Host=database`. The home page gives 404 on this branch alone, because serving the screen comes with #267. With the branch of #267 merged into it on my machine only, the same image answered the home page (200, title Connect), a deep link such as `/create-account` (200) and an unknown address under `/api` with the 404 of #267.
 
 ## MS4 Making the work fit with the work of the team
 
@@ -25,12 +26,12 @@ School asks: "You ensure that your work aligns with that of others and contribut
 2. **The versions of the team.** Node.js 22 from part 1 of `docs/team/onboarding.md` as `node:22-alpine`, the image frontend-build of the pipeline uses. .NET 10 from decision 003 as `sdk:10.0` and `aspnet:10.0`. dotnet-ef in the version pinned in `.config/dotnet-tools.json` (10.0.12), through `dotnet tool restore`.
 3. **For a teammate who adds a project.** One line in the `Dockerfile` says it: a new project gets one COPY line for its `.csproj` in the stage server-build.
 4. **The card and the code.** Task 20.1 names `Presentation.csproj`, `ConnectionStrings__Connect` and `Connect.Presentation` as startup project. The team agreed that Nick's .NET code sets the way, and on dev the startup project is `api/Connect` and the connection string is `ConnectionStrings:DefaultConnection`, so the `Dockerfile` follows the code. Measured on PostgreSQL 16 on 22 October 2026: the bundle with only `--connection` stops, because the startup project reads `DefaultConnection` itself, and with `ConnectionStrings__DefaultConnection` set it applied both migrations.
-5. **Checked in the pipeline.** The job image-build of !89 builds both targets with kaniko from the clean clone of the merge request, see the proof of task 20.3.
+6. **Checked in the pipeline.** The job image-build of !89 builds both targets with kaniko from the clean clone of the merge request, see the proof of task 20.3.
 
 ## TODO
 
 - [ ] A teammate with Docker: build both images from a clean clone (`docker build --target server .` and `--target migrations .`), run `whoami` in each (it answers `app`) and `docker image ls`, and write the output and the sizes in the review, with your name.
-- [ ] Wesley: the check of the home page on port 8080 in the compose network, with `Host=database`, comes with the compose services of task 20.2 (#353).
+- [x] Wesley: the check of the home page on port 8080 in one network with `Host=database`. Done on 22 October 2026 with Docker on my machine, MS1 point 5. The home page itself answers once #267 is merged. The compose services of task 20.2 (#353) make the same check one command.
 
 ## AI use
 

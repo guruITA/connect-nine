@@ -20,14 +20,14 @@ School asks: "You anticipate risks and bottlenecks in the process before they be
 School asks: "You ensure that your work aligns with that of others and contributes to the joint result."
 
 1. **Next to the jobs of #266.** image-build sits in the stage build next to backend-build and frontend-build, and both new jobs start with the rule of #308 that skips the weekly scheduled pipeline, as every job except the two scans does.
-2. **What it costs a merge request.** The pipeline of !88, without image-build, took 77 seconds on 22 October 2026. With image-build it takes about 345 seconds (pipelines 586265 and 586269), so a merge request waits about four and a half minutes longer, because the jobs of the stage test start only when the stage build is done. kaniko builds each image from the start, so the .NET part is built twice. Letting the tests start without waiting for image-build is a choice for the team, see TODO.
+2. **What it costs a merge request.** The pipeline of !88, without image-build, took 77 seconds on 22 October 2026. With image-build it takes about 345 seconds (pipelines 586265 and 586269), so a merge request waits about four and a half minutes longer, because the jobs of the stage test start only when the stage build is done. kaniko builds each image from the start, so the .NET part is built twice. I asked whether the tests could start without waiting for it. My decision of the same day: they keep waiting, because a test that ran before a build went wrong would pass a version that is broken. Part Pipeline of `docs/team/gitlabSetup.md` says so.
 3. **Only on dev.** image-push runs only after a merge into dev, so every image in the registry is a version the team reviewed and the test site (#355) can start by its commit id. Production gets its version from main later: #159 and #162 give the image tag of the commit to Terraform.
 4. **The setup guide.** Part Images and the registry of `docs/team/gitlabSetup.md` says what the runners allow, which builder and why, where the images are and how the cleanup works, and the Pipeline part lists both jobs.
 
 ## TODO
 
 - [x] Wesley: the red run with a broken COPY line and the green run after the revert, with the minutes each took and how many minutes image-build adds to a merge request, in this file and in the merge request. Done on 22 October 2026, MS1 point 5 and MS4 point 2.
-- [ ] The team: whether the jobs of the stage test may start without waiting for image-build (`needs` on those jobs), which gives back the four and a half minutes.
+- [x] Whether the jobs of the stage test may start without waiting for image-build. Decided on 22 October 2026: they keep waiting, MS4 point 2.
 - [ ] Wesley: tell the team at the stand up that the registry holds a version of every merge into dev from now on.
 - [ ] A teammate: after the merge, find the image `server` of the merge in Deploy, Container registry, and write your name in the review or on #354.
 - [ ] The team: confirm decision 008 at the stand up and fill in Agreed by.

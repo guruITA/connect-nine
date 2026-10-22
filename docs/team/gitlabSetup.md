@@ -64,6 +64,7 @@ The file is .gitlab-ci.yml in the root. It runs on the HvA runners with the tag 
 - Stage test, job frontend-lint: `npm run lint` (ESLint) and `npx prettier --check .` in `web`.
 - Stage test, job frontend-test: `npm test` (Vitest) in `web`.
 - A red pipeline locks the Merge button through Pipelines must succeed (part Branches and protection). On top of that, a reviewer never approves a merge request with a red pipeline. No job of stage build or stage test has allow_failure, so a red build or test job always blocks the merge.
+- The jobs of stage test start only when every job of stage build is green, image-build included, so no test passes a version whose build went wrong. That makes a merge request wait for the images, about five and a half minutes in all, and it stays that way on purpose (decided on 22 October 2026).
 
 When it is red:
 
