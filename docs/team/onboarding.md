@@ -588,6 +588,7 @@ The test site is at https://31-70-66-186.sslip.io until the foundation sets the 
 Every merge request, every run on dev and main, and once a week on dev, the pipeline checks the packages of the server and the screen against the public lists of known holes (issue #22).
 
 - **Threshold.** High and critical stop the pipeline. Low and moderate do not, so the team is not stopped by every small advisory, while a serious hole never gets in.
+- **Cost and time.** Both scans use tools that come free with .NET and npm, so the check costs nothing and needs no paid plan or paid scanning service. It made the checks of a change 17 seconds slower, from 4 to 21 seconds (pipelines 583862 and 583876 of 8 October 2026), where the limit is two minutes.
 - **backend-scan.** `dotnet restore` with NuGet audit from `api/Directory.Build.props`, then `dotnet list package --vulnerable --include-transitive`. Red on NU1903 (high) or NU1904 (critical), or on High or Critical in the list. An advisory the client accepted (a NuGetAuditSuppress line, see `docs/security/securityExceptions.md`) is skipped, and the log names it under "Skipped, accepted by the client".
 - **frontend-scan.** `npm ci`, then `npm audit --audit-level=high`. It only runs once `web/package.json` exists.
 - **The same on your laptop.**
