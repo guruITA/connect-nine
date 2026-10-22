@@ -599,7 +599,7 @@ The server serves the screen itself: every address outside `/api` gets the scree
 
 - **Reading its log.** Build, Pipelines, the newest pipeline of dev, job deploy-test. The last lines say whether the server started and what /api/health answered. The log holds no key, password or server number.
 - **A red deploy means the site is down.** deploy-test stops the old server before the migrations, so after a red run the test site may answer 502 or 503. Say so in the team channel at once, with the link of the red job, and follow Going back to the previous version below.
-- **Only one at a time.** Two merges in a row wait for each other (resource group test-site), so two deploys never write `/srv/connect-test` together.
+- **Only one at a time, never an older one.** Two merges in a row wait for each other (resource group test-site), so two deploys never write `/srv/connect-test` together. When the pipeline of an older merge reaches deploy-test after a newer one already deployed, GitLab stops it with "The deployment job is older than the latest deployment" (Operate, Environments, test). That red job is fine: the newer version already holds its change.
 
 ### Going back to the previous version
 
@@ -728,7 +728,7 @@ A reviewer of #312 does this once, with the server started as above:
 
 ### On the test server
 
-The server of Connect runs on the test server in the container `server` of `/srv/connect-test/docker-compose.test.yml`, on `127.0.0.1:8080` behind Caddy (The test site, part 10). Read its newest lines with `sudo docker compose -f /srv/connect-test/docker-compose.test.yml logs --tail 50 server`. The plan for its log: it stays on the server, and only team members who log in with their own ssh key (part 10) and the user deploy of the pipeline, through the deploy key in GitLab (The pipeline on the server), can read it. Caddy writes no log of every visit, and no web address should lead to the log. This is not checked yet: task 3.9 confirms or corrects it once the server runs there. How to read the log there, and how long lines stay (#315), is added to this part with those tasks.
+The server of Connect runs on the test server in the container `server` of `/srv/connect-test/docker-compose.test.yml`, on `127.0.0.1:8080` behind Caddy (The test site, part 10). Read its newest lines with `sudo docker compose -f /srv/connect-test/docker-compose.test.yml logs --tail 50 server`. The plan for its log: it stays on the server, and only team members who log in with their own ssh key (part 10) and the user deploy of the pipeline, through the deploy key in GitLab (The pipeline on the server), can read it. Caddy writes no log of every visit (`deploy/Caddyfile` has no log directive), and the server has no web address that shows the log. Still to check on the server itself, at the team check of task 3.9 (#267) after the first deploy: that the command above shows the lines and that no web address shows them. How long lines stay comes with #315.
 
 ### Twenty real lines
 
