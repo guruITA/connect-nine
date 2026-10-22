@@ -38,8 +38,10 @@ FROM mcr.microsoft.com/dotnet/runtime-deps:10.0 AS migrations
 WORKDIR /app
 COPY --from=server-build /app/efbundle ./efbundle
 USER $APP_UID
-# The connection string comes in when the container starts, never from the image.
-CMD ./efbundle --connection "$ConnectionStrings__DefaultConnection"
+# No --connection: the bundle reads ConnectionStrings__DefaultConnection from the environment the
+# container starts with, as the server does, so the password never stands on a command line that
+# ps shows on the host. The same way as the migrations of deploy/docker-compose.test.yml of #267.
+ENTRYPOINT ["./efbundle"]
 
 # server: the server with the screen in wwwroot, where UseStaticFiles() of #267 finds it. The default.
 FROM mcr.microsoft.com/dotnet/aspnet:10.0 AS server
