@@ -565,7 +565,7 @@ To                         Action      From
 
 ### The images of Connect
 
-The `Dockerfile` in the root packs Connect into two images. `server` holds the published server with the built screen in `wwwroot` and answers on port 8080. `migrations` holds only the migration bundle, brings the tables up to date once and stops. Both run as the user `app`, not as root, and neither holds a password: the connection string comes in as `ConnectionStrings__DefaultConnection` when the container starts. The pipeline builds them with kaniko and keeps them in the registry of the project, see part Images and the registry of `docs/team/gitlabSetup.md`. On a laptop with Docker, `docker build --target server .` and `docker build --target migrations .` build the same images.
+The `Dockerfile` in the root packs Connect into two images. `server` holds the published server with the built screen in `wwwroot` and answers on port 8080. `migrations` holds only the migration bundle, which carries its own .NET, brings the tables up to date once and stops. Both run as the user `app`, not as root, and neither holds a password: the connection string comes in as `ConnectionStrings__DefaultConnection` when the container starts. The pipeline builds them with kaniko and keeps them in the registry of the project, see part Images and the registry of `docs/team/gitlabSetup.md`. On a laptop with Docker, `docker build --target server .` and `docker build --target migrations .` build the same images.
 
 ### The test address
 
