@@ -33,6 +33,8 @@ One file per task I did, with the proof block of the task filled in. A point tha
 | `portfolioProof/task1517ReplanSprints.md` | Task 180.1 Sprints 2 to 5 planned again after sprint 1 (#1517), merge request !40 | Managing and Collaborating MS1 and MS4 |
 | `portfolioProof/task3MainOnlyFromDev.md` | Task 1.2 Dev and main protected (#3), merge request !2 | Managing and Collaborating MS1 and MS4 |
 | `portfolioProof/task16DependencyScan.md` | Task 16.1 The security scan (#308), merge request !30, and task 16.2 The red scan on purpose (#309), merge request !31 | Managing and Collaborating (#308), Designing and Realising (#309) |
+| `portfolioProof/task352Dockerfile.md` | Task 20.1 The Dockerfile of the images server and migrations (#352), merge request !89 | Managing and Collaborating MS1 and MS4 |
+| `portfolioProof/task354ImageBuild.md` | Task 20.3 The images built in the pipeline with kaniko (#354), merge request !89 | Managing and Collaborating MS1 and MS4 |
 | `portfolioProof/task1519SprintReview1Documents.md` | Issue 1519 The sprint 1 review documents in the repository (#1519), merge requests !43, !44 and !45 | Managing and Collaborating MS1 |
 | `portfolioProof/task1543TestsAndMocking.md` | Task 3.12 The code conventions for tests and NSubstitute (#1543), merge request !77 | Managing and Collaborating MS1 and MS4 |
 | `portfolioProof/task1465CqrsRewording.md` | Task 11.4 The tasks of every next sprint reworded to the CQRS shape (#1465), merge request !62 | Managing and Collaborating MS4 |

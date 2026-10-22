@@ -1,0 +1,37 @@
+# Proof: task 20.1 The Dockerfile of the images server and migrations (#352)
+
+Merge request !89, branch `chore/20-dockerfiles-for-the-server-and-the-frontend`, together with task 20.3 (#354). Issue: 20 Connect starts with one command on any computer (#32). Files: `Dockerfile`, `.dockerignore`, `docs/team/onboarding.md` (part The images of Connect).
+Profile: Full Stack Software Developer, level 3. Portflow: Managing and Collaborating MS1 and MS4.
+
+A point that needs someone else is marked TODO with who and what.
+
+## MS1 Seeing risks early and keeping the work transferable
+
+School asks: "You anticipate risks and bottlenecks in the process before they become problems and ensure that the work remains transparent and transferable."
+
+1. **The risks the recipe removes.**
+   - A server that only starts on one laptop: the image holds the published server, the built screen and nothing of the laptop it was built on, and the pipeline builds it from a clean clone on every merge request.
+   - A test site that runs something else than the laptops: the test site and production start the images of the merged commit, built from the same `Dockerfile` a laptop uses.
+   - A secret baked into an image: no password and no real connection string is in the `Dockerfile` or an image. The connection string comes in as `ConnectionStrings__DefaultConnection` when a container starts. The one value in the file, `Host=bundle;Database=bundle`, only lets `dotnet ef` make the DbContext while it builds the bundle, connects with nothing and lives for that one command. `.dockerignore` keeps `.env` out of the build context.
+2. **The option I did not choose.** Two images with a separate web server for the screen, such as nginx next to the server. The server of #267 serves the screen itself under the one address of the test site, so one image needs no second server, no second container and no second route in Caddy.
+3. **The user app.** The image configuration of `mcr.microsoft.com/dotnet/aspnet:10.0` in Microsoft's registry, read on 22 October 2026 (.NET 10.0.13), sets `APP_UID=1654` and `ASPNETCORE_HTTP_PORTS=8080` but no user, so a container runs as root unless the Dockerfile asks otherwise. Both final stages therefore end with `USER $APP_UID`, the user `app` the image already has.
+4. **The sizes.** The base image `aspnet:10.0` is 95.9 MB compressed, and the self-contained migration bundle is 135 MB, measured when I built it on 22 October 2026. The sizes of both finished images need Docker, see TODO.
+
+## MS4 Making the work fit with the work of the team
+
+School asks: "You ensure that your work aligns with that of others and contributes to the joint result."
+
+1. **The same steps as #267.** The stage server-build publishes `api/Connect/Connect.csproj`, and the stage server copies the built screen into `wwwroot`, where `UseStaticFiles()` of #267 finds it. The migration bundle comes from exactly the command and the placeholder connection string of the job deploy-test of #267, so the test site of Gurpreet and these images apply the migrations the same way.
+2. **The versions of the team.** Node.js 22 from part 1 of `docs/team/onboarding.md` as `node:22-alpine`, the image frontend-build of the pipeline uses. .NET 10 from decision 003 as `sdk:10.0` and `aspnet:10.0`. dotnet-ef in the version pinned in `.config/dotnet-tools.json` (10.0.12), through `dotnet tool restore`.
+3. **For a teammate who adds a project.** One line in the `Dockerfile` says it: a new project gets one COPY line for its `.csproj` in the stage server-build.
+4. **The card and the code.** Task 20.1 names `Presentation.csproj`, `ConnectionStrings__Connect` and `Connect.Presentation` as startup project. The team agreed that Nick's .NET code sets the way, and on dev the startup project is `api/Connect` and the connection string is `ConnectionStrings:DefaultConnection`, so the `Dockerfile` follows the code. Measured on PostgreSQL 16 on 22 October 2026: the bundle with only `--connection` stops, because the startup project reads `DefaultConnection` itself, and with `ConnectionStrings__DefaultConnection` set it applied both migrations.
+5. **Checked in the pipeline.** The job image-build of !89 builds both targets with kaniko from the clean clone of the merge request, see the proof of task 20.3.
+
+## TODO
+
+- [ ] A teammate with Docker: build both images from a clean clone (`docker build --target server .` and `--target migrations .`), run `whoami` in each (it answers `app`) and `docker image ls`, and write the output and the sizes in the review, with your name.
+- [ ] Wesley: the check of the home page on port 8080 in the compose network, with `Host=database`, comes with the compose services of task 20.2 (#353).
+
+## AI use
+
+AI was used as a writing support tool while working on this document. We used AI to improve the formulation of sentences, the structure of wording, readability, and clarity of text that we had written. The content itself, including our experiences, reflections, learning goals, decisions, self-assessments, and conclusions, is our own. We reviewed the suggested changes and decided as a team which improvements to include.
