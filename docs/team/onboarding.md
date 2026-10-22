@@ -519,7 +519,7 @@ Each member writes their own line after their first login with their own user.
 | Name | First login with own user |
 |---|---|
 | Wesley Oerlemans | 9 October 2026 |
-| Bayon Eerhart | |
+| Bayon Eerhart | 22 October 2026 |
 | Nick Hoebe | 21 October 2026 |
 | Gurpreet Singh | 19 October 2026 |
 | Kelvin van Voorst | |
