@@ -254,6 +254,11 @@ deploy-test:
   extends: .backend-nuget-cache
   # One deploy at a time, so two merges in a row never write /srv/connect-test together.
   resource_group: test-site
+  # The environment lets GitLab stop an older deploy that starts after a newer one (Settings, CI/CD,
+  # Prevent outdated deployment jobs, on for this project), so a slow pipeline never puts back old code.
+  environment:
+    name: test
+    url: https://31-70-66-186.sslip.io
   rules:
     - if: $CI_PIPELINE_SOURCE == "schedule"
       when: never
