@@ -6,14 +6,14 @@ Read three documents first, in this order: [collaborationAgreement.md](collabora
 
 ## 1. What you install
 
-| Tool | Version | Why |
-|---|---|---|
-| .NET SDK | 10 | The backend of Connect |
-| Node.js | 22, at least 22.13 | The frontend of Connect. Vite needs 22.12 or newer, ESLint and the test tools need 22.13 |
-| Docker | current | The database and the test site run in containers |
-| Git | current | Every change reaches dev through a merge request |
-| An editor | Visual Studio, Rider or Visual Studio Code | Any of the three is fine |
-| dotnet-ef | matches the Entity Framework Core packages, pinned in `.config/dotnet-tools.json` | Creates and applies database migrations, part 4 |
+| Tool      | Version                                                                           | Why                                                                                      |
+| --------- | --------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------- |
+| .NET SDK  | 10                                                                                | The backend of Connect                                                                   |
+| Node.js   | 22, at least 22.13                                                                | The frontend of Connect. Vite needs 22.12 or newer, ESLint and the test tools need 22.13 |
+| Docker    | current                                                                           | The database and the test site run in containers                                         |
+| Git       | current                                                                           | Every change reaches dev through a merge request                                         |
+| An editor | Visual Studio, Rider or Visual Studio Code                                        | Any of the three is fine                                                                 |
+| dotnet-ef | matches the Entity Framework Core packages, pinned in `.config/dotnet-tools.json` | Creates and applies database migrations, part 4                                          |
 
 Check that each one answers before you go on:
 
@@ -116,15 +116,15 @@ A value in `appsettings.json` is therefore a default, and an environment variabl
 
 ### What lives where
 
-| File or store | In Git | Holds | Used in |
-|---|---|---|---|
-| `appsettings.json` | yes | shared defaults, no secrets | every environment |
-| `appsettings.Development.json` | yes | local settings that are safe to share | local machines |
-| User Secrets | no, never | your local passwords, keys and connection strings | local machines |
-| `appsettings.Production.json` | yes | production settings that are not secret | production |
-| Kubernetes Secrets | no, never | production passwords, keys and connection strings | production on k3s |
-| `web/.env` | no, never | local frontend settings | local machines |
-| `web/.env.example` | yes | the names of the frontend variables, with no real values | documentation |
+| File or store                  | In Git    | Holds                                                    | Used in           |
+| ------------------------------ | --------- | -------------------------------------------------------- | ----------------- |
+| `appsettings.json`             | yes       | shared defaults, no secrets                              | every environment |
+| `appsettings.Development.json` | yes       | local settings that are safe to share                    | local machines    |
+| User Secrets                   | no, never | your local passwords, keys and connection strings        | local machines    |
+| `appsettings.Production.json`  | yes       | production settings that are not secret                  | production        |
+| Kubernetes Secrets             | no, never | production passwords, keys and connection strings        | production on k3s |
+| `web/.env`                     | no, never | local frontend settings                                  | local machines    |
+| `web/.env.example`             | yes       | the names of the frontend variables, with no real values | documentation     |
 
 A real password, key, token or connection string that carries credentials never goes in a file whose row says yes.
 
@@ -282,13 +282,13 @@ It answers `{"status":"healthy"}` when the server runs.
 
 The scripts in `web/package.json`:
 
-| Script | What it does |
-|---|---|
-| `npm run dev` | Starts Vite on http://localhost:5173 and reloads the page on every change |
-| `npm run build` | Checks the types and builds the site into `web/dist` |
-| `npm run lint` | ESLint with the rules for TypeScript, React hooks and accessibility |
-| `npm run format` | Prettier puts every file in the team layout |
-| `npm test` | Runs every Vitest test once |
+| Script           | What it does                                                              |
+| ---------------- | ------------------------------------------------------------------------- |
+| `npm run dev`    | Starts Vite on http://localhost:5173 and reloads the page on every change |
+| `npm run build`  | Checks the types and builds the site into `web/dist`                      |
+| `npm run lint`   | ESLint with the rules for TypeScript, React hooks and accessibility       |
+| `npm run format` | Prettier puts every file in the team layout                               |
+| `npm test`       | Runs every Vitest test once                                               |
 
 ## 6. Run the checks before you push
 
@@ -326,13 +326,13 @@ The pipeline runs the same checks. A merge request cannot be accepted while any 
 
 Five jobs run these checks in the pipeline, split so a red run points at one thing. Each job also runs on `dev` after a merge, so the merged result is checked too.
 
-| Job | What it checks | The same check on your laptop |
-|---|---|---|
-| backend-build | The server compiles, and `dotnet format` finds no layout difference | `dotnet build api/Connect.slnx` then `dotnet format api/Connect.slnx --verify-no-changes` |
-| frontend-build | TypeScript has no type error, and Vite builds the screen | `cd web` then `npm run build` |
-| backend-test | Every `dotnet test` in `api/Connect.slnx` passes, against a real PostgreSQL | `dotnet test api/Connect.slnx`, with `ConnectionStrings:TestsConnection` and `ConnectionStrings__DefaultConnection` set as in this section, and your database running (`docker compose up -d`, section 3) |
-| frontend-lint | ESLint finds no rule break, and Prettier finds no layout difference | `cd web` then `npm run lint` and `npx prettier --check .` |
-| frontend-test | Every Vitest test passes | `cd web` then `npm test` |
+| Job            | What it checks                                                              | The same check on your laptop                                                                                                                                                                             |
+| -------------- | --------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| backend-build  | The server compiles, and `dotnet format` finds no layout difference         | `dotnet build api/Connect.slnx` then `dotnet format api/Connect.slnx --verify-no-changes`                                                                                                                 |
+| frontend-build | TypeScript has no type error, and Vite builds the screen                    | `cd web` then `npm run build`                                                                                                                                                                             |
+| backend-test   | Every `dotnet test` in `api/Connect.slnx` passes, against a real PostgreSQL | `dotnet test api/Connect.slnx`, with `ConnectionStrings:TestsConnection` and `ConnectionStrings__DefaultConnection` set as in this section, and your database running (`docker compose up -d`, section 3) |
+| frontend-lint  | ESLint finds no rule break, and Prettier finds no layout difference         | `cd web` then `npm run lint` and `npx prettier --check .`                                                                                                                                                 |
+| frontend-test  | Every Vitest test passes                                                    | `cd web` then `npm test`                                                                                                                                                                                  |
 
 A job that needs a database (backend-test) gets its own throwaway PostgreSQL inside the pipeline, under the alias `database`. The user, password and name of that database are CI/CD variables of the project (Settings, CI/CD, Variables), never written in `.gitlab-ci.yml`, and a value on your laptop never has to match them.
 
@@ -350,6 +350,7 @@ On a red run: open the merge request, tab Pipelines, click the red run, then the
    ```
 
    You should see `Switched to a new branch 'feature/14-create-an-account'`.
+
 3. Commit as `<type>(<scope>): <what changed> (#<issue number>)`:
 
    ```
@@ -358,6 +359,7 @@ On a red run: open the merge request, tab Pipelines, click the red run, then the
    ```
 
    You should see a line such as `[feature/14-create-an-account 3f2a1b9] feat(backend): add account endpoint (#14)` and how many files changed.
+
 4. Push the branch with `git push -u origin <your branch>`. You should see a line with a link to make a merge request.
 5. Open the link, choose `dev` as the target and ask a teammate who did not write it to approve. The template fills the description: start it with `Relates to #<issue number>`. You should see the merge request page with your title and the template in the description.
 6. Wait for the pipeline of the merge request. Green means you can ask for the review. Red: click the red run, then the red job, and read the last lines of its log. They say what failed. The part Pipeline of [gitlabSetup.md](gitlabSetup.md) explains each job. You should see a green check next to the pipeline of the merge request when every job passed.
@@ -375,24 +377,24 @@ You should see only lines where the word is a name, a placeholder or an explanat
 
 ## 9. The words Connect uses
 
-| Word | What it means in Connect |
-|---|---|
-| Member | Anyone with an account, whatever their role |
-| Young person | A member from Amstelland who uses Connect to find people and chances |
-| Organisation | A company or institution around the young people of Amstelland |
-| The foundation | The WailSalutem Foundation, the client and the owner of Connect |
-| Profile | What a member tells Connect about themselves |
-| Opportunity | Something an organisation offers that a young person can take |
-| Match | A connection between two members that Connect proposes or confirms |
-| Showcase | A project a young person publishes on Connect |
-| Challenge | A task an organisation posts for young people to join |
-| Event | A gathering with a date, a place and a safe limit on the number of people |
-| News item | Something the foundation publishes for everyone |
-| Badge | Recognition for taking part |
-| Board item | One numbered card of work, with a weight and its own Definition of Done |
-| Task | A step of a board item, never with its own Definition of Done |
-| Slice | A board item that adds something a person can see and use |
-| Epic | A group of board items that belong to one part of Connect |
+| Word           | What it means in Connect                                                  |
+| -------------- | ------------------------------------------------------------------------- |
+| Member         | Anyone with an account, whatever their role                               |
+| Young person   | A member from Amstelland who uses Connect to find people and chances      |
+| Organisation   | A company or institution around the young people of Amstelland            |
+| The foundation | The WailSalutem Foundation, the client and the owner of Connect           |
+| Profile        | What a member tells Connect about themselves                              |
+| Opportunity    | Something an organisation offers that a young person can take             |
+| Match          | A connection between two members that Connect proposes or confirms        |
+| Showcase       | A project a young person publishes on Connect                             |
+| Challenge      | A task an organisation posts for young people to join                     |
+| Event          | A gathering with a date, a place and a safe limit on the number of people |
+| News item      | Something the foundation publishes for everyone                           |
+| Badge          | Recognition for taking part                                               |
+| Board item     | One numbered card of work, with a weight and its own Definition of Done   |
+| Task           | A step of a board item, never with its own Definition of Done             |
+| Slice          | A board item that adds something a person can see and use                 |
+| Epic           | A group of board items that belong to one part of Connect                 |
 
 ## 10. The client's server
 
@@ -400,17 +402,17 @@ Issue 09 Every team member on the client's server (task 9.2) prepares the founda
 
 ### The machine
 
-| Fact | Value |
-|---|---|
-| Owner | The WailSalutem Foundation, the client (director Rachid Kherrazi) |
-| Provider and country | Strato, Germany |
-| CPU | 4 vCPU, AMD EPYC Milan, 2.0 GHz |
-| Memory | 7.7 GiB |
-| Disk | 240 GB, 232 GB usable, 2.9 GB used |
-| Operating system | Ubuntu 24.04.5 LTS, kernel 6.8.0-146-generic |
-| IPv4 | 31.70.66.186 |
-| Hostname | connect |
-| Time zone | Europe/Amsterdam |
+| Fact                 | Value                                                             |
+| -------------------- | ----------------------------------------------------------------- |
+| Owner                | The WailSalutem Foundation, the client (director Rachid Kherrazi) |
+| Provider and country | Strato, Germany                                                   |
+| CPU                  | 4 vCPU, AMD EPYC Milan, 2.0 GHz                                   |
+| Memory               | 7.7 GiB                                                           |
+| Disk                 | 240 GB, 232 GB usable, 2.9 GB used                                |
+| Operating system     | Ubuntu 24.04.5 LTS, kernel 6.8.0-146-generic                      |
+| IPv4                 | 31.70.66.186                                                      |
+| Hostname             | connect                                                           |
+| Time zone            | Europe/Amsterdam                                                  |
 
 The facts above come from these commands, run on the server on 9 October 2026:
 
@@ -516,13 +518,13 @@ Then remove their line from `/etc/sudoers.d/20-connect-admins` with `sudo visudo
 
 Each member writes their own line after their first login with their own user.
 
-| Name | First login with own user |
-|---|---|
-| Wesley Oerlemans | 9 October 2026 |
-| Bayon Eerhart | 22 October 2026 |
-| Nick Hoebe | 21 October 2026 |
-| Gurpreet Singh | 19 October 2026 |
-| Kelvin van Voorst | |
+| Name              | First login with own user |
+| ----------------- | ------------------------- |
+| Wesley Oerlemans  | 9 October 2026            |
+| Bayon Eerhart     | 22 October 2026           |
+| Nick Hoebe        | 21 October 2026           |
+| Gurpreet Singh    | 19 October 2026           |
+| Kelvin van Voorst | 22 October 2026           |
 
 ### Open ports
 
@@ -532,11 +534,11 @@ sudo ufw status verbose
 
 You should see `Default: deny (incoming), allow (outgoing)` and only these, for IPv4 and IPv6:
 
-| Port | Why |
-|---|---|
-| 22/tcp | The secure login (ssh) |
-| 80/tcp | Web visits, which Caddy sends on to https |
-| 443/tcp | Web visits with the padlock |
+| Port    | Why                                       |
+| ------- | ----------------------------------------- |
+| 22/tcp  | The secure login (ssh)                    |
+| 80/tcp  | Web visits, which Caddy sends on to https |
+| 443/tcp | Web visits with the padlock               |
 
 The output on 9 October 2026:
 
@@ -581,7 +583,7 @@ The test site is at https://31-70-66-186.sslip.io until the foundation sets the 
 - The job ssh-check in `.gitlab-ci.yml` starts by hand on dev, or in a pipeline started with the variable RUN_SSH_CHECK set to yes. It logs in as deploy and prints the name of the server, `connect`.
 - The secret settings of the test site are in `/srv/connect-test/.env` on the server, rights 600, owner deploy. The database password was made on the server with `openssl rand -hex 24` and is not written anywhere else. `deploy/.env.example` lists every name.
 - **A new deploy key after a leak.** Make a new pair with `ssh-keygen -t ed25519`, put the public part in `/home/deploy/.ssh/authorized_keys` instead of the old one, the private part base64 encoded in SSH_PRIVATE_KEY, delete the private part from your laptop, and run ssh-check.
-- **Change the database password.** Change POSTGRES_PASSWORD and the password inside ConnectionStrings__DefaultConnection in `/srv/connect-test/.env` together. The database keeps its first password on its volume, so also change it in PostgreSQL itself, or start the test database over.
+- **Change the database password.** Change POSTGRES_PASSWORD and the password inside ConnectionStrings\_\_DefaultConnection in `/srv/connect-test/.env` together. The database keeps its first password on its volume, so also change it in PostgreSQL itself, or start the test database over.
 
 ## 11. The security scan
 
@@ -599,6 +601,7 @@ Every merge request, every run on dev and main, and once a week on dev, the pipe
   ```
 
   You should see "has no vulnerable packages" for every project. An advisory the client accepted still shows as High in this list; only the pipeline skips it. For the screen: `cd web`, `npm ci`, `npm audit --audit-level=high`, and you should see "found 0 vulnerabilities".
+
 - **When it is red.** Open the red job and read the package and the advisory link. Update the package to the version the advisory names as fixed, and push. Is there no fixed version, then tell the stand up the same day. Only the client may accept the risk, see `docs/security/securityExceptions.md`.
 - **The weekly run.** Build, Pipeline schedules, every Monday morning on dev. Only the two scan jobs run, nothing is deployed. One member per sprint reads the result on Monday and tells the stand up when it is red. Proposal: sprint 2 Wesley Oerlemans, sprint 3 Kelvin van Voorst, sprint 4 Nick Hoebe, sprint 5 Gurpreet Singh, decided at each sprint planning.
 - **Proof that it stops a change.** On 8 October 2026 the closed merge request !31 added `Newtonsoft.Json` 12.0.3 to the server on purpose. backend-scan turned red with NU1903 and the advisory GHSA-5crp-9r3c-p9vr (pipeline 583877), and turned green again after the package was removed. The screen half of this test follows once `web/package.json` exists.
@@ -645,13 +648,13 @@ This is the request line of one visit, from a local run on 20 October 2026 with 
 }
 ```
 
-| Field | What it says |
-|---|---|
-| `Timestamp` | When, always in UTC, so the server and your laptop write the same time |
-| `LogLevel`, `Category` | How serious it is, and which part of the server wrote it |
-| `Message`, `State` | The text, and the values of its message template as separate fields |
-| `Scopes` | The visit the line belongs to: `RequestId`, `RequestPath` (never the query string), `TraceId` and `SpanId`. Every line written during that visit carries them |
-| `Exception` | Only on an error line: the error with its stack trace |
+| Field                  | What it says                                                                                                                                                  |
+| ---------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `Timestamp`            | When, always in UTC, so the server and your laptop write the same time                                                                                        |
+| `LogLevel`, `Category` | How serious it is, and which part of the server wrote it                                                                                                      |
+| `Message`, `State`     | The text, and the values of its message template as separate fields                                                                                           |
+| `Scopes`               | The visit the line belongs to: `RequestId`, `RequestPath` (never the query string), `TraceId` and `SpanId`. Every line written during that visit carries them |
+| `Exception`            | Only on an error line: the error with its stack trace                                                                                                         |
 
 Lines written outside a visit, such as the start and the stop of the server, have no `RequestId`.
 
@@ -669,13 +672,13 @@ The tests in `api/Connect.Tests/Logging/LoggingTests.cs` check these rules on th
 
 Set in `api/Connect/appsettings.json`:
 
-| Category | Level | Why |
-|---|---|---|
-| `Default` | Information | Our own lines and the start and stop of the server |
-| `Microsoft.AspNetCore` | Warning | The framework writes several lines per visit, too many to find anything |
-| `Microsoft.AspNetCore.Hosting.Diagnostics` | Warning | Its "Request starting" line holds the query string |
-| `Microsoft.AspNetCore.HttpLogging.HttpLoggingMiddleware` | Information | The one request line per visit |
-| `Microsoft.EntityFrameworkCore.Database.Command` | Warning | Every SQL command at Information is noise |
+| Category                                                 | Level       | Why                                                                     |
+| -------------------------------------------------------- | ----------- | ----------------------------------------------------------------------- |
+| `Default`                                                | Information | Our own lines and the start and stop of the server                      |
+| `Microsoft.AspNetCore`                                   | Warning     | The framework writes several lines per visit, too many to find anything |
+| `Microsoft.AspNetCore.Hosting.Diagnostics`               | Warning     | Its "Request starting" line holds the query string                      |
+| `Microsoft.AspNetCore.HttpLogging.HttpLoggingMiddleware` | Information | The one request line per visit                                          |
+| `Microsoft.EntityFrameworkCore.Database.Command`         | Warning     | Every SQL command at Information is noise                               |
 
 ### Find one visit
 
@@ -736,19 +739,19 @@ From a local run on 20 October 2026 (environment Production, a local test databa
 
 ## References
 
-Microsoft. (2026). *CA2254: Template should be a static expression*. Microsoft Learn. https://learn.microsoft.com/en-us/dotnet/fundamentals/code-analysis/quality-rules/ca2254
+Microsoft. (2026). _CA2254: Template should be a static expression_. Microsoft Learn. https://learn.microsoft.com/en-us/dotnet/fundamentals/code-analysis/quality-rules/ca2254
 
-Microsoft. (2026). *Console log formatting*. Microsoft Learn. https://learn.microsoft.com/en-us/dotnet/core/extensions/console-log-formatter
+Microsoft. (2026). _Console log formatting_. Microsoft Learn. https://learn.microsoft.com/en-us/dotnet/core/extensions/console-log-formatter
 
-Microsoft. (2026). *HTTP logging in ASP.NET Core*. Microsoft Learn. https://learn.microsoft.com/en-us/aspnet/core/fundamentals/http-logging/
+Microsoft. (2026). _HTTP logging in ASP.NET Core_. Microsoft Learn. https://learn.microsoft.com/en-us/aspnet/core/fundamentals/http-logging/
 
-OWASP Foundation. (2026). *Logging Cheat Sheet*. OWASP Cheat Sheet Series. https://cheatsheetseries.owasp.org/cheatsheets/Logging_Cheat_Sheet.html
+OWASP Foundation. (2026). _Logging Cheat Sheet_. OWASP Cheat Sheet Series. https://cheatsheetseries.owasp.org/cheatsheets/Logging_Cheat_Sheet.html
 
-Microsoft. (2026). *Configuration in ASP.NET Core*. Microsoft Learn. https://learn.microsoft.com/en-us/aspnet/core/fundamentals/configuration/
+Microsoft. (2026). _Configuration in ASP.NET Core_. Microsoft Learn. https://learn.microsoft.com/en-us/aspnet/core/fundamentals/configuration/
 
-Microsoft. (2026). *Safe storage of app secrets in development in ASP.NET Core*. Microsoft Learn. https://learn.microsoft.com/en-us/aspnet/core/security/app-secrets/
+Microsoft. (2026). _Safe storage of app secrets in development in ASP.NET Core_. Microsoft Learn. https://learn.microsoft.com/en-us/aspnet/core/security/app-secrets/
 
-The Kubernetes Authors. (2026). *Secrets*. Kubernetes Documentation. https://kubernetes.io/docs/concepts/configuration/secret/
+The Kubernetes Authors. (2026). _Secrets_. Kubernetes Documentation. https://kubernetes.io/docs/concepts/configuration/secret/
 
 ## AI use declaration
 
