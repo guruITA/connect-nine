@@ -25,6 +25,7 @@ This page is the way in. Start with the part that fits your question.
 | [pages](pages/) | Every page of the website, one document per page with every element | [pages/README.md](pages/README.md), the overview with a link to each of the 66 page documents |
 | [school](school/) | What the HvA asks and how the issues prove it | [workshopCoverage.md](school/workshopCoverage.md), [issueMapping.md](school/issueMapping.md), [documentGuide.md](school/documentGuide.md), [datapointPlan.md](school/datapointPlan.md) |
 | [sprintReviews](sprintReviews/) | The deck of each sprint review, the review form the client filled in, the texts the team puts in Portflow, and the template for the next reviews | [sprint1ReviewDeck.pptx](sprintReviews/sprint1ReviewDeck.pptx), [sprint1ReviewForm.pdf](sprintReviews/sprint1ReviewForm.pdf), [sprint1PortflowGuide.md](sprintReviews/sprint1PortflowGuide.md), [portflowSprintReviewTemplate.md](sprintReviews/portflowSprintReviewTemplate.md) |
+| [presentations](presentations/) | The decks the team shows the client between the sprint reviews, with speaker notes | [sprint2Week1ClientUpdate.html](presentations/sprint2Week1ClientUpdate.html) |
 
 [school/documentGuide.md](school/documentGuide.md) describes every document with what it is for and which school criterion it serves.
 
