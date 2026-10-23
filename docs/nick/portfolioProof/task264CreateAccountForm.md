@@ -17,6 +17,12 @@ The implemented scope is deliberately limited to Task 3.6:
 - No social login, later password rules or confirmation-email flow.
 - `Password again` is visible in the supplied broader design export, but it is not listed in Task 3.6. It is therefore not implemented here and should be discussed during review as a scope question.
 
+The following review suggestions are recorded as future work and are outside the scope of MR !82, task #264 and issue 03:
+
+- Add a Show/Hide password control so the person can check the entered password.
+- Add a privacy-policy agreement checkbox.
+- Show a Code of Conduct confirmation popup after clicking Create account, before account creation.
+
 ## OR1 — plan, scope and design decisions
 
 ### Planned states
@@ -50,16 +56,45 @@ The reusable boundary is [`FormField`](../../../web/src/components/FormField.tsx
 
 ## OR3 — stakeholder feedback
 
-This evidence is still outstanding. A teammate and a person outside the team still need to try the form on a phone. The final proof must record each person’s name, date, device/context, exact words, what changed because of the feedback, and what was deliberately not changed. No stakeholder feedback is claimed here yet.
+The feedback was collected on 23 October 2026 on a Motorola Edge 20 Pro. The client was Rachid and the teammate was Gurpreet. Their comments were short, but together they provide a clear picture: the current form already feels at home in the design, while the next improvements should focus on confidence and consent.
 
-The `Password again` scope question should be raised during review: it appears in the broader design export but is not part of Task 3.6. The decision and the reviewer’s exact feedback should be added here after that review happens.
+### Client feedback — Rachid
+
+Rachid responded positively to the overall experience:
+
+> “It looks good and fits the design nicely. It is clear how to use. The website is nicely responsive on mobile.”
+
+The one requested improvement was:
+
+> “One thing that could still be added is a password reveal, so I can check the password.”
+
+This confirms that the visual design, usability and mobile layout are working well. The password reveal is recorded as a future requirement. No password reveal control was added to MR !82, task #264 or issue 03.
+
+### Teammate feedback — Gurpreet
+
+Gurpreet focused on making the agreement step more explicit:
+
+> “A checkbox for the privacy policy, and a popup when you click Create account. That is where you agree to the Code of Conduct.”
+
+This is recorded as two future requirements: a privacy-policy checkbox and a Code of Conduct confirmation popup. Neither feature was added to MR !82, task #264 or issue 03, and the policy documents/pages are not built in this task.
+
+### Feedback screenshots
+
+The supplied screenshots are retained as evidence, use descriptive filenames and are shown in a compact grid because they are mobile-format images:
+
+|  |  |
+|---|---|
+| **Empty form**<br>![Empty create-account form on mobile](images/create-account-empty-mobile.png) | **Validation errors**<br>![Create-account validation errors on mobile](images/create-account-validation-error-mobile.png) |
+| **Existing account**<br>![Existing-account response](images/create-account-existing-account.png) | **Successful account creation**<br>![Successful account creation on mobile](images/create-account-success-mobile.png) |
+
+The `Password again` scope question remains separate: it appears in the broader design export but is not part of Task 3.6. No decision to add it was made in this PR, task or issue.
 
 ## OR4 — validation and remaining limits
 
 The implementation includes focused tests for the request boundary and page behavior:
 
 - [`client.test.ts`](../../../web/src/api/client.test.ts) covers 201, 400, 409, 500, 502, 503 and a failed fetch.
-- [`CreateAccount.test.tsx`](../../../web/src/pages/CreateAccount.test.tsx) covers labels, autocomplete, hidden password input, the busy button, made, invalid, taken and not-reachable states, password clearing and axe output.
+- [`CreateAccount.test.tsx`](../../../web/src/pages/CreateAccount.test.tsx) covers labels, autocomplete, the hidden password input, the busy button, made, invalid, taken and not-reachable states, password clearing and axe output. It does not cover the suggested future feedback features because they are not implemented in this task.
 - [`axe.ts`](../../../web/src/test/axe.ts) provides the accessibility check used by the page test.
 
 `npm run build` passed during implementation. After the accessible form landmark fix, the focused command `npx vitest run src/pages/CreateAccount.test.tsx --pool=forks --maxWorkers=1 --no-file-parallelism` passed all 7 tests. An earlier full run reported 34 passed and 1 failed because that landmark was missing; a later local run was affected by a temporary Vitest `ENOENT` environment error in unrelated suites. The GitLab CI job [1347898](https://gitlab.fdmci.hva.nl/studio/social-impact-apps/onderwijs/projects/2026-2027-semester-1/projects/project-9-wail-salutem-foundation-project-2/connect-nine/-/jobs/1347898) succeeded.
@@ -68,7 +103,7 @@ The implementation includes focused tests for the request boundary and page beha
 
 The `aria-labelledby="create-account-title"` rule was temporarily removed from `CreateAccountForm`. The focused CreateAccount test then failed 1 of 7 tests: `has accessible fields and keeps the password hidden` could not find a form named `Make an account`. Restoring the attribute made all 7 focused tests pass. This demonstrates that the accessibility assertion protects a real implementation rule.
 
-The tests do not yet cover pressing Enter in the password field while the request is busy. They also do not replace a real 360-pixel and 1280-pixel browser check or phone screenshots of the success and taken states.
+The tests do not yet cover pressing Enter in the password field while the request is busy. They also do not replace a real 360-pixel and 1280-pixel browser check, although mobile screenshots now provide evidence for the success and taken states.
 
 ## OR5 — privacy, security and accessibility
 
@@ -87,16 +122,19 @@ The required 409 message is useful because it tells the person that they should 
 
 ## Evidence checklist
 
-- [x] Task scope and six states written down.
+- [x] Task scope, feedback and six states written down; the requested feedback features are explicitly marked as outside this PR/task/issue.
 - [x] Implementation and test files linked.
 - [x] Privacy and accessibility choices explained.
 - [x] `npm run build` passed.
 - [x] Removed-rule experiment captured: removing the form accessible name caused the focused test to fail.
 - [x] Frontend GitLab CI job [1347898](https://gitlab.fdmci.hva.nl/studio/social-impact-apps/onderwijs/projects/2026-2027-semester-1/projects/project-9-wail-salutem-foundation-project-2/connect-nine/-/jobs/1347898) succeeded.
 - [x] 360px and 1280px browser checks.
-- [ ] Phone screenshots for success and taken states.
-- [ ] Teammate feedback with exact words, name and date.
-- [ ] Feedback from a person outside the team with exact words, name and date.
+- [x] Supplied mobile and account-state screenshots included with descriptive filenames.
+- [x] Phone screenshots for success and taken states included.
+- [x] Teammate and stakeholder feedback recorded as faithful English translations with future-work boundaries.
+- [x] Date of feedback recorded: 23 October 2026.
+- [x] Feedback participants recorded: client Rachid and teammate Gurpreet.
+- [x] Feedback device/context recorded: Motorola Edge 20 Pro.
 - [x] Merge request [!82](https://gitlab.fdmci.hva.nl/studio/social-impact-apps/onderwijs/projects/2026-2027-semester-1/projects/project-9-wail-salutem-foundation-project-2/connect-nine/-/merge_requests/82) linked.
 - [ ] Link the proof and merge request in Portflow.
 
