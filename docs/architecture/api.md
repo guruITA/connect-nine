@@ -11,6 +11,7 @@ These addresses work without logging in (`AllowAnonymous`). Every other address 
 | Address | Why it is open |
 |---|---|
 | `GET /api/health` | The deploy job, a monitor and the client check it without an account. |
+| Every address outside `/api` | It is the screen, which decides itself what a visitor may see (see The screen and unknown addresses). |
 
 ## GET /api/health
 
@@ -84,6 +85,27 @@ Returns:
   Problem Details titled `Connect is not reachable right now`.
 - HTTP `500 Internal Server Error` for other mapped errors or unhandled exceptions,
   with Problem Details titled `An unexpected error occurred.`
+
+## The screen and unknown addresses
+
+The server also serves the built screen (`web/dist`, copied into `wwwroot` by the job deploy-test), so the test site has one address and needs no CORS (#267).
+
+- `GET` of a file of the screen, such as `/assets/index-<hash>.js`: the file, without a login.
+- `GET` or `HEAD` of any other address outside `/api`, such as `/` or `/create-account`: `200` with `index.html`. The screen picks the page from the address itself.
+- A missing file outside `/api`, such as `/missing.svg`: `404` without a body.
+- Any method on an address under `/api` that does not exist: `404` with `application/problem+json`:
+
+```json
+{
+  "type": "https://tools.ietf.org/html/rfc9110#section-15.5.5",
+  "title": "This address does not exist",
+  "status": 404,
+  "traceId": "00-<trace id>-<span id>-00"
+}
+```
+
+- A known address with another method keeps its `405`, for example `POST /api/health`.
+- Code: `api/Connect.Presentation/Screen/ScreenPipeline.cs`, called as `app.UseScreen()` in `api/Connect/Program.cs` before authentication. It answers only when no address answered with a body. A `MapFallback` was not used, because routing then picks the fallback over the `405` of a known address.
 
 ## AI use declaration
 

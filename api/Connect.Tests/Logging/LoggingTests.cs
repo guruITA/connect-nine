@@ -22,24 +22,23 @@ public sealed class LoggingTests
 
     private const string RequestLineCategory = "Microsoft.AspNetCore.HttpLogging.HttpLoggingMiddleware";
 
-    private CapturingLoggerProvider _capture;
+    private LoggerSubstitutes _logs;
     private WebApplicationFactory<Program> _factory;
 
     [SetUp]
     public void SetUp()
     {
-        _capture = new CapturingLoggerProvider();
+        _logs = new LoggerSubstitutes();
         _factory = new WebApplicationFactory<Program>()
             .WithWebHostBuilder(webHost => webHost
                 .UseSetting("ConnectionStrings:DefaultConnection", UnreachableDatabase)
-                .ConfigureTestServices(services => services.AddSingleton<ILoggerProvider>(_capture)));
+                .ConfigureTestServices(services => services.AddSingleton(_logs.Provider)));
     }
 
     [TearDown]
     public void TearDown()
     {
         _factory.Dispose();
-        _capture.Dispose();
     }
 
     [Test]
@@ -50,7 +49,7 @@ public sealed class LoggingTests
         ConsoleLoggerOptions console = services.GetRequiredService<IOptions<ConsoleLoggerOptions>>().Value;
         JsonConsoleFormatterOptions json = services.GetRequiredService<IOptions<JsonConsoleFormatterOptions>>().Value;
         string[] providers = services.GetServices<ILoggerProvider>()
-            .Where(provider => provider != _capture)
+            .Where(provider => provider != _logs.Provider)
             .Select(provider => provider.GetType().Name)
             .ToArray();
 
@@ -82,8 +81,8 @@ public sealed class LoggingTests
 
         using HttpResponseMessage response = await client.GetAsync("/api/health?token=abc123secret");
 
-        Assert.That(_capture.Lines, Is.Not.Empty);
-        Assert.That(_capture.Lines.Select(line => line.AllText), Has.None.Contain("abc123secret"));
+        Assert.That(_logs.Lines, Is.Not.Empty);
+        Assert.That(_logs.Lines.Select(line => line.AllText), Has.None.Contain("abc123secret"));
     }
 
     [Test]
@@ -94,7 +93,7 @@ public sealed class LoggingTests
         using HttpResponseMessage first = await client.GetAsync("/api/health");
         using HttpResponseMessage second = await client.GetAsync("/api/health");
 
-        CapturedLogLine[] requestLines = _capture.Lines
+        LoggedLine[] requestLines = _logs.Lines
             .Where(line => line.Category == RequestLineCategory)
             .ToArray();
         string?[] requestIds = requestLines
@@ -115,7 +114,7 @@ public sealed class LoggingTests
 
         using HttpResponseMessage response = await client.GetAsync("/api/health?token=abc123secret");
 
-        CapturedLogLine requestLine = _capture.Lines.Single(line => line.Category == RequestLineCategory);
+        LoggedLine requestLine = _logs.Lines.Single(line => line.Category == RequestLineCategory);
         Assert.That(
             requestLine.TemplateValues.Keys.Where(key => key != "{OriginalFormat}"),
             Is.EquivalentTo(new[] { "Method", "PathBase", "Path", "StatusCode", "Duration" }));
@@ -128,14 +127,14 @@ public sealed class LoggingTests
 
         using HttpResponseMessage response = await client.GetAsync("/api/health");
 
-        CapturedLogLine[] errorLines = _capture.Lines
+        LoggedLine[] errorLines = _logs.Lines
             .Where(line => line.LogLevel >= LogLevel.Error)
             .ToArray();
 
         using (Assert.EnterMultipleScope())
         {
             Assert.That(errorLines, Is.Not.Empty);
-            Assert.That(errorLines, Has.All.Matches<CapturedLogLine>(line => line.Scopes.ContainsKey("RequestId")));
+            Assert.That(errorLines, Has.All.Matches<LoggedLine>(line => line.Scopes.ContainsKey("RequestId")));
             Assert.That(errorLines.Select(line => line.AllText), Has.None.Contain("Password=secret"));
         }
     }

@@ -32,13 +32,13 @@ public sealed class AccountLoggingTests
         ICommandHandler<CreateAccountCommand, Result<CreateAccountResult>> handler = CreateHandler();
         handler.HandleAsync(Arg.Any<CreateAccountCommand>(), Arg.Any<CancellationToken>())
             .Returns(Result<CreateAccountResult>.Success(new CreateAccountResult(Guid.NewGuid(), Email)));
-        CapturingLoggerProvider capture = new();
-        using WebApplicationFactory<Program> factory = CreateFactory(handler, capture);
+        LoggerSubstitutes logs = new();
+        using WebApplicationFactory<Program> factory = CreateFactory(handler, logs);
         using HttpClient client = factory.CreateClient();
 
         using HttpResponseMessage response = await client.PostAsync("/api/accounts/", JsonContent());
 
-        string[] lines = capture.Lines.Select(line => line.AllText).ToArray();
+        string[] lines = logs.Lines.Select(line => line.AllText).ToArray();
         using (Assert.EnterMultipleScope())
         {
             Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.Created));
@@ -54,16 +54,16 @@ public sealed class AccountLoggingTests
         ICommandHandler<CreateAccountCommand, Result<CreateAccountResult>> handler = CreateHandler();
         handler.HandleAsync(Arg.Any<CreateAccountCommand>(), Arg.Any<CancellationToken>())
             .ThrowsAsync(new InvalidOperationException("Something went wrong in the handler."));
-        CapturingLoggerProvider capture = new();
-        using WebApplicationFactory<Program> factory = CreateFactory(handler, capture);
+        LoggerSubstitutes logs = new();
+        using WebApplicationFactory<Program> factory = CreateFactory(handler, logs);
         using HttpClient client = factory.CreateClient();
 
         using HttpResponseMessage response = await client.PostAsync("/api/accounts/", JsonContent());
 
-        CapturedLogLine[] errorLines = capture.Lines
+        LoggedLine[] errorLines = logs.Lines
             .Where(line => line.LogLevel >= LogLevel.Error)
             .ToArray();
-        CapturedLogLine requestLine = capture.Lines.Single(line => line.Category == RequestLineCategory);
+        LoggedLine requestLine = logs.Lines.Single(line => line.Category == RequestLineCategory);
         string? requestId = requestLine.Scopes.GetValueOrDefault("RequestId");
 
         using (Assert.EnterMultipleScope())
@@ -74,8 +74,8 @@ public sealed class AccountLoggingTests
             Assert.That(requestId, Is.Not.Null);
             Assert.That(errorLines.Select(line => line.Scopes.GetValueOrDefault("RequestId")), Has.All.EqualTo(requestId));
             Assert.That(requestLine.TemplateValues.GetValueOrDefault("StatusCode"), Is.EqualTo("500"));
-            Assert.That(capture.Lines.Select(line => line.AllText), Has.None.Contain(Password));
-            Assert.That(capture.Lines.Select(line => line.AllText), Has.None.Contain(Email));
+            Assert.That(logs.Lines.Select(line => line.AllText), Has.None.Contain(Password));
+            Assert.That(logs.Lines.Select(line => line.AllText), Has.None.Contain(Email));
         }
     }
 
@@ -85,7 +85,7 @@ public sealed class AccountLoggingTests
     // The handler is replaced, so the test needs no database: the log comes from the whole server.
     private static WebApplicationFactory<Program> CreateFactory(
         ICommandHandler<CreateAccountCommand, Result<CreateAccountResult>> handler,
-        CapturingLoggerProvider capture)
+        LoggerSubstitutes logs)
     {
         return new WebApplicationFactory<Program>().WithWebHostBuilder(builder => builder
             .UseSetting("ConnectionStrings:DefaultConnection", "Host=unused;Database=unused")
@@ -93,7 +93,7 @@ public sealed class AccountLoggingTests
             {
                 services.RemoveAll<ICommandHandler<CreateAccountCommand, Result<CreateAccountResult>>>();
                 services.AddSingleton(handler);
-                services.AddSingleton<ILoggerProvider>(capture);
+                services.AddSingleton(logs.Provider);
             }));
     }
 

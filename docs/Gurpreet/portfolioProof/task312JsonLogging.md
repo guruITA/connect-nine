@@ -38,6 +38,8 @@ BoKSA asks: "You design and implement systematically, justify choices in relatio
    | 5 | `api/Connect/appsettings.json` | The levels of the table above |
    | 6 | `docs/team/onboarding.md`, section Logs | What a line looks like, what never goes in it and why, how to find one visit by `RequestId` |
 
+   Since 22 October 2026, step 1 is `api/Connect.Tests/Fixtures/LoggerSubstitutes.cs`: a substitute `ILoggerProvider` and `ILogger` of NSubstitute, read with `ReceivedCalls()`, because rule 4 of Tests and mocking (!77) says every stand-in in a test is a substitute. The tests stayed the same and are still green (!94).
+
    The task names `api/Connect.Presentation/Program.cs` and `api/Connect.Presentation.Tests/LoggingTests.cs`. The real start project is `api/Connect`, and a test that starts the whole server belongs in `api/Connect.Tests`, so I use those paths.
 
 2. **The alternatives, and why they lost.**

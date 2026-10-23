@@ -11,7 +11,17 @@ Each task that adds test accounts or seed data adds its lines here, in the same 
 | `e2e-<time>@example.org`, for example `e2e-1792579200000@example.org` | `web/e2e/createAccount.spec.ts`, once per run | The browser test of making an account (#265). `<time>` is the number of milliseconds of `Date.now()`, so every run makes a new account and never meets an old one. |
 
 - The password is made up during the run with `randomUUID()` plus `Aa1!`, so it meets every password rule of the server, and is not in Git. The trace of a failed run (`test-results/`) does show it, because a trace keeps every typed value. That is accepted: the account is made up and holds no data.
-- Once the job e2e-test of #267 runs the test after every deploy, these accounts pile up on the test site, one per deploy of dev. They hold no personal data and are not in the seed data, so a test site that starts over with an empty database no longer has them.
+- The job e2e-test of #267 runs the test after every deploy, so these accounts pile up on the test site, one per deploy of dev. They hold no personal data and are not in the seed data, so a test site that starts over with an empty database no longer has them.
+
+## Accounts made by hand on the test site
+
+| Address | Made by | What for |
+|---|---|---|
+| `check-03-<name>@example.org`, for example `check-03-sam@example.org` | Each team member once, through Make an account on the test site | The team check of issue 03 Create an account (GitLab #14), closed by task 3.9 (#267): every acceptance criterion of #14 ticked on a phone and a laptop by someone who built no task of it. |
+
+- `<name>` is the first name of the team member, so the team sees who made which account.
+- The password is one the team member makes up for the check, at least fifteen characters, and never a password used anywhere else. It is not written down in Git.
+- The accounts stay on the test site after the check. They are not in the seed data, so a test site that starts over with an empty database no longer has them.
 
 ## AI use declaration
 

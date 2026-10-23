@@ -1,0 +1,56 @@
+# The test site on the foundation's server, in /srv/connect-test (task 3.9, #267).
+# The job deploy-test copies this file there, with the published server in app/ and the migration bundle efbundle.
+# Every secret setting comes from /srv/connect-test/.env, made on the server and never in Git (task 9.5, #240).
+# deploy/.env.example lists every name.
+name: connect-test
+
+services:
+  database:
+    image: postgres:16
+    restart: unless-stopped
+    env_file: .env
+    # No published port: only the server and the migrations reach it, inside the network of this file.
+    volumes:
+      - connect-test-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U \"$$POSTGRES_USER\" -d \"$$POSTGRES_DB\""]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  # Runs once per deploy with docker compose run --rm migrations, never with up (profile tools).
+  migrations:
+    # The same image as the server, so the server pulls one image less. The bundle carries its own runtime.
+    image: mcr.microsoft.com/dotnet/aspnet:10.0
+    profiles: ["tools"]
+    env_file: .env
+    volumes:
+      - ./efbundle:/efbundle:ro
+    # No --connection: the bundle reads ConnectionStrings__DefaultConnection from env_file, like the server,
+    # so the password never stands on a command line that every user of the server can read with ps.
+    entrypoint: ["/efbundle"]
+    depends_on:
+      database:
+        condition: service_healthy
+
+  server:
+    image: mcr.microsoft.com/dotnet/aspnet:10.0
+    restart: unless-stopped
+    env_file: .env
+    environment:
+      # Not Development, so no developer pages, and not Production, which is the foundation's own server.
+      ASPNETCORE_ENVIRONMENT: Staging
+      ASPNETCORE_HTTP_PORTS: "8080"
+    working_dir: /app
+    volumes:
+      - ./app:/app:ro
+    entrypoint: ["dotnet", "Connect.dll"]
+    # Only on the server itself. Caddy (deploy/Caddyfile) is the front door with the padlock.
+    ports:
+      - "127.0.0.1:8080:8080"
+    depends_on:
+      database:
+        condition: service_healthy
+
+volumes:
+  connect-test-data:
