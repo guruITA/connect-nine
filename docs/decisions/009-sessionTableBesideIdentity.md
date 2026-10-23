@@ -100,7 +100,7 @@ Alice logs in on a laptop in the school library and on her phone. Connect writes
 | Name | Date agreed |
 |---|---|
 | Bayon Eerhart | |
-| Nick Hoebe | |
+| Nick Hoebe | 23 October 2026 |
 | Wesley Oerlemans | 23 October 2026 |
 | Gurpreet Singh | |
 | Kelvin van Voorst | |
