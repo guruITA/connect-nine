@@ -40,6 +40,7 @@ One file per task I did, with the proof block of the task filled in. A point tha
 | `portfolioProof/task353ComposeApp.md` | Task 20.2 All of Connect with docker compose --profile app (#353), merge request !93 | Managing and Collaborating MS1 and MS4 |
 | `portfolioProof/task356OneCommandGuide.md` | Task 20.5 Run all of Connect with one command (#356), merge request !93 | Managing and Collaborating MS1 and MS4 |
 | `portfolioProof/task1519SprintReview1Documents.md` | Issue 1519 The sprint 1 review documents in the repository (#1519), merge requests !43, !44 and !45 | Managing and Collaborating MS1 |
+| `portfolioProof/task1555ScanFix.md` | Task 16.4 The security scan green again after two new advisories (#1555), merge request !99 | Designing and Realising OR4 |
 | `portfolioProof/task1543TestsAndMocking.md` | Task 3.12 The code conventions for tests and NSubstitute (#1543), merge request !77 | Managing and Collaborating MS1 and MS4 |
 | `portfolioProof/task1465CqrsRewording.md` | Task 11.4 The tasks of every next sprint reworded to the CQRS shape (#1465), merge request !62 | Managing and Collaborating MS4 |
 | `portfolioProof/task1537IdentityTables.md` | Task 3.10 The database rules say what the Identity tables have (#1537), merge request !66 | Managing and Collaborating MS4 |
