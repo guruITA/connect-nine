@@ -111,6 +111,8 @@ api-->>browser: 401
 
 Key: a solid arrow is a call, a dashed arrow is an answer.
 
+**Update of 24 October 2026.** The team kept the cookie and its flags, but not the cookie of Identity. Nick Hoebe and I picked a table session beside ASP.NET Core Identity on 22 October 2026, team decision 009 (`docs/decisions/009-sessionTableBesideIdentity.md`). Identity still checks the password, and then Connect sets its own cookie `connect_session`, HttpOnly, Secure and SameSite Lax, which belongs to one row per log in. With the cookie of Identity alone, a log out only deletes the cookie in that browser, while the log out of issue 18 asks that a copy of the log in stops working at once. The advice and the diagram above are my sprint 1 advice as it was.
+
 ### 3.3 Hashing and salting passwords
 
 My starting point is that a stored password must never be readable, not even by us. So we store a hash, the result of a one-way function that cannot be turned back into the password (OWASP Foundation, n.d.-f). A salt is a unique, random value added to each password while hashing (OWASP Foundation, n.d.-f). Two equal passwords then get different hashes, and precomputed lookup tables such as rainbow tables become useless (OWASP Foundation, n.d.-f). A good password hash is also slow on purpose, which makes guessing more difficult, expensive and time-consuming for an attacker (OWASP Foundation, n.d.-f).

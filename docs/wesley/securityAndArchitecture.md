@@ -439,6 +439,8 @@ Key: the lightest boxes are components of the API, the others are its neighbours
 | Entities and rules | Domain | Part of the layered structure in the team's architecture document |
 | ConnectDbContext and adapters | Infrastructure | Decided with EF Core and CQRS |
 
+Update of 24 October 2026: the authentication component is decided in team decision 009, see the update under record 8.10.
+
 Section 6.4 follows one real request, a member viewing another member's profile, through these components and the four projects. That is the walk issue 253 (one real request through the four projects) asks the team to do together.
 
 In my design, the authentication and authorization components stay in this diagram, because every request passes them before it reaches an endpoint. How they work is in sections 3.1, 3.2 and 3.4 of my security document.
@@ -919,6 +921,8 @@ Caddy itself is not an option that lost. Per the infrastructure document, it is 
 **Options that lost.** A token kept in the browser, against the cookie, and role checks inside each endpoint, against policies with resource checks. Sections 3.2 and 3.4 of my security document give the reasons.
 
 **Consequences.** The authentication and authorization components of section 6.3 run before every endpoint, and the rule for minors lives in one handler, as section 6.4 shows. The React app and the API share one origin behind Caddy, and behind Traefik as well for the production path, and section 3.2 of my security document explains why.
+
+**Update of 24 October 2026.** The team went another way than this proposal. Nick Hoebe and I picked a table session beside ASP.NET Core Identity on 22 October 2026, team decision 009 (`docs/decisions/009-sessionTableBesideIdentity.md`). Identity keeps the account and checks the password, and the cookie `connect_session` belongs to one row per log in, so one log in can be ended on the server and the log ins of a member can be counted. The role policies and the resource check of this record are not part of decision 009. The rest of this record is my sprint 1 proposal as it was.
 
 ### 8.11 Production on single-node k3s with Terraform, the test site on Docker Compose
 
