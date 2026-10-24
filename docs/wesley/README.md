@@ -19,17 +19,18 @@ One file per task I did, with the proof block of the task filled in. A point tha
 | `portfolioProof/task266BuildAndTest.md` | Task 3.8 Build and test in the pipeline (#266), merge request !54 | Managing and Collaborating MS1 and MS4 |
 | `portfolioProof/task1499FigmaBoardInTeamDocs.md` | Task 179.1 The team documents follow the new Figma board (#1499), merge request !37 | Managing and Collaborating MS1 and MS4 |
 | `portfolioProof/task38CollaborationAgreementDeclaration.md` | Issue 106 My documents end with the text of section 9.1 of the collaboration agreement (#38), merge request !57 | Managing and Collaborating MS4 |
+| `portfolioProof/task38EvidenceCleanup.md` | Issue 106 The sprint 1 evidence documents cite only files in the repository (#38), merge requests !17 and !18 | Managing and Collaborating MS1, Analysing and Advising AA2 |
 | `portfolioProof/task2RepositorySkeleton.md` | Task 1.1 The starting structure (#2), merge request !13 | Managing and Collaborating MS1 and MS4 |
 | `portfolioProof/task1497PrototypeInPageDocs.md` | Task 178.1 The page documents point to the prototype screens (#1497), merge request !35 | Managing and Collaborating MS1 and MS4 |
 | `portfolioProof/task241ServerCheckMeeting.md` | Task 9.6 The plan for the server check with the team (#241), merge request !60 | Managing and Collaborating MS1 and MS4 |
 | `portfolioProof/task9LoggedAfterwards.md` | Task 9 Templates and rules (#9), work logged afterwards as issues #1500 to #1515, merge request !39 | Managing and Collaborating MS1 and MS4 |
 | `portfolioProof/task5Pipeline.md` | Task 1.4 The first pipeline (#5), merge request !24, and task 1.5 The red pipeline on purpose (#6), merge requests !25 and !32 | Managing and Collaborating MS1 and MS4, Organising and Realising OR4 |
-| `portfolioProof/task7CodeConventionsDecision.md` | Task 1.6 The team confirms the code conventions (#7), merge request !26 | Analysing and Advising AA4 and AA5 |
+| `portfolioProof/task7CodeConventionsDecision.md` | Task 1.6 The team confirms the code conventions (#7), merge requests !26 and !59 | Analysing and Advising AA4 and AA5, Managing and Collaborating MS4 |
 | `portfolioProof/task8ConventionsAndOnboarding.md` | Task 1.7 The conventions with examples and the getting started guide (#8), merge request !29 | Managing and Collaborating MS1 and MS4 |
 | `portfolioProof/task9Templates.md` | Task 1.8 The templates (#9), merge request !15 | Managing and Collaborating MS1 and MS4 |
 | `portfolioProof/task9CompactIssueTemplates.md` | Task 1.8 The compact issue and task templates (#9), merge request !16 | Managing and Collaborating MS1 and MS4 |
 | `portfolioProof/task9ClientServer.md` | Tasks 9.1 to 9.5 The client's server (#236, #237, #238, #239, #240), merge requests !5 and !34 | Managing and Collaborating MS1 and MS4 |
-| `portfolioProof/task11ServerStructureDecisions.md` | Tasks 11.1 to 11.3 The structure and the version of the server (#253, #254, #255), merge request !27 | Analysing and Advising AA2, AA3, AA4 and AA5 |
+| `portfolioProof/task11ServerStructureDecisions.md` | Tasks 11.1 to 11.3 The structure and the version of the server (#253, #254, #255), merge requests !27 and !58 | Analysing and Advising AA2, AA3, AA4 and AA5, Managing and Collaborating MS4 |
 | `portfolioProof/task1517ReplanSprints.md` | Task 180.1 Sprints 2 to 5 planned again after sprint 1 (#1517), merge request !40 | Managing and Collaborating MS1 and MS4 |
 | `portfolioProof/task3MainOnlyFromDev.md` | Task 1.2 Dev and main protected (#3), merge request !2 | Managing and Collaborating MS1 and MS4 |
 | `portfolioProof/task16DependencyScan.md` | Task 16.1 The security scan (#308), merge request !30, and task 16.2 The red scan on purpose (#309), merge request !31 | Managing and Collaborating (#308), Designing and Realising (#309) |
