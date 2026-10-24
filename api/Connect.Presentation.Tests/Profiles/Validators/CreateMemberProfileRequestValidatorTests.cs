@@ -112,7 +112,7 @@ public sealed class CreateMemberProfileRequestValidatorTests
 
         Assert.That(
             MessageFor(result, nameof(CreateMemberProfileRequest.Bio)),
-            Is.EqualTo("Use at most 280 characters about yourself"));
+            Is.EqualTo("Your short line can be at most 280 characters"));
     }
 
     [Test]

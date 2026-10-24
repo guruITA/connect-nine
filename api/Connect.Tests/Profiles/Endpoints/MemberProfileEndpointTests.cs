@@ -87,7 +87,7 @@ public sealed class MemberProfileEndpointTests
             Assert.That(errors.GetProperty("region")[0].GetString(), Is.EqualTo("Fill in your town or area"));
             Assert.That(
                 errors.GetProperty("bio")[0].GetString(),
-                Is.EqualTo("Use at most 280 characters about yourself"));
+                Is.EqualTo("Your short line can be at most 280 characters"));
             Assert.That(ProfilesOf(factory, accountId), Is.Empty);
         }
     }

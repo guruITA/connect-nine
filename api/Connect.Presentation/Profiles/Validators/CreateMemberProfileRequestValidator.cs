@@ -31,6 +31,6 @@ public sealed class CreateMemberProfileRequestValidator
 
         RuleFor(request => request.Bio)
             .MaximumLength(280)
-            .WithMessage("Use at most 280 characters about yourself");
+            .WithMessage("Your short line can be at most 280 characters");
     }
 }
