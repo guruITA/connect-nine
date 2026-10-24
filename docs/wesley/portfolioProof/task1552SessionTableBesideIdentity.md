@@ -13,7 +13,7 @@ School asks: "You give well-founded advice in which you weigh alternatives, iden
 2. **Why the cookie alone lost.** Log out (#18), a must in Sprint 2, asks that a copy of the log in stops working at once. Microsoft writes that "the cookie is the single source of identity", and the security stamp ends every cookie of an account at once, never one. OWASP asks that log out ends the session at least on the server. The table ends one log in on the server and keeps the other log ins of the member, and it can count them (#197). Where the cookie alone is enough, ending every log in at once (#45, #202), the decision says so.
 3. **The risks of the choice.** One read of the database on every request with a cookie, on the unique index of task 4.1 (#268). A token that must stay out of the database and the logs, so only its hash is stored. A second hash beside the hash of the password, which the decision keeps apart: the first is one log in on one device, the second stays with Identity.
 4. **What it means for the code that exists.** Nick Hoebe's `AddIdentityCore<Account>()` switches on no cookie of Identity, so nothing has to be removed. Following decision 007, the check of the password at log in is Identity work behind a small interface of Application, and the session row goes through `IAppDbContext`. The foreign key `account_id` points to `AspNetUsers`.
-   - TODO Nick Hoebe: a line under Agreed by in decision 009, or a comment on !98 with what should be different, before task 4.1 (#268) starts.
+5. **Picked with the one who builds it.** Nick Hoebe and I picked this way in our talk of 22 October 2026, before he started task 4.1 (#268). He confirmed the written decision under Agreed by on 23 October 2026, in commit 35aa34c7 on this branch.
 
 ## AA5 Adapting your communication to each audience
 
@@ -25,8 +25,9 @@ School asks: "You adapt your communication to different target groups in form an
 
 ## TODO
 
-- [ ] Whole team: a line under Agreed by in `docs/decisions/009-sessionTableBesideIdentity.md`, Nick Hoebe first.
-- [ ] Wesley: write in #1552 when and where the team agreed.
+- [x] Nick Hoebe: a line under Agreed by in `docs/decisions/009-sessionTableBesideIdentity.md`, 23 October 2026 (35aa34c7).
+- [ ] Bayon Eerhart, Gurpreet Singh and Kelvin van Voorst: a line under Agreed by.
+- [ ] Wesley: write in #1552 when and where the rest of the team agreed.
 
 ## AI use
 
