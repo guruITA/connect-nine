@@ -33,8 +33,8 @@ One file per task I did, with the proof block of the task filled in. A point tha
 | `portfolioProof/task11ServerStructureDecisions.md` | Tasks 11.1 to 11.3 The structure and the version of the server (#253, #254, #255), merge requests !27 and !58 | Analysing and Advising AA2, AA3, AA4 and AA5, Managing and Collaborating MS4 |
 | `portfolioProof/task1517ReplanSprints.md` | Task 180.1 Sprints 2 to 5 planned again after sprint 1 (#1517), merge request !40 | Managing and Collaborating MS1 and MS4 |
 | `portfolioProof/task3MainOnlyFromDev.md` | Task 1.2 Dev and main protected (#3), merge request !2 | Managing and Collaborating MS1 and MS4 |
-| `portfolioProof/task320ProfileTable.md` | Task 7.1 The profile table (#320), merge request !67 | Designing and Realising OR1 and OR4 |
-| `portfolioProof/task16DependencyScan.md` | Task 16.1 The security scan (#308), merge request !30, and task 16.2 The red scan on purpose (#309), merge request !31 | Managing and Collaborating (#308), Designing and Realising (#309) |
+| `portfolioProof/task320ProfileTable.md` | Task 7.1 The profile table (#320), merge requests !67 and !100 | Designing and Realising OR1 and OR4 |
+| `portfolioProof/task16DependencyScan.md` | Task 16.1 The security scan (#308), merge request !30, and task 16.2 The red scan on purpose (#309), merge requests !31, !86 and !100 | Managing and Collaborating (#308), Designing and Realising (#309) |
 | `portfolioProof/task352Dockerfile.md` | Task 20.1 The Dockerfile of the images server and migrations (#352), merge requests !89 and !100 | Managing and Collaborating MS1 and MS4 |
 | `portfolioProof/task354ImageBuild.md` | Task 20.3 The images built in the pipeline with kaniko (#354), merge requests !89 and !100 | Managing and Collaborating MS1 and MS4 |
 | `portfolioProof/task353ComposeApp.md` | Task 20.2 All of Connect with docker compose --profile app (#353), merge requests !93 and !100 | Managing and Collaborating MS1 and MS4 |

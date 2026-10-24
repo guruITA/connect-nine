@@ -1,6 +1,6 @@
 # Proof: task 16.1 The security scan (#308) and task 16.2 The red scan on purpose (#309)
 
-Merge request !30, branch `chore/22-dependency-scan` (#308). Closed merge request !31, branch `test/16-red-scan`, deleted (#309). Closed merge request !85, branch `test/16-red-scan-screen`, deleted (#309, the screen half). Issue: 16 A known security hole stopped before it enters Connect (#22).
+Merge request !30, branch `chore/22-dependency-scan` (#308). Closed merge request !31, branch `test/16-red-scan`, deleted (#309). Closed merge request !85, branch `test/16-red-scan-screen`, deleted (#309, the screen half). Merge request !86 brought the screen half and the weekly run into this proof, and !100 the time of both scans. Issue: 16 A known security hole stopped before it enters Connect (#22).
 
 A point that needs someone else is marked TODO with who and what.
 
@@ -13,7 +13,7 @@ A point that needs someone else is marked TODO with who and what.
 
 ## Measured
 
-1. **Pipeline time.** Before: 4 seconds (pipeline 583862 of !24, 8 October 2026). After: 21 seconds (pipeline 583876 of !30, 8 October 2026), backend-scan 17 seconds. 17 seconds slower, the limit is two minutes. That was the server scan alone. Since frontend-scan joined it (#309), both run at the same time in the stage scan, which takes as long as the slower one: 20 seconds, backend-scan 20 and frontend-scan 11 (pipeline 587414 of 24 October 2026). Gurpreet Singh pointed out in his review of !86 that the first number came from before frontend-scan existed.
+1. **Pipeline time.** Before: 4 seconds (pipeline 583862 of !24, 8 October 2026). After: 21 seconds (pipeline 583876 of !30, 8 October 2026), backend-scan 17 seconds. 17 seconds slower, the limit is two minutes. That was the server scan alone. Since frontend-scan joined it (#309), both run at the same time in the stage scan, which takes as long as the slower one: 20 seconds, backend-scan 20 and frontend-scan 11 (pipeline 587414 of 24 October 2026). Gurpreet Singh pointed out in his review of !86 that the first number came from before frontend-scan existed, and part 11 of the onboarding guide says it since !100.
 2. **Green on a normal change.** Pipeline 583876: "No package with a known high or critical advisory." for all five projects.
 3. **Red on purpose (#309).** `Newtonsoft.Json` 12.0.3 added to `api/Connect.Infrastructure`. Pipeline 583877: backend-scan failed with `error NU1903: Warning As Error: Package 'Newtonsoft.Json' 12.0.3 has a known high severity vulnerability, https://github.com/advisories/GHSA-5crp-9r3c-p9vr`. After removing the package the scan turned green again.
 4. **Tried on a laptop first.** .NET SDK 10.0.401 on 8 October 2026: no vulnerable package on dev, and `System.Text.Json` 8.0.4 stopped the restore with NU1903 and GHSA-8g4q-xg66-9fp4.
@@ -37,7 +37,7 @@ A point that needs someone else is marked TODO with who and what.
 - [x] Wesley: the npm half of the red run once #263 is merged. Done in !85, point 6.
 - [ ] Reviewer of !30: run `dotnet restore` and `dotnet list package --vulnerable --include-transitive` in `api` on your laptop and write whether you saw the same.
 - [ ] Reviewer of !30: repeat the test with `Newtonsoft.Json` 12.0.3 and its NuGetAuditSuppress line on a throwaway branch, and write whether backend-scan turned green and named the advisory under "Skipped, accepted by the client".
-- [ ] A teammate who built nothing of #22: task 16.3 (#310).
+- [ ] A teammate who built nothing of #22: task 16.3 (#310). A first part is done: Gurpreet Singh, who built nothing of #22, read part 11 of the onboarding guide in his review of !86 on 23 October 2026 and wrote that it is clear what to do when frontend-scan goes red.
 
 ## AI use
 
