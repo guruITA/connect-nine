@@ -26,7 +26,8 @@ School asks: "You adapt your communication to different target groups in form an
 ## TODO
 
 - [x] Nick Hoebe: a line under Agreed by in `docs/decisions/009-sessionTableBesideIdentity.md`, 23 October 2026 (35aa34c7).
-- [ ] Bayon Eerhart, Gurpreet Singh and Kelvin van Voorst: a line under Agreed by.
+- [x] Gurpreet Singh: a line under Agreed by, 24 October 2026, asked for in his review of !98 and written in through !100.
+- [ ] Bayon Eerhart and Kelvin van Voorst: a line under Agreed by.
 - [ ] Wesley: write in #1552 when and where the rest of the team agreed.
 
 ## AI use
