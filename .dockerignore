@@ -1,0 +1,13 @@
+# What never goes into an image of Connect (task 20.1, #352).
+.git
+**/.env
+**/.env.*
+!**/.env.example
+**/bin
+**/obj
+**/node_modules
+web/dist
+api/Connect.Presentation/wwwroot
+api/Connect/wwwroot
+**/test-results
+**/playwright-report

@@ -83,6 +83,44 @@ frontend-build:
       - web/dist
     expire_in: 1 day
 
+# The images server and migrations from the Dockerfile (task 20.3, #354). The HvA runners are not
+# privileged and refuse user namespaces, so Docker in Docker, Buildah, Podman and BuildKit rootless
+# cannot build here, and kaniko can: the maintained fork, pinned (decision 008).
+.kaniko:
+  image:
+    name: ghcr.io/osscontainertools/kaniko:v1.28.6-debug
+    entrypoint: [""]
+  tags:
+    - hva
+
+# On every merge request: builds both images and pushes nothing, so a broken Dockerfile shows here.
+image-build:
+  stage: build
+  extends: .kaniko
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "schedule"
+      when: never
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+  script:
+    - /kaniko/executor --context "$CI_PROJECT_DIR" --dockerfile "$CI_PROJECT_DIR/Dockerfile" --target server --no-push --cleanup
+    - /kaniko/executor --context "$CI_PROJECT_DIR" --dockerfile "$CI_PROJECT_DIR/Dockerfile" --target migrations --no-push
+
+# Only on dev, after a merge: builds both images and pushes them with the short commit id as their
+# version, never only latest. kaniko has no login command, so the job writes the login of the
+# registry from CI_REGISTRY_USER and CI_REGISTRY_PASSWORD into its own config file.
+image-push:
+  stage: build
+  extends: .kaniko
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "schedule"
+      when: never
+    - if: $CI_COMMIT_BRANCH == "dev"
+  script:
+    - mkdir -p /kaniko/.docker
+    - printf '{"auths":{"%s":{"auth":"%s"}}}' "$CI_REGISTRY" "$(printf '%s:%s' "$CI_REGISTRY_USER" "$CI_REGISTRY_PASSWORD" | base64 | tr -d '\n')" > /kaniko/.docker/config.json
+    - /kaniko/executor --context "$CI_PROJECT_DIR" --dockerfile "$CI_PROJECT_DIR/Dockerfile" --target server --destination "$CI_REGISTRY_IMAGE/server:$CI_COMMIT_SHORT_SHA" --cleanup
+    - /kaniko/executor --context "$CI_PROJECT_DIR" --dockerfile "$CI_PROJECT_DIR/Dockerfile" --target migrations --destination "$CI_REGISTRY_IMAGE/migrations:$CI_COMMIT_SHORT_SHA"
+
 # Fails on any committed .env file and names it, so no password reaches Git (rule 3 of the code conventions).
 env-file-check:
   stage: test

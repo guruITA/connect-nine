@@ -588,6 +588,10 @@ To                         Action      From
 - The group docker equals full administrator rights on the server. Only the user deploy is in it, a team member only when needed.
 - `/srv/connect-test` holds the test site, owned by deploy.
 
+### The images of Connect
+
+The `Dockerfile` in the root packs Connect into two images. `server` holds the published server with the built screen in `wwwroot` and answers on port 8080. `migrations` holds only the migration bundle, which carries its own .NET, brings the tables up to date once and stops. Both run as the user `app`, not as root, and neither holds a password: the connection string comes in as `ConnectionStrings__DefaultConnection` when the container starts. The pipeline builds them with kaniko and keeps them in the registry of the project, see part Images and the registry of `docs/team/gitlabSetup.md`. On a laptop with Docker, `docker build --target server .` and `docker build --target migrations .` build the same images.
+
 ### The test address
 
 The test site is at https://31-70-66-186.sslip.io until the foundation sets the DNS record of the real test address (task 9.1, #236). sslip.io is a free name service that points a name with the IP address in it at that address. When the real address comes, only the first line of `deploy/Caddyfile` changes.
