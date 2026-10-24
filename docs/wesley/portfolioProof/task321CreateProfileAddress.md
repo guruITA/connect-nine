@@ -35,7 +35,7 @@ School asks: "You systematically validate that the solution does what it should,
 2. **Tests broken on purpose.** Without the rule of 280 characters, three tests went red: `BioOf281Characters_ReturnsTheLengthMessage`, `EveryWrongField_ReturnsOneMessageEach` and `Post_WrongFields_ReturnsOneMessagePerFieldAndSavesNothing`. Without the catch of the unique index, two saves at the same moment gave a server error instead of 409 in 8 runs out of 8. With the catch moved into `ConnectDbContext`, I measured it again on 22 October 2026: 8 out of 8, the second save answering 503. Both were put back and all tests are green again.
 3. **Tried by hand.** With the server running in Development, a profile was saved with the temporary header, a second one gave 409 and a request without the header gave 401.
 4. **What is not covered yet.** A region with a street and a house number (#26), and a street name without a number, which #26 cannot see either. That is acceptable for now, because the page asks for a town or area and says so. The header of the temporary account is only accepted in Development.
-- TODO Wesley: the link to the green pipeline run, once the branch has the pipeline of dev with the tests (now it has the pipeline of Nick's branches).
+5. **The pipeline.** Since the rebuild on dev, the branch runs the pipeline of dev with the build and the tests. Pipeline 586344 of 22 October 2026 is green: https://gitlab.fdmci.hva.nl/studio/social-impact-apps/onderwijs/projects/2026-2027-semester-1/projects/project-9-wail-salutem-foundation-project-2/connect-nine/-/pipelines/586344
 
 ## OR5 Impact on users and society
 
@@ -47,7 +47,7 @@ School asks: "In your design and implementation, you consciously take into accou
 
 ## TODO
 
-- [ ] Wesley: the link to the green pipeline run above, once the branch has the pipeline of dev.
+- [x] Wesley: the link to the green pipeline run above, once the branch has the pipeline of dev. Pipeline 586344 of 22 October 2026: https://gitlab.fdmci.hva.nl/studio/social-impact-apps/onderwijs/projects/2026-2027-semester-1/projects/project-9-wail-salutem-foundation-project-2/connect-nine/-/pipelines/586344
 - [ ] Wesley: after the merge, tick the boxes of #321 with the evidence in a comment.
 
 ## AI use
