@@ -1,5 +1,6 @@
 using Connect.Presentation.Profiles.DTO;
 using Connect.Presentation.Profiles.Validators;
+using FluentValidation.TestHelper;
 using NUnit.Framework;
 
 namespace Connect.Presentation.Tests.Profiles.Validators;
@@ -11,36 +12,38 @@ public sealed class CreateMemberProfileRequestValidatorTests
     [Test]
     public void ValidRequest_HasNoErrors()
     {
-        var result = validator.Validate(Valid());
+        var result = validator.TestValidate(Valid());
 
-        Assert.That(result.IsValid, Is.True);
+        result.ShouldNotHaveAnyValidationErrors();
     }
 
     [TestCase("", "Fill in your first name")]
     [TestCase(null, "Fill in your first name")]
     public void MissingFirstName_ReturnsTheFirstNameMessage(string? firstName, string message)
     {
-        var result = validator.Validate(Valid() with { FirstName = firstName });
+        var result = validator.TestValidate(Valid() with { FirstName = firstName });
 
-        Assert.That(MessageFor(result, nameof(CreateMemberProfileRequest.FirstName)), Is.EqualTo(message));
+        result.ShouldHaveValidationErrorFor(request => request.FirstName)
+            .WithErrorMessage(message)
+            .Only();
     }
 
     [Test]
     public void FirstNameOf60Characters_IsAccepted()
     {
-        var result = validator.Validate(Valid() with { FirstName = new string('a', 60) });
+        var result = validator.TestValidate(Valid() with { FirstName = new string('a', 60) });
 
-        Assert.That(result.IsValid, Is.True);
+        result.ShouldNotHaveAnyValidationErrors();
     }
 
     [Test]
     public void FirstNameOf61Characters_ReturnsTheLengthMessage()
     {
-        var result = validator.Validate(Valid() with { FirstName = new string('a', 61) });
+        var result = validator.TestValidate(Valid() with { FirstName = new string('a', 61) });
 
-        Assert.That(
-            MessageFor(result, nameof(CreateMemberProfileRequest.FirstName)),
-            Is.EqualTo("Use at most 60 characters for your first name"));
+        result.ShouldHaveValidationErrorFor(request => request.FirstName)
+            .WithErrorMessage("Use at most 60 characters for your first name")
+            .Only();
     }
 
     [TestCase("Adolescent")]
@@ -48,9 +51,9 @@ public sealed class CreateMemberProfileRequestValidatorTests
     [TestCase("Adult")]
     public void KnownAgeBand_IsAccepted(string ageBand)
     {
-        var result = validator.Validate(Valid() with { AgeBand = ageBand });
+        var result = validator.TestValidate(Valid() with { AgeBand = ageBand });
 
-        Assert.That(result.IsValid, Is.True);
+        result.ShouldNotHaveAnyValidationErrors();
     }
 
     [TestCase("1")]
@@ -60,78 +63,75 @@ public sealed class CreateMemberProfileRequestValidatorTests
     [TestCase(null)]
     public void UnknownAgeBand_ReturnsTheAgeBandMessage(string? ageBand)
     {
-        var result = validator.Validate(Valid() with { AgeBand = ageBand });
+        var result = validator.TestValidate(Valid() with { AgeBand = ageBand });
 
-        Assert.That(
-            MessageFor(result, nameof(CreateMemberProfileRequest.AgeBand)),
-            Is.EqualTo("Choose your age band"));
+        result.ShouldHaveValidationErrorFor(request => request.AgeBand)
+            .WithErrorMessage("Choose your age band")
+            .Only();
     }
 
     [TestCase("")]
     [TestCase(null)]
     public void MissingRegion_ReturnsTheRegionMessage(string? region)
     {
-        var result = validator.Validate(Valid() with { Region = region });
+        var result = validator.TestValidate(Valid() with { Region = region });
 
-        Assert.That(
-            MessageFor(result, nameof(CreateMemberProfileRequest.Region)),
-            Is.EqualTo("Fill in your town or area"));
+        result.ShouldHaveValidationErrorFor(request => request.Region)
+            .WithErrorMessage("Fill in your town or area")
+            .Only();
     }
 
     [Test]
     public void RegionOf61Characters_ReturnsTheLengthMessage()
     {
-        var result = validator.Validate(Valid() with { Region = new string('a', 61) });
+        var result = validator.TestValidate(Valid() with { Region = new string('a', 61) });
 
-        Assert.That(
-            MessageFor(result, nameof(CreateMemberProfileRequest.Region)),
-            Is.EqualTo("Use at most 60 characters for your town or area"));
+        result.ShouldHaveValidationErrorFor(request => request.Region)
+            .WithErrorMessage("Use at most 60 characters for your town or area")
+            .Only();
     }
 
     [TestCase(null)]
     [TestCase("")]
     public void EmptyBio_IsAccepted(string? bio)
     {
-        var result = validator.Validate(Valid() with { Bio = bio });
+        var result = validator.TestValidate(Valid() with { Bio = bio });
 
-        Assert.That(result.IsValid, Is.True);
+        result.ShouldNotHaveAnyValidationErrors();
     }
 
     [Test]
     public void BioOf280Characters_IsAccepted()
     {
-        var result = validator.Validate(Valid() with { Bio = new string('a', 280) });
+        var result = validator.TestValidate(Valid() with { Bio = new string('a', 280) });
 
-        Assert.That(result.IsValid, Is.True);
+        result.ShouldNotHaveAnyValidationErrors();
     }
 
     [Test]
     public void BioOf281Characters_ReturnsTheLengthMessage()
     {
-        var result = validator.Validate(Valid() with { Bio = new string('a', 281) });
+        var result = validator.TestValidate(Valid() with { Bio = new string('a', 281) });
 
-        Assert.That(
-            MessageFor(result, nameof(CreateMemberProfileRequest.Bio)),
-            Is.EqualTo("Your short line can be at most 280 characters"));
+        result.ShouldHaveValidationErrorFor(request => request.Bio)
+            .WithErrorMessage("Your short line can be at most 280 characters")
+            .Only();
     }
 
     [Test]
     public void EveryWrongField_ReturnsOneMessageEach()
     {
-        var result = validator.Validate(new CreateMemberProfileRequest("", "1", "", new string('a', 281)));
+        var result = validator.TestValidate(new CreateMemberProfileRequest("", "1", "", new string('a', 281)));
 
-        Assert.That(
-            result.Errors.Select(error => error.PropertyName),
-            Is.EquivalentTo(new[] { "FirstName", "AgeBand", "Region", "Bio" }));
+        result.ShouldHaveValidationErrorFor(request => request.FirstName);
+        result.ShouldHaveValidationErrorFor(request => request.AgeBand);
+        result.ShouldHaveValidationErrorFor(request => request.Region);
+        result.ShouldHaveValidationErrorFor(request => request.Bio);
+        Assert.That(result.Errors, Has.Count.EqualTo(4));
     }
 
     private static CreateMemberProfileRequest Valid()
     {
         return new CreateMemberProfileRequest("Sam", "YoungAdult", "Amstelveen", "I like football.");
-    }
-
-    private static string MessageFor(FluentValidation.Results.ValidationResult result, string property)
-    {
-        return result.Errors.Single(error => error.PropertyName == property).ErrorMessage;
     }
 }
