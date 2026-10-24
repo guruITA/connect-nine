@@ -1,4 +1,4 @@
-# 004 - An anonymised map of members per place
+# 004 An anonymised map of members per place
 
 ## Context
 
