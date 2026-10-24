@@ -219,8 +219,10 @@ The choice is recorded in `docs/decisions/<number>-productionOnK3s.md` (issue 92
 made it on 27 September 2026, and task 92.1 checks the facts behind it at their own source before
 task 92.2 writes it down.
 
-**The client agrees first.** Nothing runs on the foundation's server and nothing carries its name
-before the director has said yes. Issue 91 The director agrees where production runs asks six
+**The client agrees first.** Nothing of Connect goes live on the foundation's server and nothing
+carries its name before the director has said yes. k3s, the platform the live version runs on, is
+installed there since 25 October 2026 (task 93.1), because that server is where the live version
+will run. Issue 91 The director agrees where production runs asks six
 questions in one meeting, questions 111 to 116 in `docs/client/clientQuestions.md`: whether the
 foundation agrees to a live version the school asked for, one server or two, the production
 address, real or invented data, who receives the warning emails, and which mail account the live
@@ -518,14 +520,13 @@ that step.
 | Where the backups go and for how long | Question 28 (test pictures) and question 117 (production) |
 | How many days the logs of the live version are kept | Question 109 |
 | Terraform or OpenTofu, and where the state lives | Issue 92 task 92.1 |
-| Whether k3s supports the operating system of the production server | Issue 92 task 92.1 |
 | The code quality tool | Issue 88 |
 | Whether the HvA runners can build images, and whether the registry is on | Issue 20 task 20.3 |
 | Who runs and pays for Connect after January 2027 | Question 6 |
 
-One point for issue 93 to check when question 112 chooses one shared server: on a laptop the log in
-stand in `oidc` listens on `127.0.0.1:8081`, the same port the board gives Traefik in production. If
-the test site runs that stand in on the same machine on the same port, one of the two must move.
+On a laptop the log in stand in `oidc` listens on `127.0.0.1:8081`, the same port Traefik has in
+production. The test site runs no `oidc` stand in, so on the shared server Traefik has the port
+(checked on 25 October 2026).
 
 ## References
 
