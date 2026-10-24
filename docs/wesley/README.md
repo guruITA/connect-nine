@@ -45,6 +45,7 @@ One file per task I did, with the proof block of the task filled in. A point tha
 | `portfolioProof/task1465CqrsRewording.md` | Task 11.4 The tasks of every next sprint reworded to the CQRS shape (#1465), merge request !62 | Managing and Collaborating MS4 |
 | `portfolioProof/task1537IdentityTables.md` | Task 3.10 The database rules say what the Identity tables have (#1537), merge request !66 | Managing and Collaborating MS4 |
 | `portfolioProof/task1551Sprint2Week1ClientUpdate.md` | Issue 1551 The client update after week 1 of Sprint 2 (#1551), merge request !95 | Analysing and Advising AA5, Managing and Collaborating MS1 and MS5 |
+| `portfolioProof/task1544NullForgivingOperator.md` | Task 1.10 The code convention on the null-forgiving operator (#1544), merge request !79 | Managing and Collaborating MS1 and MS4 |
 
 ## The full documents behind them
 
