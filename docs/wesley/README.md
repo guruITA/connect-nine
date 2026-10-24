@@ -48,6 +48,7 @@ One file per task I did, with the proof block of the task filled in. A point tha
 | `portfolioProof/task1544NullForgivingOperator.md` | Task 1.10 The code convention on the null-forgiving operator (#1544), merge request !79 | Managing and Collaborating MS1 and MS4 |
 | `portfolioProof/task1545ReadonlyFields.md` | Task 1.11 The code convention on fields for what the constructor gets (#1545), merge request !79 | Managing and Collaborating MS1 and MS4 |
 | `portfolioProof/task1546ValidationErrorKeys.md` | Task 1.12 The code convention on the keys of a validation answer (#1546), merge request !79 | Analysing and Advising AA2, Managing and Collaborating MS4 |
+| `portfolioProof/task1547SharedTestSetup.md` | Task 1.13 The code convention on shared test setup (#1547), merge request !79 | Managing and Collaborating MS1 and MS4 |
 
 ## The full documents behind them
 
