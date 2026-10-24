@@ -19,7 +19,7 @@ School asks: "You systematically validate that the solution does what it should,
 
 ## TODO
 
-- [ ] Wesley: after the merge, a comment on every open merge request that it needs dev again for a green frontend-scan.
+- [x] Wesley: after the merge, a comment on every open merge request that it needs dev again for a green frontend-scan. Done on 24 October 2026 another way: !99 was merged that day, and my open merge requests that merge cleanly with dev (!68, !69, !79, !88, !98 and !100) and Gurpreet's !97 were rebased onto dev in GitLab, after which their pipelines were green. The chain !70 to !76 gets dev with its own rebase (#1542).
 
 ## AI use
 
