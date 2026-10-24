@@ -31,6 +31,7 @@ One file per task I did, with the proof block of the task filled in. A point tha
 | `portfolioProof/task9CompactIssueTemplates.md` | Task 1.8 The compact issue and task templates (#9), merge request !16 | Managing and Collaborating MS1 and MS4 |
 | `portfolioProof/task9ClientServer.md` | Tasks 9.1 to 9.5 The client's server (#236, #237, #238, #239, #240), merge requests !5 and !34 | Managing and Collaborating MS1 and MS4 |
 | `portfolioProof/task11ServerStructureDecisions.md` | Tasks 11.1 to 11.3 The structure and the version of the server (#253, #254, #255), merge requests !27 and !58 | Analysing and Advising AA2, AA3, AA4 and AA5, Managing and Collaborating MS4 |
+| `portfolioProof/task1042ProductionOnK3sFacts.md` | Task 92.1 The facts behind production on k3s with Terraform (#1042), merge request !102 | Analysing and Advising AA2 and AA4 |
 | `portfolioProof/task1517ReplanSprints.md` | Task 180.1 Sprints 2 to 5 planned again after sprint 1 (#1517), merge request !40 | Managing and Collaborating MS1 and MS4 |
 | `portfolioProof/task3MainOnlyFromDev.md` | Task 1.2 Dev and main protected (#3), merge request !2 | Managing and Collaborating MS1 and MS4 |
 | `portfolioProof/task320ProfileTable.md` | Task 7.1 The profile table (#320), merge request !67 | Designing and Realising OR1 and OR4 |
