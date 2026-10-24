@@ -13,9 +13,9 @@ namespace Connect.Application.Tests.Profiles.CreateProfile;
 
 public sealed class CreateProfileCommandHandlerTests
 {
-    private SqliteConnection connection = null!;
-    private TestAppDbContext dbContext = null!;
-    private CreateProfileCommandHandler handler = null!;
+    private SqliteConnection connection;
+    private TestAppDbContext dbContext;
+    private CreateProfileCommandHandler handler;
 
     [SetUp]
     public void SetUp()
@@ -48,7 +48,7 @@ public sealed class CreateProfileCommandHandlerTests
         using (Assert.EnterMultipleScope())
         {
             Assert.That(result.IsSuccess, Is.True);
-            Assert.That(result.Value!.Id, Is.EqualTo(saved.Id));
+            Assert.That(result.Value?.Id, Is.EqualTo(saved.Id));
             Assert.That(saved.AccountId, Is.EqualTo(account.Id));
             Assert.That(saved.FirstName, Is.EqualTo("Sam"));
             Assert.That(saved.AgeBand, Is.EqualTo(AgeBand.From18To21));

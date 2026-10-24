@@ -320,7 +320,7 @@ public sealed class MemberProfileEndpointTests
             .Where(call => call.GetMethodInfo().Name == nameof(ILogger.Log))
             .Select(call => call.GetArguments())
             .Select(arguments =>
-                $"{((Delegate)arguments[4]!).DynamicInvoke(arguments[2], arguments[3])}{arguments[3]}")
+                $"{(arguments[4] as Delegate)?.DynamicInvoke(arguments[2], arguments[3])}{arguments[3]}")
             .ToArray();
     }
 }

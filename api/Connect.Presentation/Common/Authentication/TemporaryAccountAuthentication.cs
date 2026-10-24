@@ -43,10 +43,12 @@ public sealed class TemporaryAccountHandler(
     IHostEnvironment environment)
     : AuthenticationHandler<TemporaryAccountOptions>(options, logger, encoder)
 {
+    private readonly IHostEnvironment _environment = environment;
+
     protected override Task<AuthenticateResult> HandleAuthenticateAsync()
     {
         if (!Options.Enabled
-            || !environment.IsDevelopment()
+            || !_environment.IsDevelopment()
             || !Guid.TryParse(Request.Headers[TemporaryAccountAuthentication.Header], out var accountId))
         {
             return Task.FromResult(AuthenticateResult.NoResult());

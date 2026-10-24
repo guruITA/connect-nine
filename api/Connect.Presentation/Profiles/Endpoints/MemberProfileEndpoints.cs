@@ -46,20 +46,26 @@ public static class MemberProfileEndpoints
                 return TypedResults.ValidationProblem(validation.ToDictionary());
             }
 
+            // The validator above refuses an empty first name, age band or region.
+            if (trimmed is not { FirstName: { } firstName, AgeBand: { } ageBand, Region: { } region })
+            {
+                throw new InvalidOperationException("The validator let an empty first name, age band or region through.");
+            }
+
             var result = await handler.HandleAsync(
                 new CreateProfileCommand(
                     accountId.Value,
-                    trimmed.FirstName!,
-                    Enum.Parse<AgeBand>(trimmed.AgeBand!),
-                    trimmed.Region!,
+                    firstName,
+                    Enum.Parse<AgeBand>(ageBand),
+                    region,
                     trimmed.Bio),
                 cancellationToken);
 
-            if (result.IsSuccess)
+            if (result is { IsSuccess: true, Value: { } created })
             {
                 return TypedResults.Created(
-                    $"/api/member-profiles/{result.Value!.Id}",
-                    CreateMemberProfileResponseMapper.Map(result.Value));
+                    $"/api/member-profiles/{created.Id}",
+                    CreateMemberProfileResponseMapper.Map(created));
             }
 
             return result.Error.ToProblemDetails();

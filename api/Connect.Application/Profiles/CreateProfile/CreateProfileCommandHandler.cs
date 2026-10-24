@@ -11,11 +11,13 @@ public sealed class CreateProfileCommandHandler(IAppDbContext dbContext)
 {
     private const string AlreadyHasProfile = "You already have a profile";
 
+    private readonly IAppDbContext _dbContext = dbContext;
+
     public async Task<Result<CreateProfileResult>> HandleAsync(
         CreateProfileCommand command,
         CancellationToken cancellationToken)
     {
-        var account = await dbContext.Accounts.SingleOrDefaultAsync(
+        var account = await _dbContext.Accounts.SingleOrDefaultAsync(
             candidate => candidate.Id == command.AccountId,
             cancellationToken);
         if (account is null)
@@ -24,7 +26,7 @@ public sealed class CreateProfileCommandHandler(IAppDbContext dbContext)
                 Error.Unauthorized("Log in first to save your profile"));
         }
 
-        if (await dbContext.Profiles.AnyAsync(
+        if (await _dbContext.Profiles.AnyAsync(
                 profile => profile.AccountId == command.AccountId,
                 cancellationToken))
         {
@@ -40,11 +42,11 @@ public sealed class CreateProfileCommandHandler(IAppDbContext dbContext)
             Region = command.Region,
             Bio = command.Bio
         };
-        dbContext.Add(profile);
+        _dbContext.Add(profile);
 
         try
         {
-            await dbContext.SaveChangesAsync(cancellationToken);
+            await _dbContext.SaveChangesAsync(cancellationToken);
         }
         catch (DbUpdateException exception) when (IsOneProfilePerAccountViolation(exception))
         {
