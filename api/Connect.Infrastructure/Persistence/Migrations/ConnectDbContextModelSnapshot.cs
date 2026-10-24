@@ -126,9 +126,28 @@ namespace Connect.Infrastructure.Persistence.Migrations
                         .HasColumnType("uuid")
                         .HasColumnName("account_id");
 
+                    b.Property<string>("AgeBand")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("age_band");
+
+                    b.Property<string>("Bio")
+                        .HasColumnType("text")
+                        .HasColumnName("bio");
+
                     b.Property<DateTimeOffset>("CreatedAt")
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("created_at");
+
+                    b.Property<string>("FirstName")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("first_name");
+
+                    b.Property<string>("Region")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("region");
 
                     b.Property<DateTimeOffset>("UpdatedAt")
                         .HasColumnType("timestamp with time zone")
@@ -141,7 +160,14 @@ namespace Connect.Infrastructure.Persistence.Migrations
                         .IsUnique()
                         .HasDatabaseName("ix_profile_account_id");
 
-                    b.ToTable("profile", (string)null);
+                    b.ToTable("profile", null, t =>
+                        {
+                            t.HasCheckConstraint("ck_profile_age_band", "\"age_band\" IN ('Adolescent', 'YoungAdult', 'Adult')");
+
+                            t.HasCheckConstraint("ck_profile_first_name_not_empty", "length(\"first_name\") > 0");
+
+                            t.HasCheckConstraint("ck_profile_region_not_empty", "length(\"region\") > 0");
+                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole<System.Guid>", b =>

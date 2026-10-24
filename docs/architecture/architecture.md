@@ -402,6 +402,19 @@ The `AspNetUsers.password_hash` check allows `NULL` but rejects an empty string.
 constraints are covered by PostgreSQL integration tests in
 `api/Connect.Infrastructure.Tests/Persistence/AccountTableTests.cs`.
 
+The second migration is `AddMemberDetailsToProfile` (issue 07 Create a profile, task 7.1). It
+gives the `profile` table the details of a young person: `first_name`, `age_band`, `region` and
+`bio`, which may be empty. The team agreed on the way Nick Hoebe built the account code, so the
+profile of a young person lives in his `profile` table, one per account through the unique index
+`ix_profile_account_id`, and not in a separate table `member_profile`. `age_band` holds the name
+of the enum `AgeBand`: `Adolescent` (15 to 17), `YoungAdult` (18 to 21) or `Adult` (22 to 30). The check
+`ck_profile_age_band` refuses any other text, and `ck_profile_first_name_not_empty` and
+`ck_profile_region_not_empty` refuse an empty first name or region. The table holds no birth
+date, exact age, school, street address, phone number or email address. The limits of 60
+characters for the first name and the region and 280 for the bio are checked when the profile
+is saved (task 7.2), not by the table. The tests are in
+`api/Connect.Infrastructure.Tests/Persistence/ProfileDatabaseTests.cs`.
+
 ## Security in the architecture
 
 The users include young people from 15 years old, so security is part of the design, not an extra.

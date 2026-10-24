@@ -67,6 +67,21 @@ public sealed class ConnectDbContext(DbContextOptions<ConnectDbContext> options)
             entity.HasKey(profile => profile.Id);
             entity.Property(profile => profile.CreatedAt).IsRequired();
             entity.Property(profile => profile.UpdatedAt).IsRequired();
+            entity.Property(profile => profile.FirstName).IsRequired();
+            entity.Property(profile => profile.AgeBand).HasConversion<string>().IsRequired();
+            entity.Property(profile => profile.Region).IsRequired();
+            entity.ToTable(table =>
+            {
+                table.HasCheckConstraint(
+                    "ck_profile_first_name_not_empty",
+                    "length(\"first_name\") > 0");
+                table.HasCheckConstraint(
+                    "ck_profile_region_not_empty",
+                    "length(\"region\") > 0");
+                table.HasCheckConstraint(
+                    "ck_profile_age_band",
+                    "\"age_band\" IN ('Adolescent', 'YoungAdult', 'Adult')");
+            });
 
             entity.HasOne(profile => profile.Account)
                 .WithOne(account => account.Profile)
