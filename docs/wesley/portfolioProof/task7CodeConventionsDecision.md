@@ -38,7 +38,7 @@ School asks: "You ensure that your work aligns with that of others and contribut
 3. **Told where the code was made.** My comment on !36 names the documents I updated.
 4. **Again after the merge of !50.** Nick's account code reached dev with !50 on 20 October 2026, after this merge request was approved. Its migration `EnforceNormalizedAccountUniqueness` renamed the Identity index `UserNameIndex` to `ux_account_username`, so rule 1 and decision 001 said a name that no longer exists. They now name `RoleNameIndex` as the one index that keeps the Identity name, and `ux_account_username` and `ux_account_email` as the unique indexes, held against the migrations on dev. My comment on !50 names the documents.
 
-- TODO Wesley: after the merge, add !59 and MS4 to the row of this file in `docs/wesley/README.md`.
+- Done: !59 and MS4 are in the row of this file in `docs/wesley/README.md`, added in !83.
 
 ## TODO
 

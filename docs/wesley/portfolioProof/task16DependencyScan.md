@@ -13,7 +13,7 @@ A point that needs someone else is marked TODO with who and what.
 
 ## Measured
 
-1. **Pipeline time.** Before: 4 seconds (pipeline 583862 of !24, 8 October 2026). After: 21 seconds (pipeline 583876 of !30, 8 October 2026), backend-scan 17 seconds. 17 seconds slower, the limit is two minutes.
+1. **Pipeline time.** Before: 4 seconds (pipeline 583862 of !24, 8 October 2026). After: 21 seconds (pipeline 583876 of !30, 8 October 2026), backend-scan 17 seconds. 17 seconds slower, the limit is two minutes. That was the server scan alone. Since frontend-scan joined it (#309), both run at the same time in the stage scan, which takes as long as the slower one: 20 seconds, backend-scan 20 and frontend-scan 11 (pipeline 587414 of 24 October 2026). Gurpreet Singh pointed out in his review of !86 that the first number came from before frontend-scan existed.
 2. **Green on a normal change.** Pipeline 583876: "No package with a known high or critical advisory." for all five projects.
 3. **Red on purpose (#309).** `Newtonsoft.Json` 12.0.3 added to `api/Connect.Infrastructure`. Pipeline 583877: backend-scan failed with `error NU1903: Warning As Error: Package 'Newtonsoft.Json' 12.0.3 has a known high severity vulnerability, https://github.com/advisories/GHSA-5crp-9r3c-p9vr`. After removing the package the scan turned green again.
 4. **Tried on a laptop first.** .NET SDK 10.0.401 on 8 October 2026: no vulnerable package on dev, and `System.Text.Json` 8.0.4 stopped the restore with NU1903 and GHSA-8g4q-xg66-9fp4.
