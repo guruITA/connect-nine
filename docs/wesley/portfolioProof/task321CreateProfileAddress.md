@@ -23,7 +23,8 @@ School asks: "You independently select relevant standards and methods from the f
 2. **Problem details.** Every error answer is a ProblemDetails object, and wrong fields a ValidationProblem with one message per field, from the standard Problem Details for HTTP APIs (RFC 9457), as the code conventions ask.
 3. **Fixed choices as an allow list.** The age band is accepted only when it is exactly one of the three names. The OWASP Input Validation Cheat Sheet asks for "exact membership in the allowed set, including values submitted from drop-down menus", which is what the age band select of task 7.3 sends.
 4. **One message per field.** A form shows each message under its own field, so the young person sees what to change where.
-- TODO Wesley: read the BoKSA articles API implementation and Input validation and secure coding, and add one line each on what I took from them.
+5. **What I took from BoKSA.** The article API implementation asks for a fitting status code for every outcome. Every way a save can end has its own code, from 201 to 503, so the screen of task 7.3 turns each code into one outcome and never has to read text.
+6. **What I took from BoKSA.** The article Input validation and secure coding asks for validation on the server with allow lists for format, length and type. The validator checks every field on the server, also when the screen already did, and the age band is only accepted from its allow list of three names.
 
 ## OR4 Validating the solution
 
@@ -41,11 +42,11 @@ School asks: "In your design and implementation, you consciously take into accou
 
 1. **The minimum of personal data.** A first name, an age band instead of an age, a town or area instead of an address, and a short optional line. No birth date, school, street, phone number or email address.
 2. **How a minor is protected.** The account always comes from the session and never from the form, so nobody can make a profile for someone else. The text is not written to the log.
-- TODO Wesley: my own judgment on the bio that other members read in #30, where a young person may write a school or a phone number, and what I advise the client.
+3. **My judgment on the short line.** Free text is where a young person can share more than they mean to, such as a school or a phone number, and other members read it on the page of #30. A filter cannot catch every way to write a school or a number. So I keep the warning right under the field, and I advise the client to let members report a profile (#211), so the foundation sees it (#235) and can have the line removed. I would not hide the short line, because it is the one place where a young person says who they are in their own words.
 
 ## TODO
 
-- [ ] Wesley: the TODO lines above.
+- [ ] Wesley: the link to the green pipeline run above, once the branch has the pipeline of dev.
 - [ ] Wesley: after the merge, tick the boxes of #321 with the evidence in a comment.
 
 ## AI use
