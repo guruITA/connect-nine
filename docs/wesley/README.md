@@ -35,10 +35,10 @@ One file per task I did, with the proof block of the task filled in. A point tha
 | `portfolioProof/task3MainOnlyFromDev.md` | Task 1.2 Dev and main protected (#3), merge request !2 | Managing and Collaborating MS1 and MS4 |
 | `portfolioProof/task320ProfileTable.md` | Task 7.1 The profile table (#320), merge request !67 | Designing and Realising OR1 and OR4 |
 | `portfolioProof/task16DependencyScan.md` | Task 16.1 The security scan (#308), merge request !30, and task 16.2 The red scan on purpose (#309), merge request !31 | Managing and Collaborating (#308), Designing and Realising (#309) |
-| `portfolioProof/task352Dockerfile.md` | Task 20.1 The Dockerfile of the images server and migrations (#352), merge request !89 | Managing and Collaborating MS1 and MS4 |
-| `portfolioProof/task354ImageBuild.md` | Task 20.3 The images built in the pipeline with kaniko (#354), merge request !89 | Managing and Collaborating MS1 and MS4 |
-| `portfolioProof/task353ComposeApp.md` | Task 20.2 All of Connect with docker compose --profile app (#353), merge request !93 | Managing and Collaborating MS1 and MS4 |
-| `portfolioProof/task356OneCommandGuide.md` | Task 20.5 Run all of Connect with one command (#356), merge request !93 | Managing and Collaborating MS1 and MS4 |
+| `portfolioProof/task352Dockerfile.md` | Task 20.1 The Dockerfile of the images server and migrations (#352), merge requests !89 and !100 | Managing and Collaborating MS1 and MS4 |
+| `portfolioProof/task354ImageBuild.md` | Task 20.3 The images built in the pipeline with kaniko (#354), merge requests !89 and !100 | Managing and Collaborating MS1 and MS4 |
+| `portfolioProof/task353ComposeApp.md` | Task 20.2 All of Connect with docker compose --profile app (#353), merge requests !93 and !100 | Managing and Collaborating MS1 and MS4 |
+| `portfolioProof/task356OneCommandGuide.md` | Task 20.5 Run all of Connect with one command (#356), merge requests !93 and !100 | Managing and Collaborating MS1 and MS4 |
 | `portfolioProof/task1519SprintReview1Documents.md` | Issue 1519 The sprint 1 review documents in the repository (#1519), merge requests !43, !44 and !45 | Managing and Collaborating MS1 |
 | `portfolioProof/task1555ScanFix.md` | Task 16.4 The security scan green again after two new advisories (#1555), merge request !99 | Designing and Realising OR4 |
 | `portfolioProof/task1543TestsAndMocking.md` | Task 3.12 The code conventions for tests and NSubstitute (#1543), merge request !77 | Managing and Collaborating MS1 and MS4 |
