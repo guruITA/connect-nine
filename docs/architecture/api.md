@@ -98,11 +98,11 @@ answers `401`.
 The body:
 
 ```json
-{"firstName":"Sam","ageBand":"From18To21","region":"Amstelveen","bio":"I like football."}
+{"firstName":"Sam","ageBand":"YoungAdult","region":"Amstelveen","bio":"I like football."}
 ```
 
 `firstName` and `region` are required and at most 60 characters. `ageBand` is exactly
-`From15To17`, `From18To21` or `From22To30`. `bio` may be empty and is at most 280 characters.
+`Adolescent`, `YoungAdult` or `Adult`. `bio` may be empty and is at most 280 characters.
 Spaces around the text are taken off before the checks, and an empty `bio` is saved as `null`.
 
 The five answers:

@@ -43,9 +43,9 @@ public sealed class CreateMemberProfileRequestValidatorTests
             Is.EqualTo("Use at most 60 characters for your first name"));
     }
 
-    [TestCase("From15To17")]
-    [TestCase("From18To21")]
-    [TestCase("From22To30")]
+    [TestCase("Adolescent")]
+    [TestCase("YoungAdult")]
+    [TestCase("Adult")]
     public void KnownAgeBand_IsAccepted(string ageBand)
     {
         var result = validator.Validate(Valid() with { AgeBand = ageBand });
@@ -54,7 +54,7 @@ public sealed class CreateMemberProfileRequestValidatorTests
     }
 
     [TestCase("1")]
-    [TestCase("from18to21")]
+    [TestCase("youngadult")]
     [TestCase("16")]
     [TestCase("")]
     [TestCase(null)]
@@ -127,7 +127,7 @@ public sealed class CreateMemberProfileRequestValidatorTests
 
     private static CreateMemberProfileRequest Valid()
     {
-        return new CreateMemberProfileRequest("Sam", "From18To21", "Amstelveen", "I like football.");
+        return new CreateMemberProfileRequest("Sam", "YoungAdult", "Amstelveen", "I like football.");
     }
 
     private static string MessageFor(FluentValidation.Results.ValidationResult result, string property)

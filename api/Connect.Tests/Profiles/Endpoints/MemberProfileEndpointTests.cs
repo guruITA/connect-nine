@@ -31,7 +31,7 @@ public sealed class MemberProfileEndpointTests
 
         using HttpResponseMessage response = await client.PostAsync(
             Address,
-            Json(new { firstName = "Sam", ageBand = "From18To21", region = "Amstelveen", bio = "Hi" }));
+            Json(new { firstName = "Sam", ageBand = "YoungAdult", region = "Amstelveen", bio = "Hi" }));
         using JsonDocument body = await ReadJson(response);
 
         Profile saved = ProfilesOf(factory, accountId).Single();
@@ -41,7 +41,7 @@ public sealed class MemberProfileEndpointTests
             Assert.That(body.RootElement.GetProperty("data").GetProperty("id").GetGuid(), Is.EqualTo(saved.Id));
             Assert.That(body.RootElement.GetProperty("meta").EnumerateObject(), Is.Empty);
             Assert.That(response.Headers.Location?.ToString(), Is.EqualTo($"/api/member-profiles/{saved.Id}"));
-            Assert.That(saved.AgeBand, Is.EqualTo(AgeBand.From18To21));
+            Assert.That(saved.AgeBand, Is.EqualTo(AgeBand.YoungAdult));
         }
     }
 
@@ -54,7 +54,7 @@ public sealed class MemberProfileEndpointTests
 
         using HttpResponseMessage response = await client.PostAsync(
             Address,
-            Json(new { firstName = " Sam ", ageBand = "From15To17", region = "  Amstelveen ", bio = "   " }));
+            Json(new { firstName = " Sam ", ageBand = "Adolescent", region = "  Amstelveen ", bio = "   " }));
 
         Profile saved = ProfilesOf(factory, accountId).Single();
         using (Assert.EnterMultipleScope())
@@ -75,7 +75,7 @@ public sealed class MemberProfileEndpointTests
 
         using HttpResponseMessage response = await client.PostAsync(
             Address,
-            Json(new { firstName = " ", ageBand = "from18to21", region = "", bio = new string('a', 281) }));
+            Json(new { firstName = " ", ageBand = "youngadult", region = "", bio = new string('a', 281) }));
         using JsonDocument body = await ReadJson(response);
         JsonElement errors = body.RootElement.GetProperty("errors");
 
@@ -179,7 +179,7 @@ public sealed class MemberProfileEndpointTests
 
         using HttpResponseMessage response = await client.PostAsync(
             Address,
-            Json(new { accountId = otherAccountId, firstName = "Sam", ageBand = "From15To17", region = "Amstelveen" }));
+            Json(new { accountId = otherAccountId, firstName = "Sam", ageBand = "Adolescent", region = "Amstelveen" }));
 
         using (Assert.EnterMultipleScope())
         {
@@ -220,7 +220,7 @@ public sealed class MemberProfileEndpointTests
 
         using HttpResponseMessage response = await client.PostAsync(
             Address,
-            Json(new { firstName = "Qwertyname", ageBand = "From15To17", region = "Qwertytown", bio = "Qwertybio" }));
+            Json(new { firstName = "Qwertyname", ageBand = "Adolescent", region = "Qwertytown", bio = "Qwertybio" }));
 
         string[] messages = LoggedMessages(logger);
 
@@ -286,7 +286,7 @@ public sealed class MemberProfileEndpointTests
 
     private static StringContent ValidProfile()
     {
-        return Json(new { firstName = "Sam", ageBand = "From15To17", region = "Amstelveen", bio = "" });
+        return Json(new { firstName = "Sam", ageBand = "Adolescent", region = "Amstelveen", bio = "" });
     }
 
     private static StringContent Json(object body)

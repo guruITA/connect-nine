@@ -41,7 +41,7 @@ public sealed class CreateProfileCommandHandlerTests
         Account account = SaveAccount();
 
         var result = await handler.HandleAsync(
-            new CreateProfileCommand(account.Id, "Sam", AgeBand.From18To21, "Amstelveen", null),
+            new CreateProfileCommand(account.Id, "Sam", AgeBand.YoungAdult, "Amstelveen", null),
             CancellationToken.None);
 
         Profile saved = dbContext.Profiles.Single();
@@ -51,7 +51,7 @@ public sealed class CreateProfileCommandHandlerTests
             Assert.That(result.Value?.Id, Is.EqualTo(saved.Id));
             Assert.That(saved.AccountId, Is.EqualTo(account.Id));
             Assert.That(saved.FirstName, Is.EqualTo("Sam"));
-            Assert.That(saved.AgeBand, Is.EqualTo(AgeBand.From18To21));
+            Assert.That(saved.AgeBand, Is.EqualTo(AgeBand.YoungAdult));
             Assert.That(saved.Region, Is.EqualTo("Amstelveen"));
             Assert.That(saved.Bio, Is.Null);
         }
@@ -62,11 +62,11 @@ public sealed class CreateProfileCommandHandlerTests
     {
         Account account = SaveAccount();
         await handler.HandleAsync(
-            new CreateProfileCommand(account.Id, "Sam", AgeBand.From15To17, "Amstelveen", null),
+            new CreateProfileCommand(account.Id, "Sam", AgeBand.Adolescent, "Amstelveen", null),
             CancellationToken.None);
 
         var result = await handler.HandleAsync(
-            new CreateProfileCommand(account.Id, "Alex", AgeBand.From22To30, "Uithoorn", "Hi"),
+            new CreateProfileCommand(account.Id, "Alex", AgeBand.Adult, "Uithoorn", "Hi"),
             CancellationToken.None);
 
         using (Assert.EnterMultipleScope())
@@ -82,7 +82,7 @@ public sealed class CreateProfileCommandHandlerTests
     public async Task HandleAsync_UnknownAccount_ReturnsUnauthorizedAndSavesNothing()
     {
         var result = await handler.HandleAsync(
-            new CreateProfileCommand(Guid.NewGuid(), "Sam", AgeBand.From15To17, "Amstelveen", null),
+            new CreateProfileCommand(Guid.NewGuid(), "Sam", AgeBand.Adolescent, "Amstelveen", null),
             CancellationToken.None);
 
         using (Assert.EnterMultipleScope())
@@ -102,7 +102,7 @@ public sealed class CreateProfileCommandHandlerTests
         Assert.ThrowsAsync(
             Is.InstanceOf<DbException>(),
             () => unreachableHandler.HandleAsync(
-                new CreateProfileCommand(Guid.NewGuid(), "Sam", AgeBand.From15To17, "Amstelveen", null),
+                new CreateProfileCommand(Guid.NewGuid(), "Sam", AgeBand.Adolescent, "Amstelveen", null),
                 CancellationToken.None));
     }
 
