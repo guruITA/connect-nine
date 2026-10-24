@@ -1,6 +1,6 @@
 # Proof: task 16.1 The security scan (#308) and task 16.2 The red scan on purpose (#309)
 
-Merge request !30, branch `chore/22-dependency-scan` (#308). Closed merge request !31, branch `test/16-red-scan`, deleted (#309). Issue: 16 A known security hole stopped before it enters Connect (#22).
+Merge request !30, branch `chore/22-dependency-scan` (#308). Closed merge request !31, branch `test/16-red-scan`, deleted (#309). Closed merge request !85, branch `test/16-red-scan-screen`, deleted (#309, the screen half). Issue: 16 A known security hole stopped before it enters Connect (#22).
 
 A point that needs someone else is marked TODO with who and what.
 
@@ -13,7 +13,7 @@ A point that needs someone else is marked TODO with who and what.
 
 ## Measured
 
-1. **Pipeline time.** Before: 4 seconds (pipeline 583862 of !24). After: 21 seconds (pipeline 583876 of !30), backend-scan 17 seconds. 17 seconds slower, the limit is two minutes.
+1. **Pipeline time.** Before: 4 seconds (pipeline 583862 of !24, 8 October 2026). After: 21 seconds (pipeline 583876 of !30, 8 October 2026), backend-scan 17 seconds. 17 seconds slower, the limit is two minutes.
 2. **Green on a normal change.** Pipeline 583876: "No package with a known high or critical advisory." for all five projects.
 3. **Red on purpose (#309).** `Newtonsoft.Json` 12.0.3 added to `api/Connect.Infrastructure`. Pipeline 583877: backend-scan failed with `error NU1903: Warning As Error: Package 'Newtonsoft.Json' 12.0.3 has a known high severity vulnerability, https://github.com/advisories/GHSA-5crp-9r3c-p9vr`. After removing the package the scan turned green again.
 4. **Tried on a laptop first.** .NET SDK 10.0.401 on 8 October 2026: no vulnerable package on dev, and `System.Text.Json` 8.0.4 stopped the restore with NU1903 and GHSA-8g4q-xg66-9fp4.
@@ -27,12 +27,14 @@ A point that needs someone else is marked TODO with who and what.
    | The same plus `System.Text.Json` 8.0.4 | 1 × NU1903, GHSA-8g4q-xg66-9fp4 | 0 | red |
 
    The last row shows that the skip covers only the accepted advisory.
+6. **The screen half of the red run (#309).** Once `web/package.json` was on dev, I added `lodash` 4.17.20 to the screen with `npm install --save-exact` on a branch of its own, on 21 October 2026. Pipeline 586192: frontend-scan failed with "lodash <=4.17.23, Severity: high, Command Injection in lodash - https://github.com/advisories/GHSA-35jh-r3h4-6jhm" and every other job was green. After removing the package again, pipeline 586193: frontend-scan green, "found 0 vulnerabilities". The merge request was closed without a merge and its branch removed, so nothing of it is on dev.
+7. **The weekly run.** The schedule Weekly security scan of dev (#22) runs every Monday at 07:00, Europe/Amsterdam, on dev, made on 21 October 2026. Run once by hand the same day: pipeline 586191 held only backend-scan and frontend-scan, both green, and no deploy job.
 
 ## TODO
 
-- [ ] Wesley: make the schedule after the merge (Build, Pipeline schedules, Monday 07:00, Europe/Amsterdam, dev), run it once by hand and write here that only backend-scan ran.
-- [ ] Wesley: screenshots of the red and the green run in !31.
-- [ ] Wesley: the npm half of the red run once #263 is merged.
+- [x] Wesley: make the schedule after the merge (Build, Pipeline schedules, Monday 07:00, Europe/Amsterdam, dev), run it once by hand and write here that only backend-scan ran. Done on 21 October 2026, point 7: both scan jobs ran, because the screen has a `package.json` now.
+- [ ] Wesley: screenshots of the red and the green run in !31 and in !85.
+- [x] Wesley: the npm half of the red run once #263 is merged. Done in !85, point 6.
 - [ ] Reviewer of !30: run `dotnet restore` and `dotnet list package --vulnerable --include-transitive` in `api` on your laptop and write whether you saw the same.
 - [ ] Reviewer of !30: repeat the test with `Newtonsoft.Json` 12.0.3 and its NuGetAuditSuppress line on a throwaway branch, and write whether backend-scan turned green and named the advisory under "Skipped, accepted by the client".
 - [ ] A teammate who built nothing of #22: task 16.3 (#310).
