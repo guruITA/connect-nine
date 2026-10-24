@@ -434,9 +434,12 @@ The analysis is in `docs/security`, made by the epic Security analysis:
 
 How the parts above carry it:
 
-- **Sessions.** After a log in the server stores a row in `session` and sets the cookie
-  `connect_session` with the flags Secure, HttpOnly and SameSite=Lax, for one day. The table keeps
-  only a hash of the token (issue 04).
+- **Sessions.** ASP.NET Core Identity keeps the account, the hash of the password and the check of
+  the password. After a log in the server also stores a row in `session` for that one log in and
+  sets the cookie `connect_session` with the flags Secure, HttpOnly and SameSite=Lax, for one day.
+  The table keeps only a hash of the token and the account it belongs to, so one log in can be
+  ended on the server without the others (issue 04, task 11.5,
+  [`docs/decisions/009-sessionTableBesideIdentity.md`](../decisions/009-sessionTableBesideIdentity.md)).
 - **Passwords.** At least 15 characters, the rules in one place `api/Domain/Accounts/PasswordRules.cs`
   (issue 03b A clear message when my password is too weak), a password known from data leaks is
   refused (issue 116 A password that is known from data leaks is refused), and the password is

@@ -274,6 +274,8 @@ BoKSA asks for an ADR (architecture decision record): context, decision, consequ
 
 Records 8.1, 8.2 and 8.9 to 8.11 are not accepted yet. Kelvin van Voorst decides 8.10 in the NFR1 design, due at the sprint 1 review. For 8.6, the architecture document records Nick Hoebe's CQRS interest as tipping the balance.
 
+**Update of 24 October 2026.** Record 8.10 is overtaken by team decision 009 (`docs/decisions/009-sessionTableBesideIdentity.md`), which Nick Hoebe and I picked on 22 October 2026: ASP.NET Core Identity checks the password, and the cookie `connect_session` belongs to one row per log in in a table session, so one log in can be ended on the server. The table above is the sprint 1 status as it was.
+
 ## 7. Security
 
 ### 7.1 The security requirements
