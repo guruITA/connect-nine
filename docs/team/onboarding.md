@@ -793,6 +793,78 @@ From a local run on 20 October 2026 (environment Production, a local test databa
 
 </details>
 
+## 13. Run all of Connect with one command
+
+For anyone who wants Connect running on their own computer without building it: the database, the server and the screen, on http://localhost:8080. It works the same on Windows, macOS and Linux. Where PowerShell needs another command, it is given below the first one.
+
+**Install.** Git and Docker. On Windows and macOS that is [Docker Desktop](https://docs.docker.com/desktop/), which is free for an organisation with fewer than 250 employees and less than 10 million dollars in yearly revenue, such as the foundation ([Docker Desktop license agreement](https://docs.docker.com/subscription/desktop-license/)). On Linux it is [Docker Engine](https://docs.docker.com/engine/install/) with the compose plugin. Start Docker, then check:
+
+```
+git --version
+docker compose version
+```
+
+You should see `git version` and `Docker Compose version`, each with a number.
+
+**Get the code.** Use the address of the repository you were given.
+
+```
+git clone <address of the repository> connect
+cd connect
+```
+
+You should see a folder `connect` with `docker-compose.yml` and `Dockerfile` in it.
+
+**Settings, once.** Copy the example settings. An existing `.env` is never overwritten.
+
+```
+cp -n .env.example .env
+```
+
+PowerShell: `if (-not (Test-Path .env)) { Copy-Item .env.example .env }`
+
+Open `.env` and replace `change-me` after `POSTGRES_PASSWORD` with a password of your own. Every value in `.env.example` is a placeholder. The other lines can stay: `POSTGRES_USER` and `POSTGRES_DB` name the database, `PGADMIN_EMAIL` is needed by pgAdmin, and `SERVER_PORT` is the port Connect opens on.
+
+**Start.** The first start builds Connect and takes a few minutes.
+
+```
+docker compose --profile app up -d --build
+```
+
+You should see `Container connect-server-1  Started` as the last line. Open http://localhost:8080 and you see the home page of Connect. Make a first account on http://localhost:8080/create-account with a password of fifteen characters or more, with a digit, a capital, a small letter and a sign. You should see `Your account is made`.
+
+**Check.** `docker compose --profile app ps -a` shows the database `(healthy)`, the migrations `Exited (0)` and the server `running`. `docker compose --profile app exec server whoami` answers `app`: Connect does not run as the administrator of the container.
+
+**Stop and start again.** Your accounts and data stay.
+
+```
+docker compose --profile app stop
+docker compose --profile app up -d
+```
+
+**Start over** with an empty Connect:
+
+```
+docker compose --profile app down -v
+```
+
+**Careful: `down -v` throws away the database with every account in it. It cannot be undone.**
+
+### When it does not start
+
+| What you see | What to do |
+|---|---|
+| `address already in use` or `port is already allocated` | Another program uses port 8080. Put `SERVER_PORT=8081` in `.env`, start again, and open http://localhost:8081. |
+| `Cannot connect to the Docker daemon`, or on Windows a message that starts with `error during connect` | Docker is not running. Start Docker Desktop, wait until it says it is running, and start again. |
+| `service "migrations" didn't complete successfully: exit 1`, and `docker compose --profile app logs migrations` shows `password authentication failed` | The password in `.env` changed after the first start, and the database keeps the first one. Put the old password back, or start over with `down -v`. |
+
+### History
+
+Every person who followed this part on a computer of their own writes one line.
+
+| Name | Date | System | Minutes | Remarks |
+|---|---|---|---|---|
+
 ## References
 
 Microsoft. (2026). _CA2254: Template should be a static expression_. Microsoft Learn. https://learn.microsoft.com/en-us/dotnet/fundamentals/code-analysis/quality-rules/ca2254
