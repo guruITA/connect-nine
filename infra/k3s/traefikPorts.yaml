@@ -1,0 +1,49 @@
+# Traefik, the front door inside k3s, on the host network and only on 127.0.0.1.
+# Caddy keeps ports 80 and 443 with the padlock and passes production visits to 127.0.0.1:8081.
+# Copied to /var/lib/rancher/k3s/server/manifests/traefik-config.yaml by installK3s.sh.
+#
+# How k3s takes these values: https://docs.k3s.io/add-ons/helm#customizing-packaged-components-with-helmchartconfig
+# The chart k3s v1.36.5+k3s1 ships, traefik 40.1.0, and its values:
+# https://github.com/traefik/traefik-helm-chart/blob/v40.1.0/traefik/values.yaml
+# The chart writes each entry point as --entryPoints.<name>.address=<hostIP>:<port>. On the host
+# network hostPort must equal port, and setting it keeps Kubernetes from warning that it is missing.
+# All read on 24 October 2026.
+apiVersion: helm.cattle.io/v1
+kind: HelmChartConfig
+metadata:
+  name: traefik
+  namespace: kube-system
+spec:
+  valuesContent: |-
+    hostNetwork: true
+    ports:
+      # Health checks and ping, off 8080 where the server of the test site listens.
+      traefik:
+        port: 9000
+        hostPort: 9000
+        hostIP: 127.0.0.1
+      # The entry point Caddy passes production visits to.
+      web:
+        port: 8081
+        hostPort: 8081
+        hostIP: 127.0.0.1
+      websecure:
+        port: 8443
+        hostPort: 8443
+        hostIP: 127.0.0.1
+      # 9100 stays free for the node exporter of the monitoring.
+      metrics:
+        port: 9101
+        hostPort: 9101
+        hostIP: 127.0.0.1
+    # No LoadBalancer Service, so ServiceLB has nothing to open.
+    service:
+      spec:
+        type: ClusterIP
+    # On the host network a new pod cannot start while the old one holds the ports. With the
+    # chart's default (maxSurge 1) the new pod stayed Pending on a copy of the server on
+    # 24 October 2026, so an update stops the old pod first and Traefik is away for seconds.
+    updateStrategy:
+      rollingUpdate:
+        maxUnavailable: 1
+        maxSurge: 0

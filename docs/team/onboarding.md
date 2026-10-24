@@ -640,6 +640,44 @@ When a merge broke the test site:
 
 Every merge request names the version to go back to (Definition of Done, Deploy). How to find that version in GitLab comes with task 17.3 (#313).
 
+### Production server
+
+The live version runs on k3s, installed by the script `infra/k3s/installK3s.sh` (task 93.1, #1044). Why k3s: `docs/decisions/010-productionOnK3s.md`. Nothing of the live version runs on this server before the director has said yes to question 111, and the install is announced in the team channel before it runs.
+
+- **The version.** k3s v1.36.5+k3s1, released on 30 September 2026 and chosen on 24 October 2026. It is pinned in `K3S_VERSION` at the top of the script. An update is a merge request that changes the version, the link of the install script and its sha256, after reading the release notes.
+- **What the script does.** It stops without root or without an active ufw. It downloads the install script of exactly that release and checks its sha256 before it changes anything. It copies `infra/k3s/config.yaml` to `/etc/rancher/k3s/config.yaml`: ServiceLB off and NodePorts only on 127.0.0.1. It copies `infra/k3s/traefikPorts.yaml` to `/var/lib/rancher/k3s/server/manifests/traefik-config.yaml`: Traefik on the host network, only on 127.0.0.1. It adds two ufw rules, for the pod network 10.42.0.0/16 and the service network 10.43.0.0/16, and no rule for 6443 or 8081. Then it installs k3s and waits until the node is Ready and Traefik runs.
+- **Run it.** On the server, from a copy of the repository: `sudo infra/k3s/installK3s.sh`. It takes about a minute. A second run changes nothing: it says `is up to date` for both files, `Skipping adding existing rule` twice and `k3s v1.36.5+k3s1 is already installed`.
+- **When it stops halfway.** It prints `installK3s: stopped at line <n>` under the step that failed. Fix the cause and run it again. A wrong sha256 stops it before anything changed. The test site does not use k3s and keeps running.
+- **See the node.** `sudo k3s kubectl get nodes` shows one line with `Ready` and `v1.36.5+k3s1`.
+- **See the front door inside k3s.** `sudo ss -ltnp | grep traefik` shows Traefik only on 127.0.0.1: 8081 for visits, which Caddy passes on, and 9000, 8443 and 9101 for its own health check, an https entry that is not used and its metrics. `curl -s -o /dev/null -w '%{http_code}\n' http://127.0.0.1:8081/` answers 404 until an address is set up in k3s.
+- **An update of Traefik.** On the host network a new Traefik pod cannot start while the old one holds the ports, so k3s stops the old one first. The live version is away for a few seconds when Traefik itself is updated.
+
+#### Closed doors
+
+From a laptop, never from the server itself: `nmap -Pn -p 22,80,443,6443,8081,10250 31.70.66.186`. 22, 80 and 443 answer, every other port is `filtered`. The Kubernetes API (6443) and the kubelet (10250) listen on every address of the server, and ufw keeps them closed.
+
+- Never give a Service of Connect the type NodePort or LoadBalancer. A NodePort passes around ufw like a port Docker publishes: on a copy of the server one answered from outside until `config.yaml` limited NodePorts to 127.0.0.1. Visits reach Connect only through Caddy and Traefik.
+
+The scan of a copy of the server on 24 October 2026: a virtual machine with the same Ubuntu 24.04.5, Docker, Caddy and ufw rules, after the install. 443 was closed there because Caddy had no certificate. The scan of this server itself comes here after the install (#157).
+
+```
+PORT      STATE    SERVICE
+22/tcp    open     ssh
+80/tcp    open     http
+443/tcp   closed   https
+6443/tcp  filtered sun-sr-https
+8080/tcp  filtered http-proxy
+8081/tcp  filtered blackice-icecap
+8443/tcp  filtered https-alt
+9000/tcp  filtered cslistener
+9101/tcp  filtered jetdirect
+10250/tcp filtered unknown
+```
+
+#### Install again
+
+To start over: `sudo /usr/local/bin/k3s-uninstall.sh`, then `sudo infra/k3s/installK3s.sh`. The uninstall script is the one k3s leaves behind. It removes k3s with everything inside it, also the database of the live version and its volume, so on this server it only runs after a backup and with the team's yes. It leaves the ufw rules, Docker and the test site alone: on the copy of the server the test site answered all 287 checks, one every 0.2 seconds, during an uninstall and the install after it.
+
 ## 11. The security scan
 
 Every merge request, every run on dev and main, and once a week on dev, the pipeline checks the packages of the server and the screen against the public lists of known holes (issue #22).

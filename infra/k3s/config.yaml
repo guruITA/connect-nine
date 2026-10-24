@@ -1,0 +1,20 @@
+# The settings k3s reads at every start, copied to /etc/rancher/k3s/config.yaml by installK3s.sh.
+# Format: https://docs.k3s.io/installation/configuration (read 24 October 2026)
+
+# Only root reads the admin login of the cluster.
+write-kubeconfig-mode: "0600"
+
+# ServiceLB, the load balancer of k3s, opens host ports for every Service of type LoadBalancer,
+# and those ports pass around ufw. Connect has no such Service, so it stays off and a Service
+# of that type stays pending instead of opening a door.
+# https://docs.k3s.io/networking/networking-services#service-load-balancer (read 24 October 2026)
+disable:
+  - servicelb
+
+# kube-proxy opens a NodePort on every address of the server for every Service of type NodePort
+# or LoadBalancer, and that port passes around ufw too: measured on a copy of the server on
+# 24 October 2026, where nmap from outside found the NodePort of such a Service open. Limited to
+# 127.0.0.1, a NodePort is never a door from the internet.
+# https://kubernetes.io/docs/reference/command-line-tools-reference/kube-proxy/ (--nodeport-addresses, read 24 October 2026)
+kube-proxy-arg:
+  - nodeport-addresses=127.0.0.1/32
