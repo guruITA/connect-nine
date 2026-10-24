@@ -42,14 +42,14 @@ One file per task I did, with the proof block of the task filled in. A point tha
 | `portfolioProof/task1519SprintReview1Documents.md` | Issue 1519 The sprint 1 review documents in the repository (#1519), merge requests !43, !44 and !45 | Managing and Collaborating MS1 |
 | `portfolioProof/task1555ScanFix.md` | Task 16.4 The security scan green again after two new advisories (#1555), merge request !99 | Designing and Realising OR4 |
 | `portfolioProof/task1543TestsAndMocking.md` | Task 3.12 The code conventions for tests and NSubstitute (#1543), merge request !77 | Managing and Collaborating MS1 and MS4 |
-| `portfolioProof/task1465CqrsRewording.md` | Task 11.4 The tasks of every next sprint reworded to the CQRS shape (#1465), merge request !62 | Managing and Collaborating MS4 |
-| `portfolioProof/task1537IdentityTables.md` | Task 3.10 The database rules say what the Identity tables have (#1537), merge request !66 | Managing and Collaborating MS4 |
-| `portfolioProof/task1551Sprint2Week1ClientUpdate.md` | Issue 1551 The client update after week 1 of Sprint 2 (#1551), merge request !95 | Analysing and Advising AA5, Managing and Collaborating MS1 and MS5 |
 | `portfolioProof/task1544NullForgivingOperator.md` | Task 1.10 The code convention on the null-forgiving operator (#1544), merge request !79 | Managing and Collaborating MS1 and MS4 |
 | `portfolioProof/task1545ReadonlyFields.md` | Task 1.11 The code convention on fields for what the constructor gets (#1545), merge request !79 | Managing and Collaborating MS1 and MS4 |
 | `portfolioProof/task1546ValidationErrorKeys.md` | Task 1.12 The code convention on the keys of a validation answer (#1546), merge request !79 | Analysing and Advising AA2, Managing and Collaborating MS4 |
 | `portfolioProof/task1547SharedTestSetup.md` | Task 1.13 The code convention on shared test setup (#1547), merge request !79 | Managing and Collaborating MS1 and MS4 |
 | `portfolioProof/task1548OneWayEverywhere.md` | Task 1.14 The code convention on one way everywhere (#1548), merge request !79 | Managing and Collaborating MS1 and MS4 |
+| `portfolioProof/task1465CqrsRewording.md` | Task 11.4 The tasks of every next sprint reworded to the CQRS shape (#1465), merge request !62 | Managing and Collaborating MS4 |
+| `portfolioProof/task1537IdentityTables.md` | Task 3.10 The database rules say what the Identity tables have (#1537), merge request !66 | Managing and Collaborating MS4 |
+| `portfolioProof/task1551Sprint2Week1ClientUpdate.md` | Issue 1551 The client update after week 1 of Sprint 2 (#1551), merge request !95 | Analysing and Advising AA5, Managing and Collaborating MS1 and MS5 |
 
 ## The full documents behind them
 
