@@ -209,9 +209,9 @@ The live version needs a web address of its own, such as a name under the founda
 
 Advice of the team: a name under the foundation's own domain, chosen by the foundation. Until it points at the server, the live version uses a free temporary name.
 
-- Answer, the address and who points it at the server:
-- Date:
-- Name:
+- Answer, the address and who points it at the server: the live version uses www.youngamstellandconnect.nl. The foundation still has to buy this domain, and Bayon Eerhart asks the client for it by email. Who points the address at the server is still open.
+- Date: 23 October 2026
+- Name: the client, in the meeting of 23 October 2026 (notes by Gurpreet Singh)
 
 ### Question 114: real data of young people
 

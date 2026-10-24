@@ -26,6 +26,7 @@ School asks: "You anticipate risks and bottlenecks in the process before they be
 2. **Measured, with the date and the source.** `free -h`, `df -h` and `docker stats` on the server on 22 October 2026, the last with no container yet. The memory each program needs from its own documentation, read the same day: k3s 2 GB and 2 cores (K3s Project Authors, n.d.), Grafana 512 MB and 1 core (Grafana Labs, n.d.-a), and no minimum given by Prometheus (Prometheus Authors, n.d.) or by Loki for a small setup (Grafana Labs, n.d.-b). The price of a second server like the current one: 20 euros a month including VAT and 9 euros once (STRATO, n.d.).
 3. **My choice of 22 October 2026.** Production and the test site both run on the foundation's one server, so the advice of the team under question 112 is the same server. The director still chooses: the question keeps both options with their price.
 4. **Kept transferable.** The six questions are in the client's own document, the answers go in the table above them and in #1041, and every unknown says how a later team measures it.
+5. **The first answer written in.** The client answered question 113 in part in the meeting of 23 October 2026: the live version uses www.youngamstellandconnect.nl, a domain the foundation still has to buy. Nick Hoebe pointed this out in his review of !88, and the answer now stands under question 113 with the date and who gave it. Who points the address at the server is still open.
 
 ## TODO
 
