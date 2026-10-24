@@ -1,8 +1,6 @@
 using Connect.Application.Common.Abstractions;
 using Connect.Application.Common.Results;
 using Connect.Domain.Users;
-using Microsoft.EntityFrameworkCore;
-using Npgsql;
 
 namespace Connect.Application.Profiles.CreateProfile;
 
@@ -17,8 +15,8 @@ public sealed class CreateProfileCommandHandler(IAppDbContext dbContext)
         CreateProfileCommand command,
         CancellationToken cancellationToken)
     {
-        var account = await _dbContext.Accounts.SingleOrDefaultAsync(
-            candidate => candidate.Id == command.AccountId,
+        var account = await _dbContext.SingleOrDefaultAsync(
+            _dbContext.Accounts.Where(candidate => candidate.Id == command.AccountId),
             cancellationToken);
         if (account is null)
         {
@@ -26,8 +24,8 @@ public sealed class CreateProfileCommandHandler(IAppDbContext dbContext)
                 Error.Unauthorized("Log in first to save your profile"));
         }
 
-        if (await _dbContext.Profiles.AnyAsync(
-                profile => profile.AccountId == command.AccountId,
+        if (await _dbContext.AnyAsync(
+                _dbContext.Profiles.Where(profile => profile.AccountId == command.AccountId),
                 cancellationToken))
         {
             return Result<CreateProfileResult>.Failure(Error.Conflict(AlreadyHasProfile));
@@ -44,32 +42,12 @@ public sealed class CreateProfileCommandHandler(IAppDbContext dbContext)
         };
         _dbContext.Add(profile);
 
-        try
-        {
-            await _dbContext.SaveChangesAsync(cancellationToken);
-        }
-        catch (DbUpdateException exception) when (IsOneProfilePerAccountViolation(exception))
+        var saved = await _dbContext.SaveChangesOrConflictAsync(cancellationToken);
+        if (!saved.IsSuccess)
         {
             return Result<CreateProfileResult>.Failure(Error.Conflict(AlreadyHasProfile));
         }
 
         return Result<CreateProfileResult>.Success(new CreateProfileResult(profile.Id));
-    }
-
-    private static bool IsOneProfilePerAccountViolation(Exception exception)
-    {
-        for (var current = exception; current is not null; current = current.InnerException)
-        {
-            if (current is PostgresException
-                {
-                    SqlState: PostgresErrorCodes.UniqueViolation,
-                    ConstraintName: "ix_profile_account_id"
-                })
-            {
-                return true;
-            }
-        }
-
-        return false;
     }
 }

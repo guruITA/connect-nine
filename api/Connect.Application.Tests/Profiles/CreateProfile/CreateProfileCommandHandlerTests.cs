@@ -150,6 +150,28 @@ public sealed class CreateProfileCommandHandlerTests
             Set<TEntity>().Remove(entity);
         }
 
+        // SQLite raises no PostgreSQL unique violation, so the conflict on a save is tested
+        // against PostgreSQL in AppDbContextDatabaseTests and MemberProfileEndpointTests.
+        async Task<Result> IAppDbContext.SaveChangesOrConflictAsync(CancellationToken cancellationToken)
+        {
+            await SaveChangesAsync(cancellationToken);
+            return Result.Success();
+        }
+
+        Task<TEntity?> IAppDbContext.SingleOrDefaultAsync<TEntity>(
+            IQueryable<TEntity> query,
+            CancellationToken cancellationToken) where TEntity : default
+        {
+            return query.SingleOrDefaultAsync(cancellationToken);
+        }
+
+        Task<bool> IAppDbContext.AnyAsync<TEntity>(
+            IQueryable<TEntity> query,
+            CancellationToken cancellationToken)
+        {
+            return query.AnyAsync(cancellationToken);
+        }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
