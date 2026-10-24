@@ -1,6 +1,7 @@
 using Connect.Application.Accounts.CreateAccount;
 using Connect.Application.Common.Abstractions;
 using Connect.Application.Common.Results;
+using Connect.Application.Profiles.CreateProfile;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Connect.Application;
@@ -12,6 +13,9 @@ public static class DependencyInjection
         services.AddScoped<
             ICommandHandler<CreateAccountCommand, Result<CreateAccountResult>>,
             CreateAccountCommandHandler>();
+        services.AddScoped<
+            ICommandHandler<CreateProfileCommand, Result<CreateProfileResult>>,
+            CreateProfileCommandHandler>();
 
         return services;
     }
