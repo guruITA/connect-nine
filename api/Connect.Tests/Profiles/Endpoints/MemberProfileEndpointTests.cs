@@ -1,4 +1,3 @@
-using System.Collections.Concurrent;
 using System.Net;
 using System.Text;
 using System.Text.Json;
@@ -11,6 +10,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using NSubstitute;
 using NUnit.Framework;
 
 namespace Connect.Tests.Profiles.Endpoints;
@@ -213,8 +213,8 @@ public sealed class MemberProfileEndpointTests
     [Test]
     public async Task Post_ValidProfile_WritesNoProfileTextToTheLog()
     {
-        var logs = new CapturingLoggerProvider();
-        using WebApplicationFactory<Program> factory = CreateFactory(logs: logs);
+        ILogger logger = NewLogger();
+        using WebApplicationFactory<Program> factory = CreateFactory(logger: logger);
         Guid accountId = SaveAccount(factory);
         using HttpClient client = ClientFor(factory, accountId);
 
@@ -222,27 +222,29 @@ public sealed class MemberProfileEndpointTests
             Address,
             Json(new { firstName = "Qwertyname", ageBand = "From15To17", region = "Qwertytown", bio = "Qwertybio" }));
 
+        string[] messages = LoggedMessages(logger);
+
         using (Assert.EnterMultipleScope())
         {
             Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.Created));
-            Assert.That(logs.Messages, Is.Not.Empty);
-            Assert.That(logs.Messages, Has.None.Contains("Qwerty"));
+            Assert.That(messages, Is.Not.Empty);
+            Assert.That(messages, Has.None.Contains("Qwerty"));
         }
     }
 
     private static WebApplicationFactory<Program> CreateFactory(
         bool temporaryAccount = true,
-        CapturingLoggerProvider? logs = null)
+        ILogger? logger = null)
     {
         return new ConnectWebApplicationFactory().WithWebHostBuilder(builder =>
         {
             builder.UseSetting("TemporaryAccount:Enabled", temporaryAccount ? "true" : "false");
             builder.ConfigureLogging(logging =>
             {
-                if (logs is not null)
+                if (logger is not null)
                 {
                     logging.SetMinimumLevel(LogLevel.Trace);
-                    logging.AddProvider(logs);
+                    logging.AddProvider(LoggerProviderFor(logger));
                 }
             });
         });
@@ -297,42 +299,28 @@ public sealed class MemberProfileEndpointTests
         return JsonDocument.Parse(await response.Content.ReadAsStringAsync());
     }
 
-    private sealed class CapturingLoggerProvider : ILoggerProvider
+    private static ILogger NewLogger()
     {
-        private readonly ConcurrentQueue<string> messages = new();
+        ILogger logger = Substitute.For<ILogger>();
+        logger.IsEnabled(Arg.Any<LogLevel>()).Returns(true);
+        return logger;
+    }
 
-        public IReadOnlyCollection<string> Messages => messages.ToArray();
+    private static ILoggerProvider LoggerProviderFor(ILogger logger)
+    {
+        ILoggerProvider provider = Substitute.For<ILoggerProvider>();
+        provider.CreateLogger(Arg.Any<string>()).Returns(logger);
+        return provider;
+    }
 
-        public ILogger CreateLogger(string categoryName)
-        {
-            return new CapturingLogger(messages);
-        }
-
-        public void Dispose()
-        {
-        }
-
-        private sealed class CapturingLogger(ConcurrentQueue<string> messages) : ILogger
-        {
-            public IDisposable? BeginScope<TState>(TState state) where TState : notnull
-            {
-                return null;
-            }
-
-            public bool IsEnabled(LogLevel logLevel)
-            {
-                return true;
-            }
-
-            public void Log<TState>(
-                LogLevel logLevel,
-                EventId eventId,
-                TState state,
-                Exception? exception,
-                Func<TState, Exception?, string> formatter)
-            {
-                messages.Enqueue(formatter(state, exception) + exception);
-            }
-        }
+    // Every message the logger got, written out the way a log line is, with its exception.
+    private static string[] LoggedMessages(ILogger logger)
+    {
+        return logger.ReceivedCalls()
+            .Where(call => call.GetMethodInfo().Name == nameof(ILogger.Log))
+            .Select(call => call.GetArguments())
+            .Select(arguments =>
+                $"{((Delegate)arguments[4]!).DynamicInvoke(arguments[2], arguments[3])}{arguments[3]}")
+            .ToArray();
     }
 }
