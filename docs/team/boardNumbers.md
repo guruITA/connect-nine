@@ -21,7 +21,7 @@ The cards name each other by their board number. GitLab gives its own numbers.
 | 17 | #23 | A health check and structured logs |
 | 19 | #24 | GDPR notes on minors' data |
 | 07 | #25 | Create a profile |
-| 07b | #26 | A clear message when my region looks like a street address |
+| 07b | #1553 | Choose my region from a fixed list of places (replaces #26) |
 | 08 | #27 | See my own profile page |
 | 13 | #28 | The role table per module |
 | 18 | #29 | Data flow diagram of profile creation |

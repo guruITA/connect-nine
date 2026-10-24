@@ -8,9 +8,10 @@ These documents describe ideas that the current or a future team can evaluate. T
 
 | Document | Description |
 |---|---|
-| [001 - Application and Infrastructure separation](001-application-infrastructure-separation.md) | Reviews the existing layered architecture and proposes ways to strengthen the separation between Application and Infrastructure. |
-| [002 - Review the IAppDbContext abstraction](002-review-app-db-context-abstraction.md) | Examines whether the current database abstraction exposes more EF Core functionality than Application needs. |
-| [003 - Review the ASP.NET Core Identity abstraction](003-abstract-aspnet-identity.md) | Documents the existing account-registration abstraction and explores when additional identity boundaries are justified. |
+| [001 - Application and Infrastructure separation](001-applicationInfrastructureSeparation.md) | Reviews the existing layered architecture and proposes ways to strengthen the separation between Application and Infrastructure. |
+| [002 - Review the IAppDbContext abstraction](002-reviewAppDbContextAbstraction.md) | Examines whether the current database abstraction exposes more EF Core functionality than Application needs. |
+| [003 - Review the ASP.NET Core Identity abstraction](003-abstractAspnetIdentity.md) | Documents the existing account-registration abstraction and explores when additional identity boundaries are justified. |
+| [004 - An anonymised map of members per place](004-anonymisedMemberMap.md) | A possible extension the client named on 23 October 2026: a map that shows where and how many members live per place, without showing any member. |
 
 ## How to use these documents
 

@@ -14,7 +14,7 @@ Questions 1 to 8 are written in full by the tasks of issue 10. Questions 9 and u
 | 6 | 10 | Who runs and pays for Connect after January, and the grant of Microsoft for Nonprofits. | The app is hosted on Strato by the client, and future maintenance is not decided yet. WailSalutem is a nonprofit. | 24 September 2026 |
 | 7 | 10 | What the foundation must set up for log in with Google and Facebook, and who owns it. | | |
 | 8 | 10 | Three questions about accounts: changing the password while logged in, logging out after a while, and logging out on every device. | | |
-| 9 | 36 Add skills and interests as tags | Does the client approve the starter list of about twenty suggested skill and interest tags, and is any tag on it one that could hurt a young person? | | |
+| 9 | 36 Add skills and interests as tags | Does the client approve the starter list of about twenty suggested skill and interest tags, and is any tag on it one that could hurt a young person? | The team researches which tags fit Amstelland, young people and the Young Amstelland Awards and adds them later as extra tags (meeting with the client on 23 October 2026, notes by Gurpreet). Until then the current starter list stays, so the tags of #69 go ahead (the team, 24 October 2026). | 23 October 2026 |
 | 10 | 133 Add a logo to my organisation profile | Does the foundation want organisations to show a logo on their page on Connect? | | |
 | 11 | 134 See a list of all organisations | Does the foundation want a page that lists every organisation on Connect, for every logged in member? | | |
 | 12 | 24 Register or log in with Facebook | Does the foundation want a member to link Facebook to an account that already exists, after typing the password of that account? | | |
@@ -24,8 +24,8 @@ Questions 1 to 8 are written in full by the tasks of issue 10. Questions 9 and u
 | 16 | 126 An admin unlocks a locked account early | Should an admin be able to unlock a locked member early, and how does the foundation make sure that the person who asks is really that member? | | |
 | 17 | 127 Download the activity list as a file | Should an admin be able to download the activity list of a chosen period as a file, and where may the foundation keep that file? | | |
 | 18 | 128 A warning to the admin about suspicious activity | Should the admins get an email when one account is locked many times or removes many things in a short time, and at which numbers? | | |
-| 19 | 07b A clear message when my region looks like a street address | Should the field Region on a profile become a fixed list of places in Amstelland instead of free text, so no street name can be typed? | | |
-| 20 | 130 A young person under 16 asks a parent for permission | How many days may Connect keep the email address of a parent who has not answered the request for permission for a young person under 16? | | |
+| 19 | 07b A clear message when my region looks like a street address | Should the field Region on a profile become a fixed list of places in Amstelland instead of free text, so no street name can be typed? | Yes. A member types in a search field, and the place that is saved is always one of a fixed set of places. Card 07b is now #1553, which replaces #26 (meeting with the client on 23 October 2026, notes by Gurpreet). | 23 October 2026 |
+| 20 | 130 A young person under 16 asks a parent for permission | How many days may Connect keep the email address of a parent who has not answered the request for permission for a young person under 16? | At most one month (meeting with the client on 23 October 2026, notes by Gurpreet). See question 135 for the age. How the address goes earlier (when the parent answers or says no, or the account is deleted) and the small proof of permission kept without the address are the team's design, not a client decision (comment on #40). | 23 October 2026 |
 | 21 | 23b Link Google to my existing account after I type my password | Same as question 12, answer it there. | | |
 | 22 | 115 Change my email address | Should Connect limit how many email change links one account can ask for in an hour, and to how many? | | |
 | 23 | 52 Read the house rules from every page | Which house rules does the foundation agree to enforce, and does breaking a rule a second time always block the account? | | |
@@ -36,7 +36,7 @@ Questions 1 to 8 are written in full by the tasks of issue 10. Questions 9 and u
 | 28 | 172 A backup of the project pictures | Where should the nightly copies of the project pictures be kept (a second disk on the foundation's server, or storage of the foundation at another place in the European Union), and for how many days? | | |
 | 29 | 12 Inventory of the personal data per module | Do you understand and accept the five biggest risks of Connect, told in three plain sentences? | | |
 | 30 | 19 GDPR notes on minors' data | Do you approve the five data rules for the data of young people on Connect? | | |
-| 31 | 13 The role table per module | May an organisation see the profile of a member under 18, and may it contact that member? | | |
+| 31 | 13 The role table per module | May an organisation see the profile of a member under 18, and may it contact that member? | Yes, but only inside Connect. An organisation may see the profile of a member under 18 and contact that member through Connect, once a parent has given permission. The member's email address and phone number are never shared. This goes into the house rules and the privacy statement (#104, #102) (meeting with the client on 23 October 2026, notes by Gurpreet). | 23 October 2026 |
 | 32 | 18 Data flow diagram of profile creation | Do you agree with the risks the team accepts for creating a profile, told in plain words? | | |
 | 33 | 104 A threat model of adding an image to a project | How fast must a picture that breaks the house rules be gone from Connect? | | |
 | 34 | 120 Old activity lines are removed after the retention period | How many months must Connect keep a line on the page Activity before it is removed for good (the team proposes 12 months)? | | |
@@ -118,7 +118,7 @@ Questions 1 to 8 are written in full by the tasks of issue 10. Questions 9 and u
 | 110 | 107 Three ways to give out the last event place, measured | Does the foundation want a waiting list for an event that is full, so a young person gets a place when someone cancels? | | |
 | 111 | 91 The director agrees where production runs | Does the foundation agree that the team puts a live version of Connect on its server, knowing that the HvA asks for it and the foundation did not? | | |
 | 112 | 91 The director agrees where production runs | May the live version run on the same server as the test site, or does the foundation want a second server, knowing the measured memory and the monthly price of a second one? | | |
-| 113 | 91 The director agrees where production runs | Which web address does the live version use, and will the foundation point that address at the production server? | | |
+| 113 | 91 The director agrees where production runs | Which web address does the live version use, and will the foundation point that address at the production server? | Partly answered: the live version uses [www.youngamstellandconnect.nl](https://youngamstellandconnect.nl/). The client still has to buy the domain. Whether the foundation points that address at the production server is still open (meeting with the client on 23 October 2026, notes by Gurpreet). | 23 October 2026 |
 | 114 | 91 The director agrees where production runs | May the live version hold real data of young people from its first day, or only after the privacy rules of issue 19 are done? | | |
 | 115 | 91 The director agrees where production runs | Who at the foundation receives the warning emails when Connect is down or slow, at which email address and at which hours? | | |
 | 116 | 91 The director agrees where production runs | Which mail account does the live version send its emails and warnings from, and how does the foundation hand its password to the team without sending it in writing? | | |
@@ -140,6 +140,8 @@ Questions 1 to 8 are written in full by the tasks of issue 10. Questions 9 and u
 | 132 | 164 Change a news item | When an admin of the foundation changes a news item, may they also replace or remove its picture? | | |
 | 133 | 154 Remove my opportunity | Should the young people who pressed Interested on an opportunity be told, for example by email, when its organisation removes it? | | |
 | 134 | 82d Remove an item from my basket | Does the foundation want a member to lower the number of one item in the basket by one, next to removing the whole line? | | |
+| 135 | 130 A young person under 16 asks a parent for permission | From which age does Connect ask a parent for permission? | Every young person under 18, so the whole age band 15 to 17, not only under 16. This is stricter than the law asks, which is allowed. #40, #41 and #42 change to match (meeting with the client on 23 October 2026, notes by Gurpreet). | 23 October 2026 |
+| 136 | 07b Choose my region from a fixed list of places | Which towns and areas are on the fixed list of places for Region? | | |
 
 ## The questions of 24 September 2026
 
