@@ -15,8 +15,9 @@ using NUnit.Framework;
 
 namespace Connect.Tests.Profiles.Endpoints;
 
-// Runs against a real test database (ConnectionStrings__DefaultConnection). Until log in (#15)
-// the account comes from the temporary header X-Temporary-Account-Id.
+// Runs against a real test database (ConnectionStrings:TestsConnection, handed to the server as its
+// DefaultConnection). Until log in (#15) the account comes from the temporary header
+// X-Temporary-Account-Id.
 public sealed class MemberProfileEndpointTests
 {
     private const string Address = "/api/member-profiles/";
@@ -238,6 +239,7 @@ public sealed class MemberProfileEndpointTests
     {
         return new ConnectWebApplicationFactory().WithWebHostBuilder(builder =>
         {
+            builder.UseSetting("ConnectionStrings:DefaultConnection", TestDatabase.ConnectionString());
             builder.UseSetting("TemporaryAccount:Enabled", temporaryAccount ? "true" : "false");
             builder.ConfigureLogging(logging =>
             {
