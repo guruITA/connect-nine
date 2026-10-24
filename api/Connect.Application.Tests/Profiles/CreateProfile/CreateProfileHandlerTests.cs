@@ -11,7 +11,7 @@ using NUnit.Framework;
 
 namespace Connect.Application.Tests.Profiles.CreateProfile;
 
-public sealed class CreateProfileCommandHandlerTests
+public sealed class CreateProfileHandlerTests
 {
     private SqliteConnection connection;
     private TestAppDbContext dbContext;
