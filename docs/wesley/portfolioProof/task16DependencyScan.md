@@ -17,7 +17,7 @@ A point that needs someone else is marked TODO with who and what.
 2. **Green on a normal change.** Pipeline 583876: "No package with a known high or critical advisory." for all five projects.
 3. **Red on purpose (#309).** `Newtonsoft.Json` 12.0.3 added to `api/Connect.Infrastructure`. Pipeline 583877: backend-scan failed with `error NU1903: Warning As Error: Package 'Newtonsoft.Json' 12.0.3 has a known high severity vulnerability, https://github.com/advisories/GHSA-5crp-9r3c-p9vr`. After removing the package the scan turned green again, in pipeline 583878.
 
-   The logs of both runs, as the GitLab API gives them, read and turned into images on 24 October 2026:
+   Screenshots of the two job pages in GitLab, taken on 24 October 2026:
 
    ![The red run: job backend-scan of pipeline 583877 of !31 with NU1903 and GHSA-5crp-9r3c-p9vr](images/task16RedScanServer.png)
 
@@ -36,7 +36,7 @@ A point that needs someone else is marked TODO with who and what.
    The last row shows that the skip covers only the accepted advisory.
 6. **The screen half of the red run (#309).** Once `web/package.json` was on dev, I added `lodash` 4.17.20 to the screen with `npm install --save-exact` on a branch of its own, on 21 October 2026. Pipeline 586192: frontend-scan failed with "lodash <=4.17.23, Severity: high, Command Injection in lodash - https://github.com/advisories/GHSA-35jh-r3h4-6jhm" and every other job was green. After removing the package again, pipeline 586193: frontend-scan green, "found 0 vulnerabilities". The merge request was closed without a merge and its branch removed, so nothing of it is on dev.
 
-   The logs of both runs, as the GitLab API gives them, read and turned into images on 24 October 2026:
+   Screenshots of the two job pages in GitLab, taken on 24 October 2026:
 
    ![The red run: job frontend-scan of pipeline 586192 of !85 with lodash and GHSA-35jh-r3h4-6jhm](images/task16RedScanScreen.png)
 
@@ -47,7 +47,7 @@ A point that needs someone else is marked TODO with who and what.
 ## TODO
 
 - [x] Wesley: make the schedule after the merge (Build, Pipeline schedules, Monday 07:00, Europe/Amsterdam, dev), run it once by hand and write here that only backend-scan ran. Done on 21 October 2026, point 7: both scan jobs ran, because the screen has a `package.json` now.
-- [x] Wesley: screenshots of the red and the green run in !31 and in !85. Done on 24 October 2026 in this file, points 3 and 6: the four job logs read through the GitLab API and turned into images, since the two merge requests are closed.
+- [x] Wesley: screenshots of the red and the green run in !31 and in !85. Done on 24 October 2026 in this file, points 3 and 6: screenshots of the four job pages, here because the two merge requests are closed.
 - [x] Wesley: the npm half of the red run once #263 is merged. Done in !85, point 6.
 - [ ] Reviewer of !30: run `dotnet restore` and `dotnet list package --vulnerable --include-transitive` in `api` on your laptop and write whether you saw the same.
 - [ ] Reviewer of !30: repeat the test with `Newtonsoft.Json` 12.0.3 and its NuGetAuditSuppress line on a throwaway branch, and write whether backend-scan turned green and named the advisory under "Skipped, accepted by the client".
