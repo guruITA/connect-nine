@@ -1,5 +1,5 @@
-using Connect.Domain.Users;
 using Connect.Domain.Sessions;
+using Connect.Domain.Users;
 using Connect.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;

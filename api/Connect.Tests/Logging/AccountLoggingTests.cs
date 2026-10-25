@@ -5,7 +5,6 @@ using Connect.Application.Accounts.CreateAccount;
 using Connect.Application.Common.Abstractions;
 using Connect.Application.Common.Results;
 using Connect.Tests.Fixtures;
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.DependencyInjection;

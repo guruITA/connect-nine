@@ -1,7 +1,7 @@
 using Connect.Application.Accounts.CreateAccount;
 using Connect.Domain.Users;
-using Connect.Infrastructure.Identity;
 using Connect.Infrastructure.Health;
+using Connect.Infrastructure.Identity;
 using Connect.Infrastructure.Persistence;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
