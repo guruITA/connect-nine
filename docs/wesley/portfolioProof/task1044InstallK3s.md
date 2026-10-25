@@ -23,7 +23,7 @@ School asks: "You ensure that your work aligns with that of others and contribut
 
 1. **The test site stays as Gurpreet Singh built it.** The script does not touch `deploy/`, Caddy or the test site, and Traefik never takes 80, 443 or 8080. On the copy the test site and a visit through Caddy and Traefik to a pod both answered after the install and after a restart of the machine.
 2. **The firewall of task 9.3 (#238) stays as it is.** ufw stays on and gets two rules, only for the pod and service networks inside the server, and no rule for 6443 or 8081.
-3. **The plan of the team.** Caddy stays the one front door, as `docs/architecture/infrastructure.md` describes. That document now says that k3s is on the server and that Connect itself goes live there only after the director's yes to question 111. The open point on the port of the log in stand in `oidc` is closed there too: the test site does not run it, so Traefik can have 127.0.0.1:8081.
+3. **The plan of the team.** Caddy stays the one front door, as `docs/architecture/infrastructure.md` describes. That document now says that the live version runs on the server and that real data goes in only after the director's yes. The open point on the port of the log in stand in `oidc` is closed there too: the test site does not run it, so Traefik can have 127.0.0.1:8081.
 
 ## TODO
 

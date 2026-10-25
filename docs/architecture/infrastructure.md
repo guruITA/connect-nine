@@ -219,10 +219,10 @@ The choice is recorded in `docs/decisions/<number>-productionOnK3s.md` (issue 92
 made it on 27 September 2026, and task 92.1 checks the facts behind it at their own source before
 task 92.2 writes it down.
 
-**The client agrees first.** Nothing of Connect goes live on the foundation's server and nothing
-carries its name before the director has said yes. k3s, the platform the live version runs on, is
-installed there since 25 October 2026 (task 93.1), because that server is where the live version
-will run. Issue 91 The director agrees where production runs asks six
+**The client agrees first.** No real data of young people goes into the live version before the
+director has said yes. The live version itself runs on the foundation's server since 25 October 2026,
+on k3s (task 93.1) and at an interim address (issue 95), because Wesley Oerlemans decided that this
+server is where it runs. Issue 91 The director agrees where production runs asks six
 questions in one meeting, questions 111 to 116 in `docs/client/clientQuestions.md`: whether the
 foundation agrees to a live version the school asked for, one server or two, the production
 address, real or invented data, who receives the warning emails, and which mail account the live
