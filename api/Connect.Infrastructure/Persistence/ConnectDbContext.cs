@@ -1,6 +1,8 @@
 using Connect.Application.Common.Abstractions;
 using Connect.Domain.Common;
+using Connect.Domain.Sessions;
 using Connect.Domain.Users;
+using Connect.Infrastructure.Persistence.Configurations;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
@@ -13,6 +15,8 @@ public sealed class ConnectDbContext(DbContextOptions<ConnectDbContext> options)
     public IQueryable<Account> Accounts => Set<Account>();
 
     public IQueryable<Profile> Profiles => Set<Profile>();
+
+    public IQueryable<Session> Sessions => Set<Session>();
 
     void IAppDbContext.Add<TEntity>(TEntity entity) where TEntity : class
     {
@@ -53,45 +57,18 @@ public sealed class ConnectDbContext(DbContextOptions<ConnectDbContext> options)
     {
         base.OnModelCreating(modelBuilder);
 
-        modelBuilder.Entity<Account>(entity =>
-        {
-            entity.Property(user => user.CreatedAt).IsRequired();
-            entity.Property(user => user.UpdatedAt).IsRequired();
-            entity.ToTable(table => table.HasCheckConstraint(
-                "ck_asp_net_users_password_hash_not_empty",
-                "\"password_hash\" IS NULL OR length(\"password_hash\") > 0"));
-        });
+        modelBuilder
+            .ApplyConfigurationsFromAssembly(typeof(AccountIdentityConfiguration).Assembly);
 
-        modelBuilder.Entity<Profile>(entity =>
+        foreach (var entityType in modelBuilder.Model.GetEntityTypes().ToList())
         {
-            entity.HasKey(profile => profile.Id);
-            entity.Property(profile => profile.CreatedAt).IsRequired();
-            entity.Property(profile => profile.UpdatedAt).IsRequired();
-            entity.Property(profile => profile.FirstName).IsRequired();
-            entity.Property(profile => profile.AgeBand).HasConversion<string>().IsRequired();
-            entity.Property(profile => profile.Region).IsRequired();
-            entity.ToTable(table =>
+            if (typeof(Entity).IsAssignableFrom(entityType.ClrType))
             {
-                table.HasCheckConstraint(
-                    "ck_profile_first_name_not_empty",
-                    "length(\"first_name\") > 0");
-                table.HasCheckConstraint(
-                    "ck_profile_region_not_empty",
-                    "length(\"region\") > 0");
-                table.HasCheckConstraint(
-                    "ck_profile_age_band",
-                    "\"age_band\" IN ('Adolescent', 'YoungAdult', 'Adult')");
-            });
-
-            entity.HasOne(profile => profile.Account)
-                .WithOne(account => account.Profile)
-                .HasForeignKey<Profile>(profile => profile.AccountId)
-                .IsRequired()
-                .OnDelete(DeleteBehavior.Cascade);
-        });
-
-        modelBuilder.ApplyConfiguration(
-            new Configurations.AccountIdentityConfiguration());
+                modelBuilder.Entity(entityType.ClrType)
+                    .Property<Guid>(nameof(Entity.Id))
+                    .ValueGeneratedNever();
+            }
+        }
     }
 
     private void UpdateAuditProperties()
