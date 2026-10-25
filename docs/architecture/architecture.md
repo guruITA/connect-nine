@@ -437,8 +437,10 @@ How the parts above carry it:
 - **Sessions.** ASP.NET Core Identity keeps the account, the hash of the password and the check of
   the password. After a log in the server also stores a row in `session` for that one log in and
   sets the cookie `connect_session` with the flags Secure, HttpOnly and SameSite=Lax, for one day.
-  The table keeps only a hash of the token and the account it belongs to, so one log in can be
-  ended on the server without the others (issue 04, task 11.5,
+  The table keeps only a SHA-256 hash of the token, the owning `account_id`, UTC `created_at`,
+  `expires_at`, `revoked_at` and the inherited UTC `updated_at`; account deletion cascades to its
+  sessions. The token hash has a unique index and the account ID has a lookup index, so one log in
+  can be ended on the server without ending the others (issue 04, task 11.5,
   [`docs/decisions/009-sessionTableBesideIdentity.md`](../decisions/009-sessionTableBesideIdentity.md)).
 - **Passwords.** At least 15 characters, the rules in one place `api/Domain/Accounts/PasswordRules.cs`
   (issue 03b A clear message when my password is too weak), a password known from data leaks is
