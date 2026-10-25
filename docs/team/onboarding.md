@@ -423,6 +423,8 @@ You should see only lines where the word is a name, a placeholder or an explanat
 
 Issue 09 Every team member on the client's server (task 9.2) prepares the foundation's server for the team. How the foundation gets in without the team, and what changes at the handover, is in [serverHandover.md](../client/serverHandover.md).
 
+The live version runs on this server too, on k3s set up with Terraform, while the test site runs on docker compose. Why: [010-productionOnK3s.md](../decisions/010-productionOnK3s.md).
+
 ### The machine
 
 | Fact                 | Value                                                             |

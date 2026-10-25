@@ -23,11 +23,11 @@ School asks: "You give well-founded advice in which you weigh alternatives, iden
 1. **Three ways held against what the school asks.** docker compose, k3s and MicroK8s on seven rows: restarting a crashed part, a new version without downtime, desired state in files, memory, the operating system of the server, how it is installed and the license.
 2. **Two tools held against what the team and the foundation need.** Terraform and OpenTofu on the license and what it means for a school team and a foundation, the providers, GitLab and the workshop.
 3. **The risks of the choice, measured where possible.** k3s takes about 0.6 GB of memory before Connect runs. Traefik on the host network is away for seconds when it is updated, because the new pod cannot start while the old one holds the ports. A NodePort passes around ufw. Each is in the decision with what was measured on the copy of the server.
-4. **The order of the card.** The recommendation is written in task 92.2 (#1043), after I read the facts that go against my own choice, which are in a comment on #156.
+4. **The order of the card.** The recommendation is written in task 92.2 (#1043), after I read the facts that go against my own choice, which are in a comment on #156. Reading them, I asked whether the license of Terraform still allows a public website, and checked the answer in the license itself before I kept Terraform.
 
 ## TODO
 
-- [ ] Wesley: read the facts that go against the choice in the comment on #156, then task 92.2 (#1043) writes the parts Decision and Consequences.
+- [x] Wesley: read the facts that go against the choice in the comment on #156, then task 92.2 (#1043) writes the parts Decision and Consequences, 25 October 2026.
 - [ ] Bayon Eerhart, Nick Hoebe, Gurpreet Singh and Kelvin van Voorst: a line under Agreed by, after task 92.2.
 
 ## AI use

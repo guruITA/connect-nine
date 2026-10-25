@@ -465,7 +465,7 @@ How the parts above carry it:
 
 Where Connect runs. The details, the steps and the reasons are in
 `docs/architecture/infrastructure.md`. The choice for k3s and Terraform is recorded in
-`docs/decisions/<number>-productionOnK3s.md` (issue 92 k3s and Terraform for production, compose
+[010-productionOnK3s.md](../decisions/010-productionOnK3s.md) (issue 92 k3s and Terraform for production, compose
 for test), which Wesley Oerlemans made on 27 September 2026 because the HvA DevOps workshop requires
 orchestration and infrastructure as code. The foundation did not ask for it.
 

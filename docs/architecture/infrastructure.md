@@ -215,9 +215,9 @@ test address. The whole team confirms the choice at a stand up, owner the Produc
 
 ## Production in detail
 
-The choice is recorded in `docs/decisions/<number>-productionOnK3s.md` (issue 92). Wesley Oerlemans
-made it on 27 September 2026, and task 92.1 checks the facts behind it at their own source before
-task 92.2 writes it down.
+The choice is recorded in [010-productionOnK3s.md](../decisions/010-productionOnK3s.md) (issue 92).
+Wesley Oerlemans made it on 27 September 2026, task 92.1 checked the facts behind it at their own
+source, and on 25 October 2026 he chose Terraform over OpenTofu.
 
 **The client agrees first.** Nothing runs on the foundation's server and nothing carries its name
 before the director has said yes. Issue 91 The director agrees where production runs asks six
