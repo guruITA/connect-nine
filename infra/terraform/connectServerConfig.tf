@@ -12,4 +12,4 @@ resource "kubernetes_config_map_v1" "connect_server_config" {
   data = {
     ASPNETCORE_ENVIRONMENT = "Production"
   }
-}
+
