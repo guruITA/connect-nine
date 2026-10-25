@@ -1,6 +1,7 @@
 using Connect.Application.Accounts.CreateAccount;
 using Connect.Application.Common.Results;
 using Connect.Domain.Users;
+using Connect.Infrastructure.Persistence.Configurations;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
@@ -75,8 +76,8 @@ public sealed class AccountRegistrationService(UserManager<Account> userManager,
             {
                 SqlState: PostgresErrorCodes.UniqueViolation,
                 ConstraintName:
-                    AccountIdentityDatabaseNames.EmailUniqueIndex or
-                    AccountIdentityDatabaseNames.UserNameUniqueIndex
+                    DatabaseConstants.AccountEmailUniqueIndex or
+                    DatabaseConstants.AccountUserNameUniqueIndex
             };
 
             if (isAccountUniqueViolation)

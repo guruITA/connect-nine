@@ -1,6 +1,7 @@
 using Connect.Application.Common.Results;
 using Connect.Domain.Users;
 using Connect.Infrastructure.Identity;
+using Connect.Infrastructure.Persistence.Configurations;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
@@ -178,8 +179,8 @@ public sealed class AccountRegistrationServiceTests
     {
         foreach (var constraint in new[]
         {
-            AccountIdentityDatabaseNames.EmailUniqueIndex,
-            AccountIdentityDatabaseNames.UserNameUniqueIndex
+            DatabaseConstants.AccountEmailUniqueIndex,
+            DatabaseConstants.AccountUserNameUniqueIndex
         })
         {
             yield return new TestCaseData(constraint, false);
@@ -223,7 +224,7 @@ public sealed class AccountRegistrationServiceTests
     {
         AssertDatabaseExceptionPropagates(new DbUpdateException(
             "Insert failed",
-            CreatePostgresException(PostgresErrorCodes.NotNullViolation, AccountIdentityDatabaseNames.EmailUniqueIndex)));
+            CreatePostgresException(PostgresErrorCodes.NotNullViolation, DatabaseConstants.AccountEmailUniqueIndex)));
     }
 
     [Test]
