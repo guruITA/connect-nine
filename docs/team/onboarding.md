@@ -645,7 +645,7 @@ Every merge request names the version to go back to (Definition of Done, Deploy)
 The live version runs on k3s, installed on this server on 25 October 2026 by the script `infra/k3s/installK3s.sh` (task 93.1, #1044). Why k3s: `docs/decisions/010-productionOnK3s.md`. A new run of the script on this server is announced in the team channel before it starts.
 
 - **The version.** k3s v1.36.5+k3s1, released on 30 September 2026 and chosen on 24 October 2026. It is pinned in `K3S_VERSION` at the top of the script. An update is a merge request that changes the version, the link of the install script and its sha256, after reading the release notes.
-- **What the script does.** It stops without root or without an active ufw. It downloads the install script of exactly that release and checks its sha256 before it changes anything. It copies `infra/k3s/config.yaml` to `/etc/rancher/k3s/config.yaml`: ServiceLB off and NodePorts only on 127.0.0.1. It copies `infra/k3s/traefikPorts.yaml` to `/var/lib/rancher/k3s/server/manifests/traefik-config.yaml`: Traefik on the host network, only on 127.0.0.1. It adds two ufw rules, for the pod network 10.42.0.0/16 and the service network 10.43.0.0/16, and no rule for 6443 or 8081. Then it installs k3s and waits until the node is Ready and Traefik runs.
+- **What the script does.** It stops without root or without an active ufw. It downloads the install script of exactly that release and checks its sha256 before it changes anything. It copies `infra/k3s/config.yaml` to `/etc/rancher/k3s/config.yaml`: ServiceLB off, NodePorts only on 127.0.0.1 and the Secrets encrypted (part Secrets at rest). It copies `infra/k3s/traefikPorts.yaml` to `/var/lib/rancher/k3s/server/manifests/traefik-config.yaml`: Traefik on the host network, only on 127.0.0.1. It adds two ufw rules, for the pod network 10.42.0.0/16 and the service network 10.43.0.0/16, and no rule for 6443 or 8081. Then it installs k3s and waits until the node is Ready and Traefik runs.
 - **Run it.** On the server, from a copy of the repository: `sudo infra/k3s/installK3s.sh`. It takes about a minute. A second run changes nothing: it says `is up to date` for both files, `Skipping adding existing rule` twice and `k3s v1.36.5+k3s1 is already installed`.
 - **When it stops halfway.** It prints `installK3s: stopped at line <n>` under the step that failed. Fix the cause and run it again. A wrong sha256 stops it before anything changed. The test site does not use k3s and keeps running.
 - **See the node.** `sudo k3s kubectl get nodes`. On 25 October 2026:
@@ -657,6 +657,27 @@ The live version runs on k3s, installed on this server on 25 October 2026 by the
 
 - **See the front door inside k3s.** `sudo ss -ltnp | grep traefik` shows Traefik only on 127.0.0.1: 8081 for visits, which Caddy passes on, and 9000, 8443 and 9101 for its own health check, an https entry that is not used and its metrics. `curl -s -o /dev/null -w '%{http_code}\n' http://127.0.0.1:8081/` answers 404 until an address is set up in k3s.
 - **An update of Traefik.** On the host network a new Traefik pod cannot start while the old one holds the ports, so k3s stops the old one first. The live version is away for a few seconds when Traefik itself is updated.
+
+#### Secrets at rest
+
+k3s keeps every object of the cluster in one database file on the server, `/var/lib/rancher/k3s/server/db/state.db`. Since 25 October 2026 it encrypts every Secret with AES-CBC before it writes it there (task 93.4, #1557), so a copy of that file alone holds no password, token or key of production. The key is `/var/lib/rancher/k3s/server/cred/encryption-config.json`, readable only by root.
+
+- **What it protects.** A copy of the database file without the key, such as a backup of only that file.
+- **What it does not protect.** Root on the server, who can read the key or ask k3s for a Secret. The login `gitlab-deployer`, which gets the Secrets back decrypted, as it should. The running server, which gets the values as environment variables. A copy of the whole disk, because the key is on the same disk. So a backup of `/var/lib/rancher/k3s/server` holds the key too and is kept as safely as the passwords themselves.
+- **See it.** `sudo k3s secrets-encrypt status` shows `Encryption Status: Enabled`, `Current Rotation Stage: reencrypt_finished` and `Server Encryption Hashes: All hashes match`.
+- **A new install** starts encrypted, because `config.yaml` has `secrets-encryption: true`.
+- **An existing cluster without encryption**, the steps of the k3s documentation, one after the other:
+  1. `sudo k3s secrets-encrypt enable`
+  2. `sudo infra/k3s/installK3s.sh`, which writes the new `config.yaml` and restarts k3s
+  3. `sudo k3s secrets-encrypt status` until it shows `Current Rotation Stage: start`. Right after the restart it can answer `secret-encrypt error ID` for a few seconds, until the node has its annotation: ask again.
+  4. `sudo k3s secrets-encrypt rotate-keys`, which takes about a minute
+  5. `sudo systemctl restart k3s`, then the status of step 3 shows `Enabled` and `reencrypt_finished`
+  6. `sudo k3s secrets-encrypt rotate-keys` and `sudo systemctl restart k3s` once more. The database keeps the version before each change next to the new one, so after step 5 the newest copy of every Secret still carries its old unencrypted version. A second rotation writes every Secret again, now with an encrypted version before it.
+- **Old copies.** k3s keeps the last 1,000 changes of its database and removes older ones every five minutes. So the old unencrypted copies stay in the file until about 1,000 newer changes have passed, on this server about 40 minutes.
+- **Turn it off again.** `sudo k3s secrets-encrypt disable`, `sudo systemctl restart k3s`, then `sudo k3s secrets-encrypt reencrypt --force --skip`. Take `secrets-encryption: true` out of `config.yaml` too, or the next run of the script turns it on again.
+- **Never change the key by hand.** The k3s documentation warns that a wrong rotation can leave the cluster unusable. A new key is `sudo k3s secrets-encrypt rotate-keys` followed by `sudo systemctl restart k3s`, and nothing else.
+
+On a copy of the server and then on this server, the test site and the live version answered every check of their health address during all of the steps. The restarts of k3s stop no running container.
 
 #### Closed doors
 

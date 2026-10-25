@@ -18,3 +18,11 @@ disable:
 # https://kubernetes.io/docs/reference/command-line-tools-reference/kube-proxy/ (--nodeport-addresses, read 24 October 2026)
 kube-proxy-arg:
   - nodeport-addresses=127.0.0.1/32
+
+# Secrets are encrypted with AES-CBC before k3s writes them to its database
+# (/var/lib/rancher/k3s/server/db/state.db), so a copy of that file alone does not hold a
+# password. The key is /var/lib/rancher/k3s/server/cred/encryption-config.json on the same
+# server. A new install starts encrypted. An existing cluster needs the steps of the section
+# Production server in docs/team/onboarding.md, part Secrets at rest.
+# https://docs.k3s.io/security/secrets-encryption (read 25 October 2026)
+secrets-encryption: true
