@@ -27,6 +27,12 @@ spec:
         port: 8081
         hostPort: 8081
         hostIP: 127.0.0.1
+        # Caddy on the same server sends X-Forwarded-For and X-Forwarded-Proto. Traefik keeps them
+        # only from 127.0.0.1, so Connect sees https and the address of the visitor (task 95.3, #1052).
+        # https://doc.traefik.io/traefik/reference/install-configuration/entrypoints/ (read 25 October 2026)
+        forwardedHeaders:
+          trustedIPs:
+            - 127.0.0.1/32
       websecure:
         port: 8443
         hostPort: 8443
