@@ -48,6 +48,7 @@ Checked against the code on dev on 24 October 2026. Rule 12 of General and Git a
 |---|---|---|
 | Which towns and areas are on the fixed list of places for Region. | Whole team | Question 136, #1553 |
 | A date for the meeting with the director about the live version. The part Production of `clientQuestions.md` goes to the client two working days before it. | Wesley | Questions 111 to 116, #1041 |
+| Show the live version at https://live.31-70-66-186.sslip.io. It runs on the foundation's server since 25 October 2026, with invented data only and without the foundation's name, until the director answers questions 111 and 114. | Wesley | #159, questions 111 and 114 |
 | The domain www.youngamstellandconnect.nl: the client still has to buy it, and Bayon asks him by email. | Bayon | Question 113 |
 
 ## With the coach
