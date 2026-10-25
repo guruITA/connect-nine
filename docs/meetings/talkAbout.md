@@ -27,7 +27,8 @@ Started on 24 October 2026 by Wesley Oerlemans (#1556).
 | The test site starts the images of the registry instead of publishing the server in deploy-test. This changes deploy-test and needs a deploy token that only reads the registry. | Gurpreet, Wesley | #355 |
 | The server check with the five of us is still to be held. Part 10 of the onboarding guide names the address of the server, while step 6 of the plan checks that it names none: we pick one of the two. | Whole team | #241, [serverCheckMeeting.md](../team/serverCheckMeeting.md) |
 | The site shell story: the teacher asked on 22 October 2026 that we align on it. | Bayon, Wesley | #19 |
-| k3s runs on the foundation's server since 25 October 2026. Who does task 93.3, the same install on a spare computer by someone who built no task of #157? Decision 010 and the facts that go against it are ready to read. | Bayon, Nick, Gurpreet, Kelvin | #157, !103, !102 |
+| k3s runs on the foundation's server since 25 October 2026. Who does task 93.3, the same install on a spare computer by someone who built no task of #157? | Bayon, Nick, Gurpreet, Kelvin | #157, !103 |
+| Decision 010, k3s with Terraform for the live version and docker compose for the test site: a line under Agreed by, and one of us who did not write it answers from it alone in #156 why not docker compose in production, where the state lives and how a visit reaches production. | Bayon, Nick, Gurpreet, Kelvin | [010-productionOnK3s.md](../decisions/010-productionOnK3s.md), !102, #156 |
 
 ## Where the code differs from our rules
 
