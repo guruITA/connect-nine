@@ -28,7 +28,8 @@ School asks: "You give well-founded advice in which you weigh alternatives, iden
 ## TODO
 
 - [x] Wesley: read the facts that go against the choice in the comment on #156, then task 92.2 (#1043) writes the parts Decision and Consequences, 25 October 2026.
-- [ ] Bayon Eerhart, Nick Hoebe, Gurpreet Singh and Kelvin van Voorst: a line under Agreed by, after task 92.2.
+- [x] Nick Hoebe, Gurpreet Singh and Kelvin van Voorst: agreed through their approval of the architecture documents in !4 on 2 October 2026, written under Agreed by.
+- [ ] Bayon Eerhart: a line under Agreed by.
 
 ## AI use
 

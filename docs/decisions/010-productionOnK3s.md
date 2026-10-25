@@ -1,6 +1,6 @@
 # 010 How the live version runs: k3s set up with Terraform, while the test site stays on docker compose
 
-**Status.** Decided by Wesley Oerlemans on 27 September 2026. The facts behind it were checked by him on 24 and 25 October 2026 in task 92.1 (#1042), and on 25 October 2026 he chose Terraform over OpenTofu after reading the facts that go against it. Written down in task 92.2 (#1043). The team confirms it at the stand up, and each member adds a line under Agreed by.
+**Status.** Decided by Wesley Oerlemans on 27 September 2026. The facts behind it were checked by him on 24 and 25 October 2026 in task 92.1 (#1042), and on 25 October 2026 he chose Terraform over OpenTofu after reading the facts that go against it. Written down in task 92.2 (#1043). The team agreed to production on k3s set up with Terraform when it approved the architecture documents that describe it, in !4: Nick Hoebe, Kelvin van Voorst and Gurpreet Singh approved them, and they were merged on 2 October 2026. This file writes that choice down with the facts behind it. When the team wants to change it later, the change is written into this file then.
 **Issue.** 92 k3s and Terraform for production, compose for test (#156), task 92.1 (#1042) and task 92.2 (#1043).
 **Related decision.** [008 How the pipeline builds the images](008-kanikoForImages.md), which makes the images production runs.
 **Who decides.** Wesley Oerlemans, who builds production (#157 to #163). The whole team confirms.
@@ -134,10 +134,10 @@ Per consequence, the risk it removes and the risk it adds.
 | Name | Date agreed |
 |---|---|
 | Bayon Eerhart | |
-| Nick Hoebe | |
+| Nick Hoebe | 2 October 2026, approval of the architecture documents in !4 |
 | Wesley Oerlemans | 25 October 2026 |
-| Gurpreet Singh | |
-| Kelvin van Voorst | |
+| Gurpreet Singh | 2 October 2026, approval of the architecture documents in !4 |
+| Kelvin van Voorst | 2 October 2026, approval of the architecture documents in !4 |
 
 ## References
 

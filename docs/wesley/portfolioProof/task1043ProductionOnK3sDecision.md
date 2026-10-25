@@ -27,7 +27,8 @@ School asks: "You adapt your communication to different target groups in form an
 ## TODO
 
 - [ ] A teammate who did not write the file: answer from it alone why not docker compose in production, where the state lives and how a visit reaches production, with the answers in #156. Wesley: change the file where an answer was wrong.
-- [ ] Bayon Eerhart, Nick Hoebe, Gurpreet Singh and Kelvin van Voorst: a line under Agreed by, at the stand up.
+- [x] The team agreed to k3s with Terraform when Nick Hoebe, Kelvin van Voorst and Gurpreet Singh approved the architecture documents in !4, merged on 2 October 2026, written under Agreed by on 25 October 2026.
+- [ ] Bayon Eerhart: a line under Agreed by.
 
 ## AI use
 
