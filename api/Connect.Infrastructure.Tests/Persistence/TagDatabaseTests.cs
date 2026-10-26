@@ -9,8 +9,8 @@ namespace Connect.Infrastructure.Tests.Persistence;
 
 public sealed class TagDatabaseTests
 {
-    private string connectionString = null!;
-    private ConnectDbContext dbContext = null!;
+    private string connectionString;
+    private ConnectDbContext dbContext;
 
     [SetUp]
     public void SetUp()
@@ -40,7 +40,7 @@ public sealed class TagDatabaseTests
         using ConnectDbContext secondContext = CreateDbContext();
         secondContext.Add(new Tag { Name = name.ToUpperInvariant() });
 
-        PostgresException exception = FindPostgresException(Assert.Throws<DbUpdateException>(() => secondContext.SaveChanges())!);
+        PostgresException exception = FindPostgresException(Assert.Throws<DbUpdateException>(() => secondContext.SaveChanges()));
 
         Assert.That(
             (exception.SqlState, exception.ConstraintName),
@@ -52,7 +52,7 @@ public sealed class TagDatabaseTests
     {
         dbContext.Add(new Tag { Name = new string('a', 31) });
 
-        PostgresException exception = FindPostgresException(Assert.Throws<DbUpdateException>(() => dbContext.SaveChanges())!);
+        PostgresException exception = FindPostgresException(Assert.Throws<DbUpdateException>(() => dbContext.SaveChanges()));
 
         Assert.That(
             (exception.SqlState, exception.ConstraintName),
@@ -88,7 +88,7 @@ public sealed class TagDatabaseTests
         using ConnectDbContext secondContext = CreateDbContext();
         secondContext.Add(new ProfileTag { ProfileId = profile.Id, TagId = tag.Id });
 
-        PostgresException exception = FindPostgresException(Assert.Throws<DbUpdateException>(() => secondContext.SaveChanges())!);
+        PostgresException exception = FindPostgresException(Assert.Throws<DbUpdateException>(() => secondContext.SaveChanges()));
 
         Assert.That(
             (exception.SqlState, exception.ConstraintName),
@@ -104,7 +104,7 @@ public sealed class TagDatabaseTests
         dbContext.SaveChanges();
 
         PostgresException exception = Assert.Throws<PostgresException>(
-            () => dbContext.Database.ExecuteSql($"DELETE FROM tag WHERE id = {tag.Id}"))!;
+            () => dbContext.Database.ExecuteSql($"DELETE FROM tag WHERE id = {tag.Id}")) ?? throw new AssertionException("Expected PostgreSQL to reject the write.");
 
         Assert.That(exception.SqlState, Is.EqualTo(PostgresErrorCodes.ForeignKeyViolation));
     }
@@ -168,9 +168,9 @@ public sealed class TagDatabaseTests
         return profile;
     }
 
-    private static PostgresException FindPostgresException(DbUpdateException exception)
+    private static PostgresException FindPostgresException(DbUpdateException? exception)
     {
-        return exception.InnerException as PostgresException
+        return exception?.InnerException as PostgresException
             ?? throw new AssertionException("Expected PostgreSQL to reject the write.");
     }
 }

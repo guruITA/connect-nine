@@ -10,11 +10,13 @@ namespace Connect.Application.Profiles.AddProfileTag;
 public sealed class AddProfileTagCommandHandler(IAppDbContext dbContext)
     : ICommandHandler<AddProfileTagCommand, Result<AddProfileTagResult>>
 {
+    private readonly IAppDbContext _dbContext = dbContext;
+
     public async Task<Result<AddProfileTagResult>> HandleAsync(
         AddProfileTagCommand command,
         CancellationToken cancellationToken)
     {
-        var profileId = await dbContext.Profiles
+        var profileId = await _dbContext.Profiles
             .Where(profile => profile.AccountId == command.AccountId)
             .Select(profile => (Guid?)profile.Id)
             .SingleOrDefaultAsync(cancellationToken);
@@ -26,7 +28,7 @@ public sealed class AddProfileTagCommandHandler(IAppDbContext dbContext)
         var tag = await GetOrAddTagAsync(command.Name, cancellationToken);
         var result = new TagResult(tag.Id, tag.Name);
 
-        if (await dbContext.ProfileTags.AnyAsync(
+        if (await _dbContext.ProfileTags.AnyAsync(
                 link => link.ProfileId == profileId && link.TagId == tag.Id,
                 cancellationToken))
         {
@@ -34,14 +36,14 @@ public sealed class AddProfileTagCommandHandler(IAppDbContext dbContext)
         }
 
         var link = new ProfileTag { ProfileId = profileId.Value, TagId = tag.Id };
-        dbContext.Add(link);
+        _dbContext.Add(link);
         try
         {
-            await dbContext.SaveChangesAsync(cancellationToken);
+            await _dbContext.SaveChangesAsync(cancellationToken);
         }
         catch (DbUpdateException exception) when (IsUniqueViolation(exception, "pk_profile_tag"))
         {
-            dbContext.Remove(link);
+            _dbContext.Remove(link);
             return Result<AddProfileTagResult>.Success(new AddProfileTagResult(result, Added: false));
         }
 
@@ -52,23 +54,23 @@ public sealed class AddProfileTagCommandHandler(IAppDbContext dbContext)
     // ux_tag_name and reads the tag the first one made.
     private async Task<Tag> GetOrAddTagAsync(string name, CancellationToken cancellationToken)
     {
-        var existing = await dbContext.Tags.SingleOrDefaultAsync(tag => tag.Name == name, cancellationToken);
+        var existing = await _dbContext.Tags.SingleOrDefaultAsync(tag => tag.Name == name, cancellationToken);
         if (existing is not null)
         {
             return existing;
         }
 
         var tag = new Tag { Name = name, IsSuggested = false };
-        dbContext.Add(tag);
+        _dbContext.Add(tag);
         try
         {
-            await dbContext.SaveChangesAsync(cancellationToken);
+            await _dbContext.SaveChangesAsync(cancellationToken);
             return tag;
         }
         catch (DbUpdateException exception) when (IsUniqueViolation(exception, "ux_tag_name"))
         {
-            dbContext.Remove(tag);
-            return await dbContext.Tags.SingleAsync(candidate => candidate.Name == name, cancellationToken);
+            _dbContext.Remove(tag);
+            return await _dbContext.Tags.SingleAsync(candidate => candidate.Name == name, cancellationToken);
         }
     }
 

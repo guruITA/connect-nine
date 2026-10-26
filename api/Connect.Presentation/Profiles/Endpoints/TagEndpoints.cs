@@ -33,7 +33,10 @@ public static class TagEndpoints
             }
 
             var result = await handler.HandleAsync(new ListSuggestedTagsQuery(pageNumber, size), cancellationToken);
-            var value = result.Value!;
+            if (result is not { IsSuccess: true, Value: { } value })
+            {
+                return result.Error.ToProblemDetails();
+            }
 
             return TypedResults.Ok(new Response<IReadOnlyList<TagResponse>, SuggestedTagsMeta>(
                 value.Tags.Select(tag => new TagResponse(tag.Id, tag.Name)).ToList(),

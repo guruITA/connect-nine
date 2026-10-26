@@ -40,7 +40,7 @@ public sealed class GetCurrentProfileQueryHandlerTests
 
         var result = await handler.HandleAsync(new GetCurrentProfileQuery(account.Id), CancellationToken.None);
 
-        CurrentProfileResult profile = result.Value!;
+        CurrentProfileResult profile = result.Value ?? throw new AssertionException("Expected the handler to give the profile.");
         using (Assert.EnterMultipleScope())
         {
             Assert.That(result.IsSuccess, Is.True);
@@ -64,7 +64,7 @@ public sealed class GetCurrentProfileQueryHandlerTests
         var result = await handler.HandleAsync(new GetCurrentProfileQuery(account.Id), CancellationToken.None);
 
         Assert.That(
-            result.Value!.Tags.Select(tag => tag.Name),
+            result.Value?.Tags.Select(tag => tag.Name),
             Is.EqualTo(new[] { "football", "photography" }));
     }
 
@@ -80,7 +80,7 @@ public sealed class GetCurrentProfileQueryHandlerTests
 
         var result = await handler.HandleAsync(new GetCurrentProfileQuery(account.Id), CancellationToken.None);
 
-        Assert.That(result.Value!.Tags.Select(tag => tag.Name), Is.EqualTo(new[] { "football" }));
+        Assert.That(result.Value?.Tags.Select(tag => tag.Name), Is.EqualTo(new[] { "football" }));
     }
 
     [Test]

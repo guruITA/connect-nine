@@ -126,7 +126,8 @@ public sealed class MemberProfileTagEndpointTests
         using HttpResponseMessage response = await client.GetAsync($"{SuggestedAddress}?page=1&pageSize=50");
         using JsonDocument body = await ReadJson(response);
         List<string> names = body.RootElement.GetProperty("data").EnumerateArray()
-            .Select(tag => tag.GetProperty("name").GetString()!)
+            .Select(tag => tag.GetProperty("name").GetString()
+                ?? throw new AssertionException("Expected every tag to have a name."))
             .ToList();
         JsonElement meta = body.RootElement.GetProperty("meta");
 

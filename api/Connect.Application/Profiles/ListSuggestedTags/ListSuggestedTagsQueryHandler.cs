@@ -7,11 +7,13 @@ namespace Connect.Application.Profiles.ListSuggestedTags;
 public sealed class ListSuggestedTagsQueryHandler(IAppDbContext dbContext)
     : IQueryHandler<ListSuggestedTagsQuery, Result<SuggestedTagsResult>>
 {
+    private readonly IAppDbContext _dbContext = dbContext;
+
     public async Task<Result<SuggestedTagsResult>> HandleAsync(
         ListSuggestedTagsQuery query,
         CancellationToken cancellationToken)
     {
-        var suggested = dbContext.Tags.AsNoTracking().Where(tag => tag.IsSuggested);
+        var suggested = _dbContext.Tags.AsNoTracking().Where(tag => tag.IsSuggested);
 
         var total = await suggested.CountAsync(cancellationToken);
         var tags = await suggested

@@ -7,9 +7,9 @@ namespace Connect.Application.Tests.Profiles.ListSuggestedTags;
 
 public sealed class ListSuggestedTagsQueryHandlerTests
 {
-    private SqliteConnection connection = null!;
-    private SqliteAppDbContext dbContext = null!;
-    private ListSuggestedTagsQueryHandler handler = null!;
+    private SqliteConnection connection;
+    private SqliteAppDbContext dbContext;
+    private ListSuggestedTagsQueryHandler handler;
 
     [SetUp]
     public void SetUp()
@@ -39,8 +39,8 @@ public sealed class ListSuggestedTagsQueryHandlerTests
 
         using (Assert.EnterMultipleScope())
         {
-            Assert.That(result.Value!.Tags.Select(tag => tag.Name), Is.EqualTo(new[] { "football", "music", "photography" }));
-            Assert.That(result.Value.Total, Is.EqualTo(3));
+            Assert.That(result.Value?.Tags.Select(tag => tag.Name), Is.EqualTo(new[] { "football", "music", "photography" }));
+            Assert.That(result.Value?.Total, Is.EqualTo(3));
         }
     }
 
@@ -51,8 +51,8 @@ public sealed class ListSuggestedTagsQueryHandlerTests
 
         using (Assert.EnterMultipleScope())
         {
-            Assert.That(result.Value!.Tags.Select(tag => tag.Name), Is.EqualTo(new[] { "photography" }));
-            Assert.That(result.Value.Total, Is.EqualTo(3));
+            Assert.That(result.Value?.Tags.Select(tag => tag.Name), Is.EqualTo(new[] { "photography" }));
+            Assert.That(result.Value?.Total, Is.EqualTo(3));
         }
     }
 }

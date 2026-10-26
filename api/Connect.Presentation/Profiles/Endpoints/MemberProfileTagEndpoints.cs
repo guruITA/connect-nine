@@ -38,7 +38,8 @@ public static class MemberProfileTagEndpoints
                 return Error.Unauthorized("Log in to see this page").ToProblemDetails();
             }
 
-            var normalised = request with { Name = TagRules.Normalize(request.Name ?? string.Empty) };
+            var name = TagRules.Normalize(request.Name ?? string.Empty);
+            var normalised = request with { Name = name };
             var validation = await validator.ValidateAsync(normalised, cancellationToken);
             if (!validation.IsValid)
             {
@@ -46,15 +47,15 @@ public static class MemberProfileTagEndpoints
             }
 
             var result = await handler.HandleAsync(
-                new AddProfileTagCommand(accountId.Value, normalised.Name!),
+                new AddProfileTagCommand(accountId.Value, name),
                 cancellationToken);
-            if (!result.IsSuccess)
+            if (result is not { IsSuccess: true, Value: { } outcome })
             {
                 return result.Error.ToProblemDetails();
             }
 
-            var tag = new Response<TagResponse>(new TagResponse(result.Value!.Tag.Id, result.Value.Tag.Name));
-            return result.Value.Added
+            var tag = new Response<TagResponse>(new TagResponse(outcome.Tag.Id, outcome.Tag.Name));
+            return outcome.Added
                 ? TypedResults.Created("/api/member-profiles/current", tag)
                 : TypedResults.Ok(tag);
         });

@@ -11,9 +11,9 @@ namespace Connect.Application.Tests.Profiles.AddProfileTag;
 
 public sealed class AddProfileTagCommandHandlerTests
 {
-    private SqliteConnection connection = null!;
-    private SqliteAppDbContext dbContext = null!;
-    private AddProfileTagCommandHandler handler = null!;
+    private SqliteConnection connection;
+    private SqliteAppDbContext dbContext;
+    private AddProfileTagCommandHandler handler;
 
     [SetUp]
     public void SetUp()
@@ -43,8 +43,8 @@ public sealed class AddProfileTagCommandHandlerTests
 
         using (Assert.EnterMultipleScope())
         {
-            Assert.That(result.Value!.Added, Is.True);
-            Assert.That(result.Value.Tag.Id, Is.EqualTo(football.Id));
+            Assert.That(result.Value?.Added, Is.True);
+            Assert.That(result.Value?.Tag.Id, Is.EqualTo(football.Id));
             Assert.That(dbContext.Tags.Count(), Is.EqualTo(1));
             Assert.That(dbContext.ProfileTags.Single().ProfileId, Is.EqualTo(profile.Id));
         }
@@ -61,7 +61,7 @@ public sealed class AddProfileTagCommandHandlerTests
         Tag made = dbContext.Tags.Single();
         using (Assert.EnterMultipleScope())
         {
-            Assert.That(result.Value!.Added, Is.True);
+            Assert.That(result.Value?.Added, Is.True);
             Assert.That(made.Name, Is.EqualTo("drone video"));
             Assert.That(made.IsSuggested, Is.False);
         }
@@ -78,7 +78,7 @@ public sealed class AddProfileTagCommandHandlerTests
 
         using (Assert.EnterMultipleScope())
         {
-            Assert.That(result.Value!.Added, Is.False);
+            Assert.That(result.Value?.Added, Is.False);
             Assert.That(dbContext.ProfileTags.Count(), Is.EqualTo(1));
         }
     }
