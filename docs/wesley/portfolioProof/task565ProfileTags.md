@@ -13,6 +13,7 @@ School asks: "You design and implement systematically, justify choices in relati
 2. **Normalised before every check.** `TagRules.Normalize` takes the spaces off, turns every run of spaces into one and makes it small letters, before the validator and before the lookup, so "  Drone   Video " and "drone video" are one tag.
 3. **Two members at the same moment.** When two members add the same new tag at once, the second insert hits the unique index and reads the tag the first one made, so nobody gets an error.
 4. **The starter list.** Twenty suggested tags, only skills and interests, in small letters, nothing about health, faith, sexuality, politics or origin. It is a draft until the team agrees on it (question 9 of #11).
+5. **What I changed when Nick's account code was merged.** Since !50, Application has no EF Core (decision 007), and `IAppDbContext.Add` takes only an entity with an id (`IEntity`). The handlers now run their queries through `IAppDbContext` (`AsNoTracking`, `SingleOrDefaultAsync`, `SingleAsync`, `AnyAsync`, `CountAsync` and `ToListAsync`) and save with `SaveChangesOrConflictAsync`, so both unique indexes come back as a conflict from Infrastructure (task 3.13, #1550). The link `profile_tag` got an `id` of its own as primary key, as database rule 3 asks, and a profile still holds a tag once through the unique index `ux_profile_tag_profile_id_tag_id`. The migration `AddTagTables` is made again after the one of !67, with the same tables otherwise, and I checked it up, one back and up again.
 
 ## OR2 Choosing standards and methods
 
@@ -51,7 +52,7 @@ Done.
 ```
 
 2. **The tests.** `TagRulesTests`, database tests on PostgreSQL (FOOTBALL next to football refused, 31 characters refused, the starter list, a link twice refused, a used tag cannot be deleted, deleting a profile removes its links and keeps the tags), handler tests on SQLite, validator tests, and endpoint tests on PostgreSQL (201 then 200 with one link, two members typing the same new tag at once share one row, no profile 404, every address 401 without a login, `page=abc` 400, the own profile holds the tags sorted, 503 without the typed tag), and screen tests for TagInput and My profile.
-3. **A test broken on purpose.** Without the catch of the unique index, the test of two members at the same moment failed in 6 runs out of 6, and passed again once the catch was back.
+3. **A test broken on purpose.** Without the catch of the unique index, the test of two members at the same moment failed in 6 runs out of 6, and passed again once the catch was back. With the catch now in `SaveChangesOrConflictAsync` of `ConnectDbContext`, I measured it again on 22 October 2026: 6 out of 6, the second member answering 503.
 4. **In a real browser.** Tapping football and typing "Drone   Video" saved both, sorted, with Saved in a status area, axe 0 problems.
 
 ![Skills and interests on My profile at 1280 pixels](images/task565Tags1280.png)
