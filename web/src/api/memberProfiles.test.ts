@@ -261,7 +261,7 @@ describe("getCurrentMemberProfile", () => {
 
 const PUBLIC_PROFILE = {
   firstName: "Robin",
-  ageBand: "From18To21" as const,
+  ageBand: "YoungAdult" as const,
   region: "Amstelveen",
   bio: "Test member.",
 };
@@ -299,7 +299,7 @@ describe("getMemberProfile", () => {
 
   it("reports the profile as it is when region, bio or tags are missing", async () => {
     mockFetchOnce(200, {
-      data: { firstName: "Sam", ageBand: "From15To17" },
+      data: { firstName: "Sam", ageBand: "Adolescent" },
       meta: {},
     });
 
@@ -307,7 +307,7 @@ describe("getMemberProfile", () => {
 
     expect(result).toEqual({
       outcome: "loaded",
-      profile: { firstName: "Sam", ageBand: "From15To17" },
+      profile: { firstName: "Sam", ageBand: "Adolescent" },
     });
   });
 

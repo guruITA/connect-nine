@@ -7,7 +7,7 @@ public static class ProfileVisibility
 {
     public static bool ShowsRegion(AgeBand ageBand)
     {
-        return ageBand != AgeBand.From15To17;
+        return ageBand != AgeBand.Adolescent;
     }
 
     public static bool ShowsBio(AgeBand ageBand)

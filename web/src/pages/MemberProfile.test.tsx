@@ -20,7 +20,7 @@ const mockedGetMemberProfile = getMemberProfile as Mock;
 
 const PROFILE = {
   firstName: "Robin",
-  ageBand: "From18To21" as const,
+  ageBand: "YoungAdult" as const,
   region: "Amstelveen",
   bio: "Test member.",
 };
@@ -68,7 +68,7 @@ describe("MemberProfile", () => {
   it("leaves out Region when the server left it out", async () => {
     mockedGetMemberProfile.mockResolvedValue({
       outcome: "loaded",
-      profile: { firstName: "Sam", ageBand: "From15To17" as const },
+      profile: { firstName: "Sam", ageBand: "Adolescent" as const },
     });
     renderPage();
 
@@ -80,7 +80,7 @@ describe("MemberProfile", () => {
   it("leaves out the About you card when the server left out the short line", async () => {
     mockedGetMemberProfile.mockResolvedValue({
       outcome: "loaded",
-      profile: { firstName: "Sam", ageBand: "From15To17" as const },
+      profile: { firstName: "Sam", ageBand: "Adolescent" as const },
     });
     renderPage();
 

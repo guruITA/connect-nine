@@ -337,7 +337,7 @@ public sealed class MemberProfileEndpointTests
     public async Task GetById_Adult_ReturnsTheFourPublicValuesAndNothingElse()
     {
         using WebApplicationFactory<Program> factory = CreateFactory();
-        Guid profileId = SaveProfile(factory, "Robin", AgeBand.From18To21, "Amstelveen", "Test member, 18 to 21.");
+        Guid profileId = SaveProfile(factory, "Robin", AgeBand.YoungAdult, "Amstelveen", "Test member, 18 to 21.");
         using HttpClient client = ClientFor(factory, SaveAccount(factory));
 
         using HttpResponseMessage response = await client.GetAsync($"/api/member-profiles/{profileId}");
@@ -361,7 +361,7 @@ public sealed class MemberProfileEndpointTests
     public async Task GetById_YoungPersonOf15To17_LeavesTheRegionKeyOut()
     {
         using WebApplicationFactory<Program> factory = CreateFactory();
-        Guid profileId = SaveProfile(factory, "Noor", AgeBand.From15To17, "Uithoorn", "Test member, 15 to 17.");
+        Guid profileId = SaveProfile(factory, "Noor", AgeBand.Adolescent, "Uithoorn", "Test member, 15 to 17.");
         using HttpClient client = ClientFor(factory, SaveAccount(factory));
 
         using HttpResponseMessage response = await client.GetAsync($"/api/member-profiles/{profileId}");
@@ -380,7 +380,7 @@ public sealed class MemberProfileEndpointTests
     public async Task GetById_EmptyBio_LeavesTheBioKeyOut()
     {
         using WebApplicationFactory<Program> factory = CreateFactory();
-        Guid profileId = SaveProfile(factory, "Robin", AgeBand.From22To30, "Amstelveen", null);
+        Guid profileId = SaveProfile(factory, "Robin", AgeBand.Adult, "Amstelveen", null);
         using HttpClient client = ClientFor(factory, SaveAccount(factory));
 
         using HttpResponseMessage response = await client.GetAsync($"/api/member-profiles/{profileId}");
@@ -414,7 +414,7 @@ public sealed class MemberProfileEndpointTests
         using HttpClient client = ClientFor(factory, accountId);
         using HttpResponseMessage saved = await client.PostAsync(
             Address,
-            Json(new { firstName = "Noor", ageBand = "From15To17", region = "Uithoorn" }));
+            Json(new { firstName = "Noor", ageBand = "Adolescent", region = "Uithoorn" }));
         using JsonDocument savedBody = await ReadJson(saved);
         string profileId = savedBody.RootElement.GetProperty("data").GetProperty("id").GetString()
             ?? throw new AssertionException("Expected the saved profile to have an id.");
@@ -429,7 +429,7 @@ public sealed class MemberProfileEndpointTests
     public async Task GetById_WithoutAccount_ReturnsUnauthorized()
     {
         using WebApplicationFactory<Program> factory = CreateFactory();
-        Guid profileId = SaveProfile(factory, "Robin", AgeBand.From18To21, "Amstelveen", null);
+        Guid profileId = SaveProfile(factory, "Robin", AgeBand.YoungAdult, "Amstelveen", null);
         using HttpClient client = factory.CreateClient();
 
         using HttpResponseMessage response = await client.GetAsync($"/api/member-profiles/{profileId}");

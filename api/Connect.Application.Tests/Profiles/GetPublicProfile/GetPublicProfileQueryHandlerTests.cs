@@ -34,19 +34,19 @@ public sealed class GetPublicProfileQueryHandlerTests
     [Test]
     public async Task HandleAsync_Adult_ReturnsTheFourValues()
     {
-        Profile profile = dbContext.SaveProfile(dbContext.SaveAccount(), "Robin", AgeBand.From18To21, "Amstelveen", "Test member.");
+        Profile profile = dbContext.SaveProfile(dbContext.SaveAccount(), "Robin", AgeBand.YoungAdult, "Amstelveen", "Test member.");
 
         var result = await handler.HandleAsync(new GetPublicProfileQuery(profile.Id), CancellationToken.None);
 
         Assert.That(
             result.Value,
-            Is.EqualTo(new GetPublicProfileResponse("Robin", AgeBand.From18To21, "Amstelveen", "Test member.")));
+            Is.EqualTo(new GetPublicProfileResponse("Robin", AgeBand.YoungAdult, "Amstelveen", "Test member.")));
     }
 
     [Test]
     public async Task HandleAsync_YoungPersonOf15To17_LeavesTheRegionOut()
     {
-        Profile profile = dbContext.SaveProfile(dbContext.SaveAccount(), "Noor", AgeBand.From15To17, "Uithoorn", "Test member.");
+        Profile profile = dbContext.SaveProfile(dbContext.SaveAccount(), "Noor", AgeBand.Adolescent, "Uithoorn", "Test member.");
 
         var result = await handler.HandleAsync(new GetPublicProfileQuery(profile.Id), CancellationToken.None);
 
