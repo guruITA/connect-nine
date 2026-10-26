@@ -28,9 +28,14 @@ COPY api/ api/
 RUN dotnet publish api/Connect/Connect.csproj --configuration Release --no-restore --output /app/publish
 # dotnet ef only makes the DbContext while it builds the bundle and connects with nothing, so this
 # value is not a secret and never reaches an image: it lives for this one command.
-RUN ConnectionStrings__DefaultConnection="Host=bundle;Database=bundle" \
+# The bundle is a program for one kind of processor, so it is built for the processor of the image:
+# arm64 on a Mac with Apple silicon, x64 everywhere else, also when the builder does not set
+# TARGETARCH, as on the HvA runners.
+ARG TARGETARCH
+RUN case "$TARGETARCH" in arm64) runtime=linux-arm64 ;; *) runtime=linux-x64 ;; esac \
+    && ConnectionStrings__DefaultConnection="Host=bundle;Database=bundle" \
     dotnet ef migrations bundle --project api/Connect.Infrastructure --startup-project api/Connect \
-    --configuration Release --self-contained --target-runtime linux-x64 --output /app/efbundle --force
+    --configuration Release --self-contained --target-runtime "$runtime" --output /app/efbundle --force
 
 # migrations: only the bundle. It brings the tables up to date once and stops. The bundle carries its
 # own .NET, so it needs only runtime-deps, 160 MB smaller than aspnet (measured 22 October 2026).

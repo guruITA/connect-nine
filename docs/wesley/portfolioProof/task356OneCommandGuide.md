@@ -23,6 +23,15 @@ School asks: "You ensure that your work aligns with that of others and contribut
 3. **The card and the form.** The card asks for a password typed twice. The form of #264 asks for it once, so part 13 says once. That is Nick's form and his choice.
 4. **The README.** One line that links to part 13. The README is nine lines, within the ten the card allows.
 
+## Merge request !100: Apple silicon and the other two ports
+
+### MS4 Making the work fit with the work of the team
+
+School asks: "You ensure that your work aligns with that of others and contributes to the joint result."
+
+1. **Two points from Gurpreet's review of !93.** Part 13 said that it works on macOS, while the migrations bundle was built for x64 only. And the row for a busy port covered only 8080, not the 5432 of the database or the 5050 of pgAdmin.
+2. **What changed.** Part 13 says that the images are built for the processor of the computer, which the Dockerfile now does (task 20.1, #352). The table has a second row for a busy 5432 or 5050 that points to the part of part 3 that already explains it, so the same help is not written twice.
+
 ## TODO
 
 - [ ] A teammate who did not write it: follow part 13 alone on your own laptop, write a line in its History, and tell me in the review where you got stuck.

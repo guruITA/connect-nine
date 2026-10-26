@@ -74,7 +74,7 @@ When it is red:
 
 ## Images and the registry
 
-The images of Connect are built in the pipeline and kept in the container registry of the project (Deploy, Container registry). The test site (#355) and production (#159) start these images, so they run exactly the version that was reviewed.
+The images of Connect are built in the pipeline and kept in the container registry of the project (Deploy, Container registry). The test site (#355) and production (#159) will start these images, so they run exactly the version that was reviewed. Until #355, deploy-test of #267 still publishes the server for the test site in the job itself, and the images in the registry are not used yet.
 
 - **What the HvA runners allow.** Every job runs in a Docker container without privileged mode, with Docker's default seccomp profile and AppArmor profile, so a job cannot make a user namespace or mount anything. Docker in Docker, Buildah, Podman and BuildKit rootless are refused there, and kaniko builds, because it needs neither (measured on 22 October 2026, pipelines 586250, 586252, 586254 and 586259). The comparison and the choice are in `docs/decisions/008-kanikoForImages.md`.
 - **The builder.** The maintained fork of kaniko, pinned as `ghcr.io/osscontainertools/kaniko:v1.28.6-debug` in the jobs image-build and image-push. An update of the tag is a merge request of its own.

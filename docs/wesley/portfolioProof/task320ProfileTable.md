@@ -27,7 +27,7 @@ School asks: "You systematically validate that the solution does what it should,
 6. **Brought onto dev after !50 (#1542).** Nick's account code reached dev with !50 on 20 October 2026, after this branch was cut. I rebased the branch onto dev on 21 October 2026 and made the migration again, so it is numbered after `EnforceNormalizedAccountUniqueness` of !50: going back one migration now undoes only this one. The new migration has the same Up and Down as the old one, and `dotnet ef migrations has-pending-model-changes` says the model and the snapshot agree.
 7. **The tests read the test database.** `ProfileDatabaseTests` read `ConnectionStrings__DefaultConnection`, which on a laptop is the database the server runs on. It now gets its `ConnectDbContext` from `TestDatabase` next to `TestConfiguration`, which reads `ConnectionStrings:TestsConnection` (rule 1 of Tests and mocking, backend rule 20, #1541), and the check of a refused write comes from the same helper. The eight tests pass with only `TestsConnection` set, and the whole solution passes with both names set as backend-test does: 21, 6, 69 and 14 tests in the four test projects.
 
-- TODO a reviewer: apply the migration on your own machine and write in a comment on !67 what you saw.
+- Done by a reviewer: Gurpreet Singh applied the migration on his own machine on 22 October 2026, in Docker on a clean PostgreSQL 16, up, one back to `EnforceNormalizedAccountUniqueness` and up again, and wrote in his review of !67 that all three went fine and that `profile` has `first_name`, `age_band`, `region` and `bio` with the three checks. Written here in !100, after !67 was merged.
 
 ## TODO
 

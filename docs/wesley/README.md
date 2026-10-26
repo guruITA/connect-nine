@@ -37,14 +37,14 @@ One file per task I did, with the proof block of the task filled in. A point tha
 | `portfolioProof/task11ServerStructureDecisions.md` | Tasks 11.1 to 11.3 The structure and the version of the server (#253, #254, #255), merge requests !27 and !58 | Analysing and Advising AA2, AA3, AA4 and AA5, Managing and Collaborating MS4 |
 | `portfolioProof/task1517ReplanSprints.md` | Task 180.1 Sprints 2 to 5 planned again after sprint 1 (#1517), merge request !40 | Managing and Collaborating MS1 and MS4 |
 | `portfolioProof/task3MainOnlyFromDev.md` | Task 1.2 Dev and main protected (#3), merge request !2 | Managing and Collaborating MS1 and MS4 |
-| `portfolioProof/task320ProfileTable.md` | Task 7.1 The profile table (#320), merge request !67 | Designing and Realising OR1 and OR4 |
-| `portfolioProof/task16DependencyScan.md` | Task 16.1 The security scan (#308), merge request !30, and task 16.2 The red scan on purpose (#309), merge request !31 | Managing and Collaborating (#308), Designing and Realising (#309) |
-| `portfolioProof/task352Dockerfile.md` | Task 20.1 The Dockerfile of the images server and migrations (#352), merge request !89 | Managing and Collaborating MS1 and MS4 |
-| `portfolioProof/task354ImageBuild.md` | Task 20.3 The images built in the pipeline with kaniko (#354), merge request !89 | Managing and Collaborating MS1 and MS4 |
-| `portfolioProof/task353ComposeApp.md` | Task 20.2 All of Connect with docker compose --profile app (#353), merge request !93 | Managing and Collaborating MS1 and MS4 |
-| `portfolioProof/task356OneCommandGuide.md` | Task 20.5 Run all of Connect with one command (#356), merge request !93 | Managing and Collaborating MS1 and MS4 |
+| `portfolioProof/task320ProfileTable.md` | Task 7.1 The profile table (#320), merge requests !67 and !100 | Designing and Realising OR1 and OR4 |
+| `portfolioProof/task16DependencyScan.md` | Task 16.1 The security scan (#308), merge request !30, and task 16.2 The red scan on purpose (#309), merge requests !31, !86 and !100 | Managing and Collaborating (#308), Designing and Realising (#309) |
+| `portfolioProof/task352Dockerfile.md` | Task 20.1 The Dockerfile of the images server and migrations (#352), merge requests !89 and !100 | Managing and Collaborating MS1 and MS4 |
+| `portfolioProof/task354ImageBuild.md` | Task 20.3 The images built in the pipeline with kaniko (#354), merge requests !89 and !100 | Managing and Collaborating MS1 and MS4 |
+| `portfolioProof/task353ComposeApp.md` | Task 20.2 All of Connect with docker compose --profile app (#353), merge requests !93 and !100 | Managing and Collaborating MS1 and MS4 |
+| `portfolioProof/task356OneCommandGuide.md` | Task 20.5 Run all of Connect with one command (#356), merge requests !93 and !100 | Managing and Collaborating MS1 and MS4 |
 | `portfolioProof/task1519SprintReview1Documents.md` | Issue 1519 The sprint 1 review documents in the repository (#1519), merge requests !43, !44 and !45 | Managing and Collaborating MS1 |
-| `portfolioProof/task1555ScanFix.md` | Task 16.4 The security scan green again after two new advisories (#1555), merge request !99 | Designing and Realising OR4 |
+| `portfolioProof/task1555ScanFix.md` | Task 16.4 The security scan green again after two new advisories (#1555), merge requests !99 and !100 | Designing and Realising OR4 |
 | `portfolioProof/task1543TestsAndMocking.md` | Task 3.12 The code conventions for tests and NSubstitute (#1543), merge request !77 | Managing and Collaborating MS1 and MS4 |
 | `portfolioProof/task1544NullForgivingOperator.md` | Task 1.10 The code convention on the null-forgiving operator (#1544), merge request !79 | Managing and Collaborating MS1 and MS4 |
 | `portfolioProof/task1545ReadonlyFields.md` | Task 1.11 The code convention on fields for what the constructor gets (#1545), merge request !79 | Managing and Collaborating MS1 and MS4 |
@@ -54,8 +54,8 @@ One file per task I did, with the proof block of the task filled in. A point tha
 | `portfolioProof/task1465CqrsRewording.md` | Task 11.4 The tasks of every next sprint reworded to the CQRS shape (#1465), merge request !62 | Managing and Collaborating MS4 |
 | `portfolioProof/task1537IdentityTables.md` | Task 3.10 The database rules say what the Identity tables have (#1537), merge request !66 | Managing and Collaborating MS4 |
 | `portfolioProof/task1551Sprint2Week1ClientUpdate.md` | Issue 1551 The client update after week 1 of Sprint 2 (#1551), merge request !95 | Analysing and Advising AA5, Managing and Collaborating MS1 and MS5 |
-| `portfolioProof/task1552SessionTableBesideIdentity.md` | Task 11.5 The choice for a table session beside ASP.NET Core Identity (#1552), merge request !98 | Analysing and Advising AA4 and AA5 |
-| `portfolioProof/task1554LogInAndSessionRules.md` | Task 1.15 The code conventions for log in and sessions (#1554), merge request !98 | Managing and Collaborating MS1 and MS4 |
+| `portfolioProof/task1552SessionTableBesideIdentity.md` | Task 11.5 The choice for a table session beside ASP.NET Core Identity (#1552), merge requests !98 and !100 | Analysing and Advising AA4 and AA5 |
+| `portfolioProof/task1554LogInAndSessionRules.md` | Task 1.15 The code conventions for log in and sessions (#1554), merge requests !98 and !100 | Managing and Collaborating MS1 and MS4 |
 
 ## The full documents behind them
 
