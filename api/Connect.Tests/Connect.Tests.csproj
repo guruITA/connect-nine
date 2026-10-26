@@ -18,5 +18,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Connect\Connect.csproj" />
+    <!-- For DatabaseCommandRecorder, which the whole-server test of #347 shares with the database tests. -->
+    <ProjectReference Include="..\Connect.Infrastructure.Tests\Connect.Infrastructure.Tests.csproj" />
   </ItemGroup>
 </Project>
