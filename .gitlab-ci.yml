@@ -369,3 +369,40 @@ e2e-test:
       - web/playwright-report
       - web/test-results
     expire_in: 7 days
+
+# How every production job reaches k3s (task 93.2, #1045): through an ssh tunnel as the Linux user tunnel,
+# which may only forward to 127.0.0.1:6443, with the login of the job in KUBE_TOKEN. Nothing here holds a
+# secret: the key, the tokens and the CA are GitLab variables (onboarding, Pipeline access).
+# The image, ssh and kubectl are pinned. kubectl is checked against its sha256 from dl.k8s.io.
+.production-access:
+  image: alpine:3.20.10
+  tags:
+    - hva
+  variables:
+    KUBECTL_VERSION: v1.36.5
+    KUBECTL_SHA256: 33bc88a24c3b09cf55bfd59e6ca977881b61fc3f25ab65bc80c65b430248648e
+  before_script:
+    - apk add --no-cache bash=5.2.26-r0 openssh-client-default=9.7_p1-r5 curl
+    - curl -fsSL -o /usr/local/bin/kubectl "https://dl.k8s.io/release/${KUBECTL_VERSION}/bin/linux/amd64/kubectl"
+    - echo "${KUBECTL_SHA256}  /usr/local/bin/kubectl" | sha256sum -c -
+    - chmod +x /usr/local/bin/kubectl
+    - bash infra/k3s/openTunnel.sh
+    - export KUBECONFIG="$(bash infra/k3s/kubeconfigFromToken.sh)"
+
+# Shows that the production server is ready: red when the node is not Ready. With the read only login, on
+# every pipeline of dev and by hand on a merge request.
+kube-check:
+  stage: deploy
+  extends: .production-access
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "schedule"
+      when: never
+    - if: $CI_COMMIT_BRANCH == "dev"
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+      when: manual
+      allow_failure: true
+  variables:
+    KUBE_TOKEN: $KUBE_PLANNER_TOKEN
+  script:
+    - kubectl get nodes
+    - kubectl wait --for=condition=Ready node --all --timeout=60s

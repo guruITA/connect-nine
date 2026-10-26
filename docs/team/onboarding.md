@@ -699,6 +699,34 @@ PORT      STATE    SERVICE
 
 The same scan also found 2019 (the admin port of Caddy), 5432, 8080, 8443, 9000 and 9101 filtered.
 
+#### Pipeline access
+
+The pipeline reaches k3s only through an ssh tunnel, never through an open port (task 93.2, #1045). `infra/k3s/openTunnel.sh` logs in as the Linux user `tunnel`, which has no shell and may only forward to `127.0.0.1:6443`: its line in `/home/tunnel/.ssh/authorized_keys` starts with `restrict,port-forwarding,permitopen="127.0.0.1:6443"`. `infra/k3s/kubeconfigFromToken.sh` then makes a login file in a temporary folder and never prints the token. The hidden job `.production-access` in `.gitlab-ci.yml` does both, and every production job extends it. The job `kube-check` shows on every pipeline of dev that the node is Ready.
+
+Two logins, made by `infra/k3s/clusterAccess.yaml`, which also makes the namespace `connect-production`:
+
+| Login | May do | Where |
+| --- | --- | --- |
+| `gitlab-planner` | Read the parts of Connect in `connect-production`, never a Secret | The plan on every merge request |
+| `gitlab-deployer` | Change those parts and the Secrets, nothing outside `connect-production` | Only the pipelines of dev and main |
+
+Both may read whether the node is Ready (`connect-node-reader`), and no login is cluster-admin. Checked on 25 October 2026 with `kubectl auth can-i`: the planner may list pods but may not create a deployment or read a Secret, and the deployer may create a deployment in `connect-production` but not in `kube-system`.
+
+The variables, under Settings, CI/CD, Variables:
+
+| Variable | Masked | Protected | What it is |
+| --- | --- | --- | --- |
+| `TUNNEL_SSH_PRIVATE_KEY` | yes | no | The private key of the user `tunnel`, base64 on one line |
+| `PRODUCTION_SSH_KNOWN_HOSTS` | no | no | The host keys of the server, checked against the server's own keys |
+| `PRODUCTION_SERVER_HOST` | no | yes | The address of the server |
+| `KUBE_CA_CERT` | no | no | The CA of k3s, a variable of the type File |
+| `KUBE_PLANNER_TOKEN` | yes | no | The token of `gitlab-planner` |
+| `KUBE_DEPLOYER_TOKEN` | yes | yes | The token of `gitlab-deployer` |
+
+None of them is in a file of the repository. Whether `PRODUCTION_SERVER_HOST` must stop being protected, so the plan on a merge request can reach the server, is checked in the first merge request of #158.
+
+**A token or the tunnel key leaked.** Make the login new, not only its Secret: a token stays the same as long as its ServiceAccount stays, which was measured on 25 October 2026. On the server: `sudo k3s kubectl -n connect-production delete serviceaccount gitlab-deployer` (or `gitlab-planner`), then `sudo k3s kubectl apply -f infra/k3s/clusterAccess.yaml`. Put the new token, from `sudo k3s kubectl -n connect-production get secret gitlab-deployer-token -o jsonpath='{.data.token}' | base64 -d`, in its variable without showing it. For the tunnel key: make a new pair with `ssh-keygen -t ed25519`, replace the line in `/home/tunnel/.ssh/authorized_keys` and the variable, and delete the private key from your computer.
+
 #### Install again
 
 To start over: `sudo /usr/local/bin/k3s-uninstall.sh`, then `sudo infra/k3s/installK3s.sh`. The uninstall script is the one k3s leaves behind. It removes k3s with everything inside it, also the database of the live version and its volume, so on this server it only runs after a backup and with the team's yes. It leaves the ufw rules, Docker and the test site alone: on the copy of the server the test site answered all 287 checks, one every 0.2 seconds, during an uninstall and the install after it. During the install on this server the test site answered all 374 checks of its health address, one every half second.

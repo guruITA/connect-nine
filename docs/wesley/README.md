@@ -28,6 +28,7 @@ One file per task I did, with the proof block of the task filled in. A point tha
 | `portfolioProof/task7CodeConventionsDecision.md` | Task 1.6 The team confirms the code conventions (#7), merge requests !26 and !59 | Analysing and Advising AA4 and AA5, Managing and Collaborating MS4 |
 | `portfolioProof/task8ConventionsAndOnboarding.md` | Task 1.7 The conventions with examples and the getting started guide (#8), merge request !29 | Managing and Collaborating MS1 and MS4 |
 | `portfolioProof/task1044InstallK3s.md` | Task 93.1 The script that installs k3s (#1044), merge request !103 | Managing and Collaborating MS1 and MS4 |
+| `portfolioProof/task1045PipelineAccess.md` | Task 93.2 The pipeline reaches k3s only through an ssh tunnel with two logins (#1045), merge request !105 | Managing and Collaborating MS1 and MS4 |
 | `portfolioProof/task9Templates.md` | Task 1.8 The templates (#9), merge request !15 | Managing and Collaborating MS1 and MS4 |
 | `portfolioProof/task9CompactIssueTemplates.md` | Task 1.8 The compact issue and task templates (#9), merge request !16 | Managing and Collaborating MS1 and MS4 |
 | `portfolioProof/task9ClientServer.md` | Tasks 9.1 to 9.5 The client's server (#236, #237, #238, #239, #240), merge requests !5 and !34 | Managing and Collaborating MS1 and MS4 |
