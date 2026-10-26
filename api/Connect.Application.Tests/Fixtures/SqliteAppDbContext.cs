@@ -1,5 +1,6 @@
 using Connect.Application.Common.Abstractions;
 using Connect.Application.Common.Results;
+using Connect.Domain.Tags;
 using Connect.Domain.Users;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
@@ -15,6 +16,10 @@ internal sealed class SqliteAppDbContext(DbContextOptions<SqliteAppDbContext> op
     public IQueryable<Account> Accounts => Set<Account>();
 
     public IQueryable<Profile> Profiles => Set<Profile>();
+
+    public IQueryable<Tag> Tags => Set<Tag>();
+
+    public IQueryable<ProfileTag> ProfileTags => Set<ProfileTag>();
 
     public static SqliteAppDbContext Create(SqliteConnection connection)
     {
@@ -96,6 +101,21 @@ internal sealed class SqliteAppDbContext(DbContextOptions<SqliteAppDbContext> op
         return profile;
     }
 
+    public Tag SaveTag(string name, bool isSuggested = false)
+    {
+        var tag = new Tag { Name = name, IsSuggested = isSuggested };
+        Add(tag);
+        SaveChanges();
+
+        return tag;
+    }
+
+    public void SaveLink(Profile profile, Tag tag)
+    {
+        Add(new ProfileTag { ProfileId = profile.Id, TagId = tag.Id });
+        SaveChanges();
+    }
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
@@ -107,6 +127,19 @@ internal sealed class SqliteAppDbContext(DbContextOptions<SqliteAppDbContext> op
             entity.HasOne(profile => profile.Account)
                 .WithOne(account => account.Profile)
                 .HasForeignKey<Profile>(profile => profile.AccountId);
+        });
+
+        modelBuilder.Entity<Tag>(entity =>
+        {
+            entity.HasKey(tag => tag.Id);
+            entity.HasIndex(tag => tag.Name).IsUnique();
+        });
+
+        modelBuilder.Entity<ProfileTag>(entity =>
+        {
+            entity.HasKey(link => new { link.ProfileId, link.TagId });
+            entity.HasOne<Profile>().WithMany().HasForeignKey(link => link.ProfileId);
+            entity.HasOne(link => link.Tag).WithMany().HasForeignKey(link => link.TagId);
         });
     }
 }

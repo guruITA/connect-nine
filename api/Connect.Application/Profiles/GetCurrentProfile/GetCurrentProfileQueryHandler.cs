@@ -21,7 +21,12 @@ public sealed class GetCurrentProfileQueryHandler(IAppDbContext dbContext)
                     candidate.FirstName,
                     candidate.AgeBand,
                     candidate.Region,
-                    candidate.Bio)),
+                    candidate.Bio,
+                    _dbContext.ProfileTags
+                        .Where(link => link.ProfileId == candidate.Id)
+                        .OrderBy(link => link.Tag!.Name)
+                        .Select(link => new TagResult(link.TagId, link.Tag!.Name))
+                        .ToList())),
             cancellationToken);
 
         return profile is null

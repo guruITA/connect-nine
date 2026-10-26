@@ -12,6 +12,7 @@ public static class MemberProfileResponseMapper
             result.FirstName,
             result.AgeBand.ToString(),
             result.Region,
-            result.Bio));
+            result.Bio,
+            result.Tags.Select(tag => new TagResponse(tag.Id, tag.Name)).ToList()));
     }
 }

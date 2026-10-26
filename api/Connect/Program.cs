@@ -41,5 +41,7 @@ app.UseAuthorization();
 app.MapHealthEndpoints();
 app.MapAccountEndpoints();
 app.MapMemberProfileEndpoints();
+app.MapMemberProfileTagEndpoints();
+app.MapTagEndpoints();
 
 app.Run();

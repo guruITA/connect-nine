@@ -6,5 +6,6 @@ public sealed record CurrentProfileResult(
     string FirstName,
     AgeBand AgeBand,
     string Region,
-    string? Bio
+    string? Bio,
+    IReadOnlyList<TagResult> Tags
 );

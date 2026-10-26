@@ -1,6 +1,7 @@
 using Connect.Application.Common.Abstractions;
 using Connect.Application.Common.Results;
 using Connect.Domain.Common;
+using Connect.Domain.Tags;
 using Connect.Domain.Users;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
@@ -15,6 +16,10 @@ public sealed class ConnectDbContext(DbContextOptions<ConnectDbContext> options)
     public IQueryable<Account> Accounts => Set<Account>();
 
     public IQueryable<Profile> Profiles => Set<Profile>();
+
+    public IQueryable<Tag> Tags => Set<Tag>();
+
+    public IQueryable<ProfileTag> ProfileTags => Set<ProfileTag>();
 
     void IAppDbContext.Add<TEntity>(TEntity entity) where TEntity : class
     {
@@ -87,6 +92,8 @@ public sealed class ConnectDbContext(DbContextOptions<ConnectDbContext> options)
     {
         base.OnModelCreating(modelBuilder);
 
+        modelBuilder.HasPostgresExtension("citext");
+
         modelBuilder.Entity<Account>(entity =>
         {
             entity.Property(user => user.CreatedAt).IsRequired();
@@ -126,6 +133,35 @@ public sealed class ConnectDbContext(DbContextOptions<ConnectDbContext> options)
 
         modelBuilder.ApplyConfiguration(
             new Configurations.AccountIdentityConfiguration());
+
+        modelBuilder.Entity<Tag>(entity =>
+        {
+            entity.HasKey(tag => tag.Id);
+            entity.Property(tag => tag.Name).HasColumnType("citext").IsRequired();
+            entity.Property(tag => tag.IsSuggested).HasDefaultValue(false);
+            entity.Property(tag => tag.CreatedAt).IsRequired();
+            entity.Property(tag => tag.UpdatedAt).IsRequired();
+            entity.HasIndex(tag => tag.Name).IsUnique().HasDatabaseName("ux_tag_name");
+            entity.ToTable(table => table.HasCheckConstraint(
+                "ck_tag_name_length",
+                "char_length(\"name\") BETWEEN 1 AND 30"));
+            entity.HasData(StarterTags.All);
+        });
+
+        modelBuilder.Entity<ProfileTag>(entity =>
+        {
+            entity.HasKey(link => new { link.ProfileId, link.TagId }).HasName("pk_profile_tag");
+            entity.Property(link => link.CreatedAt).IsRequired();
+            entity.Property(link => link.UpdatedAt).IsRequired();
+            entity.HasOne<Profile>()
+                .WithMany()
+                .HasForeignKey(link => link.ProfileId)
+                .OnDelete(DeleteBehavior.Cascade);
+            entity.HasOne(link => link.Tag)
+                .WithMany()
+                .HasForeignKey(link => link.TagId)
+                .OnDelete(DeleteBehavior.Restrict);
+        });
     }
 
     private void UpdateAuditProperties()

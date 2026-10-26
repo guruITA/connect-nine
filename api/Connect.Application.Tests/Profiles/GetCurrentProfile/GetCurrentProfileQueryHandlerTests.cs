@@ -2,6 +2,7 @@ using System.Data.Common;
 using Connect.Application.Common.Results;
 using Connect.Application.Profiles.GetCurrentProfile;
 using Connect.Application.Tests.Fixtures;
+using Connect.Domain.Tags;
 using Connect.Domain.Users;
 using Microsoft.Data.Sqlite;
 using NUnit.Framework;
@@ -39,10 +40,32 @@ public sealed class GetCurrentProfileQueryHandlerTests
 
         var result = await handler.HandleAsync(new GetCurrentProfileQuery(account.Id), CancellationToken.None);
 
-        Assert.That(result.IsSuccess, Is.True);
+        CurrentProfileResult profile = result.Value!;
+        using (Assert.EnterMultipleScope())
+        {
+            Assert.That(result.IsSuccess, Is.True);
+            Assert.That(
+                (profile.FirstName, profile.AgeBand, profile.Region, profile.Bio),
+                Is.EqualTo(("Sam", AgeBand.From18To21, "Amstelveen", "I like football.")));
+            Assert.That(profile.Tags, Is.Empty);
+        }
+    }
+
+    [Test]
+    public async Task HandleAsync_ProfileWithTags_ReturnsTheTagsSortedByName()
+    {
+        Account account = dbContext.SaveAccount();
+        Profile profile = dbContext.SaveProfile(account, "Sam", AgeBand.From18To21, "Amstelveen", null);
+        Tag photography = dbContext.SaveTag("photography");
+        Tag football = dbContext.SaveTag("football");
+        dbContext.SaveLink(profile, photography);
+        dbContext.SaveLink(profile, football);
+
+        var result = await handler.HandleAsync(new GetCurrentProfileQuery(account.Id), CancellationToken.None);
+
         Assert.That(
-            result.Value,
-            Is.EqualTo(new CurrentProfileResult("Sam", AgeBand.YoungAdult, "Amstelveen", "I like football.")));
+            result.Value!.Tags.Select(tag => tag.Name),
+            Is.EqualTo(new[] { "football", "photography" }));
     }
 
     [Test]

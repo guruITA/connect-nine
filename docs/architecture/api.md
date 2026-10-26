@@ -203,6 +203,52 @@ ever in the answer.
 
 The query reads only `first_name`, `age_band`, `region` and `bio`, by the primary key `pk_profile`.
 
+## `GET /api/tags/suggested`
+
+The suggested tags a young person can tap on My profile (issue 36 Add skills and interests as
+tags, task 36.2), sorted by name. Only for a member who is logged in. `page` and `pageSize` are
+read as text: `page` is 1 or more, `pageSize` from 1 to 50, both optional (1 and 50).
+
+- `200 OK`:
+
+  ```json
+  {"data":[{"id":"00000000-0000-4000-8000-000000036001","name":"coding"}],"meta":{"page":1,"pageSize":50,"total":20}}
+  ```
+
+- `400 Bad Request` for a wrong page or page size:
+
+  ```json
+  {"title":"Use a page number of 1 or more","status":400}
+  ```
+
+- `401 Unauthorized` without a login, `503 Service Unavailable` when the database cannot be
+  reached.
+
+## `POST /api/member-profiles/current/tags`
+
+Adds one tag to the own profile of the member who is logged in (task 36.2). The profile comes from
+the session only. The name is normalised first: spaces off both ends, every run of spaces one
+space, small letters. An existing tag is reused, a new one is made as not suggested.
+
+```json
+{"name":"Drone video"}
+```
+
+- `201 Created` when the profile did not have the tag yet, `200 OK` with the same tag and no change
+  when it did:
+
+  ```json
+  {"data":{"id":"0199f6a2-5c1e-7d3a-9b2f-1e4c8a7d6b90","name":"drone video"},"meta":{}}
+  ```
+
+- `400 Bad Request` with `errors.name`: "Fill in a tag" or "A tag has at most 30 characters".
+- `401 Unauthorized` without a login.
+- `404 Not Found` "You have no profile yet".
+- `503 Service Unavailable` without any error text, and the typed tag is in no log line.
+
+Since task 36.2, `GET /api/member-profiles/current` also sends `tags`, each `{id, name}`, sorted
+by name, and `[]` when the profile has none.
+
 ## The screen and unknown addresses
 
 The server also serves the built screen (`web/dist`, copied into `wwwroot` by the job deploy-test), so the test site has one address and needs no CORS (#267).

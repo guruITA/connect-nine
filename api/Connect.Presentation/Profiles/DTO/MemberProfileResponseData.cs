@@ -4,4 +4,5 @@ public sealed record MemberProfileResponseData(
     string FirstName,
     string AgeBand,
     string Region,
-    string? Bio);
+    string? Bio,
+    IReadOnlyList<TagResponse> Tags);

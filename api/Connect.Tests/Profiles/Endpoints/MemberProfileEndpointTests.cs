@@ -235,7 +235,7 @@ public sealed class MemberProfileEndpointTests
     }
 
     [Test]
-    public async Task GetCurrent_WithProfile_ReturnsExactlyTheFourValues()
+    public async Task GetCurrent_WithProfile_ReturnsTheFourValuesAndTheTags()
     {
         using WebApplicationFactory<Program> factory = CreateFactory();
         Guid accountId = SaveAccount(factory);
@@ -253,7 +253,8 @@ public sealed class MemberProfileEndpointTests
             Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.OK));
             Assert.That(
                 data.EnumerateObject().Select(property => property.Name),
-                Is.EqualTo(new[] { "firstName", "ageBand", "region", "bio" }));
+                Is.EqualTo(new[] { "firstName", "ageBand", "region", "bio", "tags" }));
+            Assert.That(data.GetProperty("tags").GetArrayLength(), Is.EqualTo(0));
             Assert.That(data.GetProperty("firstName").GetString(), Is.EqualTo("Sam"));
             Assert.That(data.GetProperty("ageBand").GetString(), Is.EqualTo("YoungAdult"));
             Assert.That(data.GetProperty("region").GetString(), Is.EqualTo("Amstelveen"));
