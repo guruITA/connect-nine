@@ -32,7 +32,8 @@ School asks: "You ensure that your work aligns with that of others and contribut
 
 ## TODO
 
-- [ ] Nick: confirm in the review that rule 19 says what he proposed on 21 October 2026, and name the task that brings the extension to dev.
+- [x] Nick: confirm in the review that rule 19 says what he proposed on 21 October 2026. Nick ticked this in !79 on 25 October 2026 and approved it the same day.
+- [ ] Nick: name the task that brings `ToCamelCaseErrors()` to dev. He ticked the item in !79 without naming one, so it is on the list for the stand up.
 
 ## References
 

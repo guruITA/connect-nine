@@ -41,8 +41,8 @@ School asks: "You ensure that your work aligns with that of others and contribut
 
 ## TODO
 
-- [ ] Nick: confirm in the review that rule 17 says what he asked for in his review of !68, and that `required` is what he wants for a property that must be set.
-- [ ] A teammate who did not write the rule: read rule 17 and write in the review what was unclear.
+- [x] Nick: confirm in the review that rule 17 says what he asked for in his review of !68, and that `required` is what he wants for a property that must be set. Nick ticked this in !79 on 21 October 2026 and approved !79 on 25 October 2026.
+- [x] A teammate who did not write the rule: read rule 17 and write in the review what was unclear. Gurpreet Singh, 23 October 2026, in !79: rules 17 and 18 look right to him.
 
 ## References
 
