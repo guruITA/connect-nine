@@ -5,9 +5,9 @@
 
 ## What the page is for
 
-A young person younger than 16 who makes a profile on Connect gives the email address of a parent (issue 130). The parent gets an email with a link. This page is where that link lands. The parent sees in plain words what Connect keeps about their child, and what Connect never asks for, and gives permission with one button. From that moment the profile of the child can be seen by other members, and the banner on the child's own profile page is gone. Connect keeps the date of the permission as proof and removes the email address of the parent.
+A young person under 18, so of the age band 15 to 17, who makes a profile on Connect gives the email address of a parent (issue 130, question 135 of docs/client/clientQuestions.md). The parent gets an email with a link. This page is where that link lands. The parent sees in plain words what Connect keeps about their child, and what Connect never asks for, and gives permission with one button. From that moment the profile of the child can be seen by other members, and the banner on the child's own profile page is gone. Connect keeps the date of the permission as proof and removes the email address of the parent.
 
-This is the second half of the consent of a parent that the Dutch law on the GDPR (article 5 of the UAVG) asks for a member under 16, as issue 19 GDPR notes on minors' data names.
+This is the second half of the consent of a parent that the Dutch law on the GDPR (article 5 of the UAVG) asks for a member under 16, as issue 19 GDPR notes on minors' data names. The foundation asks it for every member under 18, which is stricter than the law and allowed (meeting with the client on 23 October 2026).
 
 ## Who can open it
 
@@ -79,7 +79,7 @@ All screen elements are built by task 131.4, issue 131 A parent gives permission
 - axe reports 0 issues.
 - The token is removed from the address bar at once, travels only in the body of a POST, and never appears in a log. Connect stores only the hash of the token.
 - The parent sees the region, because it is their own child. The page never shows an email address, an account id, a profile id or a date.
-- The answer is the same for an unknown, a used and an ended link, so a stranger cannot learn that a child under 16 is on Connect.
+- The answer is the same for an unknown, a used and an ended link, so a stranger cannot learn that a child under 18 is on Connect.
 - After the permission Connect keeps only the date (given_at) as proof, and the email address of the parent is emptied at that moment. When the young person deletes the account (issue 113), the profile and the proof of permission are deleted with it.
 
 ## Built by

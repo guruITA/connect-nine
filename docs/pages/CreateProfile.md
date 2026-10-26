@@ -1,11 +1,11 @@
 # Create your profile
 
-- Component: web/src/pages/CreateProfile.tsx, with CreateProfile.module.css and CreateProfile.test.tsx. The four fields, the question younger than 16 and the parent field sit in the shared component web/src/components/MemberProfileForm.tsx (issue 33), the question and the parent field shown only when the page sets the prop withParentQuestion, which only this page does.
+- Component: web/src/pages/CreateProfile.tsx, with CreateProfile.module.css and CreateProfile.test.tsx. The four fields and the parent field sit in the shared component web/src/components/MemberProfileForm.tsx (issue 33), the parent field shown only when the page sets the prop withParentQuestion, which only this page does.
 - Address in the browser: /profile/new
 
 ## What the page is for
 
-A young person who made an account and logged in tells Connect who they are: their first name, their age band, the town or area in Amstelland where they live, and, if they want, a short line about themselves. Many young people on Connect are 15, 16 or 17 years old. So Connect never asks for an exact age, a birth date, a school or a street address, and the form says so. A young person under 16 also fills in the email address of a parent, because the Dutch privacy law asks for a parent's permission under 16.
+A young person who made an account and logged in tells Connect who they are: their first name, their age band, the town or area in Amstelland where they live, and, if they want, a short line about themselves. Many young people on Connect are 15, 16 or 17 years old. So Connect never asks for an exact age, a birth date, a school or a street address, and the form says so. A young person under 18, so of the age band 15 to 17, also fills in the email address of a parent. The Dutch privacy law asks for a parent's permission under 16, and the foundation asks it under 18 (question 135 of docs/client/clientQuestions.md).
 
 ## Who can open it
 
@@ -40,14 +40,14 @@ flowchart LR
 3. Field: Age band
    - A select with exactly three options: 15 to 17, 18 to 21 and 22 to 30. No option is chosen at the start. The labels come from AGE_BAND_LABELS in web/src/api/memberProfiles.ts (Adolescent becomes "15 to 17"), so issues 08 and 14 show the same words.
    - Required. No field anywhere asks for a date or an exact age. The database refuses an unknown age band.
-4. Question: "Are you younger than 16?"
-   - A fieldset with this legend and two radio buttons Yes and No, directly below Age band. It appears only while the age band is 15 to 17, and nothing is chosen at the start.
-   - When the age band changes to 18 to 21 or 22 to 30, the question and the parent field disappear and their values are cleared.
-   - Task 130.5 built it on this page, issue 130 A young person under 16 asks a parent for permission, GitLab #40, sprint 2. Task 33.3 moved it into MemberProfileForm behind the prop withParentQuestion, with a test case and a criterion of its own, without a change of text or behaviour.
+4. Parent permission for the age band 15 to 17
+   - No question about the exact age. Since the meeting with the client on 23 October 2026 (question 135 of docs/client/clientQuestions.md), Connect asks a parent for permission for every young person under 18, so for the whole age band 15 to 17. The parent field below appears as soon as the age band is 15 to 17.
+   - When the age band changes to 18 to 21 or 22 to 30, the parent field disappears and its value is cleared.
+   - Task 130.5 builds it on this page, issue 130 of GitLab #40, sprint 2. Task 33.3 moves it into MemberProfileForm behind the prop withParentQuestion, with a test case and a criterion of its own, without a change of text or behaviour.
 5. Field: Email address of a parent
-   - A text field of type email, autocomplete off, shown only after Yes. It goes away again after No.
-   - Hint below it: "We send your parent one email with a link to give permission. We remove this address as soon as your parent answers, or after 14 days." The 14 is PARENT_CONSENT_KEEP_DAYS in web/src/api/memberProfiles.ts, which must match the server setting ParentConsent:KeepDays.
-   - Messages: "Fill in the email address of a parent" when it is empty after Yes, "Fill in a valid email address" when it has no @, "Fill in the address of a parent, not your own" for the address the young person logs in with.
+   - A text field of type email, autocomplete off, shown only while the age band is 15 to 17.
+   - Hint below it: "We send your parent one email with a link to give permission. We remove this address as soon as your parent answers, or after one month." The month is the answer to question 20 of docs/client/clientQuestions.md, and on the server ParentConsent.KeepMonths.
+   - Messages: "Fill in the email address of a parent" when it is empty for the age band 15 to 17, "Fill in a valid email address" when it has no @, "Fill in the address of a parent, not your own" for the address the young person logs in with.
    - Task 130.5, moved into MemberProfileForm by task 33.3, behind the same prop withParentQuestion.
 6. Field: Region
    - A text field, label above it. Hint: "Your town or area, for example Amstelveen. Not your street, house number or postcode." The hint is linked to the field with aria-describedby.
@@ -57,15 +57,15 @@ flowchart LR
    - A textarea, optional, at most 280 characters. Hint: "Do not write your school, address or phone number here." A counter such as "240 characters left" goes down while typing.
    - A line longer than 280 characters shows "Your short line can be at most 280 characters" below the field (task 7.2).
 8. Button: Save
-   - Calls createMemberProfile(...) in web/src/api/memberProfiles.ts, which sends POST /api/member-profiles through request() in web/src/api/client.ts. It sends isUnder16 true and parentEmail only after Yes, otherwise isUnder16 false and no parentEmail. The browser adds the cookie connect_session by itself. The page never calls fetch.
+   - Calls createMemberProfile(...) in web/src/api/memberProfiles.ts, which sends POST /api/member-profiles through request() in web/src/api/client.ts. It sends parentEmail only for the age band 15 to 17. The browser adds the cookie connect_session by itself. The page never calls fetch.
    - While waiting the button says "Saving..." and is disabled.
-   - 400: each message of the server appears directly below its own field, linked with aria-describedby, and the focus moves to the first wrong field. What was typed stays. This works for every field the server names, also isUnder16 below the question and parentEmail below the parent field.
-   - On the server, the guard of issue 04 checks the session. The server trims the spaces around every field and checks every field. It refuses an account that already has an organisation profile (task 34b.3). It writes one row in member_profile, linked to the account. The database refuses a second profile for the same account. For a young person under 16 it also writes one row in parent_consent with the parent address, the hash of a token and when it ends, and puts one email for the parent in the mail queue of issue 21. That email holds no name, age band, region or short line of the young person.
+   - 400: each message of the server appears directly below its own field, linked with aria-describedby, and the focus moves to the first wrong field. What was typed stays. This works for every field the server names, also parentEmail below the parent field.
+   - On the server, the guard of issue 04 checks the session. The server trims the spaces around every field and checks every field. It refuses an account that already has an organisation profile (task 34b.3). It writes one row in member_profile, linked to the account. The database refuses a second profile for the same account. For a young person of 15 to 17 it also writes one row in parent_consent with the parent address, the hash of a token and when it ends, and puts one email for the parent in the mail queue of issue 21. That email holds no name, age band, region or short line of the young person.
 9. Saved message, in place of the form, in role status
    - "Your profile is saved", with a link See my profile to /profile (issue 08).
-   - Under 16: "Your profile is saved. We sent an email to your parent. Other members see your profile once your parent gives permission.", with the link See my profile.
+   - Age band 15 to 17: "Your profile is saved. We sent an email to your parent. Other members see your profile once your parent gives permission.", with the link See my profile.
 
-Since issue 33, the four fields with their labels, hints, counter and messages, and the question younger than 16 with the parent field of task 130.5, live once in MemberProfileForm behind the prop withParentQuestion (task 33.3). Only Create your profile sets that prop, because the question and the address of a parent are asked once, when the profile is made. CreateProfile.tsx keeps its own call to createMemberProfile, its 409 text and its saved text. Nothing changes for the person using the page, and CreateProfile.test.tsx stays green without a change.
+Since issue 33, the four fields with their labels, hints, counter and messages, and the parent field of task 130.5, live once in MemberProfileForm behind the prop withParentQuestion (task 33.3). Only Create your profile sets that prop, because the question and the address of a parent are asked once, when the profile is made. CreateProfile.tsx keeps its own call to createMemberProfile, its 409 text and its saved text. Nothing changes for the person using the page, and CreateProfile.test.tsx stays green without a change.
 
 ## States
 
@@ -85,10 +85,10 @@ Since issue 33, the four fields with their labels, hints, counter and messages, 
 ## Accessibility and privacy
 
 - Every field has its label above it. A screen reader hears the message of a wrong field together with the name of that field, and the Region hint with the field.
-- The question younger than 16 is a fieldset with a legend, so a screen reader reads the legend with each answer.
+- The parent field has its label above it and its hint linked with aria-describedby, like every other field.
 - axe reports 0 issues, also with the region message showing.
 - Connect asks for nothing more than first name, age band, region and a short line: never a school, a street address, a phone number, an email address of the young person, an exact age or a birth date.
-- A young person under 16 is only asked yes or no, never a birth date. A young person of 16 or older is never asked for a parent's address.
+- A young person is only asked an age band, never a birth date. A young person of 18 or older is never asked for a parent's address.
 - Until the parent gives permission (issue 131), only the young person sees the profile. Other members see the page not found of issue 53: "This page does not exist or is no longer available". Before issue 53 the server answered 404 with the title "This member does not exist" (issue 130).
 - Deleting the account also deletes the profile, the request to the parent and the parent's address (issue 113).
 
@@ -107,7 +107,6 @@ Issue 07 needs issues 04 and 19 first. Issue 130 needs 07, 14, 19 and 21. Issue 
 
 ## Open points
 
-- How many days Connect keeps the address of a parent who does not answer: issue 10 The client's priorities for the epics, question 20. Until the answer comes the team uses 14 days, and the hint and the server setting change in the same merge request.
 - A stronger check that the address really belongs to a parent: issue 10, question 62.
 - Whether Region becomes a fixed list of places: issue 10, question 19. A street name without a number, such as Dorpsstraat, is not refused.
 - The parent opening the link and giving permission is issue 131. Forgetting the parent's address when the link has ended, and asking a parent again, is issue 130b.
