@@ -4,13 +4,9 @@ namespace Connect.Presentation.Profiles.DTO;
 
 // A value the server hides or that is empty is left out of the answer, never sent as null.
 public sealed record PublicMemberProfileResponseData(
-    [property: JsonPropertyName("firstName")]
     string FirstName,
-    [property: JsonPropertyName("ageBand")]
     string AgeBand,
-    [property: JsonPropertyName("region")]
     [property: JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     string? Region,
-    [property: JsonPropertyName("bio")]
     [property: JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     string? Bio);
