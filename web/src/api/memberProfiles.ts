@@ -145,36 +145,28 @@ export type GetMemberProfileResult =
   | { outcome: "notReachable" };
 
 type PublicMemberProfileResponseBody = {
-  data: PublicMemberProfile;
+  data?: PublicMemberProfile;
 };
 
 export async function getMemberProfile(
   id: string,
 ): Promise<GetMemberProfileResult> {
-  let response: Response;
   try {
-    response = await request(`/api/member-profiles/${encodeURIComponent(id)}`);
-  } catch {
+    const body = await request<PublicMemberProfileResponseBody | undefined>(
+      `/api/member-profiles/${encodeURIComponent(id)}`,
+      withTemporaryAccount(),
+    );
+    // An answer that is not the JSON the server promised counts as not reachable.
+    return body?.data
+      ? { outcome: "loaded", profile: body.data }
+      : { outcome: "notReachable" };
+  } catch (error) {
+    if (error instanceof RequestError) {
+      if (error.status === 404) return { outcome: "notFound" };
+      if (error.status === 401) return { outcome: "notLoggedIn" };
+    }
+
+    // 503, every other status and a server that cannot be reached are all not reachable.
     return { outcome: "notReachable" };
   }
-
-  if (response.status === 404) {
-    return { outcome: "notFound" };
-  }
-
-  if (response.status === 401) {
-    return { outcome: "notLoggedIn" };
-  }
-
-  if (response.status === 200) {
-    try {
-      const body = (await response.json()) as PublicMemberProfileResponseBody;
-      return { outcome: "loaded", profile: body.data };
-    } catch {
-      return { outcome: "notReachable" };
-    }
-  }
-
-  // 503 and every other status the server might send are all treated as not reachable.
-  return { outcome: "notReachable" };
 }
