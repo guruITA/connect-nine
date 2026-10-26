@@ -19,7 +19,7 @@ export type CreateMemberProfileForm = {
 export type CreateMemberProfileResult =
   | { outcome: "saved"; id: string }
   | { outcome: "fieldErrors"; fieldErrors: Record<string, string> }
-  | { outcome: "alreadyHasProfile" }
+  | { outcome: "alreadyHasProfile"; message: string }
   | { outcome: "notLoggedIn" }
   | { outcome: "notReachable" };
 
@@ -29,6 +29,10 @@ type SavedResponseBody = {
 
 type ValidationProblemBody = {
   errors?: Record<string, string[]>;
+};
+
+type ProblemBody = {
+  title?: string;
 };
 
 export async function createMemberProfile(
@@ -85,7 +89,13 @@ export async function createMemberProfile(
   }
 
   if (response.status === 409) {
-    return { outcome: "alreadyHasProfile" };
+    // The server names the conflict in the title, for example an account that already belongs
+    // to an organisation (#67). Without a title it is the profile that already exists.
+    const body = (await response.json().catch(() => ({}))) as ProblemBody;
+    return {
+      outcome: "alreadyHasProfile",
+      message: body.title || "You already have a profile",
+    };
   }
 
   // 503 and every other status the server might send are all treated as not reachable.

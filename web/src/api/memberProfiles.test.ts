@@ -98,12 +98,29 @@ describe("createMemberProfile", () => {
     expect(result).toEqual({ outcome: "notLoggedIn" });
   });
 
-  it("reports already has a profile on 409", async () => {
-    mockFetchOnce(409, { title: "You already have a profile", status: 409 });
+  it("reports already has a profile on 409 with the title of the server", async () => {
+    mockFetchOnce(409, {
+      title: "This account already belongs to an organisation",
+      status: 409,
+    });
 
     const result = await createMemberProfile(FORM);
 
-    expect(result).toEqual({ outcome: "alreadyHasProfile" });
+    expect(result).toEqual({
+      outcome: "alreadyHasProfile",
+      message: "This account already belongs to an organisation",
+    });
+  });
+
+  it("falls back to You already have a profile on a 409 without a title", async () => {
+    mockFetchOnce(409, {});
+
+    const result = await createMemberProfile(FORM);
+
+    expect(result).toEqual({
+      outcome: "alreadyHasProfile",
+      message: "You already have a profile",
+    });
   });
 
   it("reports not reachable on 503", async () => {

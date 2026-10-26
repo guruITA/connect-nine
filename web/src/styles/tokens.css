@@ -35,6 +35,10 @@
   --color-on-dark-chip: rgb(255 255 255 / 7%);
   --color-on-dark-panel: rgb(255 255 255 / 5%);
   --color-focus: var(--color-navy);
+  /* A message about something that went wrong, from the Figma frame Create your profile. */
+  --color-error-panel: #fbeaea;
+  --color-error-line: #e3b4b4;
+  --color-error-text: #9a2f2f;
   --color-focus-on-dark: var(--color-white);
   --color-danger: #b42318;
   --color-danger-background: #fbe9e7;
@@ -118,6 +122,7 @@
   --radius-tile: 1.5rem;
   --radius-chip: 1.25rem;
   --radius-mark: 1rem;
+  --radius-field: 0.5rem;
   --header-height: 4.75rem;
   --header-blur: 10px;
   --mark-size: 3.25rem;

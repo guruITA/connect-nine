@@ -1,5 +1,6 @@
 import { render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
+import { MemoryRouter } from "react-router";
 import { describe, expect, it, vi } from "vitest";
 import type { Mock } from "vitest";
 import { createMemberProfile } from "../api/memberProfiles";
@@ -20,7 +21,11 @@ vi.mock("../api/memberProfiles", async () => {
 const mockedCreateMemberProfile = createMemberProfile as Mock;
 
 function renderPage() {
-  return render(<CreateProfile />);
+  return render(
+    <MemoryRouter>
+      <CreateProfile />
+    </MemoryRouter>,
+  );
 }
 
 async function fillValidForm(user: ReturnType<typeof userEvent.setup>) {
@@ -74,6 +79,18 @@ describe("CreateProfile", () => {
     ).toBeInTheDocument();
   });
 
+  it("says how many characters are too many past 280", async () => {
+    const user = userEvent.setup();
+    renderPage();
+
+    await user.click(screen.getByLabelText("About you"));
+    await user.paste("x".repeat(282));
+
+    expect(screen.getByLabelText("About you")).toHaveAccessibleDescription(
+      "Do not write your school, address or phone number here. 2 characters too many.",
+    );
+  });
+
   it("disables the Save button and says Saving... while the request is in flight", async () => {
     const user = userEvent.setup();
     const deferred = createDeferred();
@@ -103,9 +120,11 @@ describe("CreateProfile", () => {
     await fillValidForm(user);
     await user.click(screen.getByRole("button", { name: "Save" }));
 
-    expect(await screen.findByRole("status")).toHaveTextContent(
-      "Your profile is saved",
-    );
+    const status = await screen.findByRole("status");
+    expect(status).toHaveTextContent("Your profile is saved");
+    expect(
+      within(status).getByRole("link", { name: "See my profile" }),
+    ).toHaveAttribute("href", "/profile");
   });
 
   it("shows each wrong field message below its own field and focuses the first wrong field", async () => {
@@ -137,25 +156,48 @@ describe("CreateProfile", () => {
       ),
     ).toBeInTheDocument();
     expect(regionInput).toHaveAccessibleDescription(
-      "Fill in only your town or area, not your street, house number or postcode",
+      expect.stringContaining(
+        "Fill in only your town or area, not your street, house number or postcode",
+      ),
     );
+    expect(regionInput).toHaveAttribute("aria-invalid", "true");
 
     expect(screen.getByLabelText("Region")).toHaveValue("Amstelveen");
   });
 
-  it("shows You already have a profile above the form on a conflict", async () => {
+  it("shows the conflict of the server above the form in an alert", async () => {
     const user = userEvent.setup();
     mockedCreateMemberProfile.mockResolvedValue({
       outcome: "alreadyHasProfile",
+      message: "You already have a profile",
     });
     renderPage();
 
     await fillValidForm(user);
     await user.click(screen.getByRole("button", { name: "Save" }));
 
+    expect(await screen.findByRole("alert")).toHaveTextContent(
+      "You already have a profile",
+    );
+    expect(screen.getByLabelText("First name")).toHaveValue("Robin");
+  });
+
+  it("shows the region hint above the field and links it to the field", () => {
+    renderPage();
+
+    expect(screen.getByLabelText("Region")).toHaveAccessibleDescription(
+      "Your town or area, for example Amstelveen. Not your street, house number or postcode.",
+    );
+  });
+
+  it("says beside the form what Connect never asks for", () => {
+    renderPage();
+
     expect(
-      await screen.findByText("You already have a profile"),
-    ).toBeInTheDocument();
+      screen.getByRole("complementary", { name: "What Connect asks" }),
+    ).toHaveTextContent(
+      "Never asks for your exact age, your birth date, your school or your street address",
+    );
   });
 
   it("shows Connect is not reachable right now in an alert and keeps every value", async () => {
