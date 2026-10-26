@@ -19,7 +19,7 @@ School asks: "You design and implement systematically, justify choices in relati
    - The state and the call to the server moved from the page into the hook `useCreateProfile`, the way his `useCreateAccount` does it (frontend rule 13).
    - Every field is his `FormField`, which now also draws a hint, a select and a textarea, so the page has no field markup of its own (frontend rule 12). His Create account page renders the same as before, and its tests pass unchanged.
    - The band with the title is a `div`, because `TopBar` already holds the one `header` of the site (frontend rule 16).
-   - The fields now have the corners and the red of `FormField`, the same as Create account, so the two forms of Connect look alike. The element selector `button` of his `CreateAccount.module.css` also reaches this page, so the Save button sets its own width, and the point is on the list for the stand up.
+   - The fields now have the corners and the red of `FormField`, the same as Create account, so the two forms of Connect look alike. The Save button is full width, as frame G01 and Create account draw it. It sets its own width and margin, because the element selector `button` of his `CreateAccount.module.css` also reaches this page, and that point is on the list for the stand up.
 - TODO Wesley: what I changed after a teammate used it on a phone.
 
 ## OR3 Involving stakeholders and weighing their feedback
@@ -39,7 +39,7 @@ School asks: "You systematically validate that the solution does what it should,
 3. **A test broken on purpose.** With the line that moves the focus to First name taken out, the test of the field messages failed, and it passed again once the line was put back.
 4. **What I changed after the first run.** An answer that is not JSON now counts as not reachable instead of breaking the page, and the counter says 1 character left instead of 1 characters left.
 5. **What I changed after checking the Figma frame and the page document.** The first version was one plain column. I compared it with the frame Create your profile and with `docs/pages/CreateProfile.md`, and changed: the band with the eyebrow, the card and the panel beside it, the hints above the fields, the full region hint "Your town or area, for example Amstelveen. Not your street, house number or postcode.", red for a wrong field and for the message above the form, the message above the form as an alert with the title the server sends (so the organisation case of #67 needs no new code), the link See my profile after saving, the message "Your short line can be at most 280 characters" from the page document (in !68), and the counter saying how many characters are too many. The red colours come from the design and are now tokens in `web/src/styles/tokens.css`.
-6. **Where I did not follow the frame, and why.** The fields have the corners and the red of `FormField` since 26 October 2026 (OR1 point 6), where frame G01 draws smaller corners. The borders of the fields are darker than in the frame, because the light line of the frame has a contrast of about 1.4 to 1 with white, and WCAG 2.2 asks 3 to 1 for the border of a field. The panel shows the shield icon the site already has instead of a person icon. The saved message has no drawing yet, because the site has no such picture.
+6. **Where I did not follow the frame, and why.** The fields have the corners and the red of `FormField` since 26 October 2026 (OR1 point 6), and frames G01, G02 and H01 in Figma got the same corners, line and hint above the field that day, so the design and the page match again. The borders of the fields are darker than in the frame, because the light line of the frame has a contrast of about 1.4 to 1 with white, and WCAG 2.2 asks 3 to 1 for the border of a field. The panel shows the shield icon the site already has instead of a person icon. The saved message has no drawing yet, because the site has no such picture.
 7. **What is not covered yet.** The question younger than 16 and the address of a parent come with #40 (task 130.5), with the second line of the panel, "Under 16? We ask for a parent's email once, only to ask permission". The message for a street in Region comes with #26. The link from My account and the page behind log in come with #1538.
 
 ![The empty form at 360 pixels](images/task322EmptyForm360.png)
@@ -59,7 +59,7 @@ School asks: "In your design and implementation, you consciously take into accou
 ## TODO
 
 - [ ] Wesley: the OR1 and OR3 lines above, after a teammate and one person outside the team tried the page on a phone, before anyone approves !69.
-- [ ] Wesley: frame G01 in Figma gets the corners and the red of `FormField`, so the design matches the page again. No change to this branch for it.
+- [x] Wesley: frame G01 in Figma gets the corners and the red of `FormField`, so the design matches the page again. Done on 26 October 2026 in G01, G02 and H01, read back by export.
 - [ ] Wesley: after the merge, tick the boxes of #322 with the evidence in a comment. No change to this branch for it.
 
 ## AI use

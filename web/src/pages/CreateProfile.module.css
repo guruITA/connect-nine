@@ -68,10 +68,10 @@
 }
 
 .submit {
-  align-self: flex-start;
-  /* The element selector button of CreateAccount.module.css reaches this page too. */
-  width: auto;
-  margin-top: 0;
+  /* Full width, as frame G01 and Create account draw it. The button sets its own width and
+     margin, because the element selector button of CreateAccount.module.css reaches this page. */
+  width: 100%;
+  margin-top: var(--space-s);
   min-height: var(--button-height);
   padding: var(--space-s) var(--space-l);
   border: none;
