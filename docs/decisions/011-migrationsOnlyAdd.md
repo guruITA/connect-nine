@@ -52,7 +52,7 @@ Think of the database as a cupboard that two versions of Connect share. The new 
 |---|---|
 | Bayon Eerhart | |
 | Nick Hoebe | |
-| Wesley Oerlemans | |
+| Wesley Oerlemans | 26 October 2026 |
 | Gurpreet Singh | 26 October 2026 |
 | Kelvin van Voorst | |
 
