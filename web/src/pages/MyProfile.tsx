@@ -1,13 +1,25 @@
 import { useEffect } from "react";
 import Eyebrow from "../components/home/Eyebrow";
 import ProfileDetails from "../components/profile/ProfileDetails";
+import TagInput from "../components/TagInput";
 import { useMyProfile } from "../hooks/useMyProfile";
 import styles from "./MyProfile.module.css";
 
 // The page My profile, as the Figma frame "My profile" draws it: a band with the title,
-// the profile in a card below it.
+// the profile and Skills and interests in cards below it.
 export default function MyProfile() {
-  const { state, retry } = useMyProfile();
+  const {
+    state,
+    retry,
+    suggestedTags,
+    tagValue,
+    tagFieldError,
+    tagBusyName,
+    tagStatusMessage,
+    tagAlertMessage,
+    changeTagValue,
+    addTag,
+  } = useMyProfile();
 
   useEffect(() => {
     document.title = "Connect, My profile";
@@ -49,18 +61,49 @@ export default function MyProfile() {
         )}
 
         {state.status === "loaded" && (
-          <section className={styles.card}>
-            <div className={styles.profileHeader}>
-              <span className={styles.avatar} aria-hidden="true">
-                {state.profile.firstName.charAt(0).toUpperCase()}
-              </span>
-              <ProfileDetails
-                ageBand={state.profile.ageBand}
-                region={state.profile.region}
-                bio={state.profile.bio}
-              />
-            </div>
-          </section>
+          <>
+            <section className={styles.card}>
+              <div className={styles.profileHeader}>
+                <span className={styles.avatar} aria-hidden="true">
+                  {state.profile.firstName.charAt(0).toUpperCase()}
+                </span>
+                <ProfileDetails
+                  ageBand={state.profile.ageBand}
+                  region={state.profile.region}
+                  bio={state.profile.bio}
+                />
+              </div>
+            </section>
+
+            <section className={styles.card}>
+              <h2 className={styles.sectionTitle}>Skills and interests</h2>
+
+              {tagStatusMessage && (
+                <p role="status" className={styles.status}>
+                  {tagStatusMessage}
+                </p>
+              )}
+              {tagAlertMessage && (
+                <p role="alert" className={styles.alert}>
+                  {tagAlertMessage}
+                </p>
+              )}
+
+              {suggestedTags === null ? (
+                <p className={styles.stateText}>Loading your tags...</p>
+              ) : (
+                <TagInput
+                  chosenTags={state.profile.tags}
+                  suggestedTags={suggestedTags}
+                  value={tagValue}
+                  onChange={changeTagValue}
+                  onAdd={addTag}
+                  busyName={tagBusyName}
+                  fieldError={tagFieldError}
+                />
+              )}
+            </section>
+          </>
         )}
       </div>
     </>

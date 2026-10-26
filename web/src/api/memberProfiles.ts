@@ -1,7 +1,8 @@
-// Calls the addresses under /api/member-profiles of #321 and #331, through request() of
+// Calls the addresses under /api/member-profiles of #321, #331 and #567, through request() of
 // client.ts like every call to the server (frontend rule 14).
 import { NetworkError, request, RequestError } from "./client";
 import type { ValidationProblem } from "./client";
+import type { Tag } from "./tags";
 import { withTemporaryAccount } from "./temporaryAccount";
 
 export type AgeBand = "Adolescent" | "YoungAdult" | "Adult";
@@ -98,6 +99,7 @@ export type CurrentMemberProfile = {
   ageBand: AgeBand;
   region: string;
   bio: string | null;
+  tags: Tag[];
 };
 
 export type GetCurrentMemberProfileResult =
@@ -107,7 +109,7 @@ export type GetCurrentMemberProfileResult =
   | { outcome: "notReachable" };
 
 type CurrentMemberProfileResponseBody = {
-  data?: CurrentMemberProfile;
+  data?: Omit<CurrentMemberProfile, "tags"> & { tags?: Tag[] };
 };
 
 export async function getCurrentMemberProfile(): Promise<GetCurrentMemberProfileResult> {
@@ -118,7 +120,10 @@ export async function getCurrentMemberProfile(): Promise<GetCurrentMemberProfile
     );
     // An answer that is not the JSON the server promised counts as not reachable.
     return body?.data
-      ? { outcome: "loaded", profile: body.data }
+      ? {
+          outcome: "loaded",
+          profile: { ...body.data, tags: body.data.tags ?? [] },
+        }
       : { outcome: "notReachable" };
   } catch (error) {
     if (error instanceof RequestError) {

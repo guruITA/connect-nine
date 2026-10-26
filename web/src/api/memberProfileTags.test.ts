@@ -3,6 +3,7 @@ import { addMemberProfileTag } from "./memberProfileTags";
 
 function mockFetchOnce(status: number, body?: unknown) {
   return vi.spyOn(globalThis, "fetch").mockResolvedValueOnce({
+    ok: status >= 200 && status < 300,
     status,
     json: async () => body,
   } as Response);
@@ -105,6 +106,7 @@ describe("addMemberProfileTag", () => {
 
   it("reports not reachable when a 201 answer is not JSON", async () => {
     vi.spyOn(globalThis, "fetch").mockResolvedValueOnce({
+      ok: true,
       status: 201,
       json: async () => {
         throw new SyntaxError("Unexpected end of JSON input");

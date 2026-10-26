@@ -9,6 +9,7 @@ const TAGS = [
 describe("getSuggestedTags", () => {
   it("asks page 1 with pageSize 50", async () => {
     const fetchSpy = vi.spyOn(globalThis, "fetch").mockResolvedValueOnce({
+      ok: true,
       status: 200,
       json: async () => ({
         data: TAGS,
@@ -29,6 +30,7 @@ describe("getSuggestedTags", () => {
 
   it("returns the tags on 200", async () => {
     vi.spyOn(globalThis, "fetch").mockResolvedValueOnce({
+      ok: true,
       status: 200,
       json: async () => ({ data: TAGS, meta: {} }),
     } as Response);
@@ -61,6 +63,7 @@ describe("getSuggestedTags", () => {
 
   it("returns an empty list when a 200 answer is not JSON", async () => {
     vi.spyOn(globalThis, "fetch").mockResolvedValueOnce({
+      ok: true,
       status: 200,
       json: async () => {
         throw new SyntaxError("Unexpected end of JSON input");
