@@ -20,8 +20,8 @@ School asks: "You systematically validate that the solution does what it should,
 
 ## TODO
 
-- [ ] Wesley: the first canary check of a real new version, in the first `deploy-production` after the merge of dev into main, pasted in #162.
-- [ ] The team: a merge request that changes an answer on purpose also changes `canaryPaths.txt`, named in part 14 of the getting started guide.
+- [ ] Wesley: the first canary check of a real new version, in the first `deploy-production` after the merge of dev into main, pasted in #162. No change to this branch for it.
+- [x] The team: a merge request that changes an answer on purpose also changes `canaryPaths.txt`, named in part 14 of the getting started guide. It is written there in this branch, and holding to it is a check in every later review, not a change to this branch.
 
 ## AI use
 
