@@ -46,11 +46,11 @@ School asks: "You systematically validate that the solution does what it should,
 School asks: "In your design and implementation, you consciously take into account the broader impact on end users and society, while forming your own ethical judgment."
 
 1. **How the page protects a minor.** Three age bands and no field for a date or an age, a region that asks for a town or area, and the hint "Do not write your school, address or phone number here." right under About you.
-- TODO Wesley: my own judgment on whether the region should be free text, a list of a few larger areas, or not asked for the youngest band, because with a first name and an age band it can make a 15 year old easy to find in a small village.
+2. **My judgment on the region.** Free text is the weakest choice, because a young person can type a small village or even a street (#26). I advise a short list of the larger areas of Amstelland, which question 19 of #11 asks the client. For 15 to 17 the region is never shown to other members (#30), so I keep asking it of every age band and let the list solve the rest.
 
 ## TODO
 
-- [ ] Wesley: the TODO lines above.
+- [ ] Wesley: the OR1 and OR3 lines above, after a teammate and one person outside the team tried the page on a phone.
 - [ ] Wesley: after the merge, tick the boxes of #322 with the evidence in a comment.
 
 ## AI use
