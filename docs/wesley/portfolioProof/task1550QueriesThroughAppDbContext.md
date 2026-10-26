@@ -26,7 +26,7 @@ School asks: "You ensure that your work aligns with that of others and contribut
 
 ## TODO
 
-- [ ] A teammate who did not write the rule: read rule 7 in the review and write what was unclear.
+- [ ] A teammate who did not write the rule: read rule 7 in the review and write what was unclear. The answer stays in the review. Only a change to rule 7 that it leads to is a push, and that comes before anyone approves.
 - [ ] Wesley: after the merge, tick the boxes of #1550 with the evidence in a comment.
 
 ## AI use
