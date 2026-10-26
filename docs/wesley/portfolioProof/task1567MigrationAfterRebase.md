@@ -20,10 +20,11 @@ School asks: "You ensure that your work aligns with that of others and contribut
 1. **Where the rule comes from.** Gurpreet Singh's review of !76 on 23 October 2026: "20261020105652 sorts before AddMemberDetailsToProfile (20261021...), so the FK to profile breaks on a fresh db." On the rebuilt branch the first error was the missing `citext` instead, from the same cause.
 2. **The check for a review.** `dotnet ef database update` on an empty database, which the pipeline's tests already do for every branch.
 3. **Why a renamed file is not enough.** The designer file of a migration holds the model at that point, so a new name on old files keeps a model without the migrations it should build on.
+4. **Widened by the review.** Gurpreet Singh in his review of !116 on 26 October 2026: "Since we merge dev into our branches instead of rebasing, maybe "rebased onto or merged with a dev with newer migrations"." A merge of dev brings the newer migrations onto the branch the same way a rebase does, so rule 12 now names both, in the follow-up of !116.
 
 ## TODO
 
-- [ ] A teammate who did not write the rule: read database rule 12 in the review and write what was unclear. The answer stays in the review, and a change it leads to comes before anyone approves.
+- [x] A teammate who did not write the rule: read database rule 12 in the review and write what was unclear. The answer stays in the review, and a change it leads to comes before anyone approves. Gurpreet Singh, 26 October 2026, in !116: "Database rule 12 says my !76 point right, the order by name was the whole problem." His wording for a merge of dev came with his approval, so it is in the follow-up of !116.
 - [ ] Wesley: after the merge, tick the boxes of #1567 with the evidence in a comment. No change to this branch for it.
 
 ## References
