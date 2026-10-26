@@ -10,9 +10,9 @@ namespace Connect.Application.Tests.Profiles.GetPublicProfile;
 
 public sealed class GetPublicProfileQueryHandlerTests
 {
-    private SqliteConnection connection = null!;
-    private SqliteAppDbContext dbContext = null!;
-    private GetPublicProfileQueryHandler handler = null!;
+    private SqliteConnection connection;
+    private SqliteAppDbContext dbContext;
+    private GetPublicProfileQueryHandler handler;
 
     [SetUp]
     public void SetUp()
@@ -50,10 +50,11 @@ public sealed class GetPublicProfileQueryHandlerTests
 
         var result = await handler.HandleAsync(new GetPublicProfileQuery(profile.Id), CancellationToken.None);
 
+        GetPublicProfileResponse value = result.Value ?? throw new AssertionException("Expected the handler to give the profile.");
         using (Assert.EnterMultipleScope())
         {
-            Assert.That(result.Value!.Region, Is.Null);
-            Assert.That(result.Value.Bio, Is.EqualTo("Test member."));
+            Assert.That(value.Region, Is.Null);
+            Assert.That(value.Bio, Is.EqualTo("Test member."));
         }
     }
 

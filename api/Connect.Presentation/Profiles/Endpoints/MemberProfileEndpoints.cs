@@ -62,8 +62,8 @@ public static class MemberProfileEndpoints
 
             var result = await handler.HandleAsync(new GetPublicProfileQuery(profileId), cancellationToken);
 
-            return result.IsSuccess
-                ? TypedResults.Ok(PublicMemberProfileResponseMapper.Map(result.Value!))
+            return result is { IsSuccess: true, Value: { } publicProfile }
+                ? TypedResults.Ok(PublicMemberProfileResponseMapper.Map(publicProfile))
                 : result.Error.ToProblemDetails();
         });
 

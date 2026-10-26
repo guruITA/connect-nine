@@ -8,12 +8,14 @@ namespace Connect.Application.Profiles.GetPublicProfile;
 public sealed class GetPublicProfileQueryHandler(IAppDbContext dbContext)
     : IQueryHandler<GetPublicProfileQuery, Result<GetPublicProfileResponse>>
 {
+    private readonly IAppDbContext _dbContext = dbContext;
+
     public async Task<Result<GetPublicProfileResponse>> HandleAsync(
         GetPublicProfileQuery query,
         CancellationToken cancellationToken)
     {
         // Reads only the four public columns, by the primary key, without tracking.
-        var profile = await dbContext.Profiles
+        var profile = await _dbContext.Profiles
             .AsNoTracking()
             .Where(candidate => candidate.Id == query.ProfileId)
             .Select(candidate => new PublicMemberProfile(

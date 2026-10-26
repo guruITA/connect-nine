@@ -416,7 +416,8 @@ public sealed class MemberProfileEndpointTests
             Address,
             Json(new { firstName = "Noor", ageBand = "From15To17", region = "Uithoorn" }));
         using JsonDocument savedBody = await ReadJson(saved);
-        string profileId = savedBody.RootElement.GetProperty("data").GetProperty("id").GetString()!;
+        string profileId = savedBody.RootElement.GetProperty("data").GetProperty("id").GetString()
+            ?? throw new AssertionException("Expected the saved profile to have an id.");
 
         using HttpResponseMessage response = await client.GetAsync($"/api/member-profiles/{profileId}");
         using JsonDocument body = await ReadJson(response);
