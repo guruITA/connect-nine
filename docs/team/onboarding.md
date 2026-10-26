@@ -215,21 +215,19 @@ because InMemory cannot enforce PostgreSQL indexes, check constraints or Postgre
 
 ### Production secrets
 
-Production runs on k3s. A production secret is a Kubernetes Secret in the namespace of Connect, and the deployment hands it to the container as an environment variable:
+Production runs on k3s on the foundation's server (part 14 Changing production). Its secrets live in two places only: as masked and protected variables in GitLab (Settings, CI/CD, Variables) and as Kubernetes Secrets in the namespace `connect-production`. `infra/k3s/applySecrets.sh` makes the Secrets from the variables, and Terraform only names them, so no password is ever in a `.tf` file, in Git or in the Terraform state.
 
-```
-kubectl create secret generic connect-backend \
-  --namespace connect \
-  --from-literal='ConnectionStrings__DefaultConnection=Host=<host>;Database=connect;Username=connect;Password=<the production password>'
-```
+| GitLab variable | Kubernetes Secret | What it is |
+| --- | --- | --- |
+| `DATABASE_PASSWORD_PRODUCTION` | `connect-database-secret` and `connect-server-secret` | The password of the production database, 32 random hexadecimal characters |
+| `REGISTRY_PULL_USER`, `REGISTRY_PULL_TOKEN` | `connect-registry-pull` | The deploy token `connect-production-pull`, which may only read the container registry, so k3s can pull the images |
 
-You should see `secret/connect-backend created`.
+`connect-server-secret` holds `ConnectionStrings__DefaultConnection`. A nested setting uses a double underscore in the name of an environment variable, because a colon is not allowed in a variable name outside Windows, so it is the same setting as `ConnectionStrings:DefaultConnection`.
 
-A nested setting uses a double underscore in the name of an environment variable, because a colon is not allowed in a variable name outside Windows. `ConnectionStrings__DefaultConnection` is the same setting as `ConnectionStrings:DefaultConnection`.
-
-A Kubernetes Secret is base64 encoded, and base64 is not encryption. Anyone allowed to read secrets in the namespace reads the value. Keep that right to the members who deploy, and turn on encryption at rest for etcd on the cluster.
-
-`appsettings.Production.json` is committed and holds only settings that are not secret. Never hand edit it on the server. The container image is rebuilt on every deploy, so the edit disappears with the next release.
+- Never write a secret on a command line, for example with `kubectl create secret --from-literal`: every user of the computer can read a command line with `ps`. The script writes each value to a file with rights 600 first.
+- A Kubernetes Secret is base64 encoded, and base64 is not encryption. Only the login `gitlab-deployer` and the administrators of the server may read the Secrets of `connect-production`.
+- k3s keeps the Secrets in its own database on the server, and its secrets encryption is not on yet. Wesley Oerlemans decides on switching it on (`k3s secrets-encrypt enable`).
+- The settings of the server that are not secret are in the ConfigMap `connect-server-config` in `infra/terraform/connectServerConfig.tf`.
 
 ### The frontend
 
@@ -973,6 +971,33 @@ Production is described in the files of `infra/terraform`, and nobody changes it
 - **The versions.** Terraform 1.17.0, released on 21 October 2026, and the provider hashicorp/kubernetes 3.4.0, released on 19 October 2026, both chosen on 24 October 2026 and pinned with `=`. An update is a merge request that changes the version in `terraform.tf` and the lock file that `terraform init -upgrade` writes, and the image of the job `terraform-check` in `.gitlab-ci.yml`.
 - **Where the state lives.** Terraform keeps what it made in a state. Connect's state is named `production` and lives in GitLab, under Operate, Terraform states, never in Git: `.gitignore` keeps `.terraform/`, `*.tfstate`, `*.tfstate.backup` and `*.tfplan` out. The pipeline gives the address of the state and the login, so `terraform.tf` holds no address, project number or token.
 - **Check your change on your laptop.** In `infra/terraform`: `terraform init -backend=false`, `terraform fmt -check -recursive` and `terraform validate`, the same three the job `terraform-check` runs on every merge request. You should see `Success! The configuration is valid.` Never run `terraform plan` or `terraform apply` against production from a laptop: that is the pipeline's job.
+
+### Until the pipeline applies
+
+The jobs `terraform-plan` and `terraform-apply` of task 94.2 (#1048) are not on main yet. Until they are, Wesley Oerlemans applies by hand, after the merge request of the change was approved, with the same state in GitLab and the login `gitlab-deployer` through an ssh tunnel. The first apply was on 25 October 2026. After it, `terraform plan` said `No changes`.
+
+### The live version
+
+The live version is at https://live.31-70-66-186.sslip.io until the foundation's domain www.youngamstellandconnect.nl points at the server (question 113). Nothing of the foundation's name or real data of young people is in it before the director has said yes (questions 111 and 114).
+
+**The address.** Caddy holds the padlock for the address and passes every visit to Traefik inside k3s on `127.0.0.1:8081`, which only listens on the server itself. The block is the second one in `deploy/Caddyfile`, next to the test site, and the Ingress `connect-server` in `infra/terraform/connectIngress.tf` sends that address on to the server. A new address changes those two places and the GitLab variable `PRODUCTION_HOST`. Reload Caddy and read its log as for the test site (part 10, The test address).
+
+**The database.** `connect-database` in `infra/terraform/connectDatabase.tf`: PostgreSQL 16.15 with its own user, database and password, never shared with the test site. Its files are on the server under `/var/lib/rancher/k3s/storage`, in a volume of 10 GB. Terraform refuses a plan that would remove it (`prevent_destroy`). On 25 October 2026 the pod was removed on purpose, k3s started a new one within five seconds and the three migrations were still there. A new password: change `DATABASE_PASSWORD_PRODUCTION` in GitLab, run `applySecrets.sh`, and change it in PostgreSQL itself with `ALTER USER connect PASSWORD`, because the database keeps its first password on its volume.
+
+**The server.** First the Secrets exist, then the Job `connect-migrations-<version>` brings the tables up to date and ends, and only then the Deployment `connect-server` starts the server of the same version. One Job per version, so a version runs its migrations once.
+
+- The readiness probe asks `GET /api/health` every 10 seconds. Only a ready pod gets visits, so a visitor never reaches a server whose database is away.
+- The liveness probe only checks that port 8080 answers, after 30 seconds. It never asks `/api/health`, or a database that is away for a moment would restart a server that is fine.
+- A new version starts a new pod first, and the old one keeps answering until the new one is ready.
+
+| Part | Memory asked and limit | Processor asked and limit | Used on 25 October 2026 |
+| --- | --- | --- | --- |
+| `connect-server` | 256Mi to 512Mi | 100m to 500m | 64Mi, 6m |
+| `connect-database` | 256Mi to 1Gi | 100m to 500m | 19Mi, 5m |
+
+The numbers are start values. After a week of real use they are measured again with `kubectl top pod` and set to what was seen.
+
+**Which version runs.** The image of the newest merge into dev, 292759f1, until a merge into main puts its own version there (issue 96, #162).
 
 ## References
 

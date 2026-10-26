@@ -1,4 +1,5 @@
-# Caddy at the front door of the test site on the foundation's server (task 9.4, #239).
+# Caddy at the front door of the test site and the live version on the foundation's server (task 9.4,
+# #239, and task 95.3, #1052).
 # Caddy gets a Let's Encrypt certificate for the address by itself, renews it, and sends http to https.
 # Every visit goes to the Connect server, which listens only on the server itself (127.0.0.1:8080, #267).
 # No log of every visit: Caddy writes access logs only with a log directive, and this file has none.
@@ -7,4 +8,13 @@
 # Change this file in Git first, copy it to /etc/caddy/Caddyfile after the merge, then: sudo systemctl reload caddy
 31-70-66-186.sslip.io {
 	reverse_proxy 127.0.0.1:8080
+}
+
+# The live version runs on k3s (docs/decisions/010-productionOnK3s.md). Caddy holds the padlock and
+# passes every visit to Traefik inside k3s, which listens only on 127.0.0.1:8081. Caddy passes the Host
+# on and sends X-Forwarded-For and X-Forwarded-Proto, which Traefik trusts from 127.0.0.1 only.
+# An interim name of sslip.io until the foundation's domain www.youngamstellandconnect.nl points here
+# (question 113). Then only this name changes, here and in PRODUCTION_HOST.
+live.31-70-66-186.sslip.io {
+	reverse_proxy 127.0.0.1:8081
 }
