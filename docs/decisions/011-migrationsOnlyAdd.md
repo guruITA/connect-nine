@@ -27,7 +27,7 @@ EF Core itself is careful with the second kind: "The migration scaffolding proce
 
 A migration only adds. Proposed by Gurpreet Singh on 26 October 2026.
 
-1. A migration adds tables, columns, indexes and seed data. A new column has a default or allows empty.
+1. A migration adds tables, columns, indexes and seed data. A new column has a default or allows empty. A new check, unique or foreign key rule on a table that the previous version already writes to does not count as only adding: the previous version does not know the rule, so after a Rollback its writes fail while /api/health stays healthy. For example, 20261021205912_AddMemberDetailsToProfile gives first_name the default `''` and also a check that first_name is not empty, so an older version that saves a profile without first_name gets `''` and the check refuses it. Such a rule goes in a later merge, like removing something (rule 2).
 2. Removing, renaming or changing the type of a table or a column takes two merges, in two different merge requests: first add and switch, later remove. The second one names the first in its description.
 3. A merge request with a migration says in its part The version to go back to whether the migration only adds. If it does not, the reviewer asks why, and the author writes how to go back.
 
