@@ -21,6 +21,7 @@ Started on 24 October 2026 by Wesley Oerlemans (#1556).
 | Decision 009, a table session beside ASP.NET Core Identity: a line under Agreed by. Gurpreet's line is in !100. | Bayon, Kelvin | [009-sessionTableBesideIdentity.md](../decisions/009-sessionTableBesideIdentity.md), #1552 |
 | The part Log in and sessions of the code conventions: read it before log in is built. Task 4.2 (#269) checks the password through `IAppDbContext` and the hasher of #262, where decision 007 and rule 1 of that part put the check behind a small interface of Application. | Nick | #1554, #15 |
 | Rule 19, the keys of a validation answer: who brings `ToCamelCaseErrors()` to dev, and in which task. | Nick | !79, #1546 |
+| The nine rules of !116, from Nick's reviews of !70 and !74 and Gurpreet's review of !76: confirm them in the review of !116. My branches !68 to !76 already follow them. | Nick, Gurpreet | !116, #1549 |
 | Parent permission: a parent is asked for every young person under 18, and the address is kept at most one month. #40, #41, #42 and their tasks carry a dated note. | Gurpreet | Client meeting of 23 October 2026, #40 |
 | The starter tags: who researches which tags fit Amstelland, young people and the Young Amstelland Awards, and by when. The current starter list stays until then. | Whole team | Question 9, #69 |
 | Checks by a teammate who did not build it: the profile pages on a phone (#322, #27, #30, #69, #72, #351, #399), part 13 of the onboarding guide on a clean computer (#357), part 13 on a Mac with Apple silicon (!100), and both images built from a clean clone (#352, #354). | Volunteers | #32 |
@@ -45,6 +46,9 @@ Checked against the code on dev on 24 October 2026. Rule 12 of General and Git a
 | One `!` after a value is left: `warnings[0][2]!` in `AccountRegistrationServiceTests` line 163. | Nick | Backend rule 17 | !79, #1544 |
 | A parameter of a primary constructor is used without a `private readonly` field: `dbContext` in `DatabaseHealthCheck`, and `next` and `logger` in `ExceptionHandlingMiddleware`. | Gurpreet, Nick | Backend rule 18 | !79, #1545 |
 | `HealthAnswerWriter` answers with `Results.Problem`, where the rest of the server uses `TypedResults`. The rule names it and lets it stay until the file changes for another reason. | Gurpreet | Backend rule 12 | !79, Gurpreet's review of it |
+| `CreateAccount.module.css` and `CreateAccountForm.module.css` style the elements `input` and `button`, and `FormField.module.css` the elements `label` and `input`. A CSS Module only scopes class names, so these reach every page: on Create your profile the Save button got `width: 100%` and a top margin from them, and the page now sets its own. | Nick | Frontend rule 10, CSS Modules next to the component | !69, #1560 |
+| `CreateAccountResponseData` and `Response` keep `JsonPropertyName` on every property, which backend rule 21 (in !116) says is not needed. Nick wrote in !68 that his were not needed either, and I asked whether he takes them out. | Nick | Backend rule 21 | !68, !116, #1565 |
+| `web/src/components/home/WaysIn.tsx` says "Young people under 16 join with a parent", where the client decided on 23 October 2026 that a parent is asked for every young person under 18 (question 135). | Gurpreet | The client's answer to question 135 | #40, !76 |
 
 ## With the client on Friday
 
