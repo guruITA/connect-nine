@@ -294,9 +294,10 @@ deploy-test:
   resource_group: test-site
   # The environment lets GitLab stop an older deploy that starts after a newer one (Settings, CI/CD,
   # Prevent outdated deployment jobs, on for this project), so a slow pipeline never puts back old code.
+  # Operate, Environments, test lists every deploy with its commit, who merged it and when (#313).
   environment:
     name: test
-    url: https://31-70-66-186.sslip.io
+    url: https://$TEST_ADDRESS
   rules:
     - if: $CI_PIPELINE_SOURCE == "schedule"
       when: never
@@ -327,18 +328,8 @@ deploy-test:
     - tar -C out -czf - app efbundle docker-compose.test.yml | $ssh_deploy 'rm -rf /srv/connect-test/incoming && mkdir /srv/connect-test/incoming && tar -xzf - -C /srv/connect-test/incoming'
     # Stops the server, applies the migrations and starts the new version (deploy/deployTest.sh).
     - $ssh_deploy 'sh -s' < deploy/deployTest.sh
-    # Green only when Connect answers healthy within two minutes. Task 17.3 (#313) makes this deploy/waitForHealthy.sh.
-    - |
-      for try in 1 2 3 4 5 6 7 8 9 10 11 12; do
-        if curl --silent --max-time 5 "https://$TEST_ADDRESS/api/health" | grep -q '"status":"healthy"'; then
-          echo "Connect answers healthy on https://$TEST_ADDRESS"
-          exit 0
-        fi
-        sleep 10
-      done
-      echo "Connect did not answer healthy within two minutes, so the test site is down."
-      echo "Tell the team channel at once and follow Going back to the previous version in docs/team/onboarding.md."
-      exit 1
+    # Green only when /api/health answers 200 with "status":"healthy" within about two minutes (#313).
+    - sh deploy/waitForHealthy.sh "https://$TEST_ADDRESS"
 
 # The browser tests of web/e2e (#265) against the test site, right after deploy-test (#267). The image is
 # exactly the version of @playwright/test in web/package.json, so the browsers match: change both together.
