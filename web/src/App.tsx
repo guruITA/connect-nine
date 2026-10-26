@@ -4,6 +4,7 @@ import TopBar from "./components/TopBar";
 import CreateAccount from "./pages/CreateAccount";
 import CreateProfile from "./pages/CreateProfile";
 import Home from "./pages/Home";
+import MyProfile from "./pages/MyProfile";
 
 export default function App() {
   return (
@@ -15,6 +16,8 @@ export default function App() {
           <Route path="/create-account" element={<CreateAccount />} />
           {/* Goes inside RequireLogin when log in (#15) adds it. */}
           <Route path="/profile/new" element={<CreateProfile />} />
+          {/* Goes inside RequireLogin when log in (#15) adds it. */}
+          <Route path="/profile" element={<MyProfile />} />
         </Routes>
       </main>
       <SiteFooter />

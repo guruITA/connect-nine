@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { createMemberProfile } from "./memberProfiles";
+import { createMemberProfile, getCurrentMemberProfile } from "./memberProfiles";
 
 function mockFetchOnce(status: number, body?: unknown) {
   return vi.spyOn(globalThis, "fetch").mockResolvedValueOnce({
@@ -163,6 +163,93 @@ describe("createMemberProfile", () => {
     } as unknown as Response);
 
     const result = await createMemberProfile(FORM);
+
+    expect(result).toEqual({ outcome: "notReachable" });
+  });
+});
+
+const PROFILE = {
+  firstName: "Sam",
+  ageBand: "From18To21" as const,
+  region: "Amstelveen",
+  bio: null,
+};
+
+describe("getCurrentMemberProfile", () => {
+  it("asks GET /api/member-profiles/current with the session cookie included", async () => {
+    const fetchSpy = mockFetchOnce(200, { data: PROFILE, meta: {} });
+
+    await getCurrentMemberProfile();
+
+    expect(fetchSpy).toHaveBeenCalledWith("/api/member-profiles/current", {
+      headers: {},
+      credentials: "include",
+    });
+  });
+
+  it("reports the profile on 200", async () => {
+    mockFetchOnce(200, { data: PROFILE, meta: {} });
+
+    const result = await getCurrentMemberProfile();
+
+    expect(result).toEqual({ outcome: "loaded", profile: PROFILE });
+  });
+
+  it("reports no profile on 404", async () => {
+    mockFetchOnce(404, { title: "You have no profile yet", status: 404 });
+
+    const result = await getCurrentMemberProfile();
+
+    expect(result).toEqual({ outcome: "noProfile" });
+  });
+
+  it("reports not logged in on 401", async () => {
+    mockFetchOnce(401);
+
+    const result = await getCurrentMemberProfile();
+
+    expect(result).toEqual({ outcome: "notLoggedIn" });
+  });
+
+  it("reports not reachable on 503", async () => {
+    mockFetchOnce(503, {
+      title: "Connect is not reachable right now",
+      status: 503,
+    });
+
+    const result = await getCurrentMemberProfile();
+
+    expect(result).toEqual({ outcome: "notReachable" });
+  });
+
+  it("reports not reachable on any other status", async () => {
+    mockFetchOnce(500, { title: "Something else", status: 500 });
+
+    const result = await getCurrentMemberProfile();
+
+    expect(result).toEqual({ outcome: "notReachable" });
+  });
+
+  it("reports not reachable when the fetch call itself fails", async () => {
+    vi.spyOn(globalThis, "fetch").mockRejectedValueOnce(
+      new Error("network down"),
+    );
+
+    const result = await getCurrentMemberProfile();
+
+    expect(result).toEqual({ outcome: "notReachable" });
+  });
+
+  it("reports not reachable when a 200 answer is not JSON", async () => {
+    vi.spyOn(globalThis, "fetch").mockResolvedValueOnce({
+      ok: true,
+      status: 200,
+      json: async () => {
+        throw new SyntaxError("Unexpected end of JSON input");
+      },
+    } as unknown as Response);
+
+    const result = await getCurrentMemberProfile();
 
     expect(result).toEqual({ outcome: "notReachable" });
   });

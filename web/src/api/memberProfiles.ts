@@ -1,7 +1,8 @@
-// Calls POST /api/member-profiles of #321 to create a member profile, through request() of
+// Calls the addresses under /api/member-profiles of #321 and #331, through request() of
 // client.ts like every call to the server (frontend rule 14).
 import { NetworkError, request, RequestError } from "./client";
 import type { ValidationProblem } from "./client";
+import { withTemporaryAccount } from "./temporaryAccount";
 
 export type AgeBand = "Adolescent" | "YoungAdult" | "Adult";
 
@@ -45,30 +46,19 @@ function fieldErrorsOf(body: unknown): Record<string, string> {
 export async function createMemberProfile(
   form: CreateMemberProfileForm,
 ): Promise<CreateMemberProfileResult> {
-  const headers: Record<string, string> = {
-    "Content-Type": "application/json",
-  };
-
-  // Temporary until log in (#15): the server only accepts this header in Development.
-  const temporaryAccountId = import.meta.env.VITE_TEMPORARY_ACCOUNT_ID;
-  if (typeof temporaryAccountId === "string" && temporaryAccountId.length > 0) {
-    headers["X-Temporary-Account-Id"] = temporaryAccountId;
-  }
-
   try {
     const body = await request<SavedResponseBody | undefined>(
       "/api/member-profiles",
-      {
+      withTemporaryAccount({
         method: "POST",
-        headers,
-        credentials: "include",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           firstName: form.firstName,
           ageBand: form.ageBand,
           region: form.region,
           bio: form.bio,
         }),
-      },
+      }),
     );
 
     // An answer that is not the JSON the server promised counts as not reachable.
@@ -99,6 +89,44 @@ export async function createMemberProfile(
     }
 
     // 503 and every other status the server might send are all treated as not reachable.
+    return { outcome: "notReachable" };
+  }
+}
+
+export type CurrentMemberProfile = {
+  firstName: string;
+  ageBand: AgeBand;
+  region: string;
+  bio: string | null;
+};
+
+export type GetCurrentMemberProfileResult =
+  | { outcome: "loaded"; profile: CurrentMemberProfile }
+  | { outcome: "noProfile" }
+  | { outcome: "notLoggedIn" }
+  | { outcome: "notReachable" };
+
+type CurrentMemberProfileResponseBody = {
+  data?: CurrentMemberProfile;
+};
+
+export async function getCurrentMemberProfile(): Promise<GetCurrentMemberProfileResult> {
+  try {
+    const body = await request<CurrentMemberProfileResponseBody | undefined>(
+      "/api/member-profiles/current",
+      withTemporaryAccount(),
+    );
+    // An answer that is not the JSON the server promised counts as not reachable.
+    return body?.data
+      ? { outcome: "loaded", profile: body.data }
+      : { outcome: "notReachable" };
+  } catch (error) {
+    if (error instanceof RequestError) {
+      if (error.status === 404) return { outcome: "noProfile" };
+      if (error.status === 401) return { outcome: "notLoggedIn" };
+    }
+
+    // 503, every other status and a server that cannot be reached are all not reachable.
     return { outcome: "notReachable" };
   }
 }
