@@ -12,6 +12,7 @@ School asks: "You design and implement systematically, justify choices in relati
 1. **The public part as its own record.** `PublicMemberProfile` holds only first name, age band, region and short line. The query selects into it inside the database query, so the account, the id and the dates are never read.
 2. **The rule for minors in one place.** `ProfileVisibility` decides what another member may see: never the region of a young person of 15 to 17. The handler applies it, the endpoint and the screen never repeat it.
 3. **An id as text.** The id in the address is read as text and parsed in the endpoint, so `abc` and an unknown id both answer "This member does not exist" and never a server error.
+4. **What I changed when Nick's account code was merged.** Since !50, Application has no EF Core (decision 007). The query now runs through `IAppDbContext` with `AsNoTracking` and `SingleOrDefaultAsync`, as rule 7 of the code conventions says (task 3.13, #1550). The answers are the same as before.
 
 ## OR2 Choosing standards and methods
 
