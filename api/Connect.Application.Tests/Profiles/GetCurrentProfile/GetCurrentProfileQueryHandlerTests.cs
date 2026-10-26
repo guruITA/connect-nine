@@ -48,7 +48,33 @@ public sealed class GetCurrentProfileQueryHandlerTests
                 (profile.FirstName, profile.AgeBand, profile.Region, profile.Bio),
                 Is.EqualTo(("Sam", AgeBand.YoungAdult, "Amstelveen", "I like football.")));
             Assert.That(profile.Tags, Is.Empty);
+            Assert.That(profile.ParentConsent, Is.Null);
         }
+    }
+
+    [Test]
+    public async Task HandleAsync_PendingParentConsent_ReturnsPending()
+    {
+        Account account = dbContext.SaveAccount();
+        Profile profile = dbContext.SaveProfile(account, "Noor", AgeBand.Adolescent, "Uithoorn", null);
+        dbContext.SaveParentConsent(profile);
+
+        var result = await handler.HandleAsync(new GetCurrentProfileQuery(account.Id), CancellationToken.None);
+
+        Assert.That(result.Value?.ParentConsent, Is.EqualTo("pending"));
+    }
+
+    [Test]
+    public async Task HandleAsync_ParentConsentGiven_LeavesTheKeyOut()
+    {
+        Account account = dbContext.SaveAccount();
+        Profile profile = dbContext.SaveProfile(account, "Noor", AgeBand.Adolescent, "Uithoorn", null);
+        dbContext.SaveParentConsent(profile, givenAt: DateTimeOffset.UtcNow);
+
+        var result = await handler.HandleAsync(new GetCurrentProfileQuery(account.Id), CancellationToken.None);
+
+        CurrentProfileResult current = result.Value ?? throw new AssertionException("Expected the handler to give the profile.");
+        Assert.That(current.ParentConsent, Is.Null);
     }
 
     [Test]

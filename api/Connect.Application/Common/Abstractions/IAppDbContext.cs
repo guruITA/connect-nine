@@ -1,5 +1,6 @@
 using Connect.Application.Common.Results;
 using Connect.Domain.Common;
+using Connect.Domain.ParentConsents;
 using Connect.Domain.Tags;
 using Connect.Domain.Users;
 
@@ -11,6 +12,7 @@ public interface IAppDbContext
     IQueryable<Profile> Profiles { get; }
     IQueryable<Tag> Tags { get; }
     IQueryable<ProfileTag> ProfileTags { get; }
+    IQueryable<ParentConsent> ParentConsents { get; }
     void Add<TEntity>(TEntity entity) where TEntity : class, IEntity;
     void Remove<TEntity>(TEntity entity) where TEntity : class, IEntity;
     Task<int> SaveChangesAsync(CancellationToken cancellationToken);

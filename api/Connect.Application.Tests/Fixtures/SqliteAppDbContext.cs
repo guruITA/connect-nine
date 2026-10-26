@@ -1,5 +1,6 @@
 using Connect.Application.Common.Abstractions;
 using Connect.Application.Common.Results;
+using Connect.Domain.ParentConsents;
 using Connect.Domain.Tags;
 using Connect.Domain.Users;
 using Microsoft.AspNetCore.Identity;
@@ -20,6 +21,8 @@ internal sealed class SqliteAppDbContext(DbContextOptions<SqliteAppDbContext> op
     public IQueryable<Tag> Tags => Set<Tag>();
 
     public IQueryable<ProfileTag> ProfileTags => Set<ProfileTag>();
+
+    public IQueryable<ParentConsent> ParentConsents => Set<ParentConsent>();
 
     public static SqliteAppDbContext Create(SqliteConnection connection)
     {
@@ -137,6 +140,26 @@ internal sealed class SqliteAppDbContext(DbContextOptions<SqliteAppDbContext> op
         SaveChanges();
     }
 
+    public ParentConsent SaveParentConsent(Profile profile, DateTimeOffset? givenAt = null, string parentEmail = "parent@example.com")
+    {
+        var consent = new ParentConsent
+        {
+            ProfileId = profile.Id,
+            ParentEmail = parentEmail,
+            TokenHash = new string('a', 64),
+            ExpiresAt = DateTimeOffset.UtcNow.AddMonths(ParentConsent.KeepMonths)
+        };
+        if (givenAt is not null)
+        {
+            consent.Give(givenAt.Value);
+        }
+
+        Add(consent);
+        SaveChanges();
+
+        return consent;
+    }
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
@@ -162,6 +185,14 @@ internal sealed class SqliteAppDbContext(DbContextOptions<SqliteAppDbContext> op
             entity.HasIndex(link => new { link.ProfileId, link.TagId }).IsUnique();
             entity.HasOne<Profile>().WithMany().HasForeignKey(link => link.ProfileId);
             entity.HasOne(link => link.Tag).WithMany().HasForeignKey(link => link.TagId);
+        });
+
+        modelBuilder.Entity<ParentConsent>(entity =>
+        {
+            entity.HasKey(consent => consent.Id);
+            entity.HasOne<Profile>()
+                .WithOne(profile => profile.ParentConsent)
+                .HasForeignKey<ParentConsent>(consent => consent.ProfileId);
         });
     }
 }

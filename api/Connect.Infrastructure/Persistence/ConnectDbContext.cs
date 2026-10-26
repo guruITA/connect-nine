@@ -1,6 +1,7 @@
 using Connect.Application.Common.Abstractions;
 using Connect.Application.Common.Results;
 using Connect.Domain.Common;
+using Connect.Domain.ParentConsents;
 using Connect.Domain.Tags;
 using Connect.Domain.Users;
 using Microsoft.AspNetCore.Identity;
@@ -20,6 +21,9 @@ public sealed class ConnectDbContext(DbContextOptions<ConnectDbContext> options)
     public IQueryable<Tag> Tags => Set<Tag>();
 
     public IQueryable<ProfileTag> ProfileTags => Set<ProfileTag>();
+
+
+    public IQueryable<ParentConsent> ParentConsents => Set<ParentConsent>();
 
     void IAppDbContext.Add<TEntity>(TEntity entity) where TEntity : class
     {
@@ -185,6 +189,29 @@ public sealed class ConnectDbContext(DbContextOptions<ConnectDbContext> options)
                 .WithMany()
                 .HasForeignKey(link => link.TagId)
                 .OnDelete(DeleteBehavior.Restrict);
+        });
+
+        modelBuilder.Entity<ParentConsent>(entity =>
+        {
+            entity.HasKey(consent => consent.Id);
+            entity.Property(consent => consent.ParentEmail).HasColumnType("citext").IsRequired();
+            entity.Property(consent => consent.TokenHash).IsRequired();
+            entity.Property(consent => consent.ExpiresAt).IsRequired();
+            entity.Property(consent => consent.CreatedAt).IsRequired();
+            entity.Property(consent => consent.UpdatedAt).IsRequired();
+            entity.HasIndex(consent => consent.ProfileId)
+                .IsUnique()
+                .HasDatabaseName("ux_parent_consent_profile_id");
+            entity.HasIndex(consent => consent.TokenHash)
+                .IsUnique()
+                .HasDatabaseName("ux_parent_consent_token_hash");
+            entity.ToTable(table => table.HasCheckConstraint(
+                "ck_parent_consent_token_hash_length",
+                "char_length(\"token_hash\") = 64"));
+            entity.HasOne<Profile>()
+                .WithOne(profile => profile.ParentConsent)
+                .HasForeignKey<ParentConsent>(consent => consent.ProfileId)
+                .OnDelete(DeleteBehavior.Cascade);
         });
     }
 

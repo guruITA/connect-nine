@@ -36,7 +36,7 @@ public sealed class GetPublicProfileQueryHandlerTests
     {
         Profile profile = dbContext.SaveProfile(dbContext.SaveAccount(), "Robin", AgeBand.YoungAdult, "Amstelveen", "Test member.");
 
-        var result = await handler.HandleAsync(new GetPublicProfileQuery(profile.Id), CancellationToken.None);
+        var result = await handler.HandleAsync(new GetPublicProfileQuery(profile.Id, Guid.NewGuid()), CancellationToken.None);
 
         GetPublicProfileResponse value = result.Value ?? throw new AssertionException("Expected the handler to give the profile.");
         using (Assert.EnterMultipleScope())
@@ -55,7 +55,7 @@ public sealed class GetPublicProfileQueryHandlerTests
         dbContext.SaveLink(profile, dbContext.SaveTag("photography"));
         dbContext.SaveLink(profile, dbContext.SaveTag("football"));
 
-        var result = await handler.HandleAsync(new GetPublicProfileQuery(profile.Id), CancellationToken.None);
+        var result = await handler.HandleAsync(new GetPublicProfileQuery(profile.Id, Guid.NewGuid()), CancellationToken.None);
 
         Assert.That(result.Value?.Tags, Is.EqualTo(new[] { "football", "photography" }));
     }
@@ -66,7 +66,7 @@ public sealed class GetPublicProfileQueryHandlerTests
         Profile profile = dbContext.SaveProfile(dbContext.SaveAccount(), "Noor", AgeBand.Adolescent, "Uithoorn", "Test member.");
         dbContext.SaveLink(profile, dbContext.SaveTag("dance"));
 
-        var result = await handler.HandleAsync(new GetPublicProfileQuery(profile.Id), CancellationToken.None);
+        var result = await handler.HandleAsync(new GetPublicProfileQuery(profile.Id, Guid.NewGuid()), CancellationToken.None);
 
         Assert.That(result.Value?.Tags, Is.EqualTo(new[] { "dance" }));
     }
@@ -76,7 +76,7 @@ public sealed class GetPublicProfileQueryHandlerTests
     {
         Profile profile = dbContext.SaveProfile(dbContext.SaveAccount(), "Noor", AgeBand.Adolescent, "Uithoorn", "Test member.");
 
-        var result = await handler.HandleAsync(new GetPublicProfileQuery(profile.Id), CancellationToken.None);
+        var result = await handler.HandleAsync(new GetPublicProfileQuery(profile.Id, Guid.NewGuid()), CancellationToken.None);
 
         GetPublicProfileResponse value = result.Value ?? throw new AssertionException("Expected the handler to give the profile.");
         using (Assert.EnterMultipleScope())
@@ -89,13 +89,53 @@ public sealed class GetPublicProfileQueryHandlerTests
     [Test]
     public async Task HandleAsync_UnknownId_ReturnsNotFound()
     {
-        var result = await handler.HandleAsync(new GetPublicProfileQuery(Guid.NewGuid()), CancellationToken.None);
+        var result = await handler.HandleAsync(new GetPublicProfileQuery(Guid.NewGuid(), Guid.NewGuid()), CancellationToken.None);
 
         using (Assert.EnterMultipleScope())
         {
             Assert.That(result.Error.Code, Is.EqualTo(ErrorCode.NotFound));
             Assert.That(result.Error.Description, Is.EqualTo("This member does not exist"));
         }
+    }
+
+    [Test]
+    public async Task HandleAsync_PendingProfileViewedByAStranger_ReturnsNotFound()
+    {
+        Account account = dbContext.SaveAccount();
+        Profile profile = dbContext.SaveProfile(account, "Noor", AgeBand.Adolescent, "Uithoorn", "Test member.");
+        dbContext.SaveParentConsent(profile);
+
+        var result = await handler.HandleAsync(new GetPublicProfileQuery(profile.Id, Guid.NewGuid()), CancellationToken.None);
+
+        using (Assert.EnterMultipleScope())
+        {
+            Assert.That(result.Error.Code, Is.EqualTo(ErrorCode.NotFound));
+            Assert.That(result.Error.Description, Is.EqualTo("This member does not exist"));
+        }
+    }
+
+    [Test]
+    public async Task HandleAsync_PendingProfileViewedByItsOwner_ReturnsTheFourValues()
+    {
+        Account account = dbContext.SaveAccount();
+        Profile profile = dbContext.SaveProfile(account, "Noor", AgeBand.Adolescent, "Uithoorn", "Test member.");
+        dbContext.SaveParentConsent(profile);
+
+        var result = await handler.HandleAsync(new GetPublicProfileQuery(profile.Id, account.Id), CancellationToken.None);
+
+        Assert.That(result.IsSuccess, Is.True);
+    }
+
+    [Test]
+    public async Task HandleAsync_ProfileWithPermissionGiven_ReturnsTheFourValuesForAStranger()
+    {
+        Account account = dbContext.SaveAccount();
+        Profile profile = dbContext.SaveProfile(account, "Robin", AgeBand.YoungAdult, "Amstelveen", "Test member.");
+        dbContext.SaveParentConsent(profile, givenAt: DateTimeOffset.UtcNow);
+
+        var result = await handler.HandleAsync(new GetPublicProfileQuery(profile.Id, Guid.NewGuid()), CancellationToken.None);
+
+        Assert.That(result.IsSuccess, Is.True);
     }
 
     [Test]
@@ -107,6 +147,6 @@ public sealed class GetPublicProfileQueryHandlerTests
 
         Assert.ThrowsAsync(
             Is.InstanceOf<DbException>(),
-            () => unreachableHandler.HandleAsync(new GetPublicProfileQuery(Guid.NewGuid()), CancellationToken.None));
+            () => unreachableHandler.HandleAsync(new GetPublicProfileQuery(Guid.NewGuid(), Guid.NewGuid()), CancellationToken.None));
     }
 }

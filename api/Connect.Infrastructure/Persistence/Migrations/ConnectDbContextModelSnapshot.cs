@@ -23,6 +23,60 @@ namespace Connect.Infrastructure.Persistence.Migrations
             NpgsqlModelBuilderExtensions.HasPostgresExtension(modelBuilder, "citext");
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
+            modelBuilder.Entity("Connect.Domain.ParentConsents.ParentConsent", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
+
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_at");
+
+                    b.Property<DateTimeOffset>("ExpiresAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("expires_at");
+
+                    b.Property<DateTimeOffset?>("GivenAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("given_at");
+
+                    b.Property<string>("ParentEmail")
+                        .IsRequired()
+                        .HasColumnType("citext")
+                        .HasColumnName("parent_email");
+
+                    b.Property<Guid>("ProfileId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("profile_id");
+
+                    b.Property<string>("TokenHash")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("token_hash");
+
+                    b.Property<DateTimeOffset>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("updated_at");
+
+                    b.HasKey("Id")
+                        .HasName("pk_parent_consent");
+
+                    b.HasIndex("ProfileId")
+                        .IsUnique()
+                        .HasDatabaseName("ux_parent_consent_profile_id");
+
+                    b.HasIndex("TokenHash")
+                        .IsUnique()
+                        .HasDatabaseName("ux_parent_consent_token_hash");
+
+                    b.ToTable("parent_consent", null, t =>
+                        {
+                            t.HasCheckConstraint("ck_parent_consent_token_hash_length", "char_length(\"token_hash\") = 64");
+                        });
+                });
+
             modelBuilder.Entity("Connect.Domain.Tags.Tag", b =>
                 {
                     b.Property<Guid>("Id")
@@ -570,6 +624,16 @@ namespace Connect.Infrastructure.Persistence.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
+            modelBuilder.Entity("Connect.Domain.ParentConsents.ParentConsent", b =>
+                {
+                    b.HasOne("Connect.Domain.Users.Profile", null)
+                        .WithOne("ParentConsent")
+                        .HasForeignKey("Connect.Domain.ParentConsents.ParentConsent", "ProfileId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_parent_consent_profile_profile_id");
+                });
+
             modelBuilder.Entity("Connect.Domain.Users.Profile", b =>
                 {
                     b.HasOne("Connect.Domain.Users.Account", "Account")
@@ -661,6 +725,11 @@ namespace Connect.Infrastructure.Persistence.Migrations
             modelBuilder.Entity("Connect.Domain.Users.Account", b =>
                 {
                     b.Navigation("Profile");
+                });
+
+            modelBuilder.Entity("Connect.Domain.Users.Profile", b =>
+                {
+                    b.Navigation("ParentConsent");
                 });
 #pragma warning restore 612, 618
         }
