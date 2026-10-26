@@ -798,7 +798,30 @@ A reviewer of #312 does this once, with the server started as above:
 
 ### On the test server
 
-The server of Connect runs on the test server in the container `server` of `/srv/connect-test/docker-compose.test.yml`, on `127.0.0.1:8080` behind Caddy (The test site, part 10). Read its newest lines with `sudo docker compose -f /srv/connect-test/docker-compose.test.yml logs --tail 50 server`. The plan for its log: it stays on the server, and only team members who log in with their own ssh key (part 10) and the user deploy of the pipeline, through the deploy key in GitLab (The pipeline on the server), can read it. Caddy writes no log of every visit (`deploy/Caddyfile` has no log directive), and the server has no web address that shows the log. Still to check on the server itself, at the team check of task 3.9 (#267) after the first deploy: that the command above shows the lines and that no web address shows them. How long lines stay comes with #315.
+The server of Connect runs on the test server in the container `server` of `/srv/connect-test/docker-compose.test.yml`, on `127.0.0.1:8080` behind Caddy (The test site, part 10). Read its newest lines with `sudo docker compose -f /srv/connect-test/docker-compose.test.yml logs --tail 50 server`. The plan for its log: it stays on the server, and only team members who log in with their own ssh key (part 10) and the user deploy of the pipeline, through the deploy key in GitLab (The pipeline on the server), can read it. Caddy writes no log of every visit (`deploy/Caddyfile` has no log directive), and the server has no web address that shows the log. Still to check on the server itself, at the team check of task 3.9 (#267) after the first deploy: that the command above shows the lines and that no web address shows them.
+
+### How long lines stay on the test server
+
+Docker keeps the log of every container in a file on the server's disk, and without a limit that file grows until the disk is full. A full disk stops the database first, so Connect would stop for the client because of its own log. Since task 17.5 (#315) every service in `deploy/docker-compose.test.yml` gets the block `x-logging` at the top of that file: the driver `json-file` with `max-size: "10m"` and `max-file: "5"`. Docker starts a new file when one reaches 10 MB and removes the oldest when there would be a sixth, so a container never keeps more than 50 MB of log, and its oldest lines go on their own.
+
+- **A new service gets the same block.** Add `logging: *logging` under it, as `database`, `migrations` and `server` have. `docker compose -f deploy/docker-compose.test.yml config` on your laptop shows the limit under `logging` of every service; a service without it has no limit.
+- **How many days that is.** On 26 October 2026 the log of the server grew about 30 KB in its first hour and a half, a deploy and the browser tests of e2e-test included, and the log of the database about 16 KB in four days. At that pace 50 MB holds months of lines. The real number, from the size of the log file after one normal day, is in the proof of #315.
+- **The log of the server starts empty at every deploy.** `deploy/deployTest.sh` makes a new container for the server every time (`--force-recreate`), and Docker removes the log of the old container with it. Read the lines of a bug before the merge that fixes it, or copy them into the issue. The database keeps its container, and so its log, until its settings change.
+
+Read the log on the server, after logging in with your own key (part 10):
+
+```
+sudo docker compose -f /srv/connect-test/docker-compose.test.yml logs server --since 1h
+sudo docker compose -f /srv/connect-test/docker-compose.test.yml logs database --tail 50
+```
+
+Check the limit of a running container:
+
+```
+sudo docker inspect -f '{{json .HostConfig.LogConfig}}' connect-test-server-1
+```
+
+It should print `{"Type":"json-file","Config":{"max-file":"5","max-size":"10m"}}`.
 
 ### Twenty real lines
 

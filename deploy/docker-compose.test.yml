@@ -4,11 +4,20 @@
 # deploy/.env.example lists every name.
 name: connect-test
 
+# The log of every container in at most five files of 10 MB, so the log never fills the disk and the oldest
+# lines go on their own (task 17.5, #315). Every service added to this file gets logging: *logging as well.
+x-logging: &logging
+  driver: json-file
+  options:
+    max-size: "10m"
+    max-file: "5"
+
 services:
   database:
     image: postgres:16
     restart: unless-stopped
     env_file: .env
+    logging: *logging
     # No published port: only the server and the migrations reach it, inside the network of this file.
     volumes:
       - connect-test-data:/var/lib/postgresql/data
@@ -24,6 +33,7 @@ services:
     image: mcr.microsoft.com/dotnet/aspnet:10.0
     profiles: ["tools"]
     env_file: .env
+    logging: *logging
     volumes:
       - ./efbundle:/efbundle:ro
     # No --connection: the bundle reads ConnectionStrings__DefaultConnection from env_file, like the server,
@@ -37,6 +47,7 @@ services:
     image: mcr.microsoft.com/dotnet/aspnet:10.0
     restart: unless-stopped
     env_file: .env
+    logging: *logging
     environment:
       # Not Development, so no developer pages, and not Production, which is the foundation's own server.
       ASPNETCORE_ENVIRONMENT: Staging
