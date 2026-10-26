@@ -1,0 +1,187 @@
+/* Figma: "Create your profile", the title in a band, the form in a card, a panel beside it. */
+.band {
+  background: var(--color-panel);
+}
+
+.bandInner {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+  max-width: var(--content-width);
+  margin: 0 auto;
+  padding: var(--space-2xl) var(--space-page) var(--space-xl);
+}
+
+.title {
+  margin: 0;
+  color: var(--color-navy);
+  font-family: var(--font-heading);
+  font-size: var(--text-h2-size);
+  font-weight: var(--font-weight-bold);
+  line-height: var(--text-h2-line);
+  letter-spacing: var(--text-h2-tracking);
+}
+
+.body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-m);
+  max-width: var(--content-width);
+  margin: 0 auto;
+  padding: var(--space-xl) var(--space-page) var(--space-3xl);
+}
+
+.alert {
+  margin: 0;
+  padding: var(--space-m) var(--space-l);
+  border-left: var(--border-width) solid var(--color-error-line);
+  border-radius: var(--radius-field);
+  background: var(--color-error-panel);
+  color: var(--color-error-text);
+  font-weight: var(--font-weight-semibold);
+}
+
+.columns {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--space-xl);
+  align-items: start;
+}
+
+@media (min-width: 64rem) {
+  .columns {
+    grid-template-columns: minmax(0, 2fr) minmax(16rem, 1fr);
+  }
+}
+
+.card,
+.savedCard {
+  padding: var(--space-l);
+  border-radius: var(--radius-tile);
+  background: var(--color-white);
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-l);
+}
+
+.submit {
+  /* Full width, as frame G01 and Create account draw it. The button sets its own width and
+     margin, because the element selector button of CreateAccount.module.css reaches this page. */
+  width: 100%;
+  margin-top: var(--space-s);
+  min-height: var(--button-height);
+  padding: var(--space-s) var(--space-l);
+  border: none;
+  border-radius: var(--radius-pill);
+  background: var(--color-green);
+  color: var(--color-white);
+  font-family: var(--font-body);
+  font-size: var(--text-body-size);
+  font-weight: var(--font-weight-bold);
+  line-height: var(--text-body-line);
+  cursor: pointer;
+}
+
+.submit:hover {
+  background: var(--color-green-dark);
+}
+
+.submit:disabled {
+  background: var(--color-text-muted);
+  cursor: not-allowed;
+}
+
+.aside {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-m);
+  padding: var(--space-l);
+  border-radius: var(--radius-tile);
+  background: var(--color-panel);
+}
+
+.asideAlert {
+  background: var(--color-error-panel);
+}
+
+.asideIcon {
+  display: grid;
+  place-items: center;
+  width: var(--mark-size);
+  height: var(--mark-size);
+  border-radius: var(--radius-pill);
+  background: var(--color-white);
+}
+
+.asidePurpose {
+  margin: 0;
+  padding-bottom: var(--space-m);
+  border-bottom: var(--hairline-width) solid var(--color-text-muted);
+  color: var(--color-text-muted);
+}
+
+.checks {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-s);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  color: var(--color-navy);
+  font-size: var(--text-small-size);
+  font-weight: var(--font-weight-semibold);
+  line-height: var(--text-small-line);
+}
+
+.checks li {
+  display: flex;
+  gap: var(--space-xs);
+}
+
+/* A small ticked circle before each item, as in the Figma frame. */
+.checks li::before {
+  content: "";
+  flex: none;
+  width: 0.75rem;
+  height: 0.75rem;
+  margin-top: 0.25rem;
+  border: var(--hairline-width) solid var(--color-green-text);
+  border-radius: var(--radius-pill);
+  background: linear-gradient(var(--color-green-text), var(--color-green-text))
+    center / 0.25rem 0.25rem no-repeat;
+}
+
+.asideAlert .checks li::before {
+  border-color: var(--color-error-text);
+  background-image: linear-gradient(
+    var(--color-error-text),
+    var(--color-error-text)
+  );
+}
+
+.savedCard {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-m);
+  align-items: center;
+  padding-block: var(--space-2xl);
+  text-align: center;
+}
+
+.savedTitle {
+  margin: 0;
+  color: var(--color-navy);
+  font-family: var(--font-heading);
+  font-size: var(--text-h3-size);
+  font-weight: var(--font-weight-bold);
+  line-height: var(--text-h3-line);
+  letter-spacing: var(--text-h3-tracking);
+}
+
+.savedLink {
+  color: var(--color-green-text);
+  font-weight: var(--font-weight-bold);
+}

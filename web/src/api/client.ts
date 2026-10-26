@@ -1,3 +1,9 @@
+// The body of a 400 answer of the server: the messages of each wrong field, under the key of
+// that field (backend rule 19). Every file in src/api reads it through this one type.
+export type ValidationProblem = {
+  errors?: Record<string, string[]>;
+};
+
 export class RequestError extends Error {
   public readonly status: number;
   public readonly body: unknown;
