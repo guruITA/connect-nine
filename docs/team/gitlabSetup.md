@@ -67,6 +67,7 @@ The file is .gitlab-ci.yml in the root. It runs on the HvA runners with the tag 
 - Stage deploy, job kube-check: on dev, and by hand on a merge request. Shows that the node of production is Ready, with the read only login.
 - Stage deploy, job terraform-plan: on a merge request that changes `infra/` or `.gitlab-ci.yml`. Puts the plan of production on the merge request, `docs/team/onboarding.md` part 14 Changing production.
 - Stage deploy, job deploy-production: on main, after a merge. Puts that version on the live address by itself, part 14 From dev to main to production.
+- Stage deploy, job rollback-production: on main, by hand, with the variable ROLLBACK_IMAGE_TAG. Puts an earlier version back, part 14 Going back in production.
 - A red pipeline locks the Merge button through Pipelines must succeed (part Branches and protection). On top of that, a reviewer never approves a merge request with a red pipeline. No job of stage build or stage test has allow_failure, so a red build or test job always blocks the merge.
 - The jobs of stage test start only when every job of stage build is green, image-build included, so no test passes a version whose build went wrong. That makes a merge request wait for the images, about five and a half minutes in all, and it stays that way on purpose (decided on 22 October 2026).
 
