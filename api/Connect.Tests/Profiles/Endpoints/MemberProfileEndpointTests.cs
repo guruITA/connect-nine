@@ -332,7 +332,7 @@ public sealed class MemberProfileEndpointTests
     }
 
     [Test]
-    public async Task GetById_Adult_ReturnsTheFourPublicValuesAndNothingElse()
+    public async Task GetById_Adult_ReturnsThePublicValuesAndNothingElse()
     {
         using WebApplicationFactory<Program> factory = CreateFactory();
         Guid profileId = SaveProfile(factory, SaveAccount(factory), AgeBand.YoungAdult, "Robin", "Amstelveen", "Test member, 18 to 21.");
@@ -348,7 +348,8 @@ public sealed class MemberProfileEndpointTests
             Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.OK));
             Assert.That(
                 data.EnumerateObject().Select(property => property.Name),
-                Is.EqualTo(new[] { "firstName", "ageBand", "region", "bio" }));
+                Is.EqualTo(new[] { "firstName", "ageBand", "region", "bio", "tags" }));
+            Assert.That(data.GetProperty("tags").GetArrayLength(), Is.EqualTo(0));
             Assert.That(data.GetProperty("firstName").GetString(), Is.EqualTo("Robin"));
             Assert.That(data.GetProperty("region").GetString(), Is.EqualTo("Amstelveen"));
             Assert.That(content, Does.Not.Contain("email").And.Not.Contain("accountId").And.Not.Contain(profileId.ToString()));

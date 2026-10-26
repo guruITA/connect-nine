@@ -203,6 +203,15 @@ ever in the answer.
 
 The query reads only `first_name`, `age_band`, `region` and `bio`, by the primary key `pk_profile`.
 
+Since task 36c.2 the answer also holds `tags`: the names of the member's tags, sorted by name,
+never their ids, and `[]` for a profile without tags. Tags follow the same rule for minors as the
+short text (`ProfileVisibility.ShowsTags`), so when the short text is hidden, `tags` is left out
+too:
+
+```json
+{"data":{"firstName":"Robin","ageBand":"YoungAdult","region":"Amstelveen","bio":"Test member, 18 to 21.","tags":["football","photography"]},"meta":{}}
+```
+
 ## `GET /api/tags/suggested`
 
 The suggested tags a young person can tap on My profile (issue 36 Add skills and interests as

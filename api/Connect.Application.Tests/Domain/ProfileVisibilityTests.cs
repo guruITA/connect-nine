@@ -25,4 +25,12 @@ public sealed class ProfileVisibilityTests
     {
         Assert.That(ProfileVisibility.ShowsBio(ageBand), Is.True);
     }
+
+    [TestCase(AgeBand.Adolescent)]
+    [TestCase(AgeBand.YoungAdult)]
+    [TestCase(AgeBand.Adult)]
+    public void ShowsTags_EveryAgeBand_EqualsTheRuleForTheShortText(AgeBand ageBand)
+    {
+        Assert.That(ProfileVisibility.ShowsTags(ageBand), Is.EqualTo(ProfileVisibility.ShowsBio(ageBand)));
+    }
 }

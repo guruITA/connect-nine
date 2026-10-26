@@ -14,4 +14,10 @@ public static class ProfileVisibility
     {
         return true;
     }
+
+    // Tags follow the same rule as the short text (task 36c.2).
+    public static bool ShowsTags(AgeBand ageBand)
+    {
+        return ShowsBio(ageBand);
+    }
 }

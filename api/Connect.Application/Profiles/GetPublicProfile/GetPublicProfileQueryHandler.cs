@@ -13,7 +13,7 @@ public sealed class GetPublicProfileQueryHandler(IAppDbContext dbContext)
         GetPublicProfileQuery query,
         CancellationToken cancellationToken)
     {
-        // Reads only the four public columns, by the primary key, without tracking.
+        // Reads only the four public columns and the tag names, by the primary key, without tracking.
         var profile = await _dbContext.SingleOrDefaultAsync(
             _dbContext.AsNoTracking(_dbContext.Profiles)
                 .Where(candidate => candidate.Id == query.ProfileId)
@@ -21,7 +21,12 @@ public sealed class GetPublicProfileQueryHandler(IAppDbContext dbContext)
                     candidate.FirstName,
                     candidate.AgeBand,
                     candidate.Region,
-                    candidate.Bio)),
+                    candidate.Bio,
+                    _dbContext.ProfileTags
+                        .Where(link => link.ProfileId == candidate.Id)
+                        .OrderBy(link => link.Tag!.Name)
+                        .Select(link => link.Tag!.Name)
+                        .ToList())),
             cancellationToken);
 
         if (profile is null)
@@ -36,6 +41,7 @@ public sealed class GetPublicProfileQueryHandler(IAppDbContext dbContext)
             ProfileVisibility.ShowsRegion(profile.AgeBand) ? profile.Region : null,
             ProfileVisibility.ShowsBio(profile.AgeBand) && !string.IsNullOrEmpty(profile.Bio)
                 ? profile.Bio
-                : null));
+                : null,
+            ProfileVisibility.ShowsTags(profile.AgeBand) ? profile.Tags : null));
     }
 }

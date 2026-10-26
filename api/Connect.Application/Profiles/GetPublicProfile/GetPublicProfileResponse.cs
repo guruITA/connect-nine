@@ -7,5 +7,6 @@ public sealed record GetPublicProfileResponse(
     string FirstName,
     AgeBand AgeBand,
     string? Region,
-    string? Bio
+    string? Bio,
+    IReadOnlyList<string>? Tags
 );

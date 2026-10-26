@@ -38,9 +38,37 @@ public sealed class GetPublicProfileQueryHandlerTests
 
         var result = await handler.HandleAsync(new GetPublicProfileQuery(profile.Id), CancellationToken.None);
 
-        Assert.That(
-            result.Value,
-            Is.EqualTo(new GetPublicProfileResponse("Robin", AgeBand.YoungAdult, "Amstelveen", "Test member.")));
+        GetPublicProfileResponse value = result.Value ?? throw new AssertionException("Expected the handler to give the profile.");
+        using (Assert.EnterMultipleScope())
+        {
+            Assert.That(
+                (value.FirstName, value.AgeBand, value.Region, value.Bio),
+                Is.EqualTo(("Robin", AgeBand.YoungAdult, "Amstelveen", "Test member.")));
+            Assert.That(value.Tags, Is.Empty);
+        }
+    }
+
+    [Test]
+    public async Task HandleAsync_ProfileWithTags_PassesTheNamesSortedByName()
+    {
+        Profile profile = dbContext.SaveProfile(dbContext.SaveAccount(), "Robin", AgeBand.YoungAdult, "Amstelveen", null);
+        dbContext.SaveLink(profile, dbContext.SaveTag("photography"));
+        dbContext.SaveLink(profile, dbContext.SaveTag("football"));
+
+        var result = await handler.HandleAsync(new GetPublicProfileQuery(profile.Id), CancellationToken.None);
+
+        Assert.That(result.Value?.Tags, Is.EqualTo(new[] { "football", "photography" }));
+    }
+
+    [Test]
+    public async Task HandleAsync_YoungPersonOf15To17_PassesTheTagsLikeTheShortText()
+    {
+        Profile profile = dbContext.SaveProfile(dbContext.SaveAccount(), "Noor", AgeBand.Adolescent, "Uithoorn", "Test member.");
+        dbContext.SaveLink(profile, dbContext.SaveTag("dance"));
+
+        var result = await handler.HandleAsync(new GetPublicProfileQuery(profile.Id), CancellationToken.None);
+
+        Assert.That(result.Value?.Tags, Is.EqualTo(new[] { "dance" }));
     }
 
     [Test]

@@ -5,5 +5,6 @@ public sealed record PublicMemberProfile(
     string FirstName,
     AgeBand AgeBand,
     string Region,
-    string? Bio
+    string? Bio,
+    IReadOnlyList<string> Tags
 );

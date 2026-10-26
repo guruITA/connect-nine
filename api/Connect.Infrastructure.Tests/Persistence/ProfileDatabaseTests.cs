@@ -1,4 +1,5 @@
 using Connect.Application.Common.Abstractions;
+using Connect.Domain.Tags;
 using Connect.Domain.Users;
 using Connect.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
@@ -217,7 +218,10 @@ public sealed class ProfileDatabaseTests
         TestContext.Progress.WriteLine(select);
         using (Assert.EnterMultipleScope())
         {
-            Assert.That(found, Is.EqualTo(new PublicMemberProfile("Sam", AgeBand.Adolescent, "Amstelveen", "I like football.")));
+            Assert.That(
+                (found?.FirstName, found?.AgeBand, found?.Region, found?.Bio),
+                Is.EqualTo(("Sam", AgeBand.Adolescent, "Amstelveen", "I like football.")));
+            Assert.That(found?.Tags, Is.Empty);
             Assert.That(select, Does.Contain("first_name").And.Contain("age_band").And.Contain("region").And.Contain("bio"));
             Assert.That(select, Does.Not.Contain("account_id").And.Not.Contain("created_at").And.Not.Contain("updated_at"));
         }
@@ -231,12 +235,42 @@ public sealed class ProfileDatabaseTests
         Assert.That(PublicPartOf(readContext, Guid.NewGuid()), Is.Null);
     }
 
-    // The query of GET /api/member-profiles/{id}: only the four public columns, by the primary key.
+    [Test]
+    public void ReadingThePublicPartWithTags_ReturnsOnlyItsOwnTagNamesSortedByName()
+    {
+        Profile profile = TestRows.SaveProfile(dbContext);
+        Profile otherProfile = TestRows.SaveProfile(dbContext);
+        Tag photography = TestRows.SaveTag(dbContext);
+        Tag football = TestRows.SaveTag(dbContext);
+        dbContext.AddRange(
+            new ProfileTag { ProfileId = profile.Id, TagId = photography.Id },
+            new ProfileTag { ProfileId = profile.Id, TagId = football.Id },
+            new ProfileTag { ProfileId = otherProfile.Id, TagId = TestRows.SaveTag(dbContext).Id });
+        dbContext.SaveChanges();
+
+        using ConnectDbContext readContext = TestDatabase.CreateDbContext();
+
+        Assert.That(
+            PublicPartOf(readContext, profile.Id)?.Tags,
+            Is.EqualTo(new[] { photography.Name, football.Name }.Order()));
+    }
+
+    // The query of GET /api/member-profiles/{id}: only the four public columns and the tag names,
+    // by the primary key.
     private static PublicMemberProfile? PublicPartOf(IAppDbContext appDbContext, Guid profileId)
     {
         return appDbContext.AsNoTracking(appDbContext.Profiles)
             .Where(profile => profile.Id == profileId)
-            .Select(profile => new PublicMemberProfile(profile.FirstName, profile.AgeBand, profile.Region, profile.Bio))
+            .Select(profile => new PublicMemberProfile(
+                profile.FirstName,
+                profile.AgeBand,
+                profile.Region,
+                profile.Bio,
+                appDbContext.ProfileTags
+                    .Where(link => link.ProfileId == profile.Id)
+                    .OrderBy(link => link.Tag!.Name)
+                    .Select(link => link.Tag!.Name)
+                    .ToList()))
             .SingleOrDefault();
     }
 
