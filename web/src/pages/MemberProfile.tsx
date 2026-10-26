@@ -2,6 +2,7 @@ import { useEffect } from "react";
 import { Link, useParams } from "react-router";
 import Eyebrow from "../components/home/Eyebrow";
 import ProfileDetails from "../components/profile/ProfileDetails";
+import TagList from "../components/TagList";
 import { useMemberProfile } from "../hooks/useMemberProfile";
 import styles from "./MemberProfile.module.css";
 
@@ -66,6 +67,14 @@ export default function MemberProfile() {
                 <section className={styles.card}>
                   <h2 className={styles.sectionTitle}>About you</h2>
                   <p className={styles.bio}>{state.profile.bio}</p>
+                </section>
+              )}
+              {state.profile.tags && state.profile.tags.length > 0 && (
+                <section className={styles.card}>
+                  <TagList
+                    tags={state.profile.tags}
+                    heading="Skills and interests"
+                  />
                 </section>
               )}
             </div>

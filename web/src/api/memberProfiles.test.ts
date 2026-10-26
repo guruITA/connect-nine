@@ -278,6 +278,7 @@ const PUBLIC_PROFILE = {
   ageBand: "YoungAdult" as const,
   region: "Amstelveen",
   bio: "Test member.",
+  tags: ["football", "photography"],
 };
 
 describe("getMemberProfile", () => {
@@ -309,6 +310,16 @@ describe("getMemberProfile", () => {
     const result = await getMemberProfile("member-1");
 
     expect(result).toEqual({ outcome: "loaded", profile: PUBLIC_PROFILE });
+  });
+
+  it("reports no tags field at all when the server left it out", async () => {
+    const { tags, ...profileWithoutTags } = PUBLIC_PROFILE;
+    void tags;
+    mockFetchOnce(200, { data: profileWithoutTags, meta: {} });
+
+    const result = await getMemberProfile("member-1");
+
+    expect(result).toEqual({ outcome: "loaded", profile: profileWithoutTags });
   });
 
   it("reports the profile as it is when region, bio or tags are missing", async () => {

@@ -1,4 +1,4 @@
-// Calls the addresses under /api/member-profiles of #321, #331 and #567, through request() of
+// Calls the addresses under /api/member-profiles of #321, #331, #567 and #584, through request() of
 // client.ts like every call to the server (frontend rule 14).
 import { NetworkError, request, RequestError } from "./client";
 import type { ValidationProblem } from "./client";
@@ -141,6 +141,7 @@ export type PublicMemberProfile = {
   ageBand: AgeBand;
   region?: string;
   bio?: string;
+  tags?: string[];
 };
 
 export type GetMemberProfileResult =

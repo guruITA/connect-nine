@@ -23,6 +23,7 @@ const PROFILE = {
   ageBand: "YoungAdult" as const,
   region: "Amstelveen",
   bio: "Test member.",
+  tags: ["football", "photography"],
 };
 
 function renderPage(id = "member-1") {
@@ -118,6 +119,59 @@ describe("MemberProfile", () => {
       screen.queryByRole("button", { name: "Edit" }),
     ).not.toBeInTheDocument();
     expect(screen.queryAllByRole("textbox")).toHaveLength(0);
+  });
+
+  it("shows the tags of the member under Skills and interests", async () => {
+    mockedGetMemberProfile.mockResolvedValue({
+      outcome: "loaded",
+      profile: PROFILE,
+    });
+    renderPage();
+
+    await screen.findByRole("heading", { name: "Robin" });
+
+    expect(screen.getByText("Skills and interests")).toBeInTheDocument();
+    expect(screen.getByText("football")).toBeInTheDocument();
+    expect(screen.getByText("photography")).toBeInTheDocument();
+  });
+
+  it("shows no label when the member has no tags", async () => {
+    mockedGetMemberProfile.mockResolvedValue({
+      outcome: "loaded",
+      profile: { ...PROFILE, tags: [] },
+    });
+    renderPage();
+
+    await screen.findByRole("heading", { name: "Robin" });
+
+    expect(screen.queryByText("Skills and interests")).not.toBeInTheDocument();
+  });
+
+  it("shows no label when the tags are left out by the rule for minors", async () => {
+    mockedGetMemberProfile.mockResolvedValue({
+      outcome: "loaded",
+      profile: { firstName: "Sam", ageBand: "From15To17" as const },
+    });
+    renderPage();
+
+    await screen.findByRole("heading", { name: "Sam" });
+
+    expect(screen.queryByText("Skills and interests")).not.toBeInTheDocument();
+  });
+
+  it("has no Remove button and no field Add your own on the tags", async () => {
+    mockedGetMemberProfile.mockResolvedValue({
+      outcome: "loaded",
+      profile: PROFILE,
+    });
+    renderPage();
+
+    await screen.findByRole("heading", { name: "Robin" });
+
+    expect(
+      screen.queryByRole("button", { name: /Remove/ }),
+    ).not.toBeInTheDocument();
+    expect(screen.queryByLabelText("Add your own")).not.toBeInTheDocument();
   });
 
   it("shows This member does not exist with a working link on 404", async () => {
