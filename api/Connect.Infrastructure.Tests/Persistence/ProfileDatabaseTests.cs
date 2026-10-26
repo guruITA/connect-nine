@@ -231,11 +231,10 @@ public sealed class ProfileDatabaseTests
         Assert.That(PublicPartOf(readContext, Guid.NewGuid()), Is.Null);
     }
 
-    // The query of GET /api/member-profiles/{id}: only the four public columns, by the primary key,
-    // as a projection that EF Core does not track.
+    // The query of GET /api/member-profiles/{id}: only the four public columns, by the primary key.
     private static PublicMemberProfile? PublicPartOf(IAppDbContext appDbContext, Guid profileId)
     {
-        return appDbContext.Profiles
+        return appDbContext.AsNoTracking(appDbContext.Profiles)
             .Where(profile => profile.Id == profileId)
             .Select(profile => new PublicMemberProfile(profile.FirstName, profile.AgeBand, profile.Region, profile.Bio))
             .SingleOrDefault();

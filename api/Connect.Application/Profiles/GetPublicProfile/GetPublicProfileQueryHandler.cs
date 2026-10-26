@@ -1,7 +1,6 @@
 using Connect.Application.Common.Abstractions;
 using Connect.Application.Common.Results;
 using Connect.Domain.Users;
-using Microsoft.EntityFrameworkCore;
 
 namespace Connect.Application.Profiles.GetPublicProfile;
 
@@ -15,15 +14,15 @@ public sealed class GetPublicProfileQueryHandler(IAppDbContext dbContext)
         CancellationToken cancellationToken)
     {
         // Reads only the four public columns, by the primary key, without tracking.
-        var profile = await _dbContext.Profiles
-            .AsNoTracking()
-            .Where(candidate => candidate.Id == query.ProfileId)
-            .Select(candidate => new PublicMemberProfile(
-                candidate.FirstName,
-                candidate.AgeBand,
-                candidate.Region,
-                candidate.Bio))
-            .SingleOrDefaultAsync(cancellationToken);
+        var profile = await _dbContext.SingleOrDefaultAsync(
+            _dbContext.AsNoTracking(_dbContext.Profiles)
+                .Where(candidate => candidate.Id == query.ProfileId)
+                .Select(candidate => new PublicMemberProfile(
+                    candidate.FirstName,
+                    candidate.AgeBand,
+                    candidate.Region,
+                    candidate.Bio)),
+            cancellationToken);
 
         if (profile is null)
         {
