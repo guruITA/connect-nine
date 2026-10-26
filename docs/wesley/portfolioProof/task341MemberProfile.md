@@ -19,7 +19,8 @@ School asks: "You independently select relevant standards and methods from the f
 
 1. **Leaving out instead of null.** A hidden or empty value is left out of the answer, so the screen cannot show an empty row by mistake and a client of the address cannot tell hidden from empty.
 2. **HTTP and problem details.** 200, 401, 404 and 503 as before (RFC 9110, RFC 9457).
-- TODO Wesley: one line each on what I took from the BoKSA articles API implementation and Authentication and authorization basics.
+3. **What I took from BoKSA.** The article API implementation names 404 for something that is not there. An unknown id and `abc` both get 404 "This member does not exist", so a wrong address and a missing member look the same and the answer gives nothing away.
+4. **What I took from BoKSA.** The article Authentication and authorization basics keeps who you are apart from what you may do. The guard answers who is logged in, and `ProfileVisibility` decides what another member may see. The rule for minors sits in that one place, never in the endpoint or the screen.
 
 ## OR3 Involving stakeholders and weighing their feedback
 
@@ -59,11 +60,11 @@ School asks: "You systematically validate that the solution does what it should,
 School asks: "In your design and implementation, you consciously take into account the broader impact on end users and society, while forming your own ethical judgment."
 
 1. **A young person of 15 to 17.** Their region is never sent, so another member cannot combine a first name, an age band and a village to find them.
-- TODO Wesley: my own judgment on what else a young person's page should hide, as input for the role table of #28.
+2. **My judgment for the role table of #28.** Hiding the region is not enough on its own. A profile of a young person under 16 should stay hidden from every other member until a parent gave permission (#40), and a visitor who is not logged in should see nothing at all (#31). The short line is free text, so a young person can still type their school there. The hint on Create your profile warns against it. I think the role table should also let the foundation remove such a line after a report (#211).
 
 ## TODO
 
-- [ ] Wesley: the TODO lines above.
+- [ ] Wesley: the OR3 lines above, after a teammate and one person outside the team tried the page on a phone.
 - [ ] Wesley: after the merge, tick the boxes of the tasks with the evidence in a comment.
 
 ## AI use
