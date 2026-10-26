@@ -14,12 +14,17 @@ School asks: "You systematically validate that the solution does what it should,
 3. **The fix.** As part 11 The security scan of `docs/team/onboarding.md` says for a red scan: update the package to a version without the advisory. `npm audit fix` in `web` changed only `web/package-lock.json`: undici 7.30.1 and zod 4.6.7. `web/package.json` stays the same.
 4. **Checked before the push, with Node 22 as in the pipeline.** `npm audit --audit-level=high` found 0 vulnerabilities, where the lock file of dev still names both. `npm run build`, `npm run lint`, `npx prettier --check .` and `npm test` stayed green, 6 test files and 35 tests, none edited. The built screen in `web/dist` is byte for byte the same as with the lock file of dev, 38 files compared by sha256, so nothing that reaches the browser changed.
 5. **The green run.** frontend-scan of !99 is green, pipeline 587414, job 1351411: "found 0 vulnerabilities".
+
+   ![The red run: job frontend-scan 1351396 of pipeline 587409 of !98 with undici and zod](images/task1555RedScan.png)
+
+   ![The green run: job frontend-scan 1351411 of pipeline 587414 of !99, found 0 vulnerabilities. One line of the runner's artifact download is blacked out, because it shows the start of a job token](images/task1555GreenScan.png)
+
 6. **What this run shows that #309 did not.** The throwaway branch of #309 added a package with a known hole on purpose, so the scan stopped a change that brought the hole in. This time the hole was published after the packages were already on dev, and the scan stopped the next merge request that ran, a change to documents only. Every merge request that started before the fix stays red until it takes in dev again. The weekly run on Monday would have found it too, but the first pipeline after the advisory was earlier.
 7. **Conclusion for improvement.** A red scan can come from a package nobody touched, so the first look in the red job is the package and its advisory, not the change of the merge request. That is already the first step of part 11.
 
 ## TODO
 
-- [ ] Wesley: after the merge, a comment on every open merge request that it needs dev again for a green frontend-scan.
+- [x] Wesley: after the merge, a comment on every open merge request that it needs dev again for a green frontend-scan. Done on 24 October 2026 another way: !99 was merged that day, and my open merge requests that merge cleanly with dev (!68, !69, !79, !88, !98 and !100) and Gurpreet's !97 were rebased onto dev in GitLab, after which their pipelines were green. The chain !70 to !76 gets dev with its own rebase (#1542).
 
 ## AI use
 

@@ -29,7 +29,7 @@ School asks: "You ensure that your work aligns with that of others and contribut
 
 ## TODO
 
-- [ ] A teammate who did not write the rule: read rule 12 of General and Git and write in the review what was unclear.
+- [x] A teammate who did not write the rule: read rule 12 of General and Git and write in the review what was unclear. Gurpreet Singh, 23 October 2026, in !79: it is clear to him.
 - [ ] The team: confirm rule 12 at the stand up, and name who brings `CapturingLoggerProvider` and the two names in `accounts.ts` to the shared way.
 
 ## References

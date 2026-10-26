@@ -1,9 +1,11 @@
 using Connect.Application.Common.Abstractions;
+using Connect.Application.Common.Results;
 using Connect.Domain.Common;
 using Connect.Domain.Users;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using Npgsql;
 
 namespace Connect.Infrastructure.Persistence;
 
@@ -22,6 +24,33 @@ public sealed class ConnectDbContext(DbContextOptions<ConnectDbContext> options)
     void IAppDbContext.Remove<TEntity>(TEntity entity) where TEntity : class
     {
         Set<TEntity>().Remove(entity);
+    }
+
+    async Task<Result> IAppDbContext.SaveChangesOrConflictAsync(CancellationToken cancellationToken)
+    {
+        try
+        {
+            await SaveChangesAsync(cancellationToken);
+            return Result.Success();
+        }
+        catch (DbUpdateException exception) when (IsUniqueViolation(exception))
+        {
+            return Result.Failure(Error.Conflict("This is already saved"));
+        }
+    }
+
+    Task<TEntity?> IAppDbContext.SingleOrDefaultAsync<TEntity>(
+        IQueryable<TEntity> query,
+        CancellationToken cancellationToken) where TEntity : default
+    {
+        return query.SingleOrDefaultAsync(cancellationToken);
+    }
+
+    Task<bool> IAppDbContext.AnyAsync<TEntity>(
+        IQueryable<TEntity> query,
+        CancellationToken cancellationToken)
+    {
+        return query.AnyAsync(cancellationToken);
     }
 
     public override int SaveChanges(bool acceptAllChangesOnSuccess)
@@ -110,5 +139,18 @@ public sealed class ConnectDbContext(DbContextOptions<ConnectDbContext> options)
                 entry.Property(nameof(IAuditable.UpdatedAt)).CurrentValue = now;
             }
         }
+    }
+
+    private static bool IsUniqueViolation(Exception exception)
+    {
+        for (Exception? current = exception; current is not null; current = current.InnerException)
+        {
+            if (current is PostgresException { SqlState: PostgresErrorCodes.UniqueViolation })
+            {
+                return true;
+            }
+        }
+
+        return false;
     }
 }

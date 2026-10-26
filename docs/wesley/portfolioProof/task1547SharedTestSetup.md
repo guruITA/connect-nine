@@ -30,7 +30,7 @@ School asks: "You ensure that your work aligns with that of others and contribut
 
 ## TODO
 
-- [ ] Nick: confirm in the review that rule 20 says what he proposed in his message of 21 October 2026.
+- [x] Nick: confirm in the review that rule 20 says what he proposed in his message of 21 October 2026. Nick ticked this in !79 on 25 October 2026 and approved it the same day.
 
 ## References
 

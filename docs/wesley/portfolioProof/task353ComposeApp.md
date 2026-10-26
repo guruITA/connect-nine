@@ -25,10 +25,19 @@ School asks: "You ensure that your work aligns with that of others and contribut
 4. **For a teammate who adds a service later.** A new service of a later issue goes below server with `profiles: ["app"]` and a `depends_on` on what it needs, so the plain `up -d` stays as it is.
 5. **The card and the code.** The card names `ConnectionStrings__Connect` and a healthcheck of five seconds. The code on dev reads `ConnectionStrings:DefaultConnection`, as Nick built it and the team agreed, and Gurpreet's healthcheck asks every two seconds, which I left as it is.
 
+## Merge request !100: the line in part 3
+
+### MS4 Making the work fit with the work of the team
+
+School asks: "You ensure that your work aligns with that of others and contributes to the joint result."
+
+1. **A line the card asked for, and I missed.** In his review of !93, Gurpreet Singh saw that the line of #353 in part 3 of `docs/team/onboarding.md` was missing: that `docker compose up -d` still starts only the database and that the full start is explained elsewhere. Part 3 now has it, with a link to part 13.
+2. **In his part of the guide.** Part 3 belongs to #260, so the merge request names the one added line under In teammates' files, and nothing else of part 3 changed.
+
 ## TODO
 
 - [ ] A teammate: run `docker compose --profile app up -d --build` on your own laptop, stop and start it, and write your name, your system and what you saw in the review.
-- [ ] Gurpreet: say on #353 or in the review whether the additions fit the way he wants `docker-compose.yml`.
+- [x] Gurpreet: say on #353 or in the review whether the additions fit the way he wants `docker-compose.yml`. He wrote in his review of !93 on 23 October 2026 that they fit his compose file.
 
 ## AI use
 

@@ -86,6 +86,54 @@ Returns:
 - HTTP `500 Internal Server Error` for other mapped errors or unhandled exceptions,
   with Problem Details titled `An unexpected error occurred.`
 
+## `POST /api/member-profiles`
+
+Saves the profile of the young person who is logged in (issue 07 Create a profile, task 7.2).
+The account comes from the session and never from the body: a field `accountId` in the body is
+ignored. Until log in (#15) adds the session, the account comes from the header
+`X-Temporary-Account-Id`, which the server only accepts in Development with
+`TemporaryAccount:Enabled` set to `true`. Everywhere else nobody is logged in yet, so the address
+answers `401`.
+
+The body:
+
+```json
+{"firstName":"Sam","ageBand":"YoungAdult","region":"Amstelveen","bio":"I like football."}
+```
+
+`firstName` and `region` are required and at most 60 characters. `ageBand` is exactly
+`Adolescent`, `YoungAdult` or `Adult`. `bio` may be empty and is at most 280 characters.
+Spaces around the text are taken off before the checks, and an empty `bio` is saved as `null`.
+
+The five answers:
+
+- `201 Created`, with the `Location` `/api/member-profiles/{id}`:
+
+  ```json
+  {"data":{"id":"01a15623-496f-7b12-9fc3-0fbd4ef1b1d3"},"meta":{}}
+  ```
+
+- `400 Bad Request`, one message per wrong field, and nothing is saved:
+
+  ```json
+  {"title":"One or more validation errors occurred.","status":400,"errors":{"firstName":["Fill in your first name"],"ageBand":["Choose your age band"]}}
+  ```
+
+- `401 Unauthorized` when nobody is logged in, without a body.
+- `409 Conflict` when the account already has a profile, also for two saves at the same moment:
+
+  ```json
+  {"title":"You already have a profile","status":409}
+  ```
+
+- `503 Service Unavailable` when the database cannot be reached, without any error text:
+
+  ```json
+  {"title":"Connect is not reachable right now","status":503}
+  ```
+
+The first name, the region and the bio are in no log line.
+
 ## The screen and unknown addresses
 
 The server also serves the built screen (`web/dist`, copied into `wwwroot` by the job deploy-test), so the test site has one address and needs no CORS (#267).
