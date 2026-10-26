@@ -20,6 +20,8 @@ School asks: "You design and implement systematically, justify choices in relati
 
 School asks: "You proactively involve multiple stakeholders with diverse interests, coordinate systematically, and consciously weigh their feedback in your choices."
 
+1. **A teammate's feedback on the design.** In his review of !69 on 22 October 2026, Gurpreet Singh held the page next to the prototype frame G01 Create your profile. The page differs from the frame, and he judged the page the better one: the hint not to write a school, address or phone number and the panel about what Connect never asks for help with the privacy rules. He asked to put both into the frame, so the design matches the page again. On 24 October 2026 I did that in Figma: G01 now has the panel What Connect asks beside a white form card, and the hint under About you. The privacy note that sat on top of the card in G01 is hidden, not deleted, because the panel says the same. I kept the page as it was, since we both judged it the better design, and the frame now follows it ([G01 Create your profile](https://www.figma.com/design/SAVxDf3rlsWz22qlzTEYte/Young-Amstelland-Connect--team-workspace?node-id=1019-1964)).
+
 - TODO Wesley: the words, with the date and who, of a teammate and of one person outside the team, such as the client on a Friday, who tried the page on a phone, also whether the hints about school and address are clear and not scary. Then what I changed and what I did not, and why.
 
 ## OR4 Validating the solution
