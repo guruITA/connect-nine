@@ -7,12 +7,14 @@ namespace Connect.Application.Profiles.GetCurrentProfile;
 public sealed class GetCurrentProfileQueryHandler(IAppDbContext dbContext)
     : IQueryHandler<GetCurrentProfileQuery, Result<CurrentProfileResult>>
 {
+    private readonly IAppDbContext _dbContext = dbContext;
+
     public async Task<Result<CurrentProfileResult>> HandleAsync(
         GetCurrentProfileQuery query,
         CancellationToken cancellationToken)
     {
         // Found through the unique index on account_id, and never loads the account itself.
-        var profile = await dbContext.Profiles
+        var profile = await _dbContext.Profiles
             .AsNoTracking()
             .Where(candidate => candidate.AccountId == query.AccountId)
             .Select(candidate => new CurrentProfileResult(

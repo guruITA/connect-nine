@@ -41,8 +41,8 @@ public static class MemberProfileEndpoints
                 new GetCurrentProfileQuery(accountId.Value),
                 cancellationToken);
 
-            return result.IsSuccess
-                ? TypedResults.Ok(MemberProfileResponseMapper.Map(result.Value!))
+            return result is { IsSuccess: true, Value: { } profile }
+                ? TypedResults.Ok(MemberProfileResponseMapper.Map(profile))
                 : result.Error.ToProblemDetails();
         });
 

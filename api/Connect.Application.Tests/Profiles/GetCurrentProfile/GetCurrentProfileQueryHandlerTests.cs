@@ -10,9 +10,9 @@ namespace Connect.Application.Tests.Profiles.GetCurrentProfile;
 
 public sealed class GetCurrentProfileQueryHandlerTests
 {
-    private SqliteConnection connection = null!;
-    private SqliteAppDbContext dbContext = null!;
-    private GetCurrentProfileQueryHandler handler = null!;
+    private SqliteConnection connection;
+    private SqliteAppDbContext dbContext;
+    private GetCurrentProfileQueryHandler handler;
 
     [SetUp]
     public void SetUp()
@@ -69,7 +69,7 @@ public sealed class GetCurrentProfileQueryHandlerTests
 
         var result = await handler.HandleAsync(new GetCurrentProfileQuery(own.Id), CancellationToken.None);
 
-        Assert.That(result.Value!.FirstName, Is.EqualTo("Sam"));
+        Assert.That(result.Value?.FirstName, Is.EqualTo("Sam"));
     }
 
     [Test]
