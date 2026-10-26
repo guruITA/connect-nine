@@ -12,6 +12,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using NSubstitute;
 using NUnit.Framework;
+using static Connect.Tests.Fixtures.ProfileTestHelpers;
 
 namespace Connect.Tests.Profiles.Endpoints;
 
@@ -21,7 +22,6 @@ namespace Connect.Tests.Profiles.Endpoints;
 public sealed class MemberProfileEndpointTests
 {
     private const string Address = "/api/member-profiles/";
-    private const string AccountHeader = "X-Temporary-Account-Id";
     private const string CurrentAddress = "/api/member-profiles/current";
 
     [Test]
@@ -194,10 +194,7 @@ public sealed class MemberProfileEndpointTests
     [Test]
     public async Task Post_DatabaseNotReachable_ReturnsServiceUnavailableWithoutErrorText()
     {
-        using WebApplicationFactory<Program> factory = new WebApplicationFactory<Program>()
-            .WithWebHostBuilder(builder => builder
-                .UseSetting("ConnectionStrings:DefaultConnection", "Host=127.0.0.1;Port=1;Database=none;Timeout=2")
-                .UseSetting("TemporaryAccount:Enabled", "true"));
+        using WebApplicationFactory<Program> factory = UnreachableDatabaseFactory();
         using HttpClient client = ClientFor(factory, Guid.NewGuid());
 
         using HttpResponseMessage response = await client.PostAsync(Address, ValidProfile());
@@ -216,7 +213,7 @@ public sealed class MemberProfileEndpointTests
     public async Task Post_ValidProfile_WritesNoProfileTextToTheLog()
     {
         ILogger logger = NewLogger();
-        using WebApplicationFactory<Program> factory = CreateFactory(logger: logger);
+        using WebApplicationFactory<Program> factory = CreateFactory(loggerProvider: LoggerProviderFor(logger));
         Guid accountId = SaveAccount(factory);
         using HttpClient client = ClientFor(factory, accountId);
 
@@ -338,7 +335,7 @@ public sealed class MemberProfileEndpointTests
     public async Task GetById_Adult_ReturnsTheFourPublicValuesAndNothingElse()
     {
         using WebApplicationFactory<Program> factory = CreateFactory();
-        Guid profileId = SaveProfile(factory, "Robin", AgeBand.YoungAdult, "Amstelveen", "Test member, 18 to 21.");
+        Guid profileId = SaveProfile(factory, SaveAccount(factory), AgeBand.YoungAdult, "Robin", "Amstelveen", "Test member, 18 to 21.");
         using HttpClient client = ClientFor(factory, SaveAccount(factory));
 
         using HttpResponseMessage response = await client.GetAsync($"/api/member-profiles/{profileId}");
@@ -362,7 +359,7 @@ public sealed class MemberProfileEndpointTests
     public async Task GetById_YoungPersonOf15To17_LeavesTheRegionKeyOut()
     {
         using WebApplicationFactory<Program> factory = CreateFactory();
-        Guid profileId = SaveProfile(factory, "Noor", AgeBand.Adolescent, "Uithoorn", "Test member, 15 to 17.");
+        Guid profileId = SaveProfile(factory, SaveAccount(factory), AgeBand.Adolescent, "Noor", "Uithoorn", "Test member, 15 to 17.");
         using HttpClient client = ClientFor(factory, SaveAccount(factory));
 
         using HttpResponseMessage response = await client.GetAsync($"/api/member-profiles/{profileId}");
@@ -381,7 +378,7 @@ public sealed class MemberProfileEndpointTests
     public async Task GetById_EmptyBio_LeavesTheBioKeyOut()
     {
         using WebApplicationFactory<Program> factory = CreateFactory();
-        Guid profileId = SaveProfile(factory, "Robin", AgeBand.Adult, "Amstelveen", null);
+        Guid profileId = SaveProfile(factory, SaveAccount(factory), AgeBand.Adult, "Robin", "Amstelveen", null);
         using HttpClient client = ClientFor(factory, SaveAccount(factory));
 
         using HttpResponseMessage response = await client.GetAsync($"/api/member-profiles/{profileId}");
@@ -430,7 +427,7 @@ public sealed class MemberProfileEndpointTests
     public async Task GetById_WithoutAccount_ReturnsUnauthorized()
     {
         using WebApplicationFactory<Program> factory = CreateFactory();
-        Guid profileId = SaveProfile(factory, "Robin", AgeBand.YoungAdult, "Amstelveen", null);
+        Guid profileId = SaveProfile(factory, SaveAccount(factory), AgeBand.YoungAdult, "Robin", "Amstelveen", null);
         using HttpClient client = factory.CreateClient();
 
         using HttpResponseMessage response = await client.GetAsync($"/api/member-profiles/{profileId}");
@@ -454,87 +451,6 @@ public sealed class MemberProfileEndpointTests
         }
     }
 
-    private static Guid SaveProfile(
-        WebApplicationFactory<Program> factory,
-        string firstName,
-        AgeBand ageBand,
-        string region,
-        string? bio)
-    {
-        Guid accountId = SaveAccount(factory);
-        using IServiceScope scope = factory.Services.CreateScope();
-        ConnectDbContext dbContext = scope.ServiceProvider.GetRequiredService<ConnectDbContext>();
-        Account account = dbContext.Users.Single(user => user.Id == accountId);
-        var profile = new Profile
-        {
-            AccountId = accountId,
-            Account = account,
-            FirstName = firstName,
-            AgeBand = ageBand,
-            Region = region,
-            Bio = bio
-        };
-
-        dbContext.Add(profile);
-        dbContext.SaveChanges();
-
-        return profile.Id;
-    }
-
-    private static WebApplicationFactory<Program> UnreachableDatabaseFactory()
-    {
-        return new WebApplicationFactory<Program>()
-            .WithWebHostBuilder(builder => builder
-                .UseSetting("ConnectionStrings:DefaultConnection", "Host=127.0.0.1;Port=1;Database=none;Timeout=2")
-                .UseSetting("TemporaryAccount:Enabled", "true"));
-    }
-
-    private static WebApplicationFactory<Program> CreateFactory(
-        bool temporaryAccount = true,
-        ILogger? logger = null)
-    {
-        return new ConnectWebApplicationFactory().WithWebHostBuilder(builder =>
-        {
-            builder.UseSetting("ConnectionStrings:DefaultConnection", TestDatabase.ConnectionString());
-            builder.UseSetting("TemporaryAccount:Enabled", temporaryAccount ? "true" : "false");
-            builder.ConfigureLogging(logging =>
-            {
-                if (logger is not null)
-                {
-                    logging.SetMinimumLevel(LogLevel.Trace);
-                    logging.AddProvider(LoggerProviderFor(logger));
-                }
-            });
-        });
-    }
-
-    private static HttpClient ClientFor(WebApplicationFactory<Program> factory, Guid accountId)
-    {
-        HttpClient client = factory.CreateClient();
-        client.DefaultRequestHeaders.Add(AccountHeader, accountId.ToString());
-        return client;
-    }
-
-    private static Guid SaveAccount(WebApplicationFactory<Program> factory)
-    {
-        using IServiceScope scope = factory.Services.CreateScope();
-        ConnectDbContext dbContext = scope.ServiceProvider.GetRequiredService<ConnectDbContext>();
-        string email = $"profile-{Guid.NewGuid():N}@example.com";
-        var account = new Account
-        {
-            Id = Guid.NewGuid(),
-            Email = email,
-            NormalizedEmail = email.ToUpperInvariant(),
-            UserName = email,
-            NormalizedUserName = email.ToUpperInvariant()
-        };
-
-        dbContext.Add(account);
-        dbContext.SaveChanges();
-
-        return account.Id;
-    }
-
     private static List<Profile> ProfilesOf(WebApplicationFactory<Program> factory, Guid accountId)
     {
         using IServiceScope scope = factory.Services.CreateScope();
@@ -545,16 +461,6 @@ public sealed class MemberProfileEndpointTests
     private static StringContent ValidProfile()
     {
         return Json(new { firstName = "Sam", ageBand = "Adolescent", region = "Amstelveen", bio = "" });
-    }
-
-    private static StringContent Json(object body)
-    {
-        return new StringContent(JsonSerializer.Serialize(body), Encoding.UTF8, "application/json");
-    }
-
-    private static async Task<JsonDocument> ReadJson(HttpResponseMessage response)
-    {
-        return JsonDocument.Parse(await response.Content.ReadAsStringAsync());
     }
 
     private static ILogger NewLogger()

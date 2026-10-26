@@ -1,3 +1,4 @@
+using Connect.Domain.Tags;
 using Connect.Domain.Users;
 using Connect.Infrastructure.Persistence;
 
@@ -22,6 +23,24 @@ internal static class TestRows
         dbContext.SaveChanges();
 
         return account;
+    }
+
+    public static Profile SaveProfile(ConnectDbContext dbContext)
+    {
+        Profile profile = NewProfile(SaveAccount(dbContext));
+        dbContext.Add(profile);
+        dbContext.SaveChanges();
+
+        return profile;
+    }
+
+    public static Tag SaveTag(ConnectDbContext dbContext)
+    {
+        var tag = new Tag { Name = $"t{Guid.NewGuid():N}"[..20] };
+        dbContext.Add(tag);
+        dbContext.SaveChanges();
+
+        return tag;
     }
 
     public static Profile NewProfile(Account account, string firstName = "Sam")

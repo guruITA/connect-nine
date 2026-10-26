@@ -10,7 +10,8 @@ using static Connect.Tests.Fixtures.ProfileTestHelpers;
 
 namespace Connect.Tests.Profiles.Endpoints;
 
-// Runs against a real test database (ConnectionStrings__DefaultConnection).
+// Runs against a real test database (ConnectionStrings:TestsConnection, through
+// ProfileTestHelpers.CreateFactory).
 public sealed class MemberProfileTagEndpointTests
 {
     private const string TagsAddress = "/api/member-profiles/current/tags/";

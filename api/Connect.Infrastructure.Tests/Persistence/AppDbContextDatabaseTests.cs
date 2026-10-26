@@ -1,5 +1,6 @@
 using Connect.Application.Common.Abstractions;
 using Connect.Application.Common.Results;
+using Connect.Domain.Tags;
 using Connect.Domain.Users;
 using Connect.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
@@ -19,7 +20,7 @@ public sealed class AppDbContextDatabaseTests
     public void SetUp()
     {
         dbContext = TestDatabase.CreateDbContext();
-        dbContext.Database.Migrate();
+        dbContext.MigrateAndReloadTypes();
     }
 
     [TearDown]
@@ -162,5 +163,53 @@ public sealed class AppDbContextDatabaseTests
             Assert.That(read.FirstName, Is.EqualTo("Sam"));
             Assert.That(readContext.ChangeTracker.Entries(), Is.Empty);
         }
+    }
+
+    [Test]
+    public async Task SingleAsync_OneMatchingRow_ReturnsIt()
+    {
+        Tag tag = TestRows.SaveTag(dbContext);
+        IAppDbContext appDbContext = dbContext;
+
+        Tag found = await appDbContext.SingleAsync(
+            appDbContext.Tags.Where(candidate => candidate.Name == tag.Name),
+            CancellationToken.None);
+
+        Assert.That(found.Id, Is.EqualTo(tag.Id));
+    }
+
+    [Test]
+    public void SingleAsync_NoMatchingRow_Throws()
+    {
+        IAppDbContext appDbContext = dbContext;
+        string unknownName = $"n{Guid.NewGuid():N}"[..20];
+
+        Assert.ThrowsAsync<InvalidOperationException>(() => appDbContext.SingleAsync(
+            appDbContext.Tags.Where(candidate => candidate.Name == unknownName),
+            CancellationToken.None));
+    }
+
+    [Test]
+    public async Task CountAsync_TheStarterTags_CountsTwenty()
+    {
+        IAppDbContext appDbContext = dbContext;
+
+        int count = await appDbContext.CountAsync(
+            appDbContext.Tags.Where(tag => tag.IsSuggested),
+            CancellationToken.None);
+
+        Assert.That(count, Is.EqualTo(20));
+    }
+
+    [Test]
+    public async Task ToListAsync_TheStarterTags_ReturnsThemInTheOrderAsked()
+    {
+        IAppDbContext appDbContext = dbContext;
+
+        List<string> names = await appDbContext.ToListAsync(
+            appDbContext.Tags.Where(tag => tag.IsSuggested).OrderBy(tag => tag.Name).Select(tag => tag.Name).Take(3),
+            CancellationToken.None);
+
+        Assert.That(names, Is.EqualTo(new[] { "coding", "cooking", "dance" }));
     }
 }

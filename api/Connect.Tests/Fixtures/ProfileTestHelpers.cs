@@ -5,17 +5,33 @@ using Connect.Infrastructure.Persistence;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 
 namespace Connect.Tests.Fixtures;
 
-// Accounts, profiles and clients for the endpoint tests of the profile addresses. Until log in
-// (#15) the account comes from the temporary header X-Temporary-Account-Id.
+// Accounts, profiles and clients for the endpoint tests of the profile addresses (backend rule 20),
+// on the test database of ConnectionStrings:TestsConnection, handed to the server as its
+// DefaultConnection. Until log in (#15) the account comes from the temporary header
+// X-Temporary-Account-Id.
 internal static class ProfileTestHelpers
 {
-    public static WebApplicationFactory<Program> CreateFactory()
+    public static WebApplicationFactory<Program> CreateFactory(
+        bool temporaryAccount = true,
+        ILoggerProvider? loggerProvider = null)
     {
         return new ConnectWebApplicationFactory().WithWebHostBuilder(builder =>
-            builder.UseSetting("TemporaryAccount:Enabled", "true"));
+        {
+            builder.UseSetting("ConnectionStrings:DefaultConnection", TestDatabase.ConnectionString());
+            builder.UseSetting("TemporaryAccount:Enabled", temporaryAccount ? "true" : "false");
+            builder.ConfigureLogging(logging =>
+            {
+                if (loggerProvider is not null)
+                {
+                    logging.SetMinimumLevel(LogLevel.Trace);
+                    logging.AddProvider(loggerProvider);
+                }
+            });
+        });
     }
 
     public static WebApplicationFactory<Program> UnreachableDatabaseFactory()
@@ -51,7 +67,13 @@ internal static class ProfileTestHelpers
         return account.Id;
     }
 
-    public static Guid SaveProfile(WebApplicationFactory<Program> factory, Guid accountId, AgeBand ageBand)
+    public static Guid SaveProfile(
+        WebApplicationFactory<Program> factory,
+        Guid accountId,
+        AgeBand ageBand,
+        string firstName = "Sam",
+        string region = "Amstelveen",
+        string? bio = null)
     {
         using IServiceScope scope = factory.Services.CreateScope();
         ConnectDbContext dbContext = scope.ServiceProvider.GetRequiredService<ConnectDbContext>();
@@ -60,9 +82,10 @@ internal static class ProfileTestHelpers
         {
             AccountId = accountId,
             Account = account,
-            FirstName = "Sam",
+            FirstName = firstName,
             AgeBand = ageBand,
-            Region = "Amstelveen"
+            Region = region,
+            Bio = bio
         };
 
         dbContext.Add(profile);

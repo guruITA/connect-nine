@@ -9,18 +9,12 @@ namespace Connect.Infrastructure.Tests.Persistence;
 
 public sealed class TagDatabaseTests
 {
-    private string connectionString;
     private ConnectDbContext dbContext;
 
     [SetUp]
     public void SetUp()
     {
-        connectionString = Environment.GetEnvironmentVariable(
-                "ConnectionStrings__DefaultConnection")
-            ?? throw new InvalidOperationException(
-                "ConnectionStrings__DefaultConnection is not configured.");
-
-        dbContext = CreateDbContext();
+        dbContext = TestDatabase.CreateDbContext();
         dbContext.MigrateAndReloadTypes();
     }
 
@@ -37,10 +31,10 @@ public sealed class TagDatabaseTests
         dbContext.Add(new Tag { Name = name });
         dbContext.SaveChanges();
 
-        using ConnectDbContext secondContext = CreateDbContext();
+        using ConnectDbContext secondContext = TestDatabase.CreateDbContext();
         secondContext.Add(new Tag { Name = name.ToUpperInvariant() });
 
-        PostgresException exception = FindPostgresException(Assert.Throws<DbUpdateException>(() => secondContext.SaveChanges()));
+        PostgresException exception = TestDatabase.FindPostgresException(Assert.Throws<DbUpdateException>(() => secondContext.SaveChanges()));
 
         Assert.That(
             (exception.SqlState, exception.ConstraintName),
@@ -52,7 +46,7 @@ public sealed class TagDatabaseTests
     {
         dbContext.Add(new Tag { Name = new string('a', 31) });
 
-        PostgresException exception = FindPostgresException(Assert.Throws<DbUpdateException>(() => dbContext.SaveChanges()));
+        PostgresException exception = TestDatabase.FindPostgresException(Assert.Throws<DbUpdateException>(() => dbContext.SaveChanges()));
 
         Assert.That(
             (exception.SqlState, exception.ConstraintName),
@@ -78,28 +72,28 @@ public sealed class TagDatabaseTests
     }
 
     [Test]
-    public void LinkingATagTwice_FailsOnThePrimaryKeyOfTheLink()
+    public void LinkingATagTwice_FailsOnTheUniqueIndexOfTheLink()
     {
-        Profile profile = SaveProfile();
-        Tag tag = SaveTag();
+        Profile profile = TestRows.SaveProfile(dbContext);
+        Tag tag = TestRows.SaveTag(dbContext);
         dbContext.Add(new ProfileTag { ProfileId = profile.Id, TagId = tag.Id });
         dbContext.SaveChanges();
 
-        using ConnectDbContext secondContext = CreateDbContext();
+        using ConnectDbContext secondContext = TestDatabase.CreateDbContext();
         secondContext.Add(new ProfileTag { ProfileId = profile.Id, TagId = tag.Id });
 
-        PostgresException exception = FindPostgresException(Assert.Throws<DbUpdateException>(() => secondContext.SaveChanges()));
+        PostgresException exception = TestDatabase.FindPostgresException(Assert.Throws<DbUpdateException>(() => secondContext.SaveChanges()));
 
         Assert.That(
             (exception.SqlState, exception.ConstraintName),
-            Is.EqualTo((PostgresErrorCodes.UniqueViolation, "pk_profile_tag")));
+            Is.EqualTo((PostgresErrorCodes.UniqueViolation, "ux_profile_tag_profile_id_tag_id")));
     }
 
     [Test]
     public void DeletingATagThatAProfileUses_IsRefused()
     {
-        Profile profile = SaveProfile();
-        Tag tag = SaveTag();
+        Profile profile = TestRows.SaveProfile(dbContext);
+        Tag tag = TestRows.SaveTag(dbContext);
         dbContext.Add(new ProfileTag { ProfileId = profile.Id, TagId = tag.Id });
         dbContext.SaveChanges();
 
@@ -112,65 +106,18 @@ public sealed class TagDatabaseTests
     [Test]
     public void DeletingAProfile_RemovesItsLinksAndKeepsTheTags()
     {
-        Profile profile = SaveProfile();
-        Tag tag = SaveTag();
+        Profile profile = TestRows.SaveProfile(dbContext);
+        Tag tag = TestRows.SaveTag(dbContext);
         dbContext.Add(new ProfileTag { ProfileId = profile.Id, TagId = tag.Id });
         dbContext.SaveChanges();
 
         dbContext.Database.ExecuteSql($"DELETE FROM profile WHERE id = {profile.Id}");
 
-        using ConnectDbContext readContext = CreateDbContext();
+        using ConnectDbContext readContext = TestDatabase.CreateDbContext();
         using (Assert.EnterMultipleScope())
         {
             Assert.That(readContext.Set<ProfileTag>().Count(link => link.ProfileId == profile.Id), Is.EqualTo(0));
             Assert.That(readContext.Set<Tag>().Count(candidate => candidate.Id == tag.Id), Is.EqualTo(1));
         }
-    }
-
-    private ConnectDbContext CreateDbContext()
-    {
-        return new ConnectDbContext(new DbContextOptionsBuilder<ConnectDbContext>()
-            .UseNpgsql(connectionString)
-            .UseSnakeCaseNamingConvention()
-            .Options);
-    }
-
-    private Tag SaveTag()
-    {
-        var tag = new Tag { Name = $"t{Guid.NewGuid():N}"[..20] };
-        dbContext.Add(tag);
-        dbContext.SaveChanges();
-        return tag;
-    }
-
-    private Profile SaveProfile()
-    {
-        string email = $"tags-{Guid.NewGuid():N}@example.com";
-        var account = new Account
-        {
-            Id = Guid.NewGuid(),
-            Email = email,
-            NormalizedEmail = email.ToUpperInvariant(),
-            UserName = email,
-            NormalizedUserName = email.ToUpperInvariant()
-        };
-        var profile = new Profile
-        {
-            AccountId = account.Id,
-            Account = account,
-            FirstName = "Sam",
-            AgeBand = AgeBand.YoungAdult,
-            Region = "Amstelveen"
-        };
-
-        dbContext.Add(profile);
-        dbContext.SaveChanges();
-        return profile;
-    }
-
-    private static PostgresException FindPostgresException(DbUpdateException? exception)
-    {
-        return exception?.InnerException as PostgresException
-            ?? throw new AssertionException("Expected PostgreSQL to reject the write.");
     }
 }
