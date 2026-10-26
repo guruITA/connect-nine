@@ -39,8 +39,8 @@ School asks: "You ensure that your work aligns with that of others and contribut
 ## TODO
 
 - [ ] After the merge, no change to this branch: the refused runs and a run back and forward in the pipeline of main, visible in Operate, Environments, production, go in #163 after the first merge of dev into main.
-- [ ] A teammate: read the steps of Going back in production back to me, with their question, in #163.
-- [ ] Gurpreet Singh: the rule of #314, a migration only adds, in the code conventions.
+- [ ] A teammate: read the steps of Going back in production back to me, with their question, in #163. A change it leads to comes in before anyone approves, or in a merge request of its own.
+- [ ] Gurpreet Singh: the rule of #314, a migration only adds, in the code conventions, in a merge request of his. No change to this branch for it, and the point is on the list for the stand up.
 
 ## AI use
 
