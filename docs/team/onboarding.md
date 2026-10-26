@@ -1047,6 +1047,8 @@ Two gates the HvA DevOps workshop asks for do not exist yet: the code quality ch
 
 **What deploy-production does.** It fills the Secrets (`infra/k3s/applySecrets.sh`), runs the migrations of the new version, checks the new version beside the old one (The canary check, below), runs `terraform apply` with the short commit id as the image version, waits until the new server is rolled out (`kubectl rollout status`, at most five minutes), and asks `https://<the live address>/api/health` every 10 seconds, at most 12 times, until it answers healthy (`infra/k3s/waitForHealthy.sh`). It runs only on a push pipeline of main, never in the weekly scheduled pipeline and never in a pipeline started by hand.
 
+**After the deploy.** The job `smoke-production` opens the live address in a real browser (`web/e2e/productionSmoke.spec.ts`, #1059): the home page must open and be drawn, and `/api/health` must say healthy. It only reads. Red means the new version is live but does not work for a visitor: say so in the team channel at once and follow Going back in production, below.
+
 **The canary check** (task 96.4, #1558). The readiness probe only asks `/api/health`, which says the server and its database run. So before visitors move, `infra/k3s/canaryCheck.sh` starts the new version beside the old one as `connect-server-canary`: a copy of `connect-server` with only its name, labels and image changed, with no visitors. A Job inside k3s then runs `infra/k3s/canaryCompare.sh` against both, with the curl image, and only sends GET.
 
 - Every address in `infra/k3s/canaryPaths.txt` must answer the new version with the same status and the same kind of content as the old one.

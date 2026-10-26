@@ -37,6 +37,7 @@ One file per task I did, with the proof block of the task filled in. A point tha
 | `portfolioProof/task1058DeployProduction.md` | Task 96.1 Every merge into main goes to production by itself (#1058), merge request !110 | Managing and Collaborating MS1 and MS4 |
 | `portfolioProof/task1558CanaryCheck.md` | Task 96.4 The new version checked beside the old one before visitors move (#1558), merge request !111 | Designing and Realising OR4 |
 | `portfolioProof/task1061Rollback.md` | Task 97.1 Going back to the previous version with one job (#1061), merge request !112 | Managing and Collaborating MS1 and MS4 |
+| `portfolioProof/task1059ProductionSmoke.md` | Task 96.2 A read only browser test of production after every deploy (#1059), merge request !113 | Designing and Realising OR4 |
 | `portfolioProof/task9ClientServer.md` | Tasks 9.1 to 9.5 The client's server (#236, #237, #238, #239, #240), merge requests !5 and !34 | Managing and Collaborating MS1 and MS4 |
 | `portfolioProof/task11ServerStructureDecisions.md` | Tasks 11.1 to 11.3 The structure and the version of the server (#253, #254, #255), merge requests !27 and !58 | Analysing and Advising AA2, AA3, AA4 and AA5, Managing and Collaborating MS4 |
 | `portfolioProof/task1517ReplanSprints.md` | Task 180.1 Sprints 2 to 5 planned again after sprint 1 (#1517), merge request !40 | Managing and Collaborating MS1 and MS4 |

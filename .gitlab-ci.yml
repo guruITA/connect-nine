@@ -570,3 +570,32 @@ rollback-production:
       export TF_VAR_image_tag="$ROLLBACK_IMAGE_TAG"
       echo "Going back to the version $TF_VAR_image_tag"
     - !reference [.production-release, script]
+
+# A short test in a real browser against production after every deploy (issue 96, task 96.2, #1059): the
+# home page opens and is drawn, and the health address says healthy. web/e2e/productionSmoke.spec.ts only
+# reads, because production may hold real data, and the job uses no token or secret. The image is the
+# same Playwright version as e2e-test and web/package.json. Red means the release is live but does not work
+# for a visitor: say so in the team channel and follow Going back in production in the getting started guide.
+smoke-production:
+  stage: deploy
+  image: mcr.microsoft.com/playwright:v1.64.1-noble
+  tags:
+    - hva
+  needs:
+    - deploy-production
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "schedule"
+      when: never
+    - if: $CI_COMMIT_BRANCH == "main" && $CI_PIPELINE_SOURCE == "push"
+  variables:
+    PLAYWRIGHT_BASE_URL: https://$PRODUCTION_HOST
+  script:
+    - cd web
+    - npm ci
+    - npx playwright test e2e/productionSmoke.spec.ts
+  artifacts:
+    when: on_failure
+    paths:
+      - web/playwright-report
+      - web/test-results
+    expire_in: 7 days
