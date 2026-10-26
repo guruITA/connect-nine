@@ -24,6 +24,15 @@ School asks: "You ensure that your work aligns with that of others and contribut
 3. **Only on dev.** image-push runs only after a merge into dev, so every image in the registry is a version the team reviewed and the test site (#355) can start by its commit id. Production gets its version from main later: #159 and #162 give the image tag of the commit to Terraform.
 4. **The setup guide.** Part Images and the registry of `docs/team/gitlabSetup.md` says what the runners allow, which builder and why, where the images are and how the cleanup works, and the Pipeline part lists both jobs.
 
+## Merge request !100: what the setup guide claimed
+
+### MS4 Making the work fit with the work of the team
+
+School asks: "You ensure that your work aligns with that of others and contributes to the joint result."
+
+1. **A sentence that was true too early.** Part Images and the registry of `docs/team/gitlabSetup.md` said that the test site starts these images. In his review of !89, Gurpreet Singh pointed out that after !94, deploy-test of #267 still publishes the server for the test site in the job itself.
+2. **How it reached dev.** I merged !89 on 24 October 2026 on its approval and its green pipeline, without reading the review comments again, so the sentence was on dev until this merge request. It now says that the test site and production will start these images, and that until #355 deploy-test does its own publish. Since then I read every review of a merge request before I merge it.
+
 ## TODO
 
 - [x] Wesley: the red run with a broken COPY line and the green run after the revert, with the minutes each took and how many minutes image-build adds to a merge request, in this file and in the merge request. Done on 22 October 2026, MS1 point 5 and MS4 point 2.

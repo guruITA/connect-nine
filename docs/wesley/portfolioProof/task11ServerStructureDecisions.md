@@ -65,7 +65,7 @@ School asks: "You give well-founded advice in which you weigh alternatives, iden
 2. **Why the options lost (#254).** Consequences say why one project with four folders and the repository pattern lost, each from its own table.
 3. **My preference.** The part Preference holds my preference and why, because I drafted the file. The team decided 002 together on 1 October 2026.
 
-- TODO Wesley: after the merge, add !58 and MS4 to the row of this file in `docs/wesley/README.md`.
+- Done: !58 and MS4 are in the row of this file in `docs/wesley/README.md`, added in !83.
 
 ## Every claim of the Structure table has its source (#253, 21 October 2026)
 

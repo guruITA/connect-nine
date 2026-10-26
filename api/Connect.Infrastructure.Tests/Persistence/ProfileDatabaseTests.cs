@@ -27,8 +27,8 @@ public sealed class ProfileDatabaseTests
     [Test]
     public void SavingProfile_LeavesOneRow()
     {
-        Account account = SaveAccount();
-        dbContext.Add(CreateProfile(account));
+        Account account = TestRows.SaveAccount(dbContext);
+        dbContext.Add(TestRows.NewProfile(account));
 
         dbContext.SaveChanges();
 
@@ -40,13 +40,13 @@ public sealed class ProfileDatabaseTests
     [Test]
     public void SavingSecondProfileForSameAccount_FailsOnUniqueAccountIndex()
     {
-        Account account = SaveAccount();
-        dbContext.Add(CreateProfile(account));
+        Account account = TestRows.SaveAccount(dbContext);
+        dbContext.Add(TestRows.NewProfile(account));
         dbContext.SaveChanges();
 
         using ConnectDbContext secondContext = TestDatabase.CreateDbContext();
         Account sameAccount = secondContext.Users.Single(user => user.Id == account.Id);
-        secondContext.Add(CreateProfile(sameAccount));
+        secondContext.Add(TestRows.NewProfile(sameAccount));
 
         DbUpdateException exception = Assert.Throws<DbUpdateException>(
             () => secondContext.SaveChanges()) ?? throw new AssertionException("Expected PostgreSQL to reject the write.");
@@ -59,7 +59,7 @@ public sealed class ProfileDatabaseTests
     [Test]
     public async Task SavingTwoProfilesForSameAccountAtTheSameTime_LeavesOneRow()
     {
-        Account account = SaveAccount();
+        Account account = TestRows.SaveAccount(dbContext);
         using var barrier = new Barrier(2);
 
         Task<bool> firstSave = SaveProfileAtTheSameMoment(account.Id, barrier);
@@ -77,8 +77,8 @@ public sealed class ProfileDatabaseTests
     [Test]
     public void SavingAgeBand_StoresItsName()
     {
-        Account account = SaveAccount();
-        Profile profile = CreateProfile(account);
+        Account account = TestRows.SaveAccount(dbContext);
+        Profile profile = TestRows.NewProfile(account);
         profile.AgeBand = AgeBand.YoungAdult;
         dbContext.Add(profile);
         dbContext.SaveChanges();
@@ -93,7 +93,7 @@ public sealed class ProfileDatabaseTests
     [Test]
     public void InsertingUnknownAgeBand_FailsOnAgeBandCheck()
     {
-        Account account = SaveAccount();
+        Account account = TestRows.SaveAccount(dbContext);
 
         PostgresException exception = Assert.Throws<PostgresException>(
             () => dbContext.Database.ExecuteSql(
@@ -109,8 +109,8 @@ public sealed class ProfileDatabaseTests
     [Test]
     public void SavingEmptyFirstName_FailsOnFirstNameCheck()
     {
-        Account account = SaveAccount();
-        Profile profile = CreateProfile(account);
+        Account account = TestRows.SaveAccount(dbContext);
+        Profile profile = TestRows.NewProfile(account);
         profile.FirstName = string.Empty;
         dbContext.Add(profile);
 
@@ -125,8 +125,8 @@ public sealed class ProfileDatabaseTests
     [Test]
     public void SavingEmptyRegion_FailsOnRegionCheck()
     {
-        Account account = SaveAccount();
-        Profile profile = CreateProfile(account);
+        Account account = TestRows.SaveAccount(dbContext);
+        Profile profile = TestRows.NewProfile(account);
         profile.Region = string.Empty;
         dbContext.Add(profile);
 
@@ -141,43 +141,12 @@ public sealed class ProfileDatabaseTests
     [Test]
     public void SavingProfileWithoutBio_Succeeds()
     {
-        Account account = SaveAccount();
-        Profile profile = CreateProfile(account);
+        Account account = TestRows.SaveAccount(dbContext);
+        Profile profile = TestRows.NewProfile(account);
         profile.Bio = null;
         dbContext.Add(profile);
 
         Assert.DoesNotThrow(() => dbContext.SaveChanges());
-    }
-
-    private Account SaveAccount()
-    {
-        string email = $"profile-{Guid.NewGuid():N}@example.com";
-        var account = new Account
-        {
-            Id = Guid.NewGuid(),
-            Email = email,
-            NormalizedEmail = email.ToUpperInvariant(),
-            UserName = email,
-            NormalizedUserName = email.ToUpperInvariant()
-        };
-
-        dbContext.Add(account);
-        dbContext.SaveChanges();
-
-        return account;
-    }
-
-    private static Profile CreateProfile(Account account)
-    {
-        return new Profile
-        {
-            AccountId = account.Id,
-            Account = account,
-            FirstName = "Sam",
-            AgeBand = AgeBand.Adolescent,
-            Region = "Amstelveen",
-            Bio = "I like football."
-        };
     }
 
     private async Task<bool> SaveProfileAtTheSameMoment(Guid accountId, Barrier barrier)
@@ -186,7 +155,7 @@ public sealed class ProfileDatabaseTests
 
         using ConnectDbContext context = TestDatabase.CreateDbContext();
         Account account = context.Users.Single(user => user.Id == accountId);
-        context.Add(CreateProfile(account));
+        context.Add(TestRows.NewProfile(account));
         barrier.SignalAndWait();
 
         try

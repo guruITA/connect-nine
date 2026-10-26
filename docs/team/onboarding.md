@@ -64,6 +64,8 @@ docker compose ps                 # wait until the database says (healthy)
 docker compose stop               # stop both; your data stays
 ```
 
+`docker compose up -d` starts only the database and pgAdmin. To run all of Connect, the server and the screen as well, follow [part 13](#13-run-all-of-connect-with-one-command).
+
 Look inside in one of two ways:
 
 - **pgAdmin:** open http://localhost:5050. No login. Wait about half a minute after `docker compose ps` says the database is healthy before the page answers: pgAdmin itself still needs to start. The server Connect (local) is already on the left. The first time it asks for a password: that is `POSTGRES_PASSWORD` from your `.env`. Tick Save password.
@@ -652,7 +654,7 @@ For example: `Test site before this merge: 8a4db18 (Merge branch 'docs/1040-prod
 Every merge request, every run on dev and main, and once a week on dev, the pipeline checks the packages of the server and the screen against the public lists of known holes (issue #22).
 
 - **Threshold.** High and critical stop the pipeline. Low and moderate do not, so the team is not stopped by every small advisory, while a serious hole never gets in.
-- **Cost and time.** Both scans use tools that come free with .NET and npm, so the check costs nothing and needs no paid plan or paid scanning service. It made the checks of a change 17 seconds slower, from 4 to 21 seconds (pipelines 583862 and 583876 of 8 October 2026), where the limit is two minutes.
+- **Cost and time.** Both scans use tools that come free with .NET and npm, so the check costs nothing and needs no paid plan or paid scanning service. The server scan made the checks of a change 17 seconds slower, from 4 to 21 seconds (pipelines 583862 and 583876 of 8 October 2026), before the screen scan existed. Both scans now run at the same time in the stage scan, so the stage takes as long as the slower one: 20 seconds, with backend-scan 20 seconds and frontend-scan 11 seconds (pipeline 587414 of 24 October 2026). The limit is two minutes.
 - **backend-scan.** `dotnet restore` with NuGet audit from `api/Directory.Build.props`, then `dotnet list package --vulnerable --include-transitive`. Red on NU1903 (high) or NU1904 (critical), or on High or Critical in the list. An advisory the client accepted (a NuGetAuditSuppress line, see `docs/security/securityExceptions.md`) is skipped, and the log names it under "Skipped, accepted by the client".
 - **frontend-scan.** `npm ci`, then `npm audit --audit-level=high`. It only runs once `web/package.json` exists.
 - **The same on your laptop.**
@@ -802,7 +804,7 @@ From a local run on 20 October 2026 (environment Production, a local test databa
 
 ## 13. Run all of Connect with one command
 
-For anyone who wants Connect running on their own computer without building it: the database, the server and the screen, on http://localhost:8080. It works the same on Windows, macOS and Linux. Where PowerShell needs another command, it is given below the first one.
+For anyone who wants Connect running on their own computer without building it: the database, the server and the screen, on http://localhost:8080. It works the same on Windows, macOS and Linux. The images are built for the processor of your computer, so a Mac with Apple silicon gets them for its own processor too. Where PowerShell needs another command, it is given below the first one.
 
 **Install.** Git and Docker. On Windows and macOS that is [Docker Desktop](https://docs.docker.com/desktop/), which is free for an organisation with fewer than 250 employees and less than 10 million dollars in yearly revenue, such as the foundation ([Docker Desktop license agreement](https://docs.docker.com/subscription/desktop-license/)). On Linux it is [Docker Engine](https://docs.docker.com/engine/install/) with the compose plugin. Start Docker, then check:
 
@@ -861,7 +863,8 @@ docker compose --profile app down -v
 
 | What you see | What to do |
 |---|---|
-| `address already in use` or `port is already allocated` | Another program uses port 8080. Put `SERVER_PORT=8081` in `.env`, start again, and open http://localhost:8081. |
+| `address already in use` or `port is already allocated`, with `8080` in the message | Another program uses port 8080. Put `SERVER_PORT=8081` in `.env`, start again, and open http://localhost:8081. |
+| `address already in use` or `port is already allocated`, with `5432` or `5050` in the message | Another database or pgAdmin uses that port. Part 3, Port 5432 or 5050 is busy, says how to find it and what to do. |
 | `Cannot connect to the Docker daemon`, or on Windows a message that starts with `error during connect` | Docker is not running. Start Docker Desktop, wait until it says it is running, and start again. |
 | `service "migrations" didn't complete successfully: exit 1`, and `docker compose --profile app logs migrations` shows `password authentication failed` | The password in `.env` changed after the first start, and the database keeps the first one. Put the old password back, or start over with `down -v`. |
 

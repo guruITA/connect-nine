@@ -30,6 +30,17 @@ School asks: "You ensure that your work aligns with that of others and contribut
 5. **The same way as the test site of #267.** The card asks for `./efbundle --connection "$ConnectionStrings__Connect"`. The migrations of `deploy/docker-compose.test.yml` of #267 run the bundle without `--connection` instead, so the password never stands on a command line that `ps` shows on the host. The image `migrations` now does the same: `ENTRYPOINT ["./efbundle"]`, which reads `ConnectionStrings__DefaultConnection` from the environment. Checked with Docker on 22 October 2026: both migrations applied, exit code 0.
 6. **Checked in the pipeline.** The job image-build of !89 builds both targets with kaniko from the clean clone of the merge request, see the proof of task 20.3.
 
+## Merge request !100: the migrations on a Mac with Apple silicon
+
+### MS4 Making the work fit with the work of the team
+
+School asks: "You ensure that your work aligns with that of others and contributes to the joint result."
+
+1. **What Gurpreet's review found.** In his review of !89, Gurpreet Singh saw that the migrations bundle was built for `linux-x64` only, so the migrations would not start on a Mac with Apple silicon, where Docker builds the images for arm64. He was right: the runtime was written into the line.
+2. **The fix.** The stage server-build reads `TARGETARCH`, which Docker sets for the processor it builds for, and builds the bundle for `linux-arm64` when it is `arm64` and for `linux-x64` otherwise. A builder that does not set it, such as kaniko on the HvA runners, gets `linux-x64` as before.
+3. **Checked on 24 October 2026, with Docker 29.1.3 on an x64 computer.** Built as usual, the bundle is `ELF 64-bit LSB pie executable, x86-64`, and the image migrations brought an empty PostgreSQL 16 up to date and stopped with exit code 0. Built with `TARGETARCH=arm64`, the bundle is `ELF 64-bit LSB pie executable, ARM aarch64`. A run on a real Mac with Apple silicon is still open.
+   - TODO a teammate with a Mac with Apple silicon: run part 13 of the onboarding guide and write in the review of !100 whether the migrations finish with `Exited (0)`.
+
 ## TODO
 
 - [ ] A teammate with Docker: build both images from a clean clone (`docker build --target server .` and `--target migrations .`), run `whoami` in each (it answers `app`) and `docker image ls`, and write the output and the sizes in the review, with your name.

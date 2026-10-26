@@ -1,6 +1,6 @@
 # 009 How Connect remembers a log in: a table session beside ASP.NET Core Identity
 
-**Status.** Picked by Wesley Oerlemans and Nick Hoebe in their talk of 22 October 2026, and written down by Wesley Oerlemans on 23 October 2026. Nick Hoebe confirmed it under Agreed by on 23 October 2026. The rest of the team confirms it at the stand up, and each member adds a line under Agreed by.
+**Status.** Picked by Wesley Oerlemans and Nick Hoebe in their talk of 22 October 2026, and written down by Wesley Oerlemans on 23 October 2026. Nick Hoebe confirmed it under Agreed by on 23 October 2026, Gurpreet Singh in his review of !98 on 24 October 2026. The rest of the team confirms it at the stand up, and each member adds a line under Agreed by.
 **Issue.** 04 Log in with email and password (#15), task 4.1 (#268) to task 4.3 (#270), and the cards that end a session: 05 Log out (#18), 22b A new password logs me out on my other devices (#45), 117 Log out on every device at once (#197), 118 Log out after a while of doing nothing (#196) and 124 Logged out everywhere when log ins are locked (#202). Written in task 11.5 (#1552).
 **Related decision.** [007 Identity is an exception to the IAppDbContext rule](007-identityAndIAppDbContext.md).
 **Who decides.** Wesley Oerlemans and Nick Hoebe, who builds #15. The whole team confirms.
@@ -102,7 +102,7 @@ Alice logs in on a laptop in the school library and on her phone. Connect writes
 | Bayon Eerhart | |
 | Nick Hoebe | 23 October 2026 |
 | Wesley Oerlemans | 23 October 2026 |
-| Gurpreet Singh | |
+| Gurpreet Singh | 24 October 2026 |
 | Kelvin van Voorst | |
 
 ## References

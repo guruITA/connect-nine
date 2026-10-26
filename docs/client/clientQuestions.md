@@ -187,9 +187,26 @@ What the new programs need, as their own documentation says:
 | Prometheus | Counts how fast and how often Connect answers | Unknown: its documentation gives no minimum, the need grows with what it counts | 1 to 2 bytes for every number it keeps, so it grows with how long it keeps them | https://prometheus.io/docs/prometheus/latest/storage/ |
 | Grafana | Shows those counts on one page | At least 512 MB, and 1 processor core | No number given | https://grafana.com/docs/grafana/latest/setup-grafana/installation/ |
 | Loki | Keeps the log lines of the live version, its diary of what happened, in one place | Unknown: its documentation gives no minimum for a small setup | No number given, it grows with how many days of log lines it keeps (question 109) | https://grafana.com/docs/loki/latest/get-started/deployment-modes/ |
-| The test site | The version where the team tries every change first | Unknown until it runs | Unknown until it runs | Measured with `docker stats` once #267 is on the server |
+| The test site | The version where the team tries every change first | About 130 MB, measured on 26 October 2026 | Not measured yet | Measured with `docker stats` on the server, below |
 
 For the unknown numbers the team measures the real use with `docker stats` and the memory page of k3s once each program runs, and gives each a fixed memory limit, so the test site and the live version can never push each other off the server.
+
+Measured again on 26 October 2026, with the test site and the live version both running on the server:
+
+```
+$ sudo docker stats --no-stream
+NAME                      MEM USAGE / LIMIT     CPU %
+connect-test-server-1     96.33MiB / 7.688GiB   0.01%
+connect-test-database-1   27.05MiB / 7.688GiB   0.00%
+$ free -h
+               total        used        free      shared  buff/cache   available
+Mem:           7.7Gi       1.9Gi       958Mi       107Mi       5.3Gi       5.8Gi
+$ sudo k3s kubectl -n connect-production top pod
+connect-database-0               4m    20Mi
+connect-server-b77588b89-xzzt7   1m    80Mi
+```
+
+In plain words: the test site uses about 130 MB of memory and the live version about 105 MB. With everything running, k3s included, 5.8 GB of the 7.7 GB is still available.
 
 - **The same server.** No extra cost. The programs above need at least 2.5 GB together where 7.0 GB is free, and each gets its own memory limit. The risk is that a busy live version slows the test site, which the limits keep small.
 - **A second server.** The live version gets a server of its own. At the provider the foundation already uses, a server like the current one (STRATO VPS L: 4 processor cores, 8 GB memory, 240 GB storage) costs 20 euros a month including VAT, plus 9 euros once to set it up on a monthly contract (https://www.strato.nl/server/vps-linux/, read on 22 October 2026).
