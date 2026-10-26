@@ -19,7 +19,7 @@ School asks: "You anticipate risks and bottlenecks in the process before they be
 ## TODO
 
 - [x] Wesley: count again after the cleanup of k3s that no Secret is left in the database file without encryption, 25 October 2026, 18:20.
-- [ ] Wesley: the restart of `connect-server` that proved the encrypted Secrets work left one check of the live version without an answer, at the moment the old pod stopped. That is a gap of #1051, not of the encryption: a short wait before the old pod stops, so Traefik stops sending visits to it first (comment on #1051).
+- [x] Wesley: the restart of `connect-server` that proved the encrypted Secrets work left one check of the live version without an answer, at the moment the old pod stopped. That is a gap of #1051, not of the encryption. Closed on 25 October 2026 by a wait of five seconds before a pod stops, in !108: four restarts afterwards lost none of 436 checks.
 
 ## AI use
 

@@ -28,8 +28,8 @@ School asks: "You ensure that your work aligns with that of others and contribut
 ## TODO
 
 - [x] Wesley: run the script on the server, paste the node line and the nmap from outside in the section Production server, and check that the test site still answers, 25 October 2026.
-- [ ] Wesley: tell the team in the team channel that k3s runs on the server.
-- [ ] A teammate who built no task of #157: task 93.3 (#1046) on a spare computer, following only the section Production server.
+- [ ] Wesley: tell the team in the team channel that k3s runs on the server, and note the date on #1044. No change to this branch for it.
+- [ ] A teammate who built no task of #157: task 93.3 (#1046) on a spare computer, following only the section Production server, with the result in #157. Fixes to the guide go in a merge request of their own, so this branch does not change for it.
 
 ## AI use
 
