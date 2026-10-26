@@ -19,7 +19,8 @@ School asks: "You independently select relevant standards and methods from the f
 
 1. **HTTP and problem details.** 200 with the profile, 401 without a login, 404 "You have no profile yet" as a problem details answer, and 503 when the database cannot be reached (RFC 9110, RFC 9457).
 2. **Reading without tracking.** EF Core does not track an entity it only reads with `AsNoTracking()`, and a `Select` into a record reads only the columns the record needs.
-- TODO Wesley: one line each on what I took from the BoKSA articles API implementation and Database integration.
+3. **What I took from BoKSA.** The article API implementation asks for clear resource addresses and the same JSON shape with a fitting status code every time. I kept the resource `member-profiles` and put `current` where the id would be, and every answer with a body is either `data` with `meta` or a problem details body.
+4. **What I took from BoKSA.** The article Database integration says to understand what the ORM does underneath. I looked at the SQL of the query with EXPLAIN ANALYZE and saw that it uses the unique index that already exists, so I did not add one.
 
 ## OR3 Involving stakeholders and weighing their feedback
 
@@ -56,11 +57,11 @@ School asks: "You systematically validate that the solution does what it should,
 School asks: "In your design and implementation, you consciously take into account the broader impact on end users and society, while forming your own ethical judgment."
 
 1. **Only the own profile.** The address has no id, the account comes from the session, and the answer holds no email address, id, account id or date.
-- TODO Wesley: my own judgment on what a young person should be able to see and change about themselves here.
+2. **My judgment.** A young person should see everything Connect keeps about them, on one page. Today that is the first name, the age band, the region and the short line, and the page shows all of it. Changing it comes with #64 and deleting the account with #33. I think both must work without asking anyone, because it is their data and the privacy law gives them that right. This means #33 is as important as this page, because it is the only way to leave Connect.
 
 ## TODO
 
-- [ ] Wesley: the TODO lines above.
+- [ ] Wesley: the OR3 lines above, after a teammate and one person outside the team tried the page on a phone.
 - [ ] Wesley: after the merge, tick the boxes of the tasks with the evidence in a comment.
 
 ## AI use
