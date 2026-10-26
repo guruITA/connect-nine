@@ -33,14 +33,14 @@ School asks: "You anticipate risks and bottlenecks in the process before they be
 School asks: "You ensure that your work aligns with that of others and contributes to the joint result."
 
 1. **One set of steps for both jobs.** `deploy-production` and `rollback-production` share `.production-release`: the Secrets, the apply, the rollout and the health check, the login, the resource group and the environment. A rollback never runs beside a deploy, and both show in Operate, Environments, production.
-2. **The migration rule of the team.** Going back only works while a migration only adds. That rule is proposed in #314 of Gurpreet Singh and is not in the code conventions yet, so I put it on the list for the stand up instead of writing it in myself.
+2. **The migration rule of the team.** Going back only works while a migration only adds. That rule is proposed in #314 of Gurpreet Singh, which asks for a decision file `migrationsOnlyAdd.md`. It has no decision file yet, so I put it on the list for the stand up instead of writing it myself.
 3. **What the recording and the demo need (#168, #169).** The job name `rollback-production`, the variable `ROLLBACK_IMAGE_TAG`, and the drill of task 97.2 (#1062) with the tag `drill-97`, which this job already accepts.
 
 ## TODO
 
 - [ ] After the merge, no change to this branch: the refused runs and a run back and forward in the pipeline of main, visible in Operate, Environments, production, go in #163 after the first merge of dev into main.
 - [ ] A teammate: read the steps of Going back in production back to me, with their question, in #163. A change it leads to comes in before anyone approves, or in a merge request of its own.
-- [ ] Gurpreet Singh: the rule of #314, a migration only adds, in the code conventions, in a merge request of his. No change to this branch for it, and the point is on the list for the stand up.
+- [ ] Gurpreet Singh: the rule of #314, a migration only adds, as its decision file in a merge request of his. No change to this branch for it, and the point is on the list for the stand up.
 
 ## AI use
 
