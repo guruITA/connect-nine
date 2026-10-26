@@ -14,27 +14,27 @@ School asks: "You anticipate risks and bottlenecks in the process before they be
 3. **The way back.** In my browser, with a stopwatch and only that part of the onboarding, I found the first green row under the red one, fbef2403, checked that !123 adds no migration, and pressed Rollback environment on its row at 23:08. Its deploy-test said `No migrations were applied. The database is already up to date.` and was green at 23:09 with `Connect answers healthy (try 1 of 12).` (job 1356072).
 4. **The time.** 10 minutes and 10 seconds on my stopwatch for all the steps, just over the ten minutes of the goal. The site itself was healthy again 8 minutes after it went red.
 5. **The data stayed.** Before the practice I made a check account on Make an account. Afterwards the same email got the answer "This email address already has an account", so the test database still held its accounts. The database was never put back and no volume was deleted.
-6. **What was unclear.** In step 2 I had to click the name test on the page Environments before I saw the list of the current and earlier deploys. The step says "then the name test", but it is easy to miss that the list is behind it. I proposed a sentence for it to Gurpreet.
+6. **What was unclear.** Two steps. Step 1 says to tell the team channel, but not what exactly to send, so I skipped it: Gurpreet had already told the group that we were doing the practice. My time is without that message. In step 2 I had to click the name test on the page Environments before I saw the list of the current and earlier deploys. The step says "then the name test", but it is easy to miss that the list is behind it. For both I proposed a change to Gurpreet: the exact message to copy in step 1, and a sentence for step 2.
 
 ## MS4 Making the work fit with the work of the team
 
 School asks: "You ensure that your work aligns with that of others and contributes to the joint result."
 
-1. **The shared test site.** I said in the team's WhatsApp group that the test site would go down and that nobody merges into dev until the revert of !123 is merged and green, because every merge into dev deploys dev again, broken change included.
+1. **The shared test site.** Gurpreet told the team's WhatsApp group that we were doing the practice. Dev stays closed until the revert of !123 is merged and green, because every merge into dev deploys dev again, broken change included.
 2. **Checked before the practice.** I reviewed the steps (!121) and the broken version (!123) before we started. The break only changes the address the server uses for its database, so the migrations and the data stay as they are, and the version to go back to keeps its screen for 30 days.
-3. **Back to the author.** My time and what was unclear went to Gurpreet on #314 (note 2016359). He writes them in part Practised of the onboarding and rewrites the step I stumbled on.
+3. **Back to the author.** My time and what was unclear went to Gurpreet on #314 (notes 2016359 and 2016383). He writes them in part Practised of the onboarding and rewrites the steps I stumbled on.
 
 ## Evidence per step
 
 | Step of onboarding | What I did and saw | Evidence |
 |---|---|---|
-| 1 Say so in the team channel | The test site down, and dev closed until the revert is merged and green | My message in the team's WhatsApp group |
+| 1 Say so in the team channel | Skipped: Gurpreet had told the group about the practice, and the step does not say what exactly to send | My proposal for the message on #314, note 2016383 |
 | 2 Open Operate, Environments, test | The list of deploys only showed after I clicked the name test | The first screenshot below |
 | 3 Find the last healthy deployment | The top row fc86ec50 red, the first green row under it fbef2403 | Job 1356062 |
 | 4 Press Rollback | !123 adds no migration, so the database stays as it is. Rollback environment on the row of fbef2403 at 23:08 | Job 1356072 |
 | 5 Wait for green on a healthy answer | Green at 23:09, with `Connect answers healthy (try 1 of 12).` | Job 1356072, and the health address below |
 | 6 The check account | "This email address already has an account" | Make an account |
-| 7 Write it in the issue | What happened, the version, the times and the green job | Comment on #314, note 2016359 |
+| 7 Write it in the issue | What happened, the version, the times, the green job and what was unclear | Comments on #314, notes 2016359 and 2016383 |
 
 ![Job 1356062, the deploy-test of !123: twelve tries answered 503, then red at 23:01. The log times are UTC, an hour behind](images/task314RedDeploy.png)
 
