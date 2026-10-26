@@ -188,7 +188,9 @@ ever in the answer.
   {"data":{"firstName":"Noor","ageBand":"Adolescent","bio":"Test member, 15 to 17."},"meta":{}}
   ```
 
-- `401 Unauthorized` when nobody is logged in, without a body.
+- `401 Unauthorized` when nobody is logged in, without a body. A visitor gets exactly this same
+  answer for a known id, an unknown id and a text that is not an id, so trying addresses never
+  tells a visitor which members are on Connect (proven by `VisitorMemberProfileEndpointTests`).
 - `404 Not Found`:
 
   ```json
