@@ -26,8 +26,8 @@ School asks: "You ensure that your work aligns with that of others and contribut
 
 ## TODO
 
-- [ ] Wesley: after the first merge of dev into main, paste the green `deploy-production`, the line in Operate, Environments, production, and the image version on production next to the short commit id of the pipeline.
-- [ ] A teammate who did not build issue 96: task 96.3 (#1060), a small change from dev to main followed to production, with the name of who found the running version in GitLab from the guide.
+- [ ] Wesley: after the first merge of dev into main, paste the green `deploy-production`, the line in Operate, Environments, production, and the image version on production next to the short commit id of the pipeline, in #162. No change to this branch for it.
+- [ ] A teammate who did not build issue 96: task 96.3 (#1060), a small change from dev to main followed to production, with the name of who found the running version in GitLab from the guide, in #162. No change to this branch for it.
 
 ## AI use
 
