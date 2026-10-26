@@ -34,6 +34,7 @@ One file per task I did, with the proof block of the task filled in. A point tha
 | `portfolioProof/task1047TerraformFolder.md` | Task 94.1 The folder infra/terraform with pinned versions and the state in GitLab (#1047), merge request !107 | Managing and Collaborating MS1 and MS4 |
 | `portfolioProof/task1050ConnectLiveOnK3s.md` | Tasks 95.1 to 95.3 Connect live on k3s, its database, its server and its address (#1050, #1051, #1052), merge request !108 | Managing and Collaborating MS1 and MS4 |
 | `portfolioProof/task1048PlanAndApply.md` | Task 94.2 The plan on the merge request and the apply on main (#1048), merge requests !109 and !106 | Managing and Collaborating MS1 and MS4 |
+| `portfolioProof/task1058DeployProduction.md` | Task 96.1 Every merge into main goes to production by itself (#1058), merge request !110 | Managing and Collaborating MS1 and MS4 |
 | `portfolioProof/task9ClientServer.md` | Tasks 9.1 to 9.5 The client's server (#236, #237, #238, #239, #240), merge requests !5 and !34 | Managing and Collaborating MS1 and MS4 |
 | `portfolioProof/task11ServerStructureDecisions.md` | Tasks 11.1 to 11.3 The structure and the version of the server (#253, #254, #255), merge requests !27 and !58 | Analysing and Advising AA2, AA3, AA4 and AA5, Managing and Collaborating MS4 |
 | `portfolioProof/task1517ReplanSprints.md` | Task 180.1 Sprints 2 to 5 planned again after sprint 1 (#1517), merge request !40 | Managing and Collaborating MS1 and MS4 |

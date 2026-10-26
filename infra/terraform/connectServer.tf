@@ -114,6 +114,13 @@ resource "kubernetes_deployment_v1" "connect_server" {
     }
   }
 
+  # A new version that is not ready within five minutes stops the apply, and the job deploy-production
+  # turns red while the old pod keeps serving (issue 96).
+  timeouts {
+    create = "5m"
+    update = "5m"
+  }
+
   depends_on = [kubernetes_job_v1.connect_migrations]
 }
 

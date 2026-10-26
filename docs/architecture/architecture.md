@@ -484,8 +484,8 @@ orchestration and infrastructure as code. The foundation did not ask for it.
   StatefulSet `connect-database` with its own volume, and the migrations Job. The namespace
   `connect-monitoring` holds Prometheus, Grafana, Alertmanager, Loki and the log shipper. Terraform
   files in `infra/terraform` describe all of it. Every merge into main goes to production (job
-  `deploy-production`, issue 96 A merge into main goes to production). Production is built in
-  sprint 4.
+  `deploy-production`, issue 96 A merge into main goes to production). Production runs since 25
+  October 2026, at an interim address.
 
 The diagram below shows what runs on the test site and in production, and how the pipeline reaches each.
 

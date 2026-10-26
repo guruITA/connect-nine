@@ -979,7 +979,7 @@ Every change to production goes four steps (task 94.2, #1048):
 1. **Write.** Change a file of `infra/terraform` on your branch and open a merge request into dev.
 2. **Plan.** The job `terraform-plan` makes the plan with the login `gitlab-planner`, which may only read. It runs on a merge request that changes `infra/` or `.gitlab-ci.yml`, and on no other, because a plan needs the production server and a server that is away for a moment must not turn every merge request red. The plan keeps the image version that runs now, so it shows only what your files change. Its log says which version that is.
 3. **Review.** The reviewer reads the plan before approving, and names in the approval the line they checked.
-4. **Apply.** After the merge into dev, and of dev into main, a team member presses play on the job `terraform-apply` in the pipeline of main. It runs `infra/k3s/applySecrets.sh` and `terraform apply` with the login `gitlab-deployer` and the images of that commit, and only one apply runs at a time (`resource_group: production`).
+4. **Apply.** After the merge into dev, and of dev into main, the job `deploy-production` in the pipeline of main applies it by itself (part From dev to main to production, below). It runs `infra/k3s/applySecrets.sh` and `terraform apply` with the login `gitlab-deployer` and the images of that commit, and only one apply runs at a time (`resource_group: production`).
 
 **Where the plan is.** On the merge request, the Terraform widget says how many parts are added, changed and removed. The link Terraform plan, under the pipeline of the merge request, opens the whole plan. Only members with at least the role Developer see either.
 
@@ -990,16 +990,16 @@ Every change to production goes four steps (task 94.2, #1048):
 - `-/+` on `kubernetes_job_v1.connect_migrations`: normal when the image version changes, because there is one Job per version.
 - A change the merge request does not explain, such as an annotation `kubectl.kubernetes.io/restartedAt`: someone changed production by hand. Ask in the team channel before the apply puts it back.
 
-**Who may press play.** A member with the role Maintainer, which all five of us have (Manage, Members). `terraform-apply` reaches the state with the job token of whoever starts it, and locking and writing the state needs that role. Reading it, for the plan, needs Developer.
+**Who releases.** Whoever merges dev into main, which takes the role Maintainer. All five of us have it (Manage, Members). The apply reaches the state with the job token of whoever started the pipeline, and locking and writing the state needs that role. Reading it, for the plan, needs Developer. Until 25 October 2026 the apply started only when a team member pressed play on the job `terraform-apply` (task 94.2, #1048). `deploy-production` replaced it (task 96.1, #1058).
 
 **The two checks of the first merge request** (#158):
 
 - Can `terraform-plan` on a branch reach the server? Only when `PRODUCTION_SERVER_HOST` is not protected, because a protected variable only reaches the pipelines of dev and main. It is not protected since 25 October 2026. The address of the server is no secret, it is in this guide and in the address of the test site. A branch gets the tunnel key and the token of `gitlab-planner`, which together can only read the parts of production that hold no secret. `KUBE_DEPLOYER_TOKEN` stays protected.
-- May the person who starts `terraform-apply` write the state? Yes, with the role Maintainer, which all five of us have.
+- May the person who starts the apply write the state? Yes, with the role Maintainer, which all five of us have.
 
 **A stopped apply.** When an apply is cancelled or its runner stops, the state stays locked and the next apply waits. Check that no apply runs (Build, Jobs), then Operate, Terraform states, the menu of `production`, Unlock.
 
-**By hand, until the first apply on main.** Until a merge into main runs the apply, Wesley Oerlemans applies by hand, with the same commands as the job, the same state and the login `gitlab-deployer` through the ssh tunnel, after the merge request of the change was approved. The last time was on 25 October 2026, for the wait before the server stops (#1051).
+**By hand, until the first merge into main.** Until a merge into main runs `deploy-production`, Wesley Oerlemans applies by hand, with the same commands as the job, the same state and the login `gitlab-deployer` through the ssh tunnel, after the merge request of the change was approved. The last time was on 25 October 2026, for the wait before the server stops (#1051).
 
 ### The live version
 
@@ -1022,7 +1022,39 @@ The live version is at https://live.31-70-66-186.sslip.io until the foundation's
 
 The numbers are start values. After a week of real use they are measured again with `kubectl top pod` and set to what was seen.
 
-**Which version runs.** The image of the newest merge into dev, 292759f1, until a merge into main puts its own version there (issue 96, #162).
+**Which version runs.** The image of the newest merge into dev, 292759f1, until the first merge into main puts its own version there (part From dev to main to production, below).
+
+### From dev to main to production
+
+The road of a change (issue 96, #162):
+
+1. **Branch.** From the newest dev, with a merge request into dev, reviewed and approved by a teammate (part 7 Your first change).
+2. **Dev and the test site.** The merge into dev puts that version on the test site by itself (`deploy-test`), where `e2e-test` runs the browser tests against it. image-push makes the images of that commit.
+3. **Main.** A merge request from dev into main, the only way into main (`branch-flow`). It is the release: everything on dev goes live.
+4. **Production.** The pipeline of main builds the images of that commit, runs every gate, and then `deploy-production` puts that exact version on the live address by itself. Nobody presses play and nobody logs in on the server.
+
+**The gates.** `deploy-production` runs in stage deploy, so only when every job before it is green, and none of those jobs may fail without stopping it (no `allow_failure`):
+
+| Stage | Jobs in the pipeline of main |
+| --- | --- |
+| build | backend-build, frontend-build, image-push |
+| test | env-file-check, backend-test, frontend-lint, frontend-test, terraform-check |
+| scan | backend-scan, frontend-scan, the scan of the packages of the server and the screen (#22) |
+| deploy | deploy-production |
+
+Two gates the HvA DevOps workshop asks for do not exist yet: the code quality check in a stage analyze between test and scan comes with #153, and the scan of the images themselves with #154. Each adds its job before deploy, so `deploy-production` waits for it as well.
+
+**What deploy-production does.** It fills the Secrets (`infra/k3s/applySecrets.sh`), runs `terraform apply` with the short commit id as the image version, waits until the new server is rolled out (`kubectl rollout status`, at most five minutes), and asks `https://<the live address>/api/health` every 10 seconds, at most 12 times, until it answers healthy (`infra/k3s/waitForHealthy.sh`). It runs only on a push pipeline of main, never in the weekly scheduled pipeline and never in a pipeline started by hand.
+
+**Which version runs.** Operate, Environments, `production`: the commit, when it went live and who merged it. The same short commit id is the version of the image: `kubectl -n connect-production get deployment connect-server -o jsonpath='{.spec.template.spec.containers[0].image}'`.
+
+**When deploy-production is red.**
+
+1. Say so in the team channel at once, with the link of the red job.
+2. Read the last lines of its log: which step stopped, and what the health address answered.
+3. The old version keeps serving when the new one never gets ready, because the rolling update keeps the old pod until the new one is ready. Visitors see no difference, so there is time to find the cause.
+4. Never press Retry before you know why it failed. A retry of a broken version fails the same way, and a retry after a migration ran can make it worse.
+5. Fix it on a branch through dev, or go back to the version before it (issue 97, #163). Until #163 is built, going back is a revert merge request into dev and then dev into main.
 
 ## References
 

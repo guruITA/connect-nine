@@ -264,8 +264,8 @@ the test site needs.
   backend kubernetes, as task 92.1 records.
 - The job `terraform-check` lays out and validates the files on every merge request. The job
   `terraform-plan` puts the plan on a merge request that changes `infra/` or `.gitlab-ci.yml`, with
-  the read only login. Applying first starts by hand on `main`, and issue 96 turns it into the job
-  `deploy-production`.
+  the read only login. Applying started by hand on `main` (task 94.2), and issue 96 turned it into the
+  job `deploy-production`, which applies every merge into `main` by itself.
 
 **Connect and its database in Terraform** (issue 95 Connect and its database described in
 Terraform):

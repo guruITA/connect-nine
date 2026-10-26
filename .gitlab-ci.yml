@@ -499,20 +499,30 @@ terraform-plan:
     reports:
       terraform: infra/terraform/plan.json
 
-# Applies the files to production after a merge into main, only when a team member presses play, with
-# the login that may change things. resource_group production lets only one apply run at a time.
-terraform-apply:
+# Puts every merge into main on production by itself (issue 96, task 96.1, #1058), with the login that
+# may change things. It runs in stage deploy, so only after every job of build, test and scan is green.
+# There is no needs: image-push, because needs would let it start before the tests and the scan. The
+# stage order already makes image-push of the same pipeline come first.
+# Push pipelines of main only: never the weekly scheduled pipeline, never a pipeline started by hand.
+# resource_group production lets one deploy run at a time, and the environment production records which
+# commit runs, since when and who merged it (Operate, Environments). A deploy that never gets healthy turns
+# red, while the old version keeps serving, because the rolling update keeps it until the new one is ready.
+deploy-production:
   stage: deploy
   extends: .terraform-production
   resource_group: production
+  environment:
+    name: production
+    url: https://$PRODUCTION_HOST
   rules:
     - if: $CI_PIPELINE_SOURCE == "schedule"
       when: never
-    - if: $CI_COMMIT_BRANCH == "main"
-      when: manual
+    - if: $CI_COMMIT_BRANCH == "main" && $CI_PIPELINE_SOURCE == "push"
   variables:
     KUBE_TOKEN: $KUBE_DEPLOYER_TOKEN
   script:
     - export TF_VAR_image_tag="$CI_COMMIT_SHORT_SHA"
     - bash ../k3s/applySecrets.sh
     - terraform apply -input=false -auto-approve
+    - kubectl -n connect-production rollout status deployment/connect-server --timeout=5m
+    - bash ../k3s/waitForHealthy.sh "https://$PRODUCTION_HOST/api/health"

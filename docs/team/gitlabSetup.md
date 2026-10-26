@@ -57,12 +57,16 @@ The file is .gitlab-ci.yml in the root. It runs on the HvA runners with the tag 
 - Stage build, job backend-build: `dotnet build api/Connect.slnx`, then `dotnet format api/Connect.slnx --verify-no-changes` to catch a layout the editor did not fix.
 - Stage build, job frontend-build: `npm ci` and `npm run build` in `web`, which type checks the screen and bundles it.
 - Stage build, job image-build: only on a merge request. Builds the images server and migrations from the `Dockerfile` with kaniko and pushes nothing, so a broken Dockerfile turns only this job red.
-- Stage build, job image-push: only on dev, after a merge. Builds both images and pushes them to the registry, part Images and the registry below.
+- Stage build, job image-push: only on dev and main, after a merge. Builds both images and pushes them to the registry, part Images and the registry below.
 - Stage test, job env-file-check: fails when a .env file is in Git, and names the file in its log. Only .env.example may be committed.
 - Stage test, job branch-flow: only on a merge request. Fails when the target is main and the source branch is not dev.
 - Stage test, job backend-test: `dotnet test api/Connect.slnx` against a real PostgreSQL 16, started for the job under the alias `database`. The user, password and name of that throwaway database are the CI/CD variables TEST_POSTGRES_USER, TEST_POSTGRES_PASSWORD and TEST_POSTGRES_DB (Settings, CI/CD, Variables), never written in `.gitlab-ci.yml`.
 - Stage test, job frontend-lint: `npm run lint` (ESLint) and `npx prettier --check .` in `web`.
 - Stage test, job frontend-test: `npm test` (Vitest) in `web`.
+- Stage test, job terraform-check: `terraform init -backend=false`, `terraform fmt -check -recursive` and `terraform validate` in `infra/terraform`, without reaching production.
+- Stage deploy, job kube-check: on dev, and by hand on a merge request. Shows that the node of production is Ready, with the read only login.
+- Stage deploy, job terraform-plan: on a merge request that changes `infra/` or `.gitlab-ci.yml`. Puts the plan of production on the merge request, `docs/team/onboarding.md` part 14 Changing production.
+- Stage deploy, job deploy-production: on main, after a merge. Puts that version on the live address by itself, part 14 From dev to main to production.
 - A red pipeline locks the Merge button through Pipelines must succeed (part Branches and protection). On top of that, a reviewer never approves a merge request with a red pipeline. No job of stage build or stage test has allow_failure, so a red build or test job always blocks the merge.
 - The jobs of stage test start only when every job of stage build is green, image-build included, so no test passes a version whose build went wrong. That makes a merge request wait for the images, about five and a half minutes in all, and it stays that way on purpose (decided on 22 October 2026).
 
@@ -78,7 +82,7 @@ The images of Connect are built in the pipeline and kept in the container regist
 
 - **What the HvA runners allow.** Every job runs in a Docker container without privileged mode, with Docker's default seccomp profile and AppArmor profile, so a job cannot make a user namespace or mount anything. Docker in Docker, Buildah, Podman and BuildKit rootless are refused there, and kaniko builds, because it needs neither (measured on 22 October 2026, pipelines 586250, 586252, 586254 and 586259). The comparison and the choice are in `docs/decisions/008-kanikoForImages.md`.
 - **The builder.** The maintained fork of kaniko, pinned as `ghcr.io/osscontainertools/kaniko:v1.28.6-debug` in the jobs image-build and image-push. An update of the tag is a merge request of its own.
-- **The images.** `server`, the server with the screen in `wwwroot`, and `migrations`, which brings the tables up to date and stops. Each is stored as `$CI_REGISTRY_IMAGE/server:<short commit id>` and `$CI_REGISTRY_IMAGE/migrations:<short commit id>` of the merge on dev, never only as latest.
+- **The images.** `server`, the server with the screen in `wwwroot`, and `migrations`, which brings the tables up to date and stops. Each is stored as `$CI_REGISTRY_IMAGE/server:<short commit id>` and `$CI_REGISTRY_IMAGE/migrations:<short commit id>` of the merge on dev or on main, never only as latest.
 - **The login.** image-push logs in with `CI_REGISTRY_USER` and `CI_REGISTRY_PASSWORD`, the variables GitLab gives every job. kaniko has no login command, so the job writes them into its own config file. No password is in `.gitlab-ci.yml`.
 - **The cleanup.** The registry is on. Its cleanup policy (Settings, Packages and registries) keeps the ten newest versions of each image and removes older ones once they are a week old, so the registry never fills up.
 - **Finding the image of the last merge.** Deploy, Container registry, the image `server`, and the tag with the short commit id of the merge.
