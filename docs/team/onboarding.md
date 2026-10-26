@@ -718,12 +718,12 @@ The variables, under Settings, CI/CD, Variables:
 | --- | --- | --- | --- |
 | `TUNNEL_SSH_PRIVATE_KEY` | yes | no | The private key of the user `tunnel`, base64 on one line |
 | `PRODUCTION_SSH_KNOWN_HOSTS` | no | no | The host keys of the server, checked against the server's own keys |
-| `PRODUCTION_SERVER_HOST` | no | yes | The address of the server |
+| `PRODUCTION_SERVER_HOST` | no | no | The address of the server |
 | `KUBE_CA_CERT` | no | no | The CA of k3s, a variable of the type File |
 | `KUBE_PLANNER_TOKEN` | yes | no | The token of `gitlab-planner` |
 | `KUBE_DEPLOYER_TOKEN` | yes | yes | The token of `gitlab-deployer` |
 
-None of them is in a file of the repository. Whether `PRODUCTION_SERVER_HOST` must stop being protected, so the plan on a merge request can reach the server, is checked in the first merge request of #158.
+None of them is in a file of the repository. `PRODUCTION_SERVER_HOST` is not protected since 25 October 2026, so the plan on a merge request can reach the server: the address is no secret, and a branch only gets the tunnel key and the read only token (part 14 Changing production, Plan, review, apply).
 
 **A token or the tunnel key leaked.** Make the login new, not only its Secret: a token stays the same as long as its ServiceAccount stays, which was measured on 25 October 2026. On the server: `sudo k3s kubectl -n connect-production delete serviceaccount gitlab-deployer` (or `gitlab-planner`), then `sudo k3s kubectl apply -f infra/k3s/clusterAccess.yaml`. Put the new token, from `sudo k3s kubectl -n connect-production get secret gitlab-deployer-token -o jsonpath='{.data.token}' | base64 -d`, in its variable without showing it. For the tunnel key: make a new pair with `ssh-keygen -t ed25519`, replace the line in `/home/tunnel/.ssh/authorized_keys` and the variable, and delete the private key from your computer.
 

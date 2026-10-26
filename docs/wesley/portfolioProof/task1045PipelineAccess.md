@@ -25,8 +25,8 @@ School asks: "You ensure that your work aligns with that of others and contribut
 
 ## TODO
 
-- [ ] Wesley: after the merge into dev, paste the first green `kube-check` of dev in #157.
-- [ ] Wesley: in the first merge request of #158, check whether `PRODUCTION_SERVER_HOST` must stop being protected, and write the answer with the reason in the part Pipeline access.
+- [ ] Wesley: after the merge into dev, paste the first green `kube-check` of dev in #157. No change to this branch for it.
+- [x] Wesley: in the first merge request of #158, check whether `PRODUCTION_SERVER_HOST` must stop being protected, and write the answer with the reason in the part Pipeline access. It had to: made not protected on 25 October 2026, the plan of !109 then reached the server (job 1352590), and the part Pipeline access says why (#158, note 2012563).
 
 ## AI use
 
