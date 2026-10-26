@@ -53,6 +53,11 @@ public sealed class ConnectDbContext(DbContextOptions<ConnectDbContext> options)
         return query.AnyAsync(cancellationToken);
     }
 
+    IQueryable<TEntity> IAppDbContext.AsNoTracking<TEntity>(IQueryable<TEntity> query)
+    {
+        return query.AsNoTracking();
+    }
+
     public override int SaveChanges(bool acceptAllChangesOnSuccess)
     {
         UpdateAuditProperties();

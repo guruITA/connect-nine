@@ -1,6 +1,5 @@
 using Connect.Application.Common.Abstractions;
 using Connect.Application.Common.Results;
-using Microsoft.EntityFrameworkCore;
 
 namespace Connect.Application.Profiles.GetCurrentProfile;
 
@@ -13,16 +12,17 @@ public sealed class GetCurrentProfileQueryHandler(IAppDbContext dbContext)
         GetCurrentProfileQuery query,
         CancellationToken cancellationToken)
     {
-        // Found through the unique index on account_id, and never loads the account itself.
-        var profile = await _dbContext.Profiles
-            .AsNoTracking()
-            .Where(candidate => candidate.AccountId == query.AccountId)
-            .Select(candidate => new CurrentProfileResult(
-                candidate.FirstName,
-                candidate.AgeBand,
-                candidate.Region,
-                candidate.Bio))
-            .SingleOrDefaultAsync(cancellationToken);
+        // Found through the unique index on account_id, without tracking, and never loads the
+        // account itself.
+        var profile = await _dbContext.SingleOrDefaultAsync(
+            _dbContext.AsNoTracking(_dbContext.Profiles)
+                .Where(candidate => candidate.AccountId == query.AccountId)
+                .Select(candidate => new CurrentProfileResult(
+                    candidate.FirstName,
+                    candidate.AgeBand,
+                    candidate.Region,
+                    candidate.Bio)),
+            cancellationToken);
 
         return profile is null
             ? Result<CurrentProfileResult>.Failure(Error.NotFound("You have no profile yet"))

@@ -193,8 +193,7 @@ public sealed class ProfileDatabaseTests
     // without loading the account.
     private static ProfileValues? ProfileOfAccount(IAppDbContext appDbContext, Guid accountId)
     {
-        return appDbContext.Profiles
-            .AsNoTracking()
+        return appDbContext.AsNoTracking(appDbContext.Profiles)
             .Where(profile => profile.AccountId == accountId)
             .Select(profile => new ProfileValues(profile.FirstName, profile.AgeBand, profile.Region, profile.Bio))
             .SingleOrDefault();
