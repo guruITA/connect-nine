@@ -22,6 +22,8 @@ trap 'rm -f "$body"' EXIT
 
 try=1
 while :; do
+  # Emptied first, so a try without an answer never shows the body of an earlier try.
+  : > "$body"
   # 000 means no answer at all: nothing listens yet, or the five seconds ran out.
   code=$(curl --silent --max-time 5 --output "$body" --write-out '%{http_code}' "$address/api/health") || true
 

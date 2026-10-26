@@ -594,7 +594,7 @@ The `Dockerfile` in the root packs Connect into two images. `server` holds the p
 
 ### The test address
 
-The test site is at https://31-70-66-186.sslip.io until the foundation sets the DNS record of the real test address (task 9.1, #236). sslip.io is a free name service that points a name with the IP address in it at that address. When the real address comes, only the first line of `deploy/Caddyfile` and the variable TEST_ADDRESS of the job deploy-test in `.gitlab-ci.yml` change.
+The test site is at https://31-70-66-186.sslip.io until the foundation sets the DNS record of the real test address (task 9.1, #236). sslip.io is a free name service that points a name with the IP address in it at that address. When the real address comes, only the first line of `deploy/Caddyfile` changes, and in `.gitlab-ci.yml` the variable TEST_ADDRESS of the job deploy-test and PLAYWRIGHT_BASE_URL of the job e2e-test.
 
 - Caddy 2.11.7 runs as a system service, installed from its own package source on 9 October 2026. Its settings file is `deploy/Caddyfile` in Git and `/etc/caddy/Caddyfile` on the server.
 - The certificate comes from Let's Encrypt and Caddy renews it by itself. http answers with a redirect to https.
@@ -643,7 +643,7 @@ When a merge broke the test site:
 Every merge request names the version to go back to (Definition of Done, Deploy), in its part The version to go back to:
 
 1. **The app.** Open Operate, Environments, test before your merge. The top deploy is the version to go back to: write its short commit and its title.
-2. **The migration.** Write the newest migration on dev before your merge: the last file in `api/Connect.Infrastructure/Persistence/Migrations` without `.Designer` in its name. Say whether your merge request adds a migration.
+2. **The migration.** Write the newest migration on dev before your merge: in `api/Connect.Infrastructure/Persistence/Migrations`, the newest file whose name starts with a date, without `.Designer` in its name (not `ConnectDbContextModelSnapshot.cs`). Say whether your merge request adds a migration.
 
 For example: `Test site before this merge: 8a4db18 (Merge branch 'docs/1040-production-questions' into 'dev'). Migration before this merge: 20261021205912_AddMemberDetailsToProfile. This merge request adds no migration.`
 
