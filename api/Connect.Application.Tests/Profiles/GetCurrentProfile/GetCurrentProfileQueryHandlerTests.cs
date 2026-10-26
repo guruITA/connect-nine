@@ -46,7 +46,7 @@ public sealed class GetCurrentProfileQueryHandlerTests
             Assert.That(result.IsSuccess, Is.True);
             Assert.That(
                 (profile.FirstName, profile.AgeBand, profile.Region, profile.Bio),
-                Is.EqualTo(("Sam", AgeBand.From18To21, "Amstelveen", "I like football.")));
+                Is.EqualTo(("Sam", AgeBand.YoungAdult, "Amstelveen", "I like football.")));
             Assert.That(profile.Tags, Is.Empty);
         }
     }
@@ -55,7 +55,7 @@ public sealed class GetCurrentProfileQueryHandlerTests
     public async Task HandleAsync_ProfileWithTags_ReturnsTheTagsSortedByName()
     {
         Account account = dbContext.SaveAccount();
-        Profile profile = dbContext.SaveProfile(account, "Sam", AgeBand.From18To21, "Amstelveen", null);
+        Profile profile = dbContext.SaveProfile(account, "Sam", AgeBand.YoungAdult, "Amstelveen", null);
         Tag photography = dbContext.SaveTag("photography");
         Tag football = dbContext.SaveTag("football");
         dbContext.SaveLink(profile, photography);
@@ -73,8 +73,8 @@ public sealed class GetCurrentProfileQueryHandlerTests
     {
         Account account = dbContext.SaveAccount();
         Account other = dbContext.SaveAccount();
-        Profile profile = dbContext.SaveProfile(account, "Sam", AgeBand.From18To21, "Amstelveen", null);
-        Profile otherProfile = dbContext.SaveProfile(other, "Robin", AgeBand.From22To30, "Amstelveen", null);
+        Profile profile = dbContext.SaveProfile(account, "Sam", AgeBand.YoungAdult, "Amstelveen", null);
+        Profile otherProfile = dbContext.SaveProfile(other, "Robin", AgeBand.Adult, "Amstelveen", null);
         dbContext.SaveLink(profile, dbContext.SaveTag("football"));
         dbContext.SaveLink(otherProfile, dbContext.SaveTag("gaming"));
 

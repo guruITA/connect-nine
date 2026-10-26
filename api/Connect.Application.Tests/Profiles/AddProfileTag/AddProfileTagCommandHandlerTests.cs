@@ -36,7 +36,7 @@ public sealed class AddProfileTagCommandHandlerTests
     public async Task HandleAsync_ExistingTag_IsReusedAndLinked()
     {
         Account account = dbContext.SaveAccount();
-        Profile profile = dbContext.SaveProfile(account, "Sam", AgeBand.From18To21, "Amstelveen", null);
+        Profile profile = dbContext.SaveProfile(account, "Sam", AgeBand.YoungAdult, "Amstelveen", null);
         Tag football = dbContext.SaveTag("football", isSuggested: true);
 
         var result = await handler.HandleAsync(new AddProfileTagCommand(account.Id, "football"), CancellationToken.None);
@@ -54,7 +54,7 @@ public sealed class AddProfileTagCommandHandlerTests
     public async Task HandleAsync_NewTag_IsMadeAsNotSuggested()
     {
         Account account = dbContext.SaveAccount();
-        dbContext.SaveProfile(account, "Sam", AgeBand.From18To21, "Amstelveen", null);
+        dbContext.SaveProfile(account, "Sam", AgeBand.YoungAdult, "Amstelveen", null);
 
         var result = await handler.HandleAsync(new AddProfileTagCommand(account.Id, "drone video"), CancellationToken.None);
 
@@ -71,7 +71,7 @@ public sealed class AddProfileTagCommandHandlerTests
     public async Task HandleAsync_TagTheProfileAlreadyHas_ChangesNothing()
     {
         Account account = dbContext.SaveAccount();
-        dbContext.SaveProfile(account, "Sam", AgeBand.From18To21, "Amstelveen", null);
+        dbContext.SaveProfile(account, "Sam", AgeBand.YoungAdult, "Amstelveen", null);
         await handler.HandleAsync(new AddProfileTagCommand(account.Id, "football"), CancellationToken.None);
 
         var result = await handler.HandleAsync(new AddProfileTagCommand(account.Id, "football"), CancellationToken.None);
@@ -88,8 +88,8 @@ public sealed class AddProfileTagCommandHandlerTests
     {
         Account first = dbContext.SaveAccount();
         Account second = dbContext.SaveAccount();
-        dbContext.SaveProfile(first, "Sam", AgeBand.From18To21, "Amstelveen", null);
-        dbContext.SaveProfile(second, "Alex", AgeBand.From22To30, "Uithoorn", null);
+        dbContext.SaveProfile(first, "Sam", AgeBand.YoungAdult, "Amstelveen", null);
+        dbContext.SaveProfile(second, "Alex", AgeBand.Adult, "Uithoorn", null);
 
         await handler.HandleAsync(new AddProfileTagCommand(first.Id, "drone video"), CancellationToken.None);
         await handler.HandleAsync(new AddProfileTagCommand(second.Id, "drone video"), CancellationToken.None);

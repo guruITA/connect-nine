@@ -159,7 +159,7 @@ public sealed class TagDatabaseTests
             AccountId = account.Id,
             Account = account,
             FirstName = "Sam",
-            AgeBand = AgeBand.From18To21,
+            AgeBand = AgeBand.YoungAdult,
             Region = "Amstelveen"
         };
 

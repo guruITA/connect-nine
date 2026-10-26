@@ -21,7 +21,7 @@ public sealed class MemberProfileTagEndpointTests
     {
         using WebApplicationFactory<Program> factory = CreateFactory();
         Guid accountId = SaveAccount(factory);
-        Guid profileId = SaveProfile(factory, accountId, AgeBand.From18To21);
+        Guid profileId = SaveProfile(factory, accountId, AgeBand.YoungAdult);
         using HttpClient client = ClientFor(factory, accountId);
         string name = $"Drone   Video {Guid.NewGuid():N}"[..20];
 
@@ -44,8 +44,8 @@ public sealed class MemberProfileTagEndpointTests
         using WebApplicationFactory<Program> factory = CreateFactory();
         Guid first = SaveAccount(factory);
         Guid second = SaveAccount(factory);
-        SaveProfile(factory, first, AgeBand.From18To21);
-        SaveProfile(factory, second, AgeBand.From22To30);
+        SaveProfile(factory, first, AgeBand.YoungAdult);
+        SaveProfile(factory, second, AgeBand.Adult);
         using HttpClient firstClient = ClientFor(factory, first);
         using HttpClient secondClient = ClientFor(factory, second);
         string name = $"shared {Guid.NewGuid():N}"[..20];
@@ -89,7 +89,7 @@ public sealed class MemberProfileTagEndpointTests
     {
         using WebApplicationFactory<Program> factory = CreateFactory();
         Guid accountId = SaveAccount(factory);
-        SaveProfile(factory, accountId, AgeBand.From18To21);
+        SaveProfile(factory, accountId, AgeBand.YoungAdult);
         using HttpClient client = ClientFor(factory, accountId);
 
         using HttpResponseMessage response = await client.PostAsync(TagsAddress, Json(new { name }));
@@ -162,7 +162,7 @@ public sealed class MemberProfileTagEndpointTests
     {
         using WebApplicationFactory<Program> factory = CreateFactory();
         Guid accountId = SaveAccount(factory);
-        SaveProfile(factory, accountId, AgeBand.From18To21);
+        SaveProfile(factory, accountId, AgeBand.YoungAdult);
         using HttpClient client = ClientFor(factory, accountId);
         using HttpResponseMessage photography = await client.PostAsync(TagsAddress, Json(new { name = "photography" }));
         using HttpResponseMessage football = await client.PostAsync(TagsAddress, Json(new { name = "Football" }));
