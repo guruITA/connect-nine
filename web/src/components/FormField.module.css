@@ -26,3 +26,28 @@ input[aria-invalid="true"] {
   font-weight: var(--font-weight-semibold);
   line-height: var(--text-small-line);
 }
+.hint {
+  margin: 0;
+  color: var(--color-text-muted);
+  font-size: var(--text-small-size);
+  line-height: var(--text-small-line);
+}
+.field select,
+.field textarea {
+  width: 100%;
+  min-height: var(--button-height);
+  padding: var(--space-xs) var(--space-m);
+  border: var(--hairline-width) solid var(--color-text-muted);
+  border-radius: var(--radius-mark);
+  background: var(--color-white);
+  color: var(--color-text);
+  font: inherit;
+}
+.field textarea {
+  min-height: calc(var(--button-height) * 2);
+  resize: vertical;
+}
+.field select[aria-invalid="true"],
+.field textarea[aria-invalid="true"] {
+  border-color: var(--color-danger);
+}

@@ -67,58 +67,11 @@
   gap: var(--space-l);
 }
 
-.field {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-xs);
-}
-
-.label {
-  color: var(--color-navy);
-  font-weight: var(--font-weight-semibold);
-}
-
-.hint,
-.fieldError {
-  margin: 0;
-  font-size: var(--text-small-size);
-  line-height: var(--text-small-line);
-}
-
-.hint {
-  color: var(--color-text-muted);
-}
-
-.fieldError {
-  color: var(--color-error-text);
-}
-
-.input,
-.textarea {
-  min-height: var(--target-size);
-  padding: var(--space-s) var(--space-m);
-  border: var(--hairline-width) solid var(--color-text-muted);
-  border-radius: var(--radius-field);
-  background: var(--color-white);
-  color: var(--color-text);
-  font-family: var(--font-body);
-  font-size: var(--text-body-size);
-  line-height: var(--text-body-line);
-}
-
-.input[aria-invalid="true"],
-.textarea[aria-invalid="true"] {
-  border-color: var(--color-error-text);
-  background: var(--color-error-panel);
-}
-
-.textarea {
-  min-height: calc(var(--target-size) * 2);
-  resize: vertical;
-}
-
 .submit {
   align-self: flex-start;
+  /* The element selector button of CreateAccount.module.css reaches this page too. */
+  width: auto;
+  margin-top: 0;
   min-height: var(--button-height);
   padding: var(--space-s) var(--space-l);
   border: none;

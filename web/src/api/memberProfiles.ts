@@ -1,5 +1,7 @@
-// Calls POST /api/member-profiles of #321 to create a member profile.
-// Moves to request() of web/src/api/client.ts when #264 adds it.
+// Calls POST /api/member-profiles of #321 to create a member profile, through request() of
+// client.ts like every call to the server (frontend rule 14).
+import { NetworkError, request, RequestError } from "./client";
+import type { ValidationProblem } from "./client";
 
 export type AgeBand = "Adolescent" | "YoungAdult" | "Adult";
 
@@ -24,16 +26,21 @@ export type CreateMemberProfileResult =
   | { outcome: "notReachable" };
 
 type SavedResponseBody = {
-  data: { id: string };
-};
-
-type ValidationProblemBody = {
-  errors?: Record<string, string[]>;
+  data?: { id?: string };
 };
 
 type ProblemBody = {
   title?: string;
 };
+
+function fieldErrorsOf(body: unknown): Record<string, string> {
+  const fieldErrors: Record<string, string> = {};
+  const errors = (body as ValidationProblem | undefined)?.errors ?? {};
+  for (const [field, messages] of Object.entries(errors)) {
+    if (messages[0]) fieldErrors[field] = messages[0];
+  }
+  return fieldErrors;
+}
 
 export async function createMemberProfile(
   form: CreateMemberProfileForm,
@@ -48,56 +55,50 @@ export async function createMemberProfile(
     headers["X-Temporary-Account-Id"] = temporaryAccountId;
   }
 
-  let response: Response;
   try {
-    response = await fetch("/api/member-profiles", {
-      method: "POST",
-      headers,
-      credentials: "include",
-      body: JSON.stringify({
-        firstName: form.firstName,
-        ageBand: form.ageBand,
-        region: form.region,
-        bio: form.bio,
-      }),
-    });
-  } catch {
-    return { outcome: "notReachable" };
-  }
+    const body = await request<SavedResponseBody | undefined>(
+      "/api/member-profiles",
+      {
+        method: "POST",
+        headers,
+        credentials: "include",
+        body: JSON.stringify({
+          firstName: form.firstName,
+          ageBand: form.ageBand,
+          region: form.region,
+          bio: form.bio,
+        }),
+      },
+    );
 
-  try {
-    if (response.status === 201) {
-      const body = (await response.json()) as SavedResponseBody;
-      return { outcome: "saved", id: body.data.id };
-    }
-
-    if (response.status === 400) {
-      const body = (await response.json()) as ValidationProblemBody;
-      const fieldErrors: Record<string, string> = {};
-      for (const [field, messages] of Object.entries(body.errors ?? {})) {
-        fieldErrors[field] = messages[0];
-      }
-      return { outcome: "fieldErrors", fieldErrors };
-    }
-  } catch {
     // An answer that is not the JSON the server promised counts as not reachable.
+    const id = body?.data?.id;
+    return id ? { outcome: "saved", id } : { outcome: "notReachable" };
+  } catch (error) {
+    if (error instanceof NetworkError) {
+      return { outcome: "notReachable" };
+    }
+
+    if (error instanceof RequestError) {
+      if (error.status === 400) {
+        return {
+          outcome: "fieldErrors",
+          fieldErrors: fieldErrorsOf(error.body),
+        };
+      }
+      if (error.status === 401) return { outcome: "notLoggedIn" };
+      if (error.status === 409) {
+        // The server names the conflict in the title, for example an account that already
+        // belongs to an organisation (#67). Without a title it is the profile that already exists.
+        const title = (error.body as ProblemBody | undefined)?.title;
+        return {
+          outcome: "alreadyHasProfile",
+          message: title || "You already have a profile",
+        };
+      }
+    }
+
+    // 503 and every other status the server might send are all treated as not reachable.
     return { outcome: "notReachable" };
   }
-
-  if (response.status === 401) {
-    return { outcome: "notLoggedIn" };
-  }
-
-  if (response.status === 409) {
-    // The server names the conflict in the title, for example an account that already belongs
-    // to an organisation (#67). Without a title it is the profile that already exists.
-    const body = (await response.json().catch(() => ({}))) as ProblemBody;
-    return {
-      outcome: "alreadyHasProfile",
-      message: body.title || "You already have a profile",
-    };
-  }
-
-  // 503 and every other status the server might send are all treated as not reachable.
-  return { outcome: "notReachable" };
 }

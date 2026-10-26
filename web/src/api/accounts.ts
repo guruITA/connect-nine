@@ -1,14 +1,11 @@
 import { NetworkError, request, RequestError } from "./client";
+import type { ValidationProblem } from "./client";
 
 export type CreateAccountResult =
   | { kind: "made" }
   | { kind: "invalid"; fields: { email?: string; password?: string } }
   | { kind: "taken" }
   | { kind: "not reachable" };
-
-type ValidationProblem = {
-  errors?: Record<string, string[]>;
-};
 
 function firstMessage(messages: string[] | undefined): string | undefined {
   return messages?.[0];
