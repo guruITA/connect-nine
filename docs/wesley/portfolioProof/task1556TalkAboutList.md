@@ -24,7 +24,7 @@ School asks: "You ensure that your work aligns with that of others and contribut
 
 ## TODO
 
-- [ ] The team: use the list at the stand up, and move what is settled to Settled.
+- [ ] The team: use the list at the stand up, and move what is settled to Settled. After the merge that happens in merge requests of our own, so this branch does not change for it.
 
 ## AI use
 

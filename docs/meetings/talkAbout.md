@@ -15,7 +15,7 @@ Started on 24 October 2026 by Wesley Oerlemans (#1556).
 
 | Point | Who | Where it comes from |
 |---|---|---|
-| Approve !68, !69, !79, !88 and !100. Their pipelines are green. !68 and !69 need an approval again after their rebase onto dev. | Whoever reviews | The merge requests |
+| Approve !68, !100, !114 and !115. Their pipelines are green. !68 needs an approval again after its rebase onto dev. !69 is approved after the phone check below, because its proof gets the result first. | Whoever reviews | The merge requests |
 | Confirm rule 12 of General and Git, one way everywhere. Wesley brings the two names of `accounts.ts` to one way (below). | Whole team | !79, #1548 |
 | Decision 008, the maintained fork of kaniko for the images: a line under Agreed by. Since !89 the container registry holds the images of every merge into dev (Deploy, Container registry). | Bayon, Nick, Gurpreet, Kelvin | [008-kanikoForImages.md](../decisions/008-kanikoForImages.md), #354 |
 | Decision 009, a table session beside ASP.NET Core Identity: a line under Agreed by. Gurpreet's line is in !100. | Bayon, Kelvin | [009-sessionTableBesideIdentity.md](../decisions/009-sessionTableBesideIdentity.md), #1552 |
@@ -28,9 +28,10 @@ Started on 24 October 2026 by Wesley Oerlemans (#1556).
 | The server check with the five of us is still to be held. Part 10 of the onboarding guide names the address of the server, while step 6 of the plan checks that it names none: we pick one of the two. | Whole team | #241, [serverCheckMeeting.md](../team/serverCheckMeeting.md) |
 | The site shell story: the teacher asked on 22 October 2026 that we align on it. | Bayon, Wesley | #19 |
 | k3s runs on the foundation's server since 25 October 2026. Who does task 93.3, the same install on a spare computer by someone who built no task of #157? | Bayon, Nick, Gurpreet, Kelvin | #157, !103 |
-| How a change reaches production: a merge request that changes `infra/` gets a Terraform plan, and every merge of dev into main goes live by itself through `deploy-production`. Read part 14 Changing production of the getting started guide before you review such a merge request. The chain to review and merge in this order: !103, !105, !107, !108, !109, !110. | Whole team | !109, !110, #158, #162 |
+| How a change reaches production: a merge request that changes `infra/` gets a Terraform plan, and every merge of dev into main goes live by itself through `deploy-production`. Read part 14 Changing production of the getting started guide before you review such a merge request. The chain to review and merge in this order: !102, !103, !105, !107, !108, !109, !110, !111, !112, !113. | Whole team | !109, !110, #158, #162 |
 | The first merge of dev into main. It is the first release: everything on dev goes live at https://live.31-70-66-186.sslip.io. When do we do it, and who checks the live address while it happens (task 96.3, #1060)? | Whole team | #162 |
 | Decision 010, k3s with Terraform for the live version and docker compose for the test site, which we agreed to with the architecture documents in !4: one of us who did not write it answers from it alone in #156 why not docker compose in production, where the state lives and how a visit reaches production. Bayon adds his line under Agreed by. | Bayon, Nick, Gurpreet, Kelvin | [010-productionOnK3s.md](../decisions/010-productionOnK3s.md), !102, #156 |
+| A migration only adds tables and columns, so going back to an earlier version never needs the database undone (part Going back in production of the getting started guide). #314 asks for it as a decision file `migrationsOnlyAdd.md`: who writes it, and by when? | Gurpreet | #314, !112 |
 
 ## Where the code differs from our rules
 
@@ -69,6 +70,8 @@ Checked against the code on dev on 24 October 2026. Rule 12 of General and Git a
 | Every claim of the Structure table of decision 002 names its source or is marked as an opinion. | 24 October 2026 | !84, #253 |
 | The current starter tags stay, and the researched tags are added later as extra tags. | 24 October 2026 | Question 9 in `clientQuestions.md`, !97 |
 | An organisation may see the profile of a member under 18 and contact that member only inside Connect, once a parent has given permission. | 24 October 2026 | Question 31 in `clientQuestions.md`, !97 |
+| Rules 17 to 20 of the backend part are on dev, approved by Nick, with Gurpreet's two points fixed in 99b49c91. Rule 12 waits for the team above, and so does who brings `ToCamelCaseErrors()` to dev. | 26 October 2026 | `codeConventions.md`, !79, the review in the proofs through !114 |
+| The six production questions for the director, read by Nick as if he were the director. | 26 October 2026 | The part Production of `clientQuestions.md`, !88, !115 |
 
 ## AI use declaration
 
