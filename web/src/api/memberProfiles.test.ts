@@ -1,5 +1,9 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { createMemberProfile, getCurrentMemberProfile } from "./memberProfiles";
+import {
+  createMemberProfile,
+  getCurrentMemberProfile,
+  getMemberProfile,
+} from "./memberProfiles";
 
 function mockFetchOnce(status: number, body?: unknown) {
   return vi.spyOn(globalThis, "fetch").mockResolvedValueOnce({
@@ -250,6 +254,104 @@ describe("getCurrentMemberProfile", () => {
     } as unknown as Response);
 
     const result = await getCurrentMemberProfile();
+
+    expect(result).toEqual({ outcome: "notReachable" });
+  });
+});
+
+const PUBLIC_PROFILE = {
+  firstName: "Robin",
+  ageBand: "From18To21" as const,
+  region: "Amstelveen",
+  bio: "Test member.",
+};
+
+describe("getMemberProfile", () => {
+  it("asks GET /api/member-profiles/{id} with the session cookie included", async () => {
+    const fetchSpy = mockFetchOnce(200, { data: PUBLIC_PROFILE, meta: {} });
+
+    await getMemberProfile("member-1");
+
+    expect(fetchSpy).toHaveBeenCalledWith("/api/member-profiles/member-1", {
+      headers: {},
+      credentials: "include",
+    });
+  });
+
+  it("encodes the id in the address", async () => {
+    const fetchSpy = mockFetchOnce(200, { data: PUBLIC_PROFILE, meta: {} });
+
+    await getMemberProfile("a/b");
+
+    expect(fetchSpy).toHaveBeenCalledWith(
+      "/api/member-profiles/a%2Fb",
+      expect.anything(),
+    );
+  });
+
+  it("reports the profile on 200", async () => {
+    mockFetchOnce(200, { data: PUBLIC_PROFILE, meta: {} });
+
+    const result = await getMemberProfile("member-1");
+
+    expect(result).toEqual({ outcome: "loaded", profile: PUBLIC_PROFILE });
+  });
+
+  it("reports the profile as it is when region, bio or tags are missing", async () => {
+    mockFetchOnce(200, {
+      data: { firstName: "Sam", ageBand: "From15To17" },
+      meta: {},
+    });
+
+    const result = await getMemberProfile("member-2");
+
+    expect(result).toEqual({
+      outcome: "loaded",
+      profile: { firstName: "Sam", ageBand: "From15To17" },
+    });
+  });
+
+  it("reports not found on 404", async () => {
+    mockFetchOnce(404, { title: "This member does not exist", status: 404 });
+
+    const result = await getMemberProfile("member-1");
+
+    expect(result).toEqual({ outcome: "notFound" });
+  });
+
+  it("reports not logged in on 401", async () => {
+    mockFetchOnce(401);
+
+    const result = await getMemberProfile("member-1");
+
+    expect(result).toEqual({ outcome: "notLoggedIn" });
+  });
+
+  it("reports not reachable on 503", async () => {
+    mockFetchOnce(503, {
+      title: "Connect is not reachable right now",
+      status: 503,
+    });
+
+    const result = await getMemberProfile("member-1");
+
+    expect(result).toEqual({ outcome: "notReachable" });
+  });
+
+  it("reports not reachable on any other status", async () => {
+    mockFetchOnce(500, { title: "Something else", status: 500 });
+
+    const result = await getMemberProfile("member-1");
+
+    expect(result).toEqual({ outcome: "notReachable" });
+  });
+
+  it("reports not reachable when the fetch call itself fails", async () => {
+    vi.spyOn(globalThis, "fetch").mockRejectedValueOnce(
+      new Error("network down"),
+    );
+
+    const result = await getMemberProfile("member-1");
 
     expect(result).toEqual({ outcome: "notReachable" });
   });
