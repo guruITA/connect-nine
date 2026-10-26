@@ -165,6 +165,17 @@ The four answers:
 
 The profile is found through the unique index `ix_profile_account_id` and read without tracking.
 
+Since task 130.4 (#395) the answer holds `parentConsent` while a young person under 18 waits for
+a parent (#392): `"pending"` for as long as the request exists and no permission was given yet,
+an ended link included, since nothing in this task asks again (#41). The key is left out, never
+sent as `null`, once permission is given or when there was never a request:
+
+```json
+{"data":{"firstName":"Noor","ageBand":"Adolescent","region":"Uithoorn","bio":null,"tags":[],"parentConsent":"pending"},"meta":{}}
+```
+
+No answer from this address ever holds the parent's address, the token, `expiresAt` or `givenAt`.
+
 ## `GET /api/member-profiles/{id}`
 
 Gives a logged in member the public part of another member's profile (issue 14 View another
@@ -204,6 +215,11 @@ ever in the answer.
   ```
 
 The query reads only `first_name`, `age_band`, `region` and `bio`, by the primary key `pk_profile`.
+
+Since task 130.4 (#395) a profile that still waits for a parent (#392) gives every member but its
+owner the same `404 This member does not exist` as an unknown id, byte for byte. The owner still
+gets the `200 OK` above. The viewer comes from the session only, the same way `GET
+/api/member-profiles/current` does, never from the id in the address or the body.
 
 Since task 36c.2 the answer also holds `tags`: the names of the member's tags, sorted by name,
 never their ids, and `[]` for a profile without tags. Tags follow the same rule for minors as the

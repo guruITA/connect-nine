@@ -52,6 +52,7 @@ public static class MemberProfileEndpoints
             Ok<Response<PublicMemberProfileResponseData>>,
             ProblemHttpResult>> (
                 string id,
+                ClaimsPrincipal user,
                 IQueryHandler<GetPublicProfileQuery, Result<GetPublicProfileResponse>> handler,
                 CancellationToken cancellationToken) =>
         {
@@ -60,7 +61,15 @@ public static class MemberProfileEndpoints
                 return Error.NotFound("This member does not exist").ToProblemDetails();
             }
 
-            var result = await handler.HandleAsync(new GetPublicProfileQuery(profileId), cancellationToken);
+            var viewerAccountId = user.GetAccountId();
+            if (viewerAccountId is null)
+            {
+                return Error.Unauthorized("Log in to see this page").ToProblemDetails();
+            }
+
+            var result = await handler.HandleAsync(
+                new GetPublicProfileQuery(profileId, viewerAccountId.Value),
+                cancellationToken);
 
             return result is { IsSuccess: true, Value: { } publicProfile }
                 ? TypedResults.Ok(PublicMemberProfileResponseMapper.Map(publicProfile))

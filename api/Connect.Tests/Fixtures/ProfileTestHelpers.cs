@@ -1,5 +1,7 @@
+using System.Security.Cryptography;
 using System.Text;
 using System.Text.Json;
+using Connect.Domain.ParentConsents;
 using Connect.Domain.Users;
 using Connect.Infrastructure.Persistence;
 using Microsoft.AspNetCore.Hosting;
@@ -91,6 +93,45 @@ internal static class ProfileTestHelpers
         dbContext.Add(profile);
         dbContext.SaveChanges();
         return profile.Id;
+    }
+
+    public static void SaveParentConsent(
+        WebApplicationFactory<Program> factory,
+        Guid profileId,
+        DateTimeOffset? givenAt = null)
+    {
+        using IServiceScope scope = factory.Services.CreateScope();
+        ConnectDbContext dbContext = scope.ServiceProvider.GetRequiredService<ConnectDbContext>();
+        var consent = new ParentConsent
+        {
+            ProfileId = profileId,
+            ParentEmail = "parent@example.com",
+            TokenHash = Convert.ToHexStringLower(SHA256.HashData(Guid.NewGuid().ToByteArray())),
+            ExpiresAt = DateTimeOffset.UtcNow.AddMonths(ParentConsent.KeepMonths)
+        };
+
+        dbContext.Add(consent);
+        dbContext.SaveChanges();
+
+        if (givenAt is not null)
+        {
+            consent.Give(givenAt.Value);
+            dbContext.SaveChanges();
+        }
+    }
+
+    public static void SaveExpiredParentConsent(WebApplicationFactory<Program> factory, Guid profileId)
+    {
+        using IServiceScope scope = factory.Services.CreateScope();
+        ConnectDbContext dbContext = scope.ServiceProvider.GetRequiredService<ConnectDbContext>();
+        dbContext.Add(new ParentConsent
+        {
+            ProfileId = profileId,
+            ParentEmail = "parent@example.com",
+            TokenHash = Convert.ToHexStringLower(SHA256.HashData(Guid.NewGuid().ToByteArray())),
+            ExpiresAt = DateTimeOffset.UtcNow.AddDays(-1)
+        });
+        dbContext.SaveChanges();
     }
 
     public static StringContent Json(object body)

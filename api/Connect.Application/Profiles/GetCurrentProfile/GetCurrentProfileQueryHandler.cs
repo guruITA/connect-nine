@@ -26,7 +26,10 @@ public sealed class GetCurrentProfileQueryHandler(IAppDbContext dbContext)
                         .Where(link => link.ProfileId == candidate.Id)
                         .OrderBy(link => link.Tag!.Name)
                         .Select(link => new TagResult(link.TagId, link.Tag!.Name))
-                        .ToList())),
+                        .ToList(),
+                    _dbContext.ParentConsents.Any(consent => consent.ProfileId == candidate.Id && consent.GivenAt == null)
+                        ? "pending"
+                        : null)),
             cancellationToken);
 
         return profile is null
