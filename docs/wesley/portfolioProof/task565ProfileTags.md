@@ -57,6 +57,7 @@ Done.
 
 ![Skills and interests on My profile at 1280 pixels](images/task565Tags1280.png)
 ![Skills and interests at 360 pixels](images/task565Tags360.png)
+5. **An empty Add, found in Gurpreet's review.** In his review of !72 on 23 October 2026, Gurpreet Singh pressed Add with an empty field and saw nothing, while the card asks for "Fill in a tag". `TagInput` stopped an empty field before it reached the server. Now the empty field goes to the server like every other tag, which answers 400 with "Fill in a tag", and the page shows it below Add your own, as `docs/pages/MyProfile.md` already said. Two new tests, one in `TagInput.test.tsx` and one in `MyProfile.test.tsx`, were red with the old check and green with the new code. `npm run lint`, `npx prettier --check .`, `npm test` (142 tests) and `npm run build` are green.
 
 ## OR5 Impact on users and society
 

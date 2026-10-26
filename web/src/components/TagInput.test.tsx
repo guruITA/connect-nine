@@ -90,6 +90,15 @@ describe("TagInput", () => {
     expect(onAdd).toHaveBeenCalledWith("drone video");
   });
 
+  it("calls onAdd with the empty field when Add is pressed without a tag", async () => {
+    const user = userEvent.setup();
+    const { onAdd } = renderTagInput({ value: "" });
+
+    await user.click(screen.getByRole("button", { name: "Add" }));
+
+    expect(onAdd).toHaveBeenCalledWith("");
+  });
+
   it("calls onChange as the member types in Add your own", async () => {
     const user = userEvent.setup();
     const { onChange } = renderTagInput();

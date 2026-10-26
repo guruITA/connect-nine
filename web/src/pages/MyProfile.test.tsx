@@ -275,6 +275,26 @@ describe("MyProfile", () => {
     expect(screen.getByLabelText("Add your own")).toHaveValue("x".repeat(31));
   });
 
+  it("shows Fill in a tag below Add your own when Add is pressed with an empty field", async () => {
+    const user = userEvent.setup();
+    mockedGetCurrentMemberProfile.mockResolvedValue({
+      outcome: "loaded",
+      profile: PROFILE,
+    });
+    mockedGetSuggestedTags.mockResolvedValue(SUGGESTED);
+    mockedAddMemberProfileTag.mockResolvedValue({
+      outcome: "fieldError",
+      message: "Fill in a tag",
+    });
+    renderPage();
+
+    await screen.findByRole("heading", { name: "Robin" });
+    await user.click(screen.getByRole("button", { name: "Add" }));
+
+    expect(await screen.findByText("Fill in a tag")).toBeInTheDocument();
+    expect(mockedAddMemberProfileTag).toHaveBeenCalledWith("");
+  });
+
   it("goes to Create your profile when adding a tag finds no profile", async () => {
     const user = userEvent.setup();
     mockedGetCurrentMemberProfile.mockResolvedValue({

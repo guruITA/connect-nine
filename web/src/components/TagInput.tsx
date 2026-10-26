@@ -29,11 +29,10 @@ export default function TagInput({
 }: TagInputProps) {
   const fieldBusy = busyName !== null && sameName(busyName, value);
 
+  // An empty field goes to the server too, which answers "Fill in a tag", so the message of an
+  // empty tag comes from the same place as every other message about a tag.
   function handleSubmit(event: FormEvent) {
     event.preventDefault();
-    if (value.trim().length === 0) {
-      return;
-    }
     onAdd(value);
   }
 
