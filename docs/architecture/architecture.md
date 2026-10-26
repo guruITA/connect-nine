@@ -415,6 +415,10 @@ characters for the first name and the region and 280 for the bio are checked whe
 is saved (task 7.2), not by the table. The tests are in
 `api/Connect.Infrastructure.Tests/Persistence/ProfileDatabaseTests.cs`.
 
+A visitor who is not logged in never causes a read of `profile`: the guard of
+`/api/member-profiles` answers 401 before the handler runs, the same for a known id, an unknown id
+and a text that is not an id (issue 15, task 15.1, #347, proven by `VisitorDatabaseTests`).
+
 ## Security in the architecture
 
 The users include young people from 15 years old, so security is part of the design, not an extra.
