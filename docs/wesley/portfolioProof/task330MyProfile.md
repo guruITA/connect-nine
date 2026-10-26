@@ -12,13 +12,14 @@ School asks: "You design and implement systematically, justify choices in relati
 1. **Which layer does what.** The query in Application finds the profile of the account through the unique index on `account_id`, without tracking and without loading the account. The endpoint takes the account from the session and has no id in its address, so a member can only ever ask for their own profile. The page shows what came back and does nothing else.
 2. **The alternative I weighed.** `GET /api/member-profiles/{id}` for the own profile as well lost to a separate address `current`, because with an id in the address a mistake in the check would show someone else's profile. With `current` there is nothing to get wrong.
 3. **Following the code of the team.** The names and folders are those of Nick Hoebe's account code: `GetCurrentProfileQuery` and its handler, `IAppDbContext.Profiles`, the DTO in `Profiles/DTO`. I added `IQueryHandler` next to his `ICommandHandler`, because the code conventions name query handlers and this is the first query.
+4. **What I changed when Nick's account code was merged.** Since !50, Application has no EF Core (decision 007). The query now runs through `IAppDbContext` with `AsNoTracking` and `SingleOrDefaultAsync`, as rule 7 of the code conventions says (task 3.13, #1550). The handler tests of !68 and of this merge request now share one SQLite database behind `IAppDbContext`, `SqliteAppDbContext`, instead of a copy each, as backend rule 20 asks.
 
 ## OR2 Choosing standards and methods
 
 School asks: "You independently select relevant standards and methods from the field and substantiate why they fit the context."
 
 1. **HTTP and problem details.** 200 with the profile, 401 without a login, 404 "You have no profile yet" as a problem details answer, and 503 when the database cannot be reached (RFC 9110, RFC 9457).
-2. **Reading without tracking.** EF Core does not track an entity it only reads with `AsNoTracking()`, and a `Select` into a record reads only the columns the record needs.
+2. **Reading without tracking.** EF Core does not track an entity it only reads with `AsNoTracking()`, and a `Select` into a record reads only the columns the record needs. Database rule 9 of the code conventions asks for `AsNoTracking()` on every query that only reads.
 3. **What I took from BoKSA.** The article API implementation asks for clear resource addresses and the same JSON shape with a fitting status code every time. I kept the resource `member-profiles` and put `current` where the id would be, and every answer with a body is either `data` with `meta` or a problem details body.
 4. **What I took from BoKSA.** The article Database integration says to understand what the ORM does underneath. I looked at the SQL of the query with EXPLAIN ANALYZE and saw that it uses the unique index that already exists, so I did not add one.
 
