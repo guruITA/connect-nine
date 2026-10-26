@@ -21,7 +21,7 @@ public sealed class TagDatabaseTests
                 "ConnectionStrings__DefaultConnection is not configured.");
 
         dbContext = CreateDbContext();
-        dbContext.Database.Migrate();
+        dbContext.MigrateAndReloadTypes();
     }
 
     [TearDown]

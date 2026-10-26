@@ -16,7 +16,7 @@ public sealed class ProfileDatabaseTests
     public void SetUp()
     {
         dbContext = TestDatabase.CreateDbContext();
-        dbContext.Database.Migrate();
+        dbContext.MigrateAndReloadTypes();
     }
 
     [TearDown]
