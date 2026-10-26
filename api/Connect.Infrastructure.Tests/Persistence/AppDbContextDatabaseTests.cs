@@ -144,4 +144,23 @@ public sealed class AppDbContextDatabaseTests
 
         Assert.That(found, Is.False);
     }
+
+    [Test]
+    public void AsNoTracking_ReadProfile_IsNotTracked()
+    {
+        Account account = TestRows.SaveAccount(dbContext);
+        dbContext.Add(TestRows.NewProfile(account));
+        dbContext.SaveChanges();
+        using ConnectDbContext readContext = TestDatabase.CreateDbContext();
+        IAppDbContext appDbContext = readContext;
+
+        Profile read = appDbContext.AsNoTracking(appDbContext.Profiles)
+            .Single(profile => profile.AccountId == account.Id);
+
+        using (Assert.EnterMultipleScope())
+        {
+            Assert.That(read.FirstName, Is.EqualTo("Sam"));
+            Assert.That(readContext.ChangeTracker.Entries(), Is.Empty);
+        }
+    }
 }
