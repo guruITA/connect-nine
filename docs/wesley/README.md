@@ -45,6 +45,7 @@ One file per task I did, with the proof block of the task filled in. A point tha
 | `portfolioProof/task356OneCommandGuide.md` | Task 20.5 Run all of Connect with one command (#356), merge requests !93 and !100 | Managing and Collaborating MS1 and MS4 |
 | `portfolioProof/task1519SprintReview1Documents.md` | Issue 1519 The sprint 1 review documents in the repository (#1519), merge requests !43, !44 and !45 | Managing and Collaborating MS1 |
 | `portfolioProof/task314AgreedDecision011.md` | Task 17.4 The way back to the previous version (#314) of Gurpreet Singh: my review and my agreement to decision 011, merge request !122 | Managing and Collaborating MS4 |
+| `portfolioProof/task314PractisedWayBack.md` | Task 17.4 The way back to the previous version (#314) of Gurpreet Singh: my practice of it, merge request !124 | Managing and Collaborating MS1 and MS4 |
 | `portfolioProof/task1555ScanFix.md` | Task 16.4 The security scan green again after two new advisories (#1555), merge requests !99 and !100 | Designing and Realising OR4 |
 | `portfolioProof/task1543TestsAndMocking.md` | Task 3.12 The code conventions for tests and NSubstitute (#1543), merge request !77 | Managing and Collaborating MS1 and MS4 |
 | `portfolioProof/task1559FeatureFolders.md` | Task 1.17 The code convention on the folder of a piece of screen (#1559), merge request !116 | Managing and Collaborating MS1 and MS4 |
