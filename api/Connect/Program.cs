@@ -2,8 +2,10 @@ using Connect.Application;
 using Connect.Infrastructure;
 using Connect.Presentation;
 using Connect.Presentation.Accounts.Endpoints;
+using Connect.Presentation.Common.Authentication;
 using Connect.Presentation.Common.Errors;
 using Connect.Presentation.Health.Endpoints;
+using Connect.Presentation.Profiles.Endpoints;
 using Connect.Presentation.Screen;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -25,6 +27,7 @@ builder.Services
     .AddPresentation();
 
 builder.Services.AddAuthentication();
+builder.Services.AddTemporaryAccountAuthentication(builder.Configuration);
 builder.Services.AddAuthorization();
 
 var app = builder.Build();
@@ -37,5 +40,6 @@ app.UseAuthentication();
 app.UseAuthorization();
 app.MapHealthEndpoints();
 app.MapAccountEndpoints();
+app.MapMemberProfileEndpoints();
 
 app.Run();

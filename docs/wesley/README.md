@@ -21,6 +21,8 @@ One file per task I did, with the proof block of the task filled in. A point tha
 | `portfolioProof/task38CollaborationAgreementDeclaration.md` | Issue 106 My documents end with the text of section 9.1 of the collaboration agreement (#38), merge request !57 | Managing and Collaborating MS4 |
 | `portfolioProof/task38EvidenceCleanup.md` | Issue 106 The sprint 1 evidence documents cite only files in the repository (#38), merge requests !17 and !18 | Managing and Collaborating MS1, Analysing and Advising AA2 |
 | `portfolioProof/task2RepositorySkeleton.md` | Task 1.1 The starting structure (#2), merge request !13 | Managing and Collaborating MS1 and MS4 |
+| `portfolioProof/task321CreateProfileAddress.md` | Task 7.2 The address that saves a profile (#321), merge request !68 | Designing and Realising OR1, OR2, OR4 and OR5 |
+| `portfolioProof/task1550QueriesThroughAppDbContext.md` | Task 3.13 The code convention on queries and saves through IAppDbContext (#1550), merge request !68 | Managing and Collaborating MS1 and MS4 |
 | `portfolioProof/task1497PrototypeInPageDocs.md` | Task 178.1 The page documents point to the prototype screens (#1497), merge request !35 | Managing and Collaborating MS1 and MS4 |
 | `portfolioProof/task241ServerCheckMeeting.md` | Task 9.6 The plan for the server check with the team (#241), merge request !60 | Managing and Collaborating MS1 and MS4 |
 | `portfolioProof/task1040ProductionQuestions.md` | Task 91.1 The six production questions for the client (#1040), merge request !88 | Analysing and Advising AA5, Managing and Collaborating MS1 |

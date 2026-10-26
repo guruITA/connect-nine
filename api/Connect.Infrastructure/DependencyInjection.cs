@@ -1,4 +1,5 @@
 using Connect.Application.Accounts.CreateAccount;
+using Connect.Application.Common.Abstractions;
 using Connect.Domain.Users;
 using Connect.Infrastructure.Identity;
 using Connect.Infrastructure.Health;
@@ -24,6 +25,7 @@ public static class DependencyInjection
             options
                 .UseNpgsql(connectionString)
                 .UseSnakeCaseNamingConvention());
+        services.AddScoped<IAppDbContext>(provider => provider.GetRequiredService<ConnectDbContext>());
 
         services
             .AddIdentityCore<Account>()
