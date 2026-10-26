@@ -1,6 +1,6 @@
 # Proof: tasks 95.1 to 95.3 Connect live on k3s, its database, its server and its address (#1050, #1051, #1052)
 
-Branch `chore/159-connect-in-production`, built on `chore/1047-terraform-folder` (task 94.1). The merge request opens with the jobs that plan and apply in the pipeline (TODO below). Issue: 95 Connect and its database described in Terraform (#159). Files: `infra/k3s/applySecrets.sh`, `infra/terraform/connectDatabase.tf`, `connectMigrations.tf`, `connectServer.tf`, `connectIngress.tf` and `variables.tf`, `deploy/Caddyfile`, and `docs/team/onboarding.md` (part 4 Production secrets, part 14 The live version). The live version: https://live.31-70-66-186.sslip.io.
+Merge request !108, branch `chore/159-connect-in-production`, built on !107 (task 94.1). Issue: 95 Connect and its database described in Terraform (#159). Files: `infra/k3s/applySecrets.sh`, `infra/terraform/connectDatabase.tf`, `connectMigrations.tf`, `connectServer.tf`, `connectIngress.tf` and `variables.tf`, `deploy/Caddyfile`, and `docs/team/onboarding.md` (part 4 Production secrets, part 14 The live version). The live version: https://live.31-70-66-186.sslip.io.
 Profile: Full Stack Software Developer, level 3. Portflow: Managing and Collaborating MS1 and MS4.
 
 A point that needs someone else is marked TODO with who and what.
@@ -14,7 +14,8 @@ School asks: "You anticipate risks and bottlenecks in the process before they be
 3. **The data of young people is protected against a mistake.** The database has its own volume of 10 GB and `prevent_destroy`, so Terraform refuses a plan that would remove it. I removed the database pod on purpose: k3s started a new one within five seconds, the three migrations were still there and the server was never restarted.
 4. **Visitors only reach a server that answers.** The server is ready only when `/api/health` says healthy, and is restarted only when port 8080 stops answering, never on a database that is away for a moment. Every part has a memory and processor limit, so the live version cannot push the test site off the shared server. On 25 October 2026 the server used 64Mi and the database 19Mi.
 5. **It worked before anyone could visit it.** The plan said 7 to add, the apply ended with "Apply complete! Resources: 7 added, 0 changed, 0 destroyed" in 44 seconds, the migrations Job ended Complete, and `/api/health` through Traefik answered healthy before Caddy got the address. Then https://live.31-70-66-186.sslip.io answered healthy with a certificate of Let's Encrypt, http went to https with 308, and the test site answered all 578 checks of its health address, one every half second, during the apply and the change of Caddy. A plan after it said `No changes`, with the state `production` in GitLab.
-6. **Transferable.** Part 14 of the getting started guide says where the address, the database and the server are described, the order of Secret, Job and Deployment, why the two probes differ, the limits with what was used, how to make a new password, and how the address changes when the foundation's domain comes.
+6. **A gap in the swap without downtime, measured and closed.** During a planned restart of the server on 25 October 2026 one check of the live address in 378 got no answer, at the moment the old pod stopped: Traefik still sent a visit to a pod that was shutting down. `connectServer.tf` now has a `preStop` wait of five seconds, so Traefik has moved every visit to the new pod before .NET stops. The apply that put the wait in replaced the old pod, which had no wait yet, and that one more check got no answer. After it, four restarts of the server under checks every 0.2 and 0.5 seconds lost none of 436.
+7. **Transferable.** Part 14 of the getting started guide says where the address, the database and the server are described, the order of Secret, Job and Deployment, why the two probes differ, the limits with what was used, how to make a new password, and how the address changes when the foundation's domain comes.
 
 ## MS4 Making the work fit with the work of the team
 
@@ -27,8 +28,9 @@ School asks: "You ensure that your work aligns with that of others and contribut
 
 ## TODO
 
-- [ ] Wesley: the jobs `terraform-plan` and `terraform-apply` of task 94.2 (#1048), with `applySecrets.sh` before the apply and the image version from the pipeline, then the merge request with this proof.
-- [ ] Wesley: image-push also on main, so a merge into main puts its own version live (#162).
+- [x] Wesley: the jobs `terraform-plan` and `terraform-apply` of task 94.2 (#1048), with `applySecrets.sh` before the apply and the image version from the pipeline, in !109, and this merge request, 25 October 2026.
+- [x] Wesley: image-push also on main, so a merge into main puts its own version live, in !109.
+- [x] Wesley: the wait before the server stops, measured before and after, 25 October 2026.
 - [ ] A teammate who built none of #159: task 95.4 (#1053), no password shows, a crashed server comes back and the data survives a restart of the database.
 
 ## AI use
