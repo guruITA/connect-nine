@@ -20,7 +20,7 @@ const mockedGetCurrentMemberProfile = getCurrentMemberProfile as Mock;
 
 const PROFILE = {
   firstName: "Robin",
-  ageBand: "From18To21" as const,
+  ageBand: "YoungAdult" as const,
   region: "Amstelveen",
   bio: "I like film and music.",
 };

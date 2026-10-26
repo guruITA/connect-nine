@@ -7,7 +7,7 @@ describe("ProfileDetails", () => {
   it("shows the age band in words, the region and the short line with their labels", () => {
     render(
       <ProfileDetails
-        ageBand="From18To21"
+        ageBand="YoungAdult"
         region="Amstelveen"
         bio="I like film and music."
       />,
@@ -22,25 +22,25 @@ describe("ProfileDetails", () => {
   });
 
   it("leaves out the label and the row when the short line is empty", () => {
-    render(<ProfileDetails ageBand="From15To17" region="Amstelveen" bio="" />);
+    render(<ProfileDetails ageBand="Adolescent" region="Amstelveen" bio="" />);
 
     expect(screen.queryByText("About you")).not.toBeInTheDocument();
   });
 
   it("leaves out the label and the row when the short line is missing", () => {
-    render(<ProfileDetails ageBand="From15To17" region="Amstelveen" />);
+    render(<ProfileDetails ageBand="Adolescent" region="Amstelveen" />);
 
     expect(screen.queryByText("About you")).not.toBeInTheDocument();
   });
 
   it("leaves out the label and the row when the region is missing", () => {
-    render(<ProfileDetails ageBand="From15To17" />);
+    render(<ProfileDetails ageBand="Adolescent" />);
 
     expect(screen.queryByText("Region")).not.toBeInTheDocument();
   });
 
   it("reads each value together with its label", () => {
-    render(<ProfileDetails ageBand="From22To30" region="Uithoorn" />);
+    render(<ProfileDetails ageBand="Adult" region="Uithoorn" />);
 
     const term = screen.getByText("Region");
     expect(term.tagName).toBe("DT");
@@ -50,7 +50,7 @@ describe("ProfileDetails", () => {
   it("leaves out the short line when showBio is false even with a bio", () => {
     render(
       <ProfileDetails
-        ageBand="From18To21"
+        ageBand="YoungAdult"
         region="Amstelveen"
         bio="I like film and music."
         showBio={false}
@@ -65,7 +65,7 @@ describe("ProfileDetails", () => {
   it("has no accessibility problems", async () => {
     const { container } = render(
       <ProfileDetails
-        ageBand="From18To21"
+        ageBand="YoungAdult"
         region="Amstelveen"
         bio="I like film and music."
       />,

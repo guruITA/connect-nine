@@ -35,14 +35,14 @@ public sealed class GetCurrentProfileQueryHandlerTests
     public async Task HandleAsync_AccountWithProfile_ReturnsTheFourValues()
     {
         Account account = dbContext.SaveAccount();
-        dbContext.SaveProfile(account, "Sam", AgeBand.From18To21, "Amstelveen", "I like football.");
+        dbContext.SaveProfile(account, "Sam", AgeBand.YoungAdult, "Amstelveen", "I like football.");
 
         var result = await handler.HandleAsync(new GetCurrentProfileQuery(account.Id), CancellationToken.None);
 
         Assert.That(result.IsSuccess, Is.True);
         Assert.That(
             result.Value,
-            Is.EqualTo(new CurrentProfileResult("Sam", AgeBand.From18To21, "Amstelveen", "I like football.")));
+            Is.EqualTo(new CurrentProfileResult("Sam", AgeBand.YoungAdult, "Amstelveen", "I like football.")));
     }
 
     [Test]
@@ -64,8 +64,8 @@ public sealed class GetCurrentProfileQueryHandlerTests
     {
         Account own = dbContext.SaveAccount();
         Account other = dbContext.SaveAccount();
-        dbContext.SaveProfile(own, "Sam", AgeBand.From15To17, "Amstelveen", null);
-        dbContext.SaveProfile(other, "Alex", AgeBand.From22To30, "Uithoorn", "Other text");
+        dbContext.SaveProfile(own, "Sam", AgeBand.Adolescent, "Amstelveen", null);
+        dbContext.SaveProfile(other, "Alex", AgeBand.Adult, "Uithoorn", "Other text");
 
         var result = await handler.HandleAsync(new GetCurrentProfileQuery(own.Id), CancellationToken.None);
 

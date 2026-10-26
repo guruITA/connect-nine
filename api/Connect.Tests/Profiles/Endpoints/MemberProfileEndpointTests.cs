@@ -242,7 +242,7 @@ public sealed class MemberProfileEndpointTests
         using HttpClient client = ClientFor(factory, accountId);
         using HttpResponseMessage saved = await client.PostAsync(
             Address,
-            Json(new { firstName = "Sam", ageBand = "From18To21", region = "Amstelveen", bio = "" }));
+            Json(new { firstName = "Sam", ageBand = "YoungAdult", region = "Amstelveen", bio = "" }));
 
         using HttpResponseMessage response = await client.GetAsync(CurrentAddress);
         using JsonDocument body = await ReadJson(response);
@@ -255,7 +255,7 @@ public sealed class MemberProfileEndpointTests
                 data.EnumerateObject().Select(property => property.Name),
                 Is.EqualTo(new[] { "firstName", "ageBand", "region", "bio" }));
             Assert.That(data.GetProperty("firstName").GetString(), Is.EqualTo("Sam"));
-            Assert.That(data.GetProperty("ageBand").GetString(), Is.EqualTo("From18To21"));
+            Assert.That(data.GetProperty("ageBand").GetString(), Is.EqualTo("YoungAdult"));
             Assert.That(data.GetProperty("region").GetString(), Is.EqualTo("Amstelveen"));
             Assert.That(data.GetProperty("bio").ValueKind, Is.EqualTo(JsonValueKind.Null));
             Assert.That(body.RootElement.GetProperty("meta").EnumerateObject(), Is.Empty);
@@ -299,10 +299,10 @@ public sealed class MemberProfileEndpointTests
         using HttpClient secondClient = ClientFor(factory, second);
         using HttpResponseMessage firstSaved = await firstClient.PostAsync(
             Address,
-            Json(new { firstName = "Sam", ageBand = "From15To17", region = "Amstelveen" }));
+            Json(new { firstName = "Sam", ageBand = "Adolescent", region = "Amstelveen" }));
         using HttpResponseMessage secondSaved = await secondClient.PostAsync(
             Address,
-            Json(new { firstName = "Alex", ageBand = "From22To30", region = "Uithoorn" }));
+            Json(new { firstName = "Alex", ageBand = "Adult", region = "Uithoorn" }));
 
         using HttpResponseMessage firstResponse = await firstClient.GetAsync(CurrentAddress);
         using HttpResponseMessage secondResponse = await secondClient.GetAsync(CurrentAddress);

@@ -170,7 +170,7 @@ describe("createMemberProfile", () => {
 
 const PROFILE = {
   firstName: "Sam",
-  ageBand: "From18To21" as const,
+  ageBand: "YoungAdult" as const,
   region: "Amstelveen",
   bio: null,
 };
