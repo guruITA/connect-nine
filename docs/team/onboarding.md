@@ -226,7 +226,7 @@ Production runs on k3s on the foundation's server (part 14 Changing production).
 
 - Never write a secret on a command line, for example with `kubectl create secret --from-literal`: every user of the computer can read a command line with `ps`. The script writes each value to a file with rights 600 first.
 - A Kubernetes Secret is base64 encoded, and base64 is not encryption. Only the login `gitlab-deployer` and the administrators of the server may read the Secrets of `connect-production`.
-- k3s keeps the Secrets in its own database on the server, and its secrets encryption is not on yet. Wesley Oerlemans decides on switching it on (`k3s secrets-encrypt enable`).
+- k3s keeps the Secrets in its own database on the server and encrypts them there since 25 October 2026, so a copy of that database alone holds no password. What that protects and what not: section Production server, part Secrets at rest (task 93.4, #1557).
 - The settings of the server that are not secret are in the ConfigMap `connect-server-config` in `infra/terraform/connectServerConfig.tf`.
 
 ### The frontend
