@@ -3,12 +3,14 @@ using Connect.Application.Common.Abstractions;
 using Connect.Application.Common.Results;
 using Connect.Application.Profiles.CreateProfile;
 using Connect.Application.Profiles.GetCurrentProfile;
+using Connect.Application.Profiles.GetPublicProfile;
 using Connect.Domain.Users;
 using Connect.Presentation.Common.Authentication;
 using Connect.Presentation.Common.Errors;
 using Connect.Presentation.Common.Response;
 using Connect.Presentation.Profiles.DTO;
 using Connect.Presentation.Profiles.Mappers;
+using Connect.Presentation.Profiles.Validators;
 using FluentValidation;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
@@ -43,6 +45,25 @@ public static class MemberProfileEndpoints
 
             return result is { IsSuccess: true, Value: { } profile }
                 ? TypedResults.Ok(MemberProfileResponseMapper.Map(profile))
+                : result.Error.ToProblemDetails();
+        });
+
+        memberProfileGroup.MapGet("/{id}", async Task<Results<
+            Ok<Response<PublicMemberProfileResponseData>>,
+            ProblemHttpResult>> (
+                string id,
+                IQueryHandler<GetPublicProfileQuery, Result<GetPublicProfileResponse>> handler,
+                CancellationToken cancellationToken) =>
+        {
+            if (!MemberProfileIdValidator.TryParse(id, out var profileId))
+            {
+                return Error.NotFound("This member does not exist").ToProblemDetails();
+            }
+
+            var result = await handler.HandleAsync(new GetPublicProfileQuery(profileId), cancellationToken);
+
+            return result.IsSuccess
+                ? TypedResults.Ok(PublicMemberProfileResponseMapper.Map(result.Value!))
                 : result.Error.ToProblemDetails();
         });
 

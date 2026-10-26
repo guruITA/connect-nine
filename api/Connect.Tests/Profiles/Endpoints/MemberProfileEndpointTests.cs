@@ -333,6 +333,152 @@ public sealed class MemberProfileEndpointTests
         }
     }
 
+    [Test]
+    public async Task GetById_Adult_ReturnsTheFourPublicValuesAndNothingElse()
+    {
+        using WebApplicationFactory<Program> factory = CreateFactory();
+        Guid profileId = SaveProfile(factory, "Robin", AgeBand.From18To21, "Amstelveen", "Test member, 18 to 21.");
+        using HttpClient client = ClientFor(factory, SaveAccount(factory));
+
+        using HttpResponseMessage response = await client.GetAsync($"/api/member-profiles/{profileId}");
+        string content = await response.Content.ReadAsStringAsync();
+        using JsonDocument body = JsonDocument.Parse(content);
+        JsonElement data = body.RootElement.GetProperty("data");
+
+        using (Assert.EnterMultipleScope())
+        {
+            Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.OK));
+            Assert.That(
+                data.EnumerateObject().Select(property => property.Name),
+                Is.EqualTo(new[] { "firstName", "ageBand", "region", "bio" }));
+            Assert.That(data.GetProperty("firstName").GetString(), Is.EqualTo("Robin"));
+            Assert.That(data.GetProperty("region").GetString(), Is.EqualTo("Amstelveen"));
+            Assert.That(content, Does.Not.Contain("email").And.Not.Contain("accountId").And.Not.Contain(profileId.ToString()));
+        }
+    }
+
+    [Test]
+    public async Task GetById_YoungPersonOf15To17_LeavesTheRegionKeyOut()
+    {
+        using WebApplicationFactory<Program> factory = CreateFactory();
+        Guid profileId = SaveProfile(factory, "Noor", AgeBand.From15To17, "Uithoorn", "Test member, 15 to 17.");
+        using HttpClient client = ClientFor(factory, SaveAccount(factory));
+
+        using HttpResponseMessage response = await client.GetAsync($"/api/member-profiles/{profileId}");
+        using JsonDocument body = await ReadJson(response);
+        JsonElement data = body.RootElement.GetProperty("data");
+
+        using (Assert.EnterMultipleScope())
+        {
+            Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.OK));
+            Assert.That(data.TryGetProperty("region", out _), Is.False);
+            Assert.That(data.GetProperty("bio").GetString(), Is.EqualTo("Test member, 15 to 17."));
+        }
+    }
+
+    [Test]
+    public async Task GetById_EmptyBio_LeavesTheBioKeyOut()
+    {
+        using WebApplicationFactory<Program> factory = CreateFactory();
+        Guid profileId = SaveProfile(factory, "Robin", AgeBand.From22To30, "Amstelveen", null);
+        using HttpClient client = ClientFor(factory, SaveAccount(factory));
+
+        using HttpResponseMessage response = await client.GetAsync($"/api/member-profiles/{profileId}");
+        using JsonDocument body = await ReadJson(response);
+
+        Assert.That(body.RootElement.GetProperty("data").TryGetProperty("bio", out _), Is.False);
+    }
+
+    [TestCase("00000000-0000-4000-8000-000000000999")]
+    [TestCase("abc")]
+    public async Task GetById_UnknownOrMalformedId_ReturnsNotFound(string id)
+    {
+        using WebApplicationFactory<Program> factory = CreateFactory();
+        using HttpClient client = ClientFor(factory, SaveAccount(factory));
+
+        using HttpResponseMessage response = await client.GetAsync($"/api/member-profiles/{id}");
+        using JsonDocument body = await ReadJson(response);
+
+        using (Assert.EnterMultipleScope())
+        {
+            Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.NotFound));
+            Assert.That(body.RootElement.GetProperty("title").GetString(), Is.EqualTo("This member does not exist"));
+        }
+    }
+
+    [Test]
+    public async Task GetById_OwnProfile_GivesTheSamePublicAnswer()
+    {
+        using WebApplicationFactory<Program> factory = CreateFactory();
+        Guid accountId = SaveAccount(factory);
+        using HttpClient client = ClientFor(factory, accountId);
+        using HttpResponseMessage saved = await client.PostAsync(
+            Address,
+            Json(new { firstName = "Noor", ageBand = "From15To17", region = "Uithoorn" }));
+        using JsonDocument savedBody = await ReadJson(saved);
+        string profileId = savedBody.RootElement.GetProperty("data").GetProperty("id").GetString()!;
+
+        using HttpResponseMessage response = await client.GetAsync($"/api/member-profiles/{profileId}");
+        using JsonDocument body = await ReadJson(response);
+
+        Assert.That(body.RootElement.GetProperty("data").TryGetProperty("region", out _), Is.False);
+    }
+
+    [Test]
+    public async Task GetById_WithoutAccount_ReturnsUnauthorized()
+    {
+        using WebApplicationFactory<Program> factory = CreateFactory();
+        Guid profileId = SaveProfile(factory, "Robin", AgeBand.From18To21, "Amstelveen", null);
+        using HttpClient client = factory.CreateClient();
+
+        using HttpResponseMessage response = await client.GetAsync($"/api/member-profiles/{profileId}");
+
+        Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.Unauthorized));
+    }
+
+    [Test]
+    public async Task GetById_DatabaseNotReachable_ReturnsServiceUnavailableWithoutErrorText()
+    {
+        using WebApplicationFactory<Program> factory = UnreachableDatabaseFactory();
+        using HttpClient client = ClientFor(factory, Guid.NewGuid());
+
+        using HttpResponseMessage response = await client.GetAsync($"/api/member-profiles/{Guid.NewGuid()}");
+        string content = await response.Content.ReadAsStringAsync();
+
+        using (Assert.EnterMultipleScope())
+        {
+            Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.ServiceUnavailable));
+            Assert.That(content, Does.Not.Contain("Exception"));
+        }
+    }
+
+    private static Guid SaveProfile(
+        WebApplicationFactory<Program> factory,
+        string firstName,
+        AgeBand ageBand,
+        string region,
+        string? bio)
+    {
+        Guid accountId = SaveAccount(factory);
+        using IServiceScope scope = factory.Services.CreateScope();
+        ConnectDbContext dbContext = scope.ServiceProvider.GetRequiredService<ConnectDbContext>();
+        Account account = dbContext.Users.Single(user => user.Id == accountId);
+        var profile = new Profile
+        {
+            AccountId = accountId,
+            Account = account,
+            FirstName = firstName,
+            AgeBand = ageBand,
+            Region = region,
+            Bio = bio
+        };
+
+        dbContext.Add(profile);
+        dbContext.SaveChanges();
+
+        return profile.Id;
+    }
+
     private static WebApplicationFactory<Program> UnreachableDatabaseFactory()
     {
         return new WebApplicationFactory<Program>()

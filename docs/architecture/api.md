@@ -165,6 +165,44 @@ The four answers:
 
 The profile is found through the unique index `ix_profile_account_id` and read without tracking.
 
+## `GET /api/member-profiles/{id}`
+
+Gives a logged in member the public part of another member's profile (issue 14 View another
+member's profile, task 14.3). The id is read as text: `abc` and an unknown id both answer `404`.
+A member who opens their own id gets the same public answer as anyone else.
+
+What another member may see follows `ProfileVisibility` in `api/Connect.Domain/Users`, after the
+role table of #28: the region of a young person of 15 to 17 is never sent. A value that is hidden
+or empty is left out of `data`, never sent as `null`. No email address, id, account id or date is
+ever in the answer.
+
+- `200 OK` for an adult:
+
+  ```json
+  {"data":{"firstName":"Robin","ageBand":"YoungAdult","region":"Amstelveen","bio":"Test member, 18 to 21."},"meta":{}}
+  ```
+
+  and for a young person of 15 to 17, without the region:
+
+  ```json
+  {"data":{"firstName":"Noor","ageBand":"Adolescent","bio":"Test member, 15 to 17."},"meta":{}}
+  ```
+
+- `401 Unauthorized` when nobody is logged in, without a body.
+- `404 Not Found`:
+
+  ```json
+  {"title":"This member does not exist","status":404}
+  ```
+
+- `503 Service Unavailable` when the database cannot be reached, without any error text:
+
+  ```json
+  {"title":"Connect is not reachable right now","status":503}
+  ```
+
+The query reads only `first_name`, `age_band`, `region` and `bio`, by the primary key `pk_profile`.
+
 ## The screen and unknown addresses
 
 The server also serves the built screen (`web/dist`, copied into `wwwroot` by the job deploy-test), so the test site has one address and needs no CORS (#267).

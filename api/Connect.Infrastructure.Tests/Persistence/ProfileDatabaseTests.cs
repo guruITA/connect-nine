@@ -201,6 +201,46 @@ public sealed class ProfileDatabaseTests
 
     private sealed record ProfileValues(string FirstName, AgeBand AgeBand, string Region, string? Bio);
 
+    [Test]
+    public void ReadingThePublicPartOfAKnownProfile_ReturnsItsFourValuesAndReadsOnlyThoseColumns()
+    {
+        Account account = TestRows.SaveAccount(dbContext);
+        Profile profile = TestRows.NewProfile(account);
+        dbContext.Add(profile);
+        dbContext.SaveChanges();
+        var recorder = new DatabaseCommandRecorder();
+
+        using ConnectDbContext readContext = TestDatabase.CreateDbContext(recorder);
+        PublicMemberProfile? found = PublicPartOf(readContext, profile.Id);
+
+        string select = recorder.CommandsFor("profile").Single();
+        TestContext.Progress.WriteLine(select);
+        using (Assert.EnterMultipleScope())
+        {
+            Assert.That(found, Is.EqualTo(new PublicMemberProfile("Sam", AgeBand.Adolescent, "Amstelveen", "I like football.")));
+            Assert.That(select, Does.Contain("first_name").And.Contain("age_band").And.Contain("region").And.Contain("bio"));
+            Assert.That(select, Does.Not.Contain("account_id").And.Not.Contain("created_at").And.Not.Contain("updated_at"));
+        }
+    }
+
+    [Test]
+    public void ReadingThePublicPartOfAnUnknownProfile_ReturnsNothing()
+    {
+        using ConnectDbContext readContext = TestDatabase.CreateDbContext();
+
+        Assert.That(PublicPartOf(readContext, Guid.NewGuid()), Is.Null);
+    }
+
+    // The query of GET /api/member-profiles/{id}: only the four public columns, by the primary key,
+    // as a projection that EF Core does not track.
+    private static PublicMemberProfile? PublicPartOf(IAppDbContext appDbContext, Guid profileId)
+    {
+        return appDbContext.Profiles
+            .Where(profile => profile.Id == profileId)
+            .Select(profile => new PublicMemberProfile(profile.FirstName, profile.AgeBand, profile.Region, profile.Bio))
+            .SingleOrDefault();
+    }
+
     private async Task<bool> SaveProfileAtTheSameMoment(Guid accountId, Barrier barrier)
     {
         await Task.Yield();
