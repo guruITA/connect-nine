@@ -263,8 +263,9 @@ the test site needs.
   in the repository. When the managed state is off on gitlab.fdmci.hva.nl, the fallback is the
   backend kubernetes, as task 92.1 records.
 - The job `terraform-check` lays out and validates the files on every merge request. The job
-  `terraform-plan` puts the plan on the merge request with the read only login. Applying first
-  starts by hand on `main`, and issue 96 turns it into the job `deploy-production`.
+  `terraform-plan` puts the plan on a merge request that changes `infra/` or `.gitlab-ci.yml`, with
+  the read only login. Applying first starts by hand on `main`, and issue 96 turns it into the job
+  `deploy-production`.
 
 **Connect and its database in Terraform** (issue 95 Connect and its database described in
 Terraform):

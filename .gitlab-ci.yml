@@ -105,7 +105,7 @@ image-build:
     - /kaniko/executor --context "$CI_PROJECT_DIR" --dockerfile "$CI_PROJECT_DIR/Dockerfile" --target server --no-push --cleanup
     - /kaniko/executor --context "$CI_PROJECT_DIR" --dockerfile "$CI_PROJECT_DIR/Dockerfile" --target migrations --no-push
 
-# Only on dev, after a merge: builds both images and pushes them with the short commit id as their
+# Only on dev and main, after a merge: builds both images and pushes them with the short commit id as their
 # version, never only latest. kaniko has no login command, so the job writes the login of the
 # registry from CI_REGISTRY_USER and CI_REGISTRY_PASSWORD into its own config file.
 image-push:
@@ -115,6 +115,8 @@ image-push:
     - if: $CI_PIPELINE_SOURCE == "schedule"
       when: never
     - if: $CI_COMMIT_BRANCH == "dev"
+    # Also on main, so the version production gets has its own images (task 95.2, #1051).
+    - if: $CI_COMMIT_BRANCH == "main"
   script:
     - mkdir -p /kaniko/.docker
     - printf '{"auths":{"%s":{"auth":"%s"}}}' "$CI_REGISTRY" "$(printf '%s:%s' "$CI_REGISTRY_USER" "$CI_REGISTRY_PASSWORD" | base64 | tr -d '\n')" > /kaniko/.docker/config.json
@@ -403,8 +405,12 @@ e2e-test:
   variables:
     KUBECTL_VERSION: v1.36.5
     KUBECTL_SHA256: 33bc88a24c3b09cf55bfd59e6ca977881b61fc3f25ab65bc80c65b430248648e
+    # The packages of the image, each pinned to its version with ~, so a security rebuild (-r1, -r2) of
+    # the same version still installs and a new version needs a merge request. A job on another image
+    # sets its own list.
+    APK_PACKAGES: bash~5.2.26 openssh-client-default~9.7_p1 curl
   before_script:
-    - apk add --no-cache bash=5.2.26-r0 openssh-client-default=9.7_p1-r5 curl
+    - apk add --no-cache $APK_PACKAGES
     - curl -fsSL -o /usr/local/bin/kubectl "https://dl.k8s.io/release/${KUBECTL_VERSION}/bin/linux/amd64/kubectl"
     - echo "${KUBECTL_SHA256}  /usr/local/bin/kubectl" | sha256sum -c -
     - chmod +x /usr/local/bin/kubectl
@@ -428,3 +434,85 @@ kube-check:
   script:
     - kubectl get nodes
     - kubectl wait --for=condition=Ready node --all --timeout=60s
+
+# How the Terraform jobs of production run (task 94.2, #1048): the image of Terraform itself, the same
+# version as infra/terraform/terraform.tf, with the tunnel and the login of .production-access. The state
+# production lives in GitLab (Operate, Terraform states) and is reached with the job token, which has the
+# role of whoever started the pipeline: reading it needs Developer, locking and writing it Maintainer.
+# https://docs.gitlab.com/user/infrastructure/iac/terraform_state/ (read 25 October 2026)
+.terraform-production:
+  extends: .production-access
+  image:
+    name: hashicorp/terraform:1.17.0
+    entrypoint: [""]
+  variables:
+    # The image is Alpine 3.24, so its own versions. jq turns the plan into the report of the merge request.
+    APK_PACKAGES: bash~5.3 openssh-client-default~10.3_p1 curl~8 jq~1.8
+    TF_IN_AUTOMATION: "true"
+    TF_HTTP_ADDRESS: ${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/terraform/state/production
+    TF_HTTP_LOCK_ADDRESS: ${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/terraform/state/production/lock
+    TF_HTTP_UNLOCK_ADDRESS: ${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/terraform/state/production/lock
+    TF_HTTP_LOCK_METHOD: POST
+    TF_HTTP_UNLOCK_METHOD: DELETE
+    TF_HTTP_USERNAME: gitlab-ci-token
+    TF_HTTP_PASSWORD: ${CI_JOB_TOKEN}
+    TF_HTTP_RETRY_WAIT_MIN: "5"
+    TF_VAR_image_repository: ${CI_REGISTRY_IMAGE}
+    TF_VAR_production_host: ${PRODUCTION_HOST}
+  before_script:
+    - !reference [.production-access, before_script]
+    - export TF_VAR_kubeconfig_path="$KUBECONFIG"
+    - cd infra/terraform
+    - terraform init -input=false
+
+# Puts the plan of a change to production on its merge request, with the read only login, so nothing
+# changes. Only when the merge request changes infra/ or this file: a plan needs the production server,
+# and a server that is away for a moment must not turn every other merge request red.
+# The plan keeps the image version that runs now, so it shows only what the files change. The new
+# version itself goes to production with the apply after the merge into main.
+terraform-plan:
+  stage: deploy
+  extends: .terraform-production
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "schedule"
+      when: never
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+      changes:
+        - infra/**/*
+        - .gitlab-ci.yml
+  variables:
+    KUBE_TOKEN: $KUBE_PLANNER_TOKEN
+  script:
+    - |
+      running="$(kubectl -n connect-production get deployment connect-server -o jsonpath='{.spec.template.spec.containers[0].image}' 2>/dev/null || true)"
+      if [ -n "$running" ]; then export TF_VAR_image_tag="${running##*:}"; else export TF_VAR_image_tag="$CI_COMMIT_SHORT_SHA"; fi
+      echo "Planned with the image version that runs now: $TF_VAR_image_tag"
+    - terraform plan -input=false -lock=false -out=plan.cache
+    - terraform show -no-color plan.cache > plan.txt
+    - |
+      terraform show -json plan.cache | jq -r '([.resource_changes[]?.change.actions?]|flatten)|{"create":(map(select(.=="create"))|length),"update":(map(select(.=="update"))|length),"delete":(map(select(.=="delete"))|length)}' > plan.json
+  artifacts:
+    access: developer
+    expose_as: Terraform plan
+    paths:
+      - infra/terraform/plan.txt
+    reports:
+      terraform: infra/terraform/plan.json
+
+# Applies the files to production after a merge into main, only when a team member presses play, with
+# the login that may change things. resource_group production lets only one apply run at a time.
+terraform-apply:
+  stage: deploy
+  extends: .terraform-production
+  resource_group: production
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "schedule"
+      when: never
+    - if: $CI_COMMIT_BRANCH == "main"
+      when: manual
+  variables:
+    KUBE_TOKEN: $KUBE_DEPLOYER_TOKEN
+  script:
+    - export TF_VAR_image_tag="$CI_COMMIT_SHORT_SHA"
+    - bash ../k3s/applySecrets.sh
+    - terraform apply -input=false -auto-approve

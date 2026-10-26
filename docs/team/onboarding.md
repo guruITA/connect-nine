@@ -968,13 +968,38 @@ Production is described in the files of `infra/terraform`, and nobody changes it
 | `infra/terraform/providers.tf` | The provider kubernetes, with that login and nothing else |
 | `infra/terraform/connectServerConfig.tf` | The ConfigMap `connect-server-config` in the namespace `connect-production`, with the settings of the server that are not secret |
 
-- **The versions.** Terraform 1.17.0, released on 21 October 2026, and the provider hashicorp/kubernetes 3.4.0, released on 19 October 2026, both chosen on 24 October 2026 and pinned with `=`. An update is a merge request that changes the version in `terraform.tf` and the lock file that `terraform init -upgrade` writes, and the image of the job `terraform-check` in `.gitlab-ci.yml`.
+- **The versions.** Terraform 1.17.0, released on 21 October 2026, and the provider hashicorp/kubernetes 3.4.0, released on 19 October 2026, both chosen on 24 October 2026 and pinned with `=`. An update is a merge request that changes the version in `terraform.tf` and the lock file that `terraform init -upgrade` writes, and the image of the job `terraform-check` and of `.terraform-production` in `.gitlab-ci.yml`.
 - **Where the state lives.** Terraform keeps what it made in a state. Connect's state is named `production` and lives in GitLab, under Operate, Terraform states, never in Git: `.gitignore` keeps `.terraform/`, `*.tfstate`, `*.tfstate.backup` and `*.tfplan` out. The pipeline gives the address of the state and the login, so `terraform.tf` holds no address, project number or token.
 - **Check your change on your laptop.** In `infra/terraform`: `terraform init -backend=false`, `terraform fmt -check -recursive` and `terraform validate`, the same three the job `terraform-check` runs on every merge request. You should see `Success! The configuration is valid.` Never run `terraform plan` or `terraform apply` against production from a laptop: that is the pipeline's job.
 
-### Until the pipeline applies
+### Plan, review, apply
 
-The jobs `terraform-plan` and `terraform-apply` of task 94.2 (#1048) are not on main yet. Until they are, Wesley Oerlemans applies by hand, after the merge request of the change was approved, with the same state in GitLab and the login `gitlab-deployer` through an ssh tunnel. The first apply was on 25 October 2026. After it, `terraform plan` said `No changes`.
+Every change to production goes four steps (task 94.2, #1048):
+
+1. **Write.** Change a file of `infra/terraform` on your branch and open a merge request into dev.
+2. **Plan.** The job `terraform-plan` makes the plan with the login `gitlab-planner`, which may only read. It runs on a merge request that changes `infra/` or `.gitlab-ci.yml`, and on no other, because a plan needs the production server and a server that is away for a moment must not turn every merge request red. The plan keeps the image version that runs now, so it shows only what your files change. Its log says which version that is.
+3. **Review.** The reviewer reads the plan before approving, and names in the approval the line they checked.
+4. **Apply.** After the merge into dev, and of dev into main, a team member presses play on the job `terraform-apply` in the pipeline of main. It runs `infra/k3s/applySecrets.sh` and `terraform apply` with the login `gitlab-deployer` and the images of that commit, and only one apply runs at a time (`resource_group: production`).
+
+**Where the plan is.** On the merge request, the Terraform widget says how many parts are added, changed and removed. The link Terraform plan, under the pipeline of the merge request, opens the whole plan. Only members with at least the role Developer see either.
+
+**What to look for in the plan.**
+
+- `+` create and `~` update in place: fine when it is what the merge request says.
+- `-` destroy or `-/+` replace on `kubernetes_stateful_set_v1.connect_database` or `kubernetes_service_v1.connect_database`: stop. That removes the database of production. Terraform refuses it for the StatefulSet (`prevent_destroy`), and a reviewer never approves it.
+- `-/+` on `kubernetes_job_v1.connect_migrations`: normal when the image version changes, because there is one Job per version.
+- A change the merge request does not explain, such as an annotation `kubectl.kubernetes.io/restartedAt`: someone changed production by hand. Ask in the team channel before the apply puts it back.
+
+**Who may press play.** A member with the role Maintainer, which all five of us have (Manage, Members). `terraform-apply` reaches the state with the job token of whoever starts it, and locking and writing the state needs that role. Reading it, for the plan, needs Developer.
+
+**The two checks of the first merge request** (#158):
+
+- Can `terraform-plan` on a branch reach the server? Only when `PRODUCTION_SERVER_HOST` is not protected, because a protected variable only reaches the pipelines of dev and main. It is not protected since 25 October 2026. The address of the server is no secret, it is in this guide and in the address of the test site. A branch gets the tunnel key and the token of `gitlab-planner`, which together can only read the parts of production that hold no secret. `KUBE_DEPLOYER_TOKEN` stays protected.
+- May the person who starts `terraform-apply` write the state? Yes, with the role Maintainer, which all five of us have.
+
+**A stopped apply.** When an apply is cancelled or its runner stops, the state stays locked and the next apply waits. Check that no apply runs (Build, Jobs), then Operate, Terraform states, the menu of `production`, Unlock.
+
+**By hand, until the first apply on main.** Until a merge into main runs the apply, Wesley Oerlemans applies by hand, with the same commands as the job, the same state and the login `gitlab-deployer` through the ssh tunnel, after the merge request of the change was approved. The last time was on 25 October 2026, for the wait before the server stops (#1051).
 
 ### The live version
 
