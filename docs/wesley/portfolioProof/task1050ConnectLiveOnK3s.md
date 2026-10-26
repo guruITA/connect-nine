@@ -31,7 +31,7 @@ School asks: "You ensure that your work aligns with that of others and contribut
 - [x] Wesley: the jobs `terraform-plan` and `terraform-apply` of task 94.2 (#1048), with `applySecrets.sh` before the apply and the image version from the pipeline, in !109, and this merge request, 25 October 2026.
 - [x] Wesley: image-push also on main, so a merge into main puts its own version live, in !109.
 - [x] Wesley: the wait before the server stops, measured before and after, 25 October 2026.
-- [ ] A teammate who built none of #159: task 95.4 (#1053), no password shows, a crashed server comes back and the data survives a restart of the database.
+- [ ] A teammate who built none of #159: task 95.4 (#1053), no password shows, a crashed server comes back and the data survives a restart of the database, with the result in #159. No change to this branch for it.
 
 ## AI use
 
