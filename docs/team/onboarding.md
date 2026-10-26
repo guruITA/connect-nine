@@ -596,7 +596,7 @@ The `Dockerfile` in the root packs Connect into two images. `server` holds the p
 
 ### The test address
 
-The test site is at https://31-70-66-186.sslip.io until the foundation sets the DNS record of the real test address (task 9.1, #236). sslip.io is a free name service that points a name with the IP address in it at that address. When the real address comes, only the first line of `deploy/Caddyfile` changes.
+The test site is at https://31-70-66-186.sslip.io until the foundation sets the DNS record of the real test address (task 9.1, #236). sslip.io is a free name service that points a name with the IP address in it at that address. When the real address comes, only the first line of `deploy/Caddyfile` changes, and in `.gitlab-ci.yml` the variable TEST_ADDRESS of the job deploy-test and PLAYWRIGHT_BASE_URL of the job e2e-test.
 
 - Caddy 2.11.7 runs as a system service, installed from its own package source on 9 October 2026. Its settings file is `deploy/Caddyfile` in Git and `/etc/caddy/Caddyfile` on the server.
 - The certificate comes from Let's Encrypt and Caddy renews it by itself. http answers with a redirect to https.
@@ -623,12 +623,14 @@ What the job deploy-test does, after every job of build, test and scan is green:
 1. It publishes the server with `dotnet publish`, copies the screen that frontend-build made (`web/dist`) into its `wwwroot`, and makes the migrations into one file with `dotnet ef migrations bundle`.
 2. It logs in as deploy and unpacks that into `/srv/connect-test/incoming`, next to `deploy/docker-compose.test.yml`.
 3. On the server `deploy/deployTest.sh` stops the server, applies the migrations with `docker compose run --rm migrations`, and starts the new version in a new container. The settings come from `/srv/connect-test/.env`, which never leaves the server.
-4. It asks `https://31-70-66-186.sslip.io/api/health` every ten seconds, and is green only when Connect answers healthy within two minutes.
+4. It runs `sh deploy/waitForHealthy.sh https://$TEST_ADDRESS` (#313). The script asks `/api/health` up to twelve times, ten seconds apart, and the job is green only when the answer is code 200 with exactly `"status":"healthy"`. A 503 (the database is broken), a 502 (the server did not start) or no answer for about two minutes makes the job red, and the log then shows the last code and body.
 5. Then e2e-test runs the browser tests of `web/e2e` against the site (#265). Usually that is the version deploy-test just put there. When two merges come close together, the deploy of the newer one can come in between, and the e2e-test of the older pipeline then tests the newer version. So a red e2e-test points at the newest deploy of dev, not always at its own merge (Operate, Environments, test shows which one that is).
 
 The server serves the screen itself: every address outside `/api` gets the screen, and an unknown `/api` address gets 404 (`docs/architecture/api.md`). On the server, `database` has no published port and `server` listens only on 127.0.0.1:8080, behind Caddy. The site runs with environment `Staging`: not Development, so no developer pages.
 
 - **Reading its log.** Build, Pipelines, the newest pipeline of dev, job deploy-test. The last lines say whether the server started and what /api/health answered. The log holds no key, password or server number.
+- **Which version runs, and every version before it.** Operate, Environments, test. The top deploy is the version on the test site now, with its commit, who merged it and when. Every earlier deploy is below it, newest first. Open the site with View deployment.
+- **Running the check yourself.** `sh deploy/waitForHealthy.sh http://localhost:5000` against your own server (part 5). You should see `Connect answers healthy (try 1 of 12).` With `docker compose stop database` it prints twelve tries with 503 and stops with exit code 1 after about two minutes.
 - **A red deploy means the site is down.** deploy-test stops the old server before the migrations, so after a red run the test site may answer 502 or 503. Say so in the team channel at once, with the link of the red job, and follow Going back to the previous version below.
 - **Only one at a time, never an older one.** Two merges in a row wait for each other (resource group test-site), so two deploys never write `/srv/connect-test` together. e2e-test holds the same lock, so a newer deploy never stops the site while the browser tests of an older one still run. When the pipeline of an older merge reaches deploy-test after a newer one already deployed, GitLab stops it with "The deployment job is older than the latest deployment" (Operate, Environments, test). That red job is fine: the newer version already holds its change.
 
@@ -640,7 +642,12 @@ When a merge broke the test site:
 2. A teammate approves it as any other merge request. After the merge, deploy-test puts the version before it back.
 3. A revert does not undo a migration. The tables and columns that migration made stay in the database. When the broken change had a migration, ask its author first: the fix is then a new migration that takes it back, not a revert alone.
 
-Every merge request names the version to go back to (Definition of Done, Deploy). How to find that version in GitLab comes with task 17.3 (#313).
+Every merge request names the version to go back to (Definition of Done, Deploy), in its part The version to go back to:
+
+1. **The app.** Open Operate, Environments, test before your merge. The top deploy is the version to go back to: write its short commit and its title.
+2. **The migration.** Write the newest migration on dev before your merge: in `api/Connect.Infrastructure/Persistence/Migrations`, the newest file whose name starts with a date, without `.Designer` in its name (not `ConnectDbContextModelSnapshot.cs`). Say whether your merge request adds a migration.
+
+For example: `Test site before this merge: 8a4db18 (Merge branch 'docs/1040-production-questions' into 'dev'). Migration before this merge: 20261021205912_AddMemberDetailsToProfile. This merge request adds no migration.`
 
 ## 11. The security scan
 
