@@ -1,0 +1,10 @@
+/* An information banner, never the error colours (there is no information colour in
+   tokens.css, so this uses the blue panel and line that already exist). */
+.banner {
+  margin: 0;
+  padding: var(--space-m) var(--space-page);
+  border-bottom: var(--border-width) solid var(--color-blue);
+  background: var(--color-panel);
+  color: var(--color-navy);
+  font-weight: var(--font-weight-semibold);
+}

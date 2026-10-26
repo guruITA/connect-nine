@@ -153,6 +153,53 @@ describe("MyProfile", () => {
     expect(document.title).toBe("Connect, My profile");
   });
 
+  it("shows the parent consent banner above the heading while pending", async () => {
+    mockedGetCurrentMemberProfile.mockResolvedValue({
+      outcome: "loaded",
+      profile: { ...PROFILE, parentConsent: "pending" },
+    });
+    mockedGetSuggestedTags.mockResolvedValue(SUGGESTED);
+    const { container } = renderPage();
+
+    const heading = await screen.findByRole("heading", { name: "Robin" });
+    const banner = await screen.findByRole("status");
+
+    expect(banner).toHaveTextContent(/Only you can see your profile/);
+    expect(
+      container.innerHTML.indexOf(banner.outerHTML) <
+        container.innerHTML.indexOf(heading.outerHTML),
+    ).toBe(true);
+  });
+
+  it("shows no parent consent banner when the server sends no value", async () => {
+    mockedGetCurrentMemberProfile.mockResolvedValue({
+      outcome: "loaded",
+      profile: PROFILE,
+    });
+    mockedGetSuggestedTags.mockResolvedValue(SUGGESTED);
+    renderPage();
+
+    await screen.findByRole("heading", { name: "Robin" });
+
+    expect(
+      screen.queryByText(/Only you can see your profile/),
+    ).not.toBeInTheDocument();
+  });
+
+  it("shows no parent consent banner while loading or when there is no answer", async () => {
+    mockedGetCurrentMemberProfile.mockResolvedValue({
+      outcome: "notReachable",
+    });
+    mockedGetSuggestedTags.mockResolvedValue(SUGGESTED);
+    renderPage();
+
+    await screen.findByRole("alert");
+
+    expect(
+      screen.queryByText(/Only you can see your profile/),
+    ).not.toBeInTheDocument();
+  });
+
   it("shows no email address and no Edit button", async () => {
     mockedGetCurrentMemberProfile.mockResolvedValue({
       outcome: "loaded",

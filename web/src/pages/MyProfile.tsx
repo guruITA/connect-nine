@@ -1,5 +1,6 @@
 import { useEffect } from "react";
 import Eyebrow from "../components/home/Eyebrow";
+import ParentConsentBanner from "../components/profile/ParentConsentBanner";
 import ProfileDetails from "../components/profile/ProfileDetails";
 import TagInput from "../components/TagInput";
 import { useMyProfile } from "../hooks/useMyProfile";
@@ -27,6 +28,9 @@ export default function MyProfile() {
 
   return (
     <>
+      {state.status === "loaded" &&
+        state.profile.parentConsent === "pending" && <ParentConsentBanner />}
+
       <div className={styles.band}>
         <div className={styles.bandInner}>
           <Eyebrow>Profiles</Eyebrow>

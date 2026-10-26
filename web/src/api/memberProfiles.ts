@@ -100,6 +100,8 @@ export type CurrentMemberProfile = {
   region: string;
   bio: string | null;
   tags: Tag[];
+  // Set while a parent has not given permission yet for a profile under 18 (#392, #395).
+  parentConsent?: "pending";
 };
 
 export type GetCurrentMemberProfileResult =
