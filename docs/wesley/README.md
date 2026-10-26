@@ -31,7 +31,7 @@ One file per task I did, with the proof block of the task filled in. A point tha
 | `portfolioProof/task1045PipelineAccess.md` | Task 93.2 The pipeline reaches k3s only through an ssh tunnel with two logins (#1045), merge request !105 | Managing and Collaborating MS1 and MS4 |
 | `portfolioProof/task9Templates.md` | Task 1.8 The templates (#9), merge request !15 | Managing and Collaborating MS1 and MS4 |
 | `portfolioProof/task9CompactIssueTemplates.md` | Task 1.8 The compact issue and task templates (#9), merge request !16 | Managing and Collaborating MS1 and MS4 |
-| `portfolioProof/task1047TerraformFolder.md` | Task 94.1 The folder infra/terraform with pinned versions and the state in GitLab (#1047), branch `chore/1047-terraform-folder` | Managing and Collaborating MS1 and MS4 |
+| `portfolioProof/task1047TerraformFolder.md` | Task 94.1 The folder infra/terraform with pinned versions and the state in GitLab (#1047), merge request !107 | Managing and Collaborating MS1 and MS4 |
 | `portfolioProof/task9ClientServer.md` | Tasks 9.1 to 9.5 The client's server (#236, #237, #238, #239, #240), merge requests !5 and !34 | Managing and Collaborating MS1 and MS4 |
 | `portfolioProof/task11ServerStructureDecisions.md` | Tasks 11.1 to 11.3 The structure and the version of the server (#253, #254, #255), merge requests !27 and !58 | Analysing and Advising AA2, AA3, AA4 and AA5, Managing and Collaborating MS4 |
 | `portfolioProof/task1517ReplanSprints.md` | Task 180.1 Sprints 2 to 5 planned again after sprint 1 (#1517), merge request !40 | Managing and Collaborating MS1 and MS4 |
