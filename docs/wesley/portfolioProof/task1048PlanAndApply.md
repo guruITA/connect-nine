@@ -40,8 +40,8 @@ School asks: "You ensure that your work aligns with that of others and contribut
 ## TODO
 
 - [x] Wesley: the first `terraform-plan` on the pipeline of !109 itself (job 1352590), pasted in #158, 25 October 2026.
-- [ ] Wesley: the first apply after the merge into main, and a later change to the ConfigMap that shows one line to update. The state already holds production since 25 October 2026, so that first apply shows the new image version instead of "1 added".
-- [ ] A teammate who did not build issue 94: task 94.3 (#1049), a change through a merge request, its plan read and applied after the merge.
+- [ ] Wesley: the first apply after the merge into main, and a later change to the ConfigMap that shows one line to update. The state already holds production since 25 October 2026, so that first apply shows the new image version instead of "1 added". In #158, no change to this branch for it.
+- [ ] A teammate who did not build issue 94: task 94.3 (#1049), a change through a merge request, its plan read and applied after the merge. With the result in #158, no change to this branch for it.
 
 ## AI use
 
