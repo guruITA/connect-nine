@@ -141,7 +141,7 @@ task 8.2). The address has no id in it, so a member can only ever ask for their 
 account comes from the session, and until log in (#15) from the temporary header described under
 `POST /api/member-profiles`.
 
-The five answers:
+The four answers:
 
 - `200 OK` with exactly four values, and `bio` is `null` when it is empty. No email address, id,
   account id or date:
