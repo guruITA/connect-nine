@@ -1,12 +1,12 @@
 // Calls POST /api/member-profiles of #321 to create a member profile.
 // Moves to request() of web/src/api/client.ts when #264 adds it.
 
-export type AgeBand = "From15To17" | "From18To21" | "From22To30";
+export type AgeBand = "Adolescent" | "YoungAdult" | "Adult";
 
 export const AGE_BAND_LABELS: Record<AgeBand, string> = {
-  From15To17: "15 to 17",
-  From18To21: "18 to 21",
-  From22To30: "22 to 30",
+  Adolescent: "15 to 17",
+  YoungAdult: "18 to 21",
+  Adult: "22 to 30",
 };
 
 export type CreateMemberProfileForm = {

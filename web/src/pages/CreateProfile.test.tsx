@@ -214,7 +214,7 @@ describe("CreateProfile", () => {
     );
 
     expect(screen.getByLabelText("First name")).toHaveValue("Robin");
-    expect(screen.getByLabelText("Age band")).toHaveValue("From15To17");
+    expect(screen.getByLabelText("Age band")).toHaveValue("Adolescent");
     expect(screen.getByLabelText("Region")).toHaveValue("Amstelveen");
     expect(screen.getByLabelText("About you")).toHaveValue("Hello there");
   });

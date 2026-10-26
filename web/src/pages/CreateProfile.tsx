@@ -7,7 +7,7 @@ import shieldIcon from "../assets/icons/shield.svg";
 import Eyebrow from "../components/home/Eyebrow";
 import styles from "./CreateProfile.module.css";
 
-const AGE_BANDS: AgeBand[] = ["From15To17", "From18To21", "From22To30"];
+const AGE_BANDS: AgeBand[] = ["Adolescent", "YoungAdult", "Adult"];
 const BIO_MAX_LENGTH = 280;
 
 type FieldName = "firstName" | "ageBand" | "region" | "bio";

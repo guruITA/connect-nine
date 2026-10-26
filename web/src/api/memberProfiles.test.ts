@@ -10,7 +10,7 @@ function mockFetchOnce(status: number, body?: unknown) {
 
 const FORM = {
   firstName: "Robin",
-  ageBand: "From15To17" as const,
+  ageBand: "Adolescent" as const,
   region: "Amstelveen",
   bio: "Hello there",
 };
