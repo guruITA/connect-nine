@@ -30,9 +30,9 @@ School asks: "You anticipate risks and bottlenecks in the process before they be
 
 ## TODO
 
-- [ ] A teammate: read the part Production as if you were the director, and write in the review which words were unclear, so I can replace them before it goes to the client.
+- [x] A teammate: read the part Production as if you were the director, and write in the review which words were unclear, so I can replace them before it goes to the client. Nick Hoebe, 25 October 2026, in !88: "The questions are clear to me".
 - [ ] Wesley: send the link to the part Production to the client two working days before the meeting (#1041).
-- [ ] Wesley: add the output of `sudo docker stats --no-stream` under question 112 again once the test site of #267 runs.
+- [x] Wesley: add the output of `sudo docker stats --no-stream` under question 112 again once the test site of #267 runs. Measured on 26 October 2026, with the live version beside it, in !115.
 
 ## References
 
