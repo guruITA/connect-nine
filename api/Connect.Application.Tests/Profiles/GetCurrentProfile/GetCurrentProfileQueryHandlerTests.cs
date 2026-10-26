@@ -69,6 +69,21 @@ public sealed class GetCurrentProfileQueryHandlerTests
     }
 
     [Test]
+    public async Task HandleAsync_TwoProfilesWithTags_ReturnsOnlyTheOwnTags()
+    {
+        Account account = dbContext.SaveAccount();
+        Account other = dbContext.SaveAccount();
+        Profile profile = dbContext.SaveProfile(account, "Sam", AgeBand.From18To21, "Amstelveen", null);
+        Profile otherProfile = dbContext.SaveProfile(other, "Robin", AgeBand.From22To30, "Amstelveen", null);
+        dbContext.SaveLink(profile, dbContext.SaveTag("football"));
+        dbContext.SaveLink(otherProfile, dbContext.SaveTag("gaming"));
+
+        var result = await handler.HandleAsync(new GetCurrentProfileQuery(account.Id), CancellationToken.None);
+
+        Assert.That(result.Value!.Tags.Select(tag => tag.Name), Is.EqualTo(new[] { "football" }));
+    }
+
+    [Test]
     public async Task HandleAsync_AccountWithoutProfile_ReturnsNotFound()
     {
         Account account = dbContext.SaveAccount();
