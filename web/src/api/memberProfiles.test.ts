@@ -177,6 +177,7 @@ const PROFILE = {
   ageBand: "YoungAdult" as const,
   region: "Amstelveen",
   bio: null,
+  tags: [{ id: "tag-1", name: "football" }],
 };
 
 describe("getCurrentMemberProfile", () => {
@@ -197,6 +198,19 @@ describe("getCurrentMemberProfile", () => {
     const result = await getCurrentMemberProfile();
 
     expect(result).toEqual({ outcome: "loaded", profile: PROFILE });
+  });
+
+  it("treats a missing tags field as an empty list", async () => {
+    const { tags, ...profileWithoutTags } = PROFILE;
+    void tags;
+    mockFetchOnce(200, { data: profileWithoutTags, meta: {} });
+
+    const result = await getCurrentMemberProfile();
+
+    expect(result).toEqual({
+      outcome: "loaded",
+      profile: { ...profileWithoutTags, tags: [] },
+    });
   });
 
   it("reports no profile on 404", async () => {
