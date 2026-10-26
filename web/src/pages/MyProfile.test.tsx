@@ -275,6 +275,22 @@ describe("MyProfile", () => {
     expect(screen.getByLabelText("Add your own")).toHaveValue("x".repeat(31));
   });
 
+  it("goes to Create your profile when adding a tag finds no profile", async () => {
+    const user = userEvent.setup();
+    mockedGetCurrentMemberProfile.mockResolvedValue({
+      outcome: "loaded",
+      profile: PROFILE,
+    });
+    mockedGetSuggestedTags.mockResolvedValue(SUGGESTED);
+    mockedAddMemberProfileTag.mockResolvedValue({ outcome: "noProfile" });
+    renderPage();
+
+    await screen.findByRole("heading", { name: "Robin" });
+    await user.click(screen.getByRole("button", { name: "football" }));
+
+    expect(await screen.findByText("Create your profile")).toBeInTheDocument();
+  });
+
   it("shows the tags are kept when adding fails because Connect is not reachable", async () => {
     const user = userEvent.setup();
     mockedGetCurrentMemberProfile.mockResolvedValue({

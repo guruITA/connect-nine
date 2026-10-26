@@ -7,6 +7,7 @@ export type AddMemberProfileTagResult =
   | { outcome: "added"; tag: Tag }
   | { outcome: "fieldError"; message: string }
   | { outcome: "notLoggedIn" }
+  | { outcome: "noProfile" }
   | { outcome: "notReachable" };
 
 type AddMemberProfileTagResponseBody = {
@@ -51,6 +52,10 @@ export async function addMemberProfileTag(
     return { outcome: "notLoggedIn" };
   }
 
-  // 404, 503 and every other status the server might send are all treated as not reachable.
+  if (response.status === 404) {
+    return { outcome: "noProfile" };
+  }
+
+  // 503 and every other status the server might send are all treated as not reachable.
   return { outcome: "notReachable" };
 }

@@ -74,12 +74,12 @@ describe("addMemberProfileTag", () => {
     expect(result).toEqual({ outcome: "notLoggedIn" });
   });
 
-  it("reports not reachable on 404", async () => {
+  it("reports no profile on 404", async () => {
     mockFetchOnce(404, { title: "You have no profile yet", status: 404 });
 
     const result = await addMemberProfileTag("football");
 
-    expect(result).toEqual({ outcome: "notReachable" });
+    expect(result).toEqual({ outcome: "noProfile" });
   });
 
   it("reports not reachable on 503", async () => {
