@@ -1,5 +1,5 @@
-import { AGE_BAND_LABELS } from "../api/memberProfiles";
-import type { AgeBand } from "../api/memberProfiles";
+import { AGE_BAND_LABELS } from "../../api/memberProfiles";
+import type { AgeBand } from "../../api/memberProfiles";
 import styles from "./ProfileDetails.module.css";
 
 type ProfileDetailsProps = {
