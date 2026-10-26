@@ -208,7 +208,7 @@ connect-server-b77588b89-xzzt7   1m    80Mi
 
 In plain words: the test site uses about 130 MB of memory and the live version about 105 MB. With everything running, k3s included, 5.8 GB of the 7.7 GB is still available.
 
-- **The same server.** No extra cost. The programs above need at least 2.5 GB together where 7.0 GB is free, and each gets its own memory limit. The risk is that a busy live version slows the test site, which the limits keep small.
+- **The same server.** No extra cost. The programs above need at least 2.5 GB together where 5.8 GB is still available with the test site and the live version running, and each gets its own memory limit. The risk is that a busy live version slows the test site, which the limits keep small.
 - **A second server.** The live version gets a server of its own. At the provider the foundation already uses, a server like the current one (STRATO VPS L: 4 processor cores, 8 GB memory, 240 GB storage) costs 20 euros a month including VAT, plus 9 euros once to set it up on a monthly contract (https://www.strato.nl/server/vps-linux/, read on 22 October 2026).
 
 How long Connect may be unreachable each month is question 5, which is still open. A second server matters more when the answer to question 5 is strict.

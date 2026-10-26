@@ -32,7 +32,7 @@ School asks: "You anticipate risks and bottlenecks in the process before they be
 
 - [x] A teammate: read the part Production as if you were the director, and write in the review which words were unclear, so I can replace them before it goes to the client. Nick Hoebe, 25 October 2026, in !88: "The questions are clear to me".
 - [ ] Wesley: send the link to the part Production to the client two working days before the meeting (#1041).
-- [x] Wesley: add the output of `sudo docker stats --no-stream` under question 112 again once the test site of #267 runs. Measured on 26 October 2026, with the live version beside it, in !115.
+- [x] Wesley: add the output of `sudo docker stats --no-stream` under question 112 again once the test site of #267 runs. Measured on 26 October 2026, with the live version beside it, in !115. Gurpreet Singh held the numbers against the test site in his review of !115 on 26 October 2026: "Numbers match what I see on the test site." He also found that the advice under them still said 7.0 GB free, which the follow-up of !115 changed to the 5.8 GB that run measured.
 
 ## References
 
