@@ -636,13 +636,17 @@ The server serves the screen itself: every address outside `/api` gets the scree
 
 ### Going back to the previous version
 
-When a merge broke the test site (task 17.4, #314). Anyone in the team can do this, without the author of the change. It takes about five minutes: one for the way back itself and up to two for the health check.
+When a merge broke the test site (task 17.4, #314). Anyone in the team can do this, without the author of the change. The first practice took 8 minutes from the red deploy until healthy again, and about 10 for all seven steps (part Practised).
 
-1. **Say so in the team channel.** Write that the test site is down, the link of the red deploy-test job, and that nobody merges into dev until the revert of the broken change is merged and its deploy-test is green (below the steps). Every merge into dev deploys dev again, broken change included, so a merge before the revert takes the site down again.
-2. **Open Operate, Environments, test.** In the menu on the left of the project, Operate, then Environments, then the name test.
+1. **Say so in the team channel.** Copy this message and fill in the number of the merge request and the link of the red deploy-test job:
+
+   > The test site is down after the merge of !(number): (link of the red deploy-test job). Please do not merge into dev until the revert is merged and its deploy-test is green. I am putting the previous version back now.
+
+   Every merge into dev deploys dev again, broken change included, so a merge before the revert (below the steps) takes the site down again.
+2. **Open Operate, Environments, test.** In the menu on the left of the project, Operate, then Environments. That page shows each environment with only its newest deploy, so click the name test to open its list of every deploy, newest first.
 3. **Find the last healthy deployment.** The deployments stand newest first. The top one is the broken version, with a red cross. Go down to the first one with a green check: that is the last version that answered healthy. Write down its short commit, for example `12f07b77`. The merge request that broke it names the same version in its part The version to go back to.
 4. **Press Rollback.** First check the merge request that broke it: does it add a migration, and did that migration itself break the site? Then undo the migration now, as The database stays as it is below says, because after the Rollback the bundle that knows it is gone. Otherwise leave the database alone. Then, on the row of that deployment, press the button with the round arrow and confirm. GitLab calls it Rollback environment, or Re-deploy to environment on the newest green row. GitLab runs the deploy-test job of that older version again: it puts the older server, screen and `docker-compose.test.yml` back on the server. It needs the screen that frontend-build of that pipeline made, which GitLab keeps for 30 days, so a version older than that cannot come back this way.
-5. **Wait for green on a healthy answer.** The new job opens in Build, Jobs. It is done in about a minute when the site is healthy, and the last line says `Connect answers healthy (try 1 of 12).` Red again? Then say so in the team channel and try the deployment one row further down.
+5. **Wait for green on a healthy answer.** The new job opens in Build, Jobs. It is done in about a minute when the site is healthy, and the last line says `Connect answers healthy (try 1 of 12).` or `(try 2 of 12).`: a 502 on try 1 only means the server was still starting. Red again? Then say so in the team channel and try the deployment one row further down.
 6. **Log in with the check account.** Open https://31-70-66-186.sslip.io and log in with the check account: an account made on the page Make an account before the trouble, whose email and password are only in your own password manager, never in docs or chat. Until log in is on dev (#15), go to Make an account and fill in the email address of the check account instead, with any password that meets the rules (15 or more characters with a digit, a lowercase letter, an uppercase letter and a symbol, for example a throwaway one from your password manager's generator), because without it the page only asks for a password. The page should say `This email address already has an account`. That proves the server reads the database and the account is still there, and then it makes nothing new. Does the page make an account instead? Then the check account was gone, so the test database lost rows and the way back did not pass. Stop there, say so in the team channel with the time, and write it in the issue in step 7. The page has now made the check account again, so tell the teammate who made it.
 7. **Write it in the issue of the broken change.** What happened, the version you went back to (its short commit), the time the deploy turned red and the time it was healthy again, and the link of the green job. Then say in the team channel that the site is back, and that dev stays closed until the revert below is merged and green.
 
@@ -670,7 +674,13 @@ This is the weak part of the way back. It has not been practised yet, and a migr
 
 #### Practised
 
-Not practised yet. The first practice is task 17.4 (#314): a teammate who did not write these steps follows only this part, with a stopwatch, on a version broken on purpose. Their name, the date, the minutes and their remarks come here.
+**Wesley Oerlemans, 26 October 2026** (task 17.4, #314). He did not write these steps and followed only this part, in his browser, with a stopwatch. The version broken on purpose (!123) turned red at 23:01 (deploy-test job 1356062). He pressed Rollback environment on the row of fbef2403 at 23:08, and its deploy-test was green at 23:09 with `No migrations were applied` and `Connect answers healthy (try 1 of 12).` (job 1356072). The check account was still there, and the database and its volume were never touched.
+
+- **Healthy again 8 minutes after red**, within the ten minutes of the goal. All seven steps together took 10 minutes and 10 seconds on his stopwatch.
+- **His remarks, now in the steps.** Step 1 did not say what to send, so it now has the message to copy. In step 2 the list of deploys only shows after clicking the name test. In step 5 the last line can also say try 2, when try 1 got a 502 while the server was starting.
+- **The change came out of dev** with `git revert` of !123 in !125.
+
+Practise again when the steps change, with a teammate who did not do it before, and add the run here.
 
 Every merge request names the version to go back to (Definition of Done, Deploy), in its part The version to go back to:
 
