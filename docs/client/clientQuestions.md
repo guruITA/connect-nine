@@ -143,6 +143,120 @@ Questions 1 to 8 are written in full by the tasks of issue 10. Questions 9 and u
 | 135 | 130 A young person under 16 asks a parent for permission | From which age does Connect ask a parent for permission? | Every young person under 18, so the whole age band 15 to 17, not only under 16. This is stricter than the law asks, which is allowed. #40, #41 and #42 change to match (meeting with the client on 23 October 2026, notes by Gurpreet). | 23 October 2026 |
 | 136 | 07b Choose my region from a fixed list of places | Which towns and areas are on the fixed list of places for Region? | | |
 
+## Production
+
+Questions 111 to 116 in the table above, written out in full for one meeting with the director. Issue 91 The director agrees where production runs asks them. Production is the live version of Connect: the copy that young people and organisations really use, next to the test site where the team tries every change first. Each question has its options, what each option means for the foundation, the advice of the team with its reason, and an empty place for the answer. The answers go in the table above as well, with the date of the meeting.
+
+### Question 111: a live version of Connect
+
+The HvA asks every team of this course to put a live version of what it builds online. The foundation did not ask for it, and it does not pay for it. A live version costs the foundation nothing extra: it uses free programs only, and question 112 asks whether it may use the server the foundation already lends to the team.
+
+- **Yes, on the foundation's server.** Connect gets a live version on the foundation's server, under an address the foundation chooses in question 113. The team builds and looks after it until January 2027.
+- **Yes, but on a spare computer of the team.** The live version exists for school only. It does not carry the foundation's name and holds no real data.
+- **Not now.** The team builds the live version on a spare computer of its own for school only, and asks again later.
+
+Advice of the team: yes, on the foundation's server. The test site already runs there, the live version adds no cost, and it is the version the foundation can keep after January 2027.
+
+- Answer:
+- Date:
+- Name:
+
+### Question 112: one server or two
+
+The live version and the test site can share the one server the foundation lends to the team, or the live version can get a second server of its own. Sharing costs nothing extra but leaves less room. A second server costs money every month.
+
+How much room the server has, measured by the team on 22 October 2026 on the server itself:
+
+```
+$ free -h
+               total        used        free      shared  buff/cache   available
+Mem:           7.7Gi       697Mi       6.2Gi       1.1Mi       1.1Gi       7.0Gi
+Swap:             0B          0B          0B
+$ df -h /
+Filesystem      Size  Used Avail Use% Mounted on
+/dev/vda1       232G  3.2G  229G   2% /
+```
+
+In plain words: the server has 7.7 GB of working memory, of which 7.0 GB is free, and 232 GB of storage, of which 229 GB is free. On the same day `sudo docker stats --no-stream` showed no container at all, because nothing of Connect runs on the server yet. How much memory the test site itself uses is measured the same way once it runs there (#267).
+
+What the new programs need, as their own documentation says:
+
+| Program | What it does for the live version | Memory it needs | Storage it needs | Source, read on 22 October 2026 |
+| --- | --- | --- | --- | --- |
+| k3s | Keeps the live version running and restarts it when it stops | At least 2 GB, and 2 processor cores | No number given, a fast disk is advised | https://docs.k3s.io/installation/requirements |
+| Prometheus | Counts how fast and how often Connect answers | Unknown: its documentation gives no minimum, the need grows with what it counts | 1 to 2 bytes for every number it keeps, so it grows with how long it keeps them | https://prometheus.io/docs/prometheus/latest/storage/ |
+| Grafana | Shows those counts on one page | At least 512 MB, and 1 processor core | No number given | https://grafana.com/docs/grafana/latest/setup-grafana/installation/ |
+| Loki | Keeps the log lines of the live version, its diary of what happened, in one place | Unknown: its documentation gives no minimum for a small setup | No number given, it grows with how many days of log lines it keeps (question 109) | https://grafana.com/docs/loki/latest/get-started/deployment-modes/ |
+| The test site | The version where the team tries every change first | Unknown until it runs | Unknown until it runs | Measured with `docker stats` once #267 is on the server |
+
+For the unknown numbers the team measures the real use with `docker stats` and the memory page of k3s once each program runs, and gives each a fixed memory limit, so the test site and the live version can never push each other off the server.
+
+- **The same server.** No extra cost. The programs above need at least 2.5 GB together where 7.0 GB is free, and each gets its own memory limit. The risk is that a busy live version slows the test site, which the limits keep small.
+- **A second server.** The live version gets a server of its own. At the provider the foundation already uses, a server like the current one (STRATO VPS L: 4 processor cores, 8 GB memory, 240 GB storage) costs 20 euros a month including VAT, plus 9 euros once to set it up on a monthly contract (https://www.strato.nl/server/vps-linux/, read on 22 October 2026).
+
+How long Connect may be unreachable each month is question 5, which is still open. A second server matters more when the answer to question 5 is strict.
+
+Advice of the team: the same server. The measured room is enough for what the programs need, and a second server can still be added later without changing Connect.
+
+- Answer:
+- Date:
+- Name:
+
+### Question 113: the address of the live version
+
+The live version needs a web address of its own, such as a name under the foundation's own domain, the part of an address that belongs to the foundation. The owner of that domain points the address at the server once, and the team then makes the padlock for it.
+
+- **A name under the foundation's own domain.** The foundation chooses the name and points it at the server when the team asks (#1052). Young people see the foundation's name in the address.
+- **A free temporary name, like the one the test site uses now.** It needs nothing from the foundation, but it shows a long technical name instead of the foundation's.
+
+Advice of the team: a name under the foundation's own domain, chosen by the foundation. Until it points at the server, the live version uses a free temporary name.
+
+- Answer, the address and who points it at the server: the live version uses www.youngamstellandconnect.nl. The foundation still has to buy this domain, and Bayon Eerhart asks the client for it by email. Who points the address at the server is still open.
+- Date: 23 October 2026
+- Name: the client, in the meeting of 23 October 2026 (notes by Gurpreet Singh)
+
+### Question 114: real data of young people
+
+Some young people on Connect are younger than 18, so the privacy law asks extra care for their data. The live version always has a database of its own and never shares what it stores with the test site, where only made-up data may be used (question 3).
+
+- **Only made-up data at first.** The live version holds real data only after the privacy rules for young people of #24 are done.
+- **Real data from the first day.** Young people can use the live version at once, before the privacy rules of #24 are done.
+
+Advice of the team: only made-up data until #24 is done, because the rules for the data of young people under 18 have to be in place first.
+
+- Answer:
+- Date:
+- Name:
+
+### Question 115: who gets a warning when Connect is down or slow
+
+The live version sends an email when it does not answer or answers too slowly (#166). Someone has to read that email and act on it.
+
+- **The team, during the project.** A team member reads the warnings until January 2027.
+- **Someone at the foundation.** The foundation names a person and an email address.
+- **Both.** The team during the project, and the person of the foundation from then on.
+
+Advice of the team: both, so the warnings keep reaching someone after the team leaves in January 2027. The foundation names the person, the email address and the hours at which a warning may come.
+
+- Answer, the person, the email address and the hours:
+- Date:
+- Name:
+
+### Question 116: the mail account of the live version
+
+The live version sends emails, such as a link to set a new password, and the warnings of question 115. It sends them from a mail account of the foundation, so they arrive from the foundation's own address. The team needs the name of the mail server and its port, which the provider of the account gives, and the password of the account.
+
+The password is never written in a document, an email or a chat, because a password in writing can be read by anyone who later gets that message.
+
+- **The foundation types the password into GitLab itself.** A team member opens the right page of GitLab (where the team keeps its code) during a call, and the director types the password there. Nobody of the team sees it.
+- **The director reads it out during a call.** A team member types it into GitLab at once, and nothing is written down.
+
+Advice of the team: the foundation types the password into GitLab itself, so nobody of the team ever knows it.
+
+- Answer, the mail server, the port and how the password reaches GitLab:
+- Date:
+- Name:
+
 ## The questions of 24 September 2026
 
 Before the board existed, the team kept a list of six questions for the client, compiled on 24
