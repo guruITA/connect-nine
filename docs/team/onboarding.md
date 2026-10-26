@@ -956,6 +956,24 @@ Every person who followed this part on a computer of their own writes one line.
 | Name | Date | System | Minutes | Remarks |
 |---|---|---|---|---|
 
+## 14. Changing production
+
+Production is described in the files of `infra/terraform`, and nobody changes it by hand (issue 94, #158). Why Terraform: `docs/decisions/010-productionOnK3s.md`.
+
+### Files and versions
+
+| File | What it is for |
+| --- | --- |
+| `infra/terraform/terraform.tf` | The exact version of Terraform and of the provider kubernetes, and where the state lives |
+| `infra/terraform/.terraform.lock.hcl` | The provider version and its checksums, written by `terraform init`. Never edit it by hand |
+| `infra/terraform/variables.tf` | `kubeconfig_path`, the login to the cluster that the pipeline builds. It has no default, so Terraform never reaches a cluster by accident |
+| `infra/terraform/providers.tf` | The provider kubernetes, with that login and nothing else |
+| `infra/terraform/connectServerConfig.tf` | The ConfigMap `connect-server-config` in the namespace `connect-production`, with the settings of the server that are not secret |
+
+- **The versions.** Terraform 1.17.0, released on 21 October 2026, and the provider hashicorp/kubernetes 3.4.0, released on 19 October 2026, both chosen on 24 October 2026 and pinned with `=`. An update is a merge request that changes the version in `terraform.tf` and the lock file that `terraform init -upgrade` writes, and the image of the job `terraform-check` in `.gitlab-ci.yml`.
+- **Where the state lives.** Terraform keeps what it made in a state. Connect's state is named `production` and lives in GitLab, under Operate, Terraform states, never in Git: `.gitignore` keeps `.terraform/`, `*.tfstate`, `*.tfstate.backup` and `*.tfplan` out. The pipeline gives the address of the state and the login, so `terraform.tf` holds no address, project number or token.
+- **Check your change on your laptop.** In `infra/terraform`: `terraform init -backend=false`, `terraform fmt -check -recursive` and `terraform validate`, the same three the job `terraform-check` runs on every merge request. You should see `Success! The configuration is valid.` Never run `terraform plan` or `terraform apply` against production from a laptop: that is the pipeline's job.
+
 ## References
 
 Microsoft. (2026). _CA2254: Template should be a static expression_. Microsoft Learn. https://learn.microsoft.com/en-us/dotnet/fundamentals/code-analysis/quality-rules/ca2254

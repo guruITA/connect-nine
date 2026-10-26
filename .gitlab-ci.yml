@@ -159,6 +159,28 @@ branch-flow:
         exit 1
       fi
 
+# Lays out and checks the Terraform files of production on every merge request and on dev and main,
+# without reaching the cluster: init without the backend, fmt and validate (task 94.1, #1047).
+# The image has the same version as infra/terraform/terraform.tf.
+terraform-check:
+  stage: test
+  image:
+    name: hashicorp/terraform:1.17.0
+    entrypoint: [""]
+  tags:
+    - hva
+  variables:
+    TF_IN_AUTOMATION: "true"
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "schedule"
+      when: never
+    - when: on_success
+  script:
+    - cd infra/terraform
+    - terraform init -backend=false -input=false
+    - terraform fmt -check -recursive
+    - terraform validate
+
 # Runs the test suite of the server against a real PostgreSQL, the same major version as
 # docker-compose.yml. TEST_POSTGRES_USER, TEST_POSTGRES_PASSWORD and TEST_POSTGRES_DB are CI/CD
 # variables of the project (Settings, CI/CD, Variables), throwaway values used only inside this

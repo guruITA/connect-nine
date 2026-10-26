@@ -48,3 +48,9 @@ docker-compose.override.yml
 .DS_Store
 Thumbs.db
 Desktop.ini
+
+# Terraform (infra/terraform): the state lives in GitLab, a plan stays in the pipeline
+.terraform/
+*.tfstate
+*.tfstate.backup
+*.tfplan
