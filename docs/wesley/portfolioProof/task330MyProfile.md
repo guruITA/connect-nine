@@ -13,6 +13,12 @@ School asks: "You design and implement systematically, justify choices in relati
 2. **The alternative I weighed.** `GET /api/member-profiles/{id}` for the own profile as well lost to a separate address `current`, because with an id in the address a mistake in the check would show someone else's profile. With `current` there is nothing to get wrong.
 3. **Following the code of the team.** The names and folders are those of Nick Hoebe's account code: `GetCurrentProfileQuery` and its handler, `IAppDbContext.Profiles`, the DTO in `Profiles/DTO`. I added `IQueryHandler` next to his `ICommandHandler`, because the code conventions name query handlers and this is the first query.
 4. **What I changed when Nick's account code was merged.** Since !50, Application has no EF Core (decision 007). The query now runs through `IAppDbContext` with `AsNoTracking` and `SingleOrDefaultAsync`, as rule 7 of the code conventions says (task 3.13, #1550). The handler tests of !68 and of this merge request now share one SQLite database behind `IAppDbContext`, `SqliteAppDbContext`, instead of a copy each, as backend rule 20 asks.
+5. **What I changed after Nick's review of 24 October 2026.** Nick Hoebe reviewed !70, and I took every point over. Each is now a rule of the code conventions:
+   - The state of the page and its call to the server moved into the hook `useMyProfile`, so the page only shows what it gets (frontend rule 13).
+   - `memberProfiles.ts` calls the server through `request()` of his `client.ts`, and the temporary helper `http.ts` is gone. The header of the temporary account until log in (#15) is added in one small helper, `temporaryAccount.ts` (frontend rule 14).
+   - `ProfileDetails` moved with its test and its styles to `components/profile/`, next to his `components/account/` (frontend rule 7).
+   - The band with the title is a `div`, because `TopBar` holds the one `header` of the site (frontend rule 16).
+   - `MemberProfileResponseData` has no `JsonPropertyName`, because ASP.NET Core writes camelCase by itself, and the endpoint test that reads `firstName`, `ageBand`, `region` and `bio` stays green (backend rule 21).
 
 ## OR2 Choosing standards and methods
 
@@ -62,8 +68,8 @@ School asks: "In your design and implementation, you consciously take into accou
 
 ## TODO
 
-- [ ] Wesley: the OR3 lines above, after a teammate and one person outside the team tried the page on a phone.
-- [ ] Wesley: after the merge, tick the boxes of the tasks with the evidence in a comment.
+- [ ] Wesley: the OR3 lines above, after a teammate and one person outside the team tried the page on a phone, before anyone approves !70.
+- [ ] Wesley: after the merge, tick the boxes of the tasks with the evidence in a comment. No change to this branch for it.
 
 ## AI use
 
