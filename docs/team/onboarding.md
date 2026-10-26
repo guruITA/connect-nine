@@ -636,11 +636,39 @@ The server serves the screen itself: every address outside `/api` gets the scree
 
 ### Going back to the previous version
 
-When a merge broke the test site:
+When a merge broke the test site (task 17.4, #314). Anyone in the team can do this, without the author of the change. It takes about five minutes: one for the way back itself and up to two for the health check.
 
-1. Open the merge request that broke it and press Revert. GitLab makes a new merge request into dev that takes the change out.
-2. A teammate approves it as any other merge request. After the merge, deploy-test puts the version before it back.
-3. A revert does not undo a migration. The tables and columns that migration made stay in the database. When the broken change had a migration, ask its author first: the fix is then a new migration that takes it back, not a revert alone.
+1. **Say so in the team channel.** Write that the test site is down, the link of the red deploy-test job, and that nobody merges into dev until the revert of the broken change is merged and its deploy-test is green (below the steps). Every merge into dev deploys dev again, broken change included, so a merge before the revert takes the site down again.
+2. **Open Operate, Environments, test.** In the menu on the left of the project, Operate, then Environments, then the name test.
+3. **Find the last healthy deployment.** The deployments stand newest first. The top one is the broken version, with a red cross. Go down to the first one with a green check: that is the last version that answered healthy. Write down its short commit, for example `12f07b77`. The merge request that broke it names the same version in its part The version to go back to.
+4. **Press Rollback.** First check the merge request that broke it: does it add a migration, and did that migration itself break the site? Then undo the migration now, as The database stays as it is below says, because after the Rollback the bundle that knows it is gone. Otherwise leave the database alone. Then, on the row of that deployment, press the button with the round arrow and confirm. GitLab calls it Rollback environment, or Re-deploy to environment on the newest green row. GitLab runs the deploy-test job of that older version again: it puts the older server, screen and `docker-compose.test.yml` back on the server. It needs the screen that frontend-build of that pipeline made, which GitLab keeps for 30 days, so a version older than that cannot come back this way.
+5. **Wait for green on a healthy answer.** The new job opens in Build, Jobs. It is done in about a minute when the site is healthy, and the last line says `Connect answers healthy (try 1 of 12).` Red again? Then say so in the team channel and try the deployment one row further down.
+6. **Log in with the check account.** Open https://31-70-66-186.sslip.io and log in with the check account: an account made on the page Make an account before the trouble, whose email and password are only in your own password manager, never in docs or chat. Until log in is on dev (#15), go to Make an account and fill in the email address of the check account instead: the page should say `This email address already has an account`. That proves the server reads the database and the account is still there. It makes nothing new.
+7. **Write it in the issue of the broken change.** What happened, the version you went back to (its short commit), the time the deploy turned red and the time it was healthy again, and the link of the green job. Then say in the team channel that the site is back, and that dev stays closed until the revert below is merged and green.
+
+The test site now runs the older version, but dev still holds the broken change. Undo it with `git revert` in a merge request of its own: open the merge request that broke it and press Revert, or on a new branch from dev run `git revert -m 1 <merge commit>`. A teammate approves it like any other merge request. After the merge, dev deploys again. When that deploy-test is green, say in the team channel that others may merge again.
+
+#### The database stays as it is
+
+Going back never touches the database. The older deploy-test job runs its own migration bundle, which only applies migrations it is missing: it never undoes a newer one it does not know. Because a migration only adds tables and columns ([decision 011](../decisions/011-migrationsOnlyAdd.md)), the older version runs fine on the newer tables. Never run `docker compose down -v` on the server and never delete the volume `connect-test-data`: that is every row of the test site.
+
+Only when a migration itself broke the site, the migration has to be undone, and that is the one time the database changes. Ask the author of the migration first, because undoing it deletes the tables and columns it made, with their data. Do it in step 4, **before** you press Rollback: only the bundle of the broken version knows the broken migration, and Rollback replaces that bundle with the older one. On the server (part 10, Logging in):
+
+```bash
+cd /srv/connect-test
+# Check the arguments of the bundle first. It should list <MIGRATION> "The target migration".
+sudo docker compose -f docker-compose.test.yml run --rm --no-deps migrations --help
+# Then go back to the last good migration, the one the broken merge request names.
+sudo docker compose -f docker-compose.test.yml run --rm migrations 20261021205912_AddMemberDetailsToProfile
+```
+
+The name is an example: use the migration of the part The version to go back to of the broken merge request. The bundle runs the Down of every migration after it, newest first. Then press Rollback in step 4.
+
+This is the weak part of the way back. It has not been practised yet, and a migration that already deleted data cannot bring that data back. That is why a migration only adds (decision 011).
+
+#### Practised
+
+Not practised yet. The first practice is task 17.4 (#314): a teammate who did not write these steps follows only this part, with a stopwatch, on a version broken on purpose. Their name, the date, the minutes and their remarks come here.
 
 Every merge request names the version to go back to (Definition of Done, Deploy), in its part The version to go back to:
 

@@ -78,10 +78,13 @@ frontend-build:
     - npm ci
     - npm run build
   # deploy-test copies the built screen into the server (#267). A later stage gets it without a needs line.
+  # 30 days, because Rollback on Operate, Environments, test runs an older deploy-test again, and that job
+  # needs this screen of its own pipeline. With 1 day, a Rollback to a deploy older than a day has no web/dist
+  # and fails (#314). Pipelines from before this change keep their 1 day.
   artifacts:
     paths:
       - web/dist
-    expire_in: 1 day
+    expire_in: 30 days
 
 # The images server and migrations from the Dockerfile (task 20.3, #354). The HvA runners are not
 # privileged and refuse user namespaces, so Docker in Docker, Buildah, Podman and BuildKit rootless
