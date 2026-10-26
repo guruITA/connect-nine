@@ -33,7 +33,7 @@ School asks: "You ensure that your work aligns with that of others and contribut
 
 ## TODO
 
-- [ ] Nick: confirm in the review that rule 18 says what he asked for in his review of !68.
+- [x] Nick: confirm in the review that rule 18 says what he asked for in his review of !68. Nick ticked this in !79 on 21 October 2026 and approved !79 on 25 October 2026.
 
 ## References
 
