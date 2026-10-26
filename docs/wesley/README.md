@@ -26,6 +26,7 @@ One file per task I did, with the proof block of the task filled in. A point tha
 | `portfolioProof/task330MyProfile.md` | Tasks 8.1 to 8.3 My own profile page (#330, #331, #332), merge request !70 | Designing and Realising OR1, OR2, OR3, OR4 and OR5 |
 | `portfolioProof/task341MemberProfile.md` | Tasks 14.1, 14.3 and 14.4 The page of another member (#341, #343, #344), merge request !71 | Designing and Realising OR1, OR2, OR3, OR4 and OR5 |
 | `portfolioProof/task565ProfileTags.md` | Tasks 36.1 to 36.3 Skills and interests as tags (#565, #566, #567), merge request !72 | Designing and Realising OR1, OR2, OR3, OR4 and OR5 |
+| `portfolioProof/task582MemberTags.md` | Tasks 36c.1 to 36c.3 The tags on the page of another member (#582, #583, #584), merge request !73 | Designing and Realising OR1, OR2, OR3, OR4 and OR5 |
 | `portfolioProof/task1497PrototypeInPageDocs.md` | Task 178.1 The page documents point to the prototype screens (#1497), merge request !35 | Managing and Collaborating MS1 and MS4 |
 | `portfolioProof/task241ServerCheckMeeting.md` | Task 9.6 The plan for the server check with the team (#241), merge request !60 | Managing and Collaborating MS1 and MS4 |
 | `portfolioProof/task9LoggedAfterwards.md` | Task 9 Templates and rules (#9), work logged afterwards as issues #1500 to #1515, merge request !39 | Managing and Collaborating MS1 and MS4 |
