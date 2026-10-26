@@ -13,6 +13,11 @@ School asks: "You design and implement systematically, justify choices in relati
 2. **The rule for minors in one place.** `ProfileVisibility` decides what another member may see: never the region of a young person of 15 to 17. The handler applies it, the endpoint and the screen never repeat it.
 3. **An id as text.** The id in the address is read as text and parsed in the endpoint, so `abc` and an unknown id both answer "This member does not exist" and never a server error.
 4. **What I changed when Nick's account code was merged.** Since !50, Application has no EF Core (decision 007). The query now runs through `IAppDbContext` with `AsNoTracking` and `SingleOrDefaultAsync`, as rule 7 of the code conventions says (task 3.13, #1550). The answers are the same as before.
+5. **What I changed after Nick's review of 24 October 2026.** Nick Hoebe reviewed !70, which this branch is built on, and the same points hold here. Each is now a rule of the code conventions:
+   - The state of the page of another member and its call to the server live in the hook `useMemberProfile`, so the page only shows what it gets (frontend rule 13).
+   - `memberProfiles.ts` calls the server through `request()` of his `client.ts` (frontend rule 14).
+   - `ProfileDetails` comes from `components/profile/` (frontend rule 7), and the band with the title is a `div`, because `TopBar` holds the one `header` of the site (frontend rule 16).
+   - The answer record has no `JsonPropertyName`, because ASP.NET Core writes camelCase by itself, and the endpoint tests that read each key stay green (backend rule 21).
 
 ## OR2 Choosing standards and methods
 
@@ -65,8 +70,8 @@ School asks: "In your design and implementation, you consciously take into accou
 
 ## TODO
 
-- [ ] Wesley: the OR3 lines above, after a teammate and one person outside the team tried the page on a phone.
-- [ ] Wesley: after the merge, tick the boxes of the tasks with the evidence in a comment.
+- [ ] Wesley: the OR3 lines above, after a teammate and one person outside the team tried the page on a phone, before anyone approves !71.
+- [ ] Wesley: after the merge, tick the boxes of the tasks with the evidence in a comment. No change to this branch for it.
 
 ## AI use
 
