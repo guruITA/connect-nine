@@ -1,4 +1,5 @@
 using Connect.Application.Common.Abstractions;
+using Connect.Application.Common.Results;
 using Connect.Domain.Users;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
@@ -30,6 +31,33 @@ internal sealed class SqliteAppDbContext(DbContextOptions<SqliteAppDbContext> op
     void IAppDbContext.Remove<TEntity>(TEntity entity) where TEntity : class
     {
         Set<TEntity>().Remove(entity);
+    }
+
+    // SQLite raises no PostgreSQL unique violation, so the conflict on a save is tested
+    // against PostgreSQL in AppDbContextDatabaseTests and MemberProfileEndpointTests.
+    async Task<Result> IAppDbContext.SaveChangesOrConflictAsync(CancellationToken cancellationToken)
+    {
+        await SaveChangesAsync(cancellationToken);
+        return Result.Success();
+    }
+
+    Task<TEntity?> IAppDbContext.SingleOrDefaultAsync<TEntity>(
+        IQueryable<TEntity> query,
+        CancellationToken cancellationToken) where TEntity : default
+    {
+        return query.SingleOrDefaultAsync(cancellationToken);
+    }
+
+    Task<bool> IAppDbContext.AnyAsync<TEntity>(
+        IQueryable<TEntity> query,
+        CancellationToken cancellationToken)
+    {
+        return query.AnyAsync(cancellationToken);
+    }
+
+    IQueryable<TEntity> IAppDbContext.AsNoTracking<TEntity>(IQueryable<TEntity> query)
+    {
+        return query.AsNoTracking();
     }
 
     public Account SaveAccount()
