@@ -41,6 +41,10 @@ services:
       # Not Development, so no developer pages, and not Production, which is the foundation's own server.
       ASPNETCORE_ENVIRONMENT: Staging
       ASPNETCORE_HTTP_PORTS: "8080"
+      # BROKEN ON PURPOSE for the practice of #314: the database listens on 5432, not 5499, so /api/health
+      # answers 503 and deploy-test turns red. The migrations keep the right address from .env, so the
+      # database is never touched. Undone with git revert right after the practice.
+      ConnectionStrings__DefaultConnection: "Host=database;Port=5499;Database=${POSTGRES_DB};Username=${POSTGRES_USER};Password=${POSTGRES_PASSWORD}"
     working_dir: /app
     volumes:
       - ./app:/app:ro
