@@ -2,8 +2,6 @@ using Connect.Application.Common.Abstractions;
 using Connect.Application.Common.Results;
 using Connect.Domain.Tags;
 using Connect.Domain.Users;
-using Microsoft.EntityFrameworkCore;
-using Npgsql;
 
 namespace Connect.Application.Profiles.AddProfileTag;
 
@@ -16,10 +14,11 @@ public sealed class AddProfileTagCommandHandler(IAppDbContext dbContext)
         AddProfileTagCommand command,
         CancellationToken cancellationToken)
     {
-        var profileId = await _dbContext.Profiles
-            .Where(profile => profile.AccountId == command.AccountId)
-            .Select(profile => (Guid?)profile.Id)
-            .SingleOrDefaultAsync(cancellationToken);
+        var profileId = await _dbContext.SingleOrDefaultAsync(
+            _dbContext.Profiles
+                .Where(profile => profile.AccountId == command.AccountId)
+                .Select(profile => (Guid?)profile.Id),
+            cancellationToken);
         if (profileId is null)
         {
             return Result<AddProfileTagResult>.Failure(Error.NotFound("You have no profile yet"));
@@ -28,20 +27,19 @@ public sealed class AddProfileTagCommandHandler(IAppDbContext dbContext)
         var tag = await GetOrAddTagAsync(command.Name, cancellationToken);
         var result = new TagResult(tag.Id, tag.Name);
 
-        if (await _dbContext.ProfileTags.AnyAsync(
-                link => link.ProfileId == profileId && link.TagId == tag.Id,
+        if (await _dbContext.AnyAsync(
+                _dbContext.ProfileTags.Where(link => link.ProfileId == profileId && link.TagId == tag.Id),
                 cancellationToken))
         {
             return Result<AddProfileTagResult>.Success(new AddProfileTagResult(result, Added: false));
         }
 
+        // Two saves of the same link at once both end with the one row: the second hits
+        // ux_profile_tag_profile_id_tag_id and answers that the tag was already there.
         var link = new ProfileTag { ProfileId = profileId.Value, TagId = tag.Id };
         _dbContext.Add(link);
-        try
-        {
-            await _dbContext.SaveChangesAsync(cancellationToken);
-        }
-        catch (DbUpdateException exception) when (IsUniqueViolation(exception, "pk_profile_tag"))
+        var saved = await _dbContext.SaveChangesOrConflictAsync(cancellationToken);
+        if (!saved.IsSuccess)
         {
             _dbContext.Remove(link);
             return Result<AddProfileTagResult>.Success(new AddProfileTagResult(result, Added: false));
@@ -54,7 +52,9 @@ public sealed class AddProfileTagCommandHandler(IAppDbContext dbContext)
     // ux_tag_name and reads the tag the first one made.
     private async Task<Tag> GetOrAddTagAsync(string name, CancellationToken cancellationToken)
     {
-        var existing = await _dbContext.Tags.SingleOrDefaultAsync(tag => tag.Name == name, cancellationToken);
+        var existing = await _dbContext.SingleOrDefaultAsync(
+            _dbContext.Tags.Where(tag => tag.Name == name),
+            cancellationToken);
         if (existing is not null)
         {
             return existing;
@@ -62,32 +62,15 @@ public sealed class AddProfileTagCommandHandler(IAppDbContext dbContext)
 
         var tag = new Tag { Name = name, IsSuggested = false };
         _dbContext.Add(tag);
-        try
+        var saved = await _dbContext.SaveChangesOrConflictAsync(cancellationToken);
+        if (saved.IsSuccess)
         {
-            await _dbContext.SaveChangesAsync(cancellationToken);
             return tag;
         }
-        catch (DbUpdateException exception) when (IsUniqueViolation(exception, "ux_tag_name"))
-        {
-            _dbContext.Remove(tag);
-            return await _dbContext.Tags.SingleAsync(candidate => candidate.Name == name, cancellationToken);
-        }
-    }
 
-    private static bool IsUniqueViolation(Exception exception, string constraintName)
-    {
-        for (var current = exception; current is not null; current = current.InnerException)
-        {
-            if (current is PostgresException
-                {
-                    SqlState: PostgresErrorCodes.UniqueViolation
-                } postgresException
-                && postgresException.ConstraintName == constraintName)
-            {
-                return true;
-            }
-        }
-
-        return false;
+        _dbContext.Remove(tag);
+        return await _dbContext.SingleAsync(
+            _dbContext.Tags.Where(candidate => candidate.Name == name),
+            cancellationToken);
     }
 }

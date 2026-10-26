@@ -36,6 +36,7 @@ namespace Connect.Infrastructure.Persistence.Migrations
                 name: "profile_tag",
                 columns: table => new
                 {
+                    id = table.Column<Guid>(type: "uuid", nullable: false),
                     profile_id = table.Column<Guid>(type: "uuid", nullable: false),
                     tag_id = table.Column<Guid>(type: "uuid", nullable: false),
                     created_at = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
@@ -43,7 +44,7 @@ namespace Connect.Infrastructure.Persistence.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("pk_profile_tag", x => new { x.profile_id, x.tag_id });
+                    table.PrimaryKey("pk_profile_tag", x => x.id);
                     table.ForeignKey(
                         name: "fk_profile_tag_profile_profile_id",
                         column: x => x.profile_id,
@@ -89,6 +90,12 @@ namespace Connect.Infrastructure.Persistence.Migrations
                 name: "ix_profile_tag_tag_id",
                 table: "profile_tag",
                 column: "tag_id");
+
+            migrationBuilder.CreateIndex(
+                name: "ux_profile_tag_profile_id_tag_id",
+                table: "profile_tag",
+                columns: new[] { "profile_id", "tag_id" },
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "ux_tag_name",

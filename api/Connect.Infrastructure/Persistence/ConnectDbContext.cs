@@ -58,6 +58,27 @@ public sealed class ConnectDbContext(DbContextOptions<ConnectDbContext> options)
         return query.AnyAsync(cancellationToken);
     }
 
+    Task<TEntity> IAppDbContext.SingleAsync<TEntity>(
+        IQueryable<TEntity> query,
+        CancellationToken cancellationToken)
+    {
+        return query.SingleAsync(cancellationToken);
+    }
+
+    Task<int> IAppDbContext.CountAsync<TEntity>(
+        IQueryable<TEntity> query,
+        CancellationToken cancellationToken)
+    {
+        return query.CountAsync(cancellationToken);
+    }
+
+    Task<List<TEntity>> IAppDbContext.ToListAsync<TEntity>(
+        IQueryable<TEntity> query,
+        CancellationToken cancellationToken)
+    {
+        return query.ToListAsync(cancellationToken);
+    }
+
     IQueryable<TEntity> IAppDbContext.AsNoTracking<TEntity>(IQueryable<TEntity> query)
     {
         return query.AsNoTracking();
@@ -150,7 +171,10 @@ public sealed class ConnectDbContext(DbContextOptions<ConnectDbContext> options)
 
         modelBuilder.Entity<ProfileTag>(entity =>
         {
-            entity.HasKey(link => new { link.ProfileId, link.TagId }).HasName("pk_profile_tag");
+            entity.HasKey(link => link.Id);
+            entity.HasIndex(link => new { link.ProfileId, link.TagId })
+                .IsUnique()
+                .HasDatabaseName("ux_profile_tag_profile_id_tag_id");
             entity.Property(link => link.CreatedAt).IsRequired();
             entity.Property(link => link.UpdatedAt).IsRequired();
             entity.HasOne<Profile>()

@@ -374,6 +374,15 @@ namespace Connect.Infrastructure.Persistence.Migrations
 
             modelBuilder.Entity("Connect.Domain.Users.ProfileTag", b =>
                 {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
+
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_at");
+
                     b.Property<Guid>("ProfileId")
                         .HasColumnType("uuid")
                         .HasColumnName("profile_id");
@@ -382,19 +391,19 @@ namespace Connect.Infrastructure.Persistence.Migrations
                         .HasColumnType("uuid")
                         .HasColumnName("tag_id");
 
-                    b.Property<DateTimeOffset>("CreatedAt")
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("created_at");
-
                     b.Property<DateTimeOffset>("UpdatedAt")
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("updated_at");
 
-                    b.HasKey("ProfileId", "TagId")
+                    b.HasKey("Id")
                         .HasName("pk_profile_tag");
 
                     b.HasIndex("TagId")
                         .HasDatabaseName("ix_profile_tag_tag_id");
+
+                    b.HasIndex("ProfileId", "TagId")
+                        .IsUnique()
+                        .HasDatabaseName("ux_profile_tag_profile_id_tag_id");
 
                     b.ToTable("profile_tag", (string)null);
                 });

@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Connect.Infrastructure.Persistence.Migrations
 {
     [DbContext(typeof(ConnectDbContext))]
-    [Migration("20261020075551_AddTagTables")]
+    [Migration("20261022104743_AddTagTables")]
     partial class AddTagTables
     {
         /// <inheritdoc />
@@ -312,7 +312,7 @@ namespace Connect.Infrastructure.Persistence.Migrations
 
                     b.HasIndex("NormalizedUserName")
                         .IsUnique()
-                        .HasDatabaseName("UserNameIndex");
+                        .HasDatabaseName("ux_account_username");
 
                     b.ToTable("AspNetUsers", null, t =>
                         {
@@ -377,6 +377,15 @@ namespace Connect.Infrastructure.Persistence.Migrations
 
             modelBuilder.Entity("Connect.Domain.Users.ProfileTag", b =>
                 {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
+
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_at");
+
                     b.Property<Guid>("ProfileId")
                         .HasColumnType("uuid")
                         .HasColumnName("profile_id");
@@ -385,19 +394,19 @@ namespace Connect.Infrastructure.Persistence.Migrations
                         .HasColumnType("uuid")
                         .HasColumnName("tag_id");
 
-                    b.Property<DateTimeOffset>("CreatedAt")
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("created_at");
-
                     b.Property<DateTimeOffset>("UpdatedAt")
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("updated_at");
 
-                    b.HasKey("ProfileId", "TagId")
+                    b.HasKey("Id")
                         .HasName("pk_profile_tag");
 
                     b.HasIndex("TagId")
                         .HasDatabaseName("ix_profile_tag_tag_id");
+
+                    b.HasIndex("ProfileId", "TagId")
+                        .IsUnique()
+                        .HasDatabaseName("ux_profile_tag_profile_id_tag_id");
 
                     b.ToTable("profile_tag", (string)null);
                 });

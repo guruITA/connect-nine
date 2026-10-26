@@ -16,6 +16,9 @@ public interface IAppDbContext
     Task<int> SaveChangesAsync(CancellationToken cancellationToken);
     Task<Result> SaveChangesOrConflictAsync(CancellationToken cancellationToken);
     Task<TEntity?> SingleOrDefaultAsync<TEntity>(IQueryable<TEntity> query, CancellationToken cancellationToken);
+    Task<TEntity> SingleAsync<TEntity>(IQueryable<TEntity> query, CancellationToken cancellationToken);
     Task<bool> AnyAsync<TEntity>(IQueryable<TEntity> query, CancellationToken cancellationToken);
+    Task<int> CountAsync<TEntity>(IQueryable<TEntity> query, CancellationToken cancellationToken);
+    Task<List<TEntity>> ToListAsync<TEntity>(IQueryable<TEntity> query, CancellationToken cancellationToken);
     IQueryable<TEntity> AsNoTracking<TEntity>(IQueryable<TEntity> query) where TEntity : class;
 }

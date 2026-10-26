@@ -60,6 +60,27 @@ internal sealed class SqliteAppDbContext(DbContextOptions<SqliteAppDbContext> op
         return query.AnyAsync(cancellationToken);
     }
 
+    Task<TEntity> IAppDbContext.SingleAsync<TEntity>(
+        IQueryable<TEntity> query,
+        CancellationToken cancellationToken)
+    {
+        return query.SingleAsync(cancellationToken);
+    }
+
+    Task<int> IAppDbContext.CountAsync<TEntity>(
+        IQueryable<TEntity> query,
+        CancellationToken cancellationToken)
+    {
+        return query.CountAsync(cancellationToken);
+    }
+
+    Task<List<TEntity>> IAppDbContext.ToListAsync<TEntity>(
+        IQueryable<TEntity> query,
+        CancellationToken cancellationToken)
+    {
+        return query.ToListAsync(cancellationToken);
+    }
+
     IQueryable<TEntity> IAppDbContext.AsNoTracking<TEntity>(IQueryable<TEntity> query)
     {
         return query.AsNoTracking();
@@ -137,7 +158,8 @@ internal sealed class SqliteAppDbContext(DbContextOptions<SqliteAppDbContext> op
 
         modelBuilder.Entity<ProfileTag>(entity =>
         {
-            entity.HasKey(link => new { link.ProfileId, link.TagId });
+            entity.HasKey(link => link.Id);
+            entity.HasIndex(link => new { link.ProfileId, link.TagId }).IsUnique();
             entity.HasOne<Profile>().WithMany().HasForeignKey(link => link.ProfileId);
             entity.HasOne(link => link.Tag).WithMany().HasForeignKey(link => link.TagId);
         });
