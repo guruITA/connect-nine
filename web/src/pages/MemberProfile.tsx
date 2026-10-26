@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import { Link, useParams } from "react-router";
 import Eyebrow from "../components/home/Eyebrow";
+import LoggedOutMessage from "../components/LoggedOutMessage";
 import ProfileDetails from "../components/profile/ProfileDetails";
 import TagList from "../components/TagList";
 import { useMemberProfile } from "../hooks/useMemberProfile";
@@ -43,10 +44,8 @@ export default function MemberProfile() {
           </div>
         )}
 
-        {state.status === "notLoggedIn" && (
-          <p role="alert" className={styles.alert}>
-            Log in first to see this page
-          </p>
+        {state.status === "notLoggedIn" && id && (
+          <LoggedOutMessage path={`/members/${id}`} />
         )}
 
         {state.status === "notReachable" && (

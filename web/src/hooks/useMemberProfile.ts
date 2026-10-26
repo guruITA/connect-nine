@@ -30,6 +30,9 @@ export function useMemberProfile(id: string | undefined) {
       }
 
       if (result.outcome === "notLoggedIn") {
+        // Until RequireLogin of #15 exists, the page learns from the 401 that nobody is logged in.
+        // #31 then moves this to RequireLogin with LoggedOutMessage, so the page never asks the
+        // server.
         setState({ status: "notLoggedIn" });
         return;
       }

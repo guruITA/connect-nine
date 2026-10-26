@@ -1,0 +1,27 @@
+/* "Log in to see members", a centered card in place of a member page. */
+.card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-m);
+  align-items: center;
+  padding: var(--space-2xl) var(--space-l);
+  border-radius: var(--radius-tile);
+  background: var(--color-white);
+  text-align: center;
+}
+
+.title {
+  margin: 0;
+  color: var(--color-navy);
+  font-family: var(--font-heading);
+  font-size: var(--text-h3-size);
+  font-weight: var(--font-weight-bold);
+  line-height: var(--text-h3-line);
+  letter-spacing: var(--text-h3-tracking);
+}
+
+.text {
+  margin: 0;
+  max-width: 32rem;
+  color: var(--color-text-muted);
+}

@@ -188,13 +188,25 @@ describe("MemberProfile", () => {
     ).toHaveAttribute("href", "/account");
   });
 
-  it("shows Log in first to see this page in an alert when not logged in", async () => {
+  it("shows the Log in message instead of the member when not logged in", async () => {
     mockedGetMemberProfile.mockResolvedValue({ outcome: "notLoggedIn" });
-    renderPage();
+    renderPage("00000000-0000-4000-8000-000000000141");
 
-    expect(await screen.findByRole("alert")).toHaveTextContent(
-      "Log in first to see this page",
+    expect(
+      await screen.findByRole("heading", { name: "Log in to see members" }),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText(
+        "Member pages on Connect are only for people who are logged in, to keep the young people on Connect safe.",
+      ),
+    ).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: "Log in" })).toHaveAttribute(
+      "href",
+      "/login?next=%2Fmembers%2F00000000-0000-4000-8000-000000000141",
     );
+    expect(
+      screen.queryByText("00000000-0000-4000-8000-000000000141"),
+    ).not.toBeInTheDocument();
   });
 
   it("shows Connect is not reachable right now in an alert", async () => {
