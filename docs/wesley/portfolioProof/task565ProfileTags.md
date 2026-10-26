@@ -14,6 +14,11 @@ School asks: "You design and implement systematically, justify choices in relati
 3. **Two members at the same moment.** When two members add the same new tag at once, the second insert hits the unique index and reads the tag the first one made, so nobody gets an error.
 4. **The starter list.** Twenty suggested tags, only skills and interests, in small letters, nothing about health, faith, sexuality, politics or origin. It is a draft until the team agrees on it (question 9 of #11).
 5. **What I changed when Nick's account code was merged.** Since !50, Application has no EF Core (decision 007), and `IAppDbContext.Add` takes only an entity with an id (`IEntity`). The handlers now run their queries through `IAppDbContext` (`AsNoTracking`, `SingleOrDefaultAsync`, `SingleAsync`, `AnyAsync`, `CountAsync` and `ToListAsync`) and save with `SaveChangesOrConflictAsync`, so both unique indexes come back as a conflict from Infrastructure (task 3.13, #1550). The link `profile_tag` got an `id` of its own as primary key, as database rule 3 asks, and a profile still holds a tag once through the unique index `ux_profile_tag_profile_id_tag_id`. The migration `AddTagTables` is made again after the one of !67, with the same tables otherwise, and I checked it up, one back and up again.
+6. **What I changed after Nick's review of 24 October 2026.** Nick Hoebe reviewed !70, which this branch is built on, and the same points hold here. Each is now a rule of the code conventions:
+   - The tags of My profile live in the hook `useMyProfile` with the rest of the page, so the page only shows what it gets (frontend rule 13).
+   - `tags.ts` and `memberProfileTags.ts` call the server through `request()` of his `client.ts`, and read a wrong tag through the shared type `ValidationProblem` (frontend rules 14 and 15).
+   - `TagResponse`, `SuggestedTagsMeta` and the own profile answer have no `JsonPropertyName`, and the endpoint tests that read each key stay green (backend rule 21).
+   - The starter tags already come with `HasData` in a migration, which database rule 11 now names as the way for every list a database needs.
 
 ## OR2 Choosing standards and methods
 
@@ -68,8 +73,8 @@ School asks: "In your design and implementation, you consciously take into accou
 
 ## TODO
 
-- [ ] Wesley: the OR3 lines above, after a teammate and one person outside the team tried the page on a phone.
-- [ ] Wesley: after the merge, tick the boxes of the tasks with the evidence in a comment.
+- [ ] Wesley: the OR3 lines above, after a teammate and one person outside the team tried the page on a phone, before anyone approves !72.
+- [ ] Wesley: after the merge, tick the boxes of the tasks with the evidence in a comment. No change to this branch for it.
 
 ## AI use
 
