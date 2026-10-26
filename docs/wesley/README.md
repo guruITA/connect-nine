@@ -43,6 +43,15 @@ One file per task I did, with the proof block of the task filled in. A point tha
 | `portfolioProof/task1519SprintReview1Documents.md` | Issue 1519 The sprint 1 review documents in the repository (#1519), merge requests !43, !44 and !45 | Managing and Collaborating MS1 |
 | `portfolioProof/task1555ScanFix.md` | Task 16.4 The security scan green again after two new advisories (#1555), merge request !99 | Designing and Realising OR4 |
 | `portfolioProof/task1543TestsAndMocking.md` | Task 3.12 The code conventions for tests and NSubstitute (#1543), merge request !77 | Managing and Collaborating MS1 and MS4 |
+| `portfolioProof/task1559FeatureFolders.md` | Task 1.17 The code convention on the folder of a piece of screen (#1559), merge request !116 | Managing and Collaborating MS1 and MS4 |
+| `portfolioProof/task1560OneFormField.md` | Task 1.18 The code convention on one form field (#1560), merge request !116 | Managing and Collaborating MS1 and MS4 |
+| `portfolioProof/task1561PageHooks.md` | Task 1.19 The code convention on a hook per page (#1561), merge request !116 | Managing and Collaborating MS1 and MS4 |
+| `portfolioProof/task1562RequestThroughClient.md` | Task 1.20 The code convention on request() of client.ts (#1562), merge request !116 | Managing and Collaborating MS1 and MS4 |
+| `portfolioProof/task1563SharedAnswerTypes.md` | Task 1.21 The code convention on shared answer types (#1563), merge request !116 | Managing and Collaborating MS1 and MS4 |
+| `portfolioProof/task1564OneHeader.md` | Task 1.22 The code convention on one header (#1564), merge request !116 | Managing and Collaborating MS1 and MS4 |
+| `portfolioProof/task1565NoJsonPropertyName.md` | Task 1.23 The code convention on JsonPropertyName (#1565), merge request !116 | Managing and Collaborating MS1 and MS4 |
+| `portfolioProof/task1566SeedData.md` | Task 1.24 The code convention on seed data (#1566), merge request !116 | Managing and Collaborating MS1 and MS4 |
+| `portfolioProof/task1567MigrationAfterRebase.md` | Task 1.25 The code convention on a migration after a rebase (#1567), merge request !116 | Managing and Collaborating MS1 and MS4 |
 | `portfolioProof/task1544NullForgivingOperator.md` | Task 1.10 The code convention on the null-forgiving operator (#1544), merge request !79 | Managing and Collaborating MS1 and MS4 |
 | `portfolioProof/task1545ReadonlyFields.md` | Task 1.11 The code convention on fields for what the constructor gets (#1545), merge request !79 | Managing and Collaborating MS1 and MS4 |
 | `portfolioProof/task1546ValidationErrorKeys.md` | Task 1.12 The code convention on the keys of a validation answer (#1546), merge request !79 | Analysing and Advising AA2, Managing and Collaborating MS4 |
