@@ -1064,7 +1064,27 @@ When anything differs, the job prints the line in capitals, removes the canary a
 2. Read the last lines of its log: which step stopped, and what the health address answered.
 3. The old version keeps serving when the new one never gets ready, because the rolling update keeps the old pod until the new one is ready. Visitors see no difference, so there is time to find the cause.
 4. Never press Retry before you know why it failed. A retry of a broken version fails the same way, and a retry after a migration ran can make it worse.
-5. Fix it on a branch through dev, or go back to the version before it (issue 97, #163). Until #163 is built, going back is a revert merge request into dev and then dev into main.
+5. Fix it on a branch through dev. When the broken version did reach visitors, go back first (Going back in production, below).
+
+### Going back in production
+
+When a version on production is broken for visitors and the fix takes longer than a few minutes, put the last healthy version back with the job `rollback-production` (issue 97, task 97.1, #1061). The goal is ten minutes from the moment someone sees it.
+
+1. Say it in the team channel: what is broken, and that you go back.
+2. Read the last healthy version: Operate, Environments, `production`. The line before the broken one names its commit. Its short commit id, for example `292759f1`, is the version.
+3. Build, Pipelines, the newest pipeline of main, the job `rollback-production`. Open it, add the variable `ROLLBACK_IMAGE_TAG` with that version, and press Run job. An empty value stops with "Type the version to go back to, from Operate, Environments, production", and anything that is not a version stops with "This is not a version". Nothing changes then.
+4. Wait for green. The job fills the Secrets, runs `terraform apply` with that version, waits for the rollout and for a healthy answer, the same steps as `deploy-production` without the canary check.
+5. Open the live address and check that the page opens.
+6. Write in the issue of the broken change what happened, when, and which version runs now.
+7. Revert the broken change with a merge request into dev and then dev into main, before any other release. Until then main still holds the broken change, and the next merge into main would put it live again.
+
+**Why not `kubectl rollout undo`.** It changes k3s behind Terraform's back: the files and the state still say the broken version, so the next plan shows it and the next deploy puts it back, and only the pipeline holds the login that may change production.
+
+**Why not the Rollback button of Operate, Environments.** It runs the deploy job of an older pipeline again, with the pipeline file and the Terraform files of that older commit, so it would also undo every later change to production that was not broken.
+
+**The database stays.** Going back never undoes a migration. The migrations Job of the older version runs again under its own name and finds nothing to do: on 26 October 2026 it said "No migrations were applied. The database is already up to date." That is safe as long as a migration only adds tables and columns, the rule #314 proposes. A broken release that removed or renamed a column cannot be fixed by going back, only by a new migration.
+
+**How far back.** As far as the registry keeps images: the ten newest versions of each image, and older ones go once they are a week old (part Images and the registry of `docs/team/gitlabSetup.md`). dev and main both push versions, so after many merges into dev an older version of main may be gone.
 
 ## References
 
