@@ -98,6 +98,17 @@ resource "kubernetes_deployment_v1" "connect_server" {
               cpu    = "500m"
             }
           }
+
+          # A stopping pod still gets visits until Traefik has seen it go. Measured on 25 October 2026:
+          # one visit of 378 got no answer when the old pod stopped (#1051). The pod waits five seconds
+          # before .NET is asked to stop, so Traefik sends every visit to the new pod first.
+          lifecycle {
+            pre_stop {
+              exec {
+                command = ["sleep", "5"]
+              }
+            }
+          }
         }
       }
     }
