@@ -22,7 +22,7 @@ School asks: "You ensure that your work aligns with that of others and contribut
 
 1. **The test site stays as it is.** Caddy got a second block for the live address, and the block of the test site did not change. The live version has its own database and its own Secrets, never those of the test site.
 2. **The images of the pipeline.** Production runs the images that image-push of task 20.3 (#354) puts in the registry, the same Dockerfile and the same version number as on dev, so what runs live is what the pipeline built.
-3. **The agreed decision.** It follows `docs/decisions/010-productionOnK3s.md`: Caddy is the one front door, Traefik listens only on 127.0.0.1, and nothing of the foundation's name or real data goes in before the director's yes.
+3. **The agreed decision.** It follows `docs/decisions/010-productionOnK3s.md`: Caddy is the one front door, Traefik listens only on 127.0.0.1, and no real data goes in before the director's yes.
 4. **What the code does today.** The server reads `ConnectionStrings__DefaultConnection`, as `api/Connect.Infrastructure/DependencyInjection.cs` does, not the name on the card. The volume for uploads and the setting of the forwarded headers wait for #134 and #57, which are not built yet.
 
 ## TODO

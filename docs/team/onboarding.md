@@ -978,7 +978,7 @@ The jobs `terraform-plan` and `terraform-apply` of task 94.2 (#1048) are not on 
 
 ### The live version
 
-The live version is at https://live.31-70-66-186.sslip.io until the foundation's domain www.youngamstellandconnect.nl points at the server (question 113). Nothing of the foundation's name or real data of young people is in it before the director has said yes (questions 111 and 114).
+The live version is at https://live.31-70-66-186.sslip.io until the foundation's domain www.youngamstellandconnect.nl points at the server (question 113). It runs the same screens as the test site. No real data of young people goes in before the director has said yes (questions 111 and 114).
 
 **The address.** Caddy holds the padlock for the address and passes every visit to Traefik inside k3s on `127.0.0.1:8081`, which only listens on the server itself. The block is the second one in `deploy/Caddyfile`, next to the test site, and the Ingress `connect-server` in `infra/terraform/connectIngress.tf` sends that address on to the server. A new address changes those two places and the GitLab variable `PRODUCTION_HOST`. Reload Caddy and read its log as for the test site (part 10, The test address).
 
