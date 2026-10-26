@@ -2,6 +2,7 @@ using System.Security.Claims;
 using Connect.Application.Common.Abstractions;
 using Connect.Application.Common.Results;
 using Connect.Application.Profiles.CreateProfile;
+using Connect.Application.Profiles.GetCurrentProfile;
 using Connect.Domain.Users;
 using Connect.Presentation.Common.Authentication;
 using Connect.Presentation.Common.Errors;
@@ -22,6 +23,28 @@ public static class MemberProfileEndpoints
     {
         var memberProfileGroup = endpoints.MapGroup("/api/member-profiles")
             .RequireAuthorization();
+
+        memberProfileGroup.MapGet("/current", async Task<Results<
+            Ok<Response<MemberProfileResponseData>>,
+            ProblemHttpResult>> (
+                ClaimsPrincipal user,
+                IQueryHandler<GetCurrentProfileQuery, Result<CurrentProfileResult>> handler,
+                CancellationToken cancellationToken) =>
+        {
+            var accountId = user.GetAccountId();
+            if (accountId is null)
+            {
+                return Error.Unauthorized("Log in to see this page").ToProblemDetails();
+            }
+
+            var result = await handler.HandleAsync(
+                new GetCurrentProfileQuery(accountId.Value),
+                cancellationToken);
+
+            return result.IsSuccess
+                ? TypedResults.Ok(MemberProfileResponseMapper.Map(result.Value!))
+                : result.Error.ToProblemDetails();
+        });
 
         memberProfileGroup.MapPost("/", async Task<Results<
             Created<Response<CreateMemberProfileResponseData>>,

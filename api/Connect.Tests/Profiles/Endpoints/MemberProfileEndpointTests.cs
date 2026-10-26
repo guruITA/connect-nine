@@ -22,6 +22,7 @@ public sealed class MemberProfileEndpointTests
 {
     private const string Address = "/api/member-profiles/";
     private const string AccountHeader = "X-Temporary-Account-Id";
+    private const string CurrentAddress = "/api/member-profiles/current";
 
     [Test]
     public async Task Post_ValidProfile_ReturnsCreatedWithIdAndLeavesOneRow()
@@ -231,6 +232,113 @@ public sealed class MemberProfileEndpointTests
             Assert.That(messages, Is.Not.Empty);
             Assert.That(messages, Has.None.Contains("Qwerty"));
         }
+    }
+
+    [Test]
+    public async Task GetCurrent_WithProfile_ReturnsExactlyTheFourValues()
+    {
+        using WebApplicationFactory<Program> factory = CreateFactory();
+        Guid accountId = SaveAccount(factory);
+        using HttpClient client = ClientFor(factory, accountId);
+        using HttpResponseMessage saved = await client.PostAsync(
+            Address,
+            Json(new { firstName = "Sam", ageBand = "From18To21", region = "Amstelveen", bio = "" }));
+
+        using HttpResponseMessage response = await client.GetAsync(CurrentAddress);
+        using JsonDocument body = await ReadJson(response);
+        JsonElement data = body.RootElement.GetProperty("data");
+
+        using (Assert.EnterMultipleScope())
+        {
+            Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.OK));
+            Assert.That(
+                data.EnumerateObject().Select(property => property.Name),
+                Is.EqualTo(new[] { "firstName", "ageBand", "region", "bio" }));
+            Assert.That(data.GetProperty("firstName").GetString(), Is.EqualTo("Sam"));
+            Assert.That(data.GetProperty("ageBand").GetString(), Is.EqualTo("From18To21"));
+            Assert.That(data.GetProperty("region").GetString(), Is.EqualTo("Amstelveen"));
+            Assert.That(data.GetProperty("bio").ValueKind, Is.EqualTo(JsonValueKind.Null));
+            Assert.That(body.RootElement.GetProperty("meta").EnumerateObject(), Is.Empty);
+        }
+    }
+
+    [Test]
+    public async Task GetCurrent_WithoutProfile_ReturnsNotFound()
+    {
+        using WebApplicationFactory<Program> factory = CreateFactory();
+        using HttpClient client = ClientFor(factory, SaveAccount(factory));
+
+        using HttpResponseMessage response = await client.GetAsync(CurrentAddress);
+        using JsonDocument body = await ReadJson(response);
+
+        using (Assert.EnterMultipleScope())
+        {
+            Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.NotFound));
+            Assert.That(body.RootElement.GetProperty("title").GetString(), Is.EqualTo("You have no profile yet"));
+        }
+    }
+
+    [Test]
+    public async Task GetCurrent_WithoutAccount_ReturnsUnauthorized()
+    {
+        using WebApplicationFactory<Program> factory = CreateFactory();
+        using HttpClient client = factory.CreateClient();
+
+        using HttpResponseMessage response = await client.GetAsync(CurrentAddress);
+
+        Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.Unauthorized));
+    }
+
+    [Test]
+    public async Task GetCurrent_TwoMembers_EachGetsOnlyTheirOwnProfile()
+    {
+        using WebApplicationFactory<Program> factory = CreateFactory();
+        Guid first = SaveAccount(factory);
+        Guid second = SaveAccount(factory);
+        using HttpClient firstClient = ClientFor(factory, first);
+        using HttpClient secondClient = ClientFor(factory, second);
+        using HttpResponseMessage firstSaved = await firstClient.PostAsync(
+            Address,
+            Json(new { firstName = "Sam", ageBand = "From15To17", region = "Amstelveen" }));
+        using HttpResponseMessage secondSaved = await secondClient.PostAsync(
+            Address,
+            Json(new { firstName = "Alex", ageBand = "From22To30", region = "Uithoorn" }));
+
+        using HttpResponseMessage firstResponse = await firstClient.GetAsync(CurrentAddress);
+        using HttpResponseMessage secondResponse = await secondClient.GetAsync(CurrentAddress);
+        using JsonDocument firstBody = await ReadJson(firstResponse);
+        using JsonDocument secondBody = await ReadJson(secondResponse);
+
+        using (Assert.EnterMultipleScope())
+        {
+            Assert.That(firstBody.RootElement.GetProperty("data").GetProperty("firstName").GetString(), Is.EqualTo("Sam"));
+            Assert.That(secondBody.RootElement.GetProperty("data").GetProperty("firstName").GetString(), Is.EqualTo("Alex"));
+        }
+    }
+
+    [Test]
+    public async Task GetCurrent_DatabaseNotReachable_ReturnsServiceUnavailableWithoutErrorText()
+    {
+        using WebApplicationFactory<Program> factory = UnreachableDatabaseFactory();
+        using HttpClient client = ClientFor(factory, Guid.NewGuid());
+
+        using HttpResponseMessage response = await client.GetAsync(CurrentAddress);
+        string content = await response.Content.ReadAsStringAsync();
+
+        using (Assert.EnterMultipleScope())
+        {
+            Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.ServiceUnavailable));
+            Assert.That(content, Does.Contain("Connect is not reachable right now"));
+            Assert.That(content, Does.Not.Contain("Exception"));
+        }
+    }
+
+    private static WebApplicationFactory<Program> UnreachableDatabaseFactory()
+    {
+        return new WebApplicationFactory<Program>()
+            .WithWebHostBuilder(builder => builder
+                .UseSetting("ConnectionStrings:DefaultConnection", "Host=127.0.0.1;Port=1;Database=none;Timeout=2")
+                .UseSetting("TemporaryAccount:Enabled", "true"));
     }
 
     private static WebApplicationFactory<Program> CreateFactory(

@@ -134,6 +134,37 @@ The five answers:
 
 The first name, the region and the bio are in no log line.
 
+## `GET /api/member-profiles/current`
+
+Gives the young person who is logged in their own profile (issue 08 See my own profile page,
+task 8.2). The address has no id in it, so a member can only ever ask for their own profile. The
+account comes from the session, and until log in (#15) from the temporary header described under
+`POST /api/member-profiles`.
+
+The five answers:
+
+- `200 OK` with exactly four values, and `bio` is `null` when it is empty. No email address, id,
+  account id or date:
+
+  ```json
+  {"data":{"firstName":"Sam","ageBand":"YoungAdult","region":"Amstelveen","bio":null},"meta":{}}
+  ```
+
+- `401 Unauthorized` when nobody is logged in, without a body.
+- `404 Not Found` when the member has no profile yet, which is normal for a new member:
+
+  ```json
+  {"title":"You have no profile yet","status":404}
+  ```
+
+- `503 Service Unavailable` when the database cannot be reached, without any error text:
+
+  ```json
+  {"title":"Connect is not reachable right now","status":503}
+  ```
+
+The profile is found through the unique index `ix_profile_account_id` and read without tracking.
+
 ## The screen and unknown addresses
 
 The server also serves the built screen (`web/dist`, copied into `wwwroot` by the job deploy-test), so the test site has one address and needs no CORS (#267).

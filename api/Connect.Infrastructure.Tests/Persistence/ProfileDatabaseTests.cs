@@ -1,3 +1,4 @@
+using Connect.Application.Common.Abstractions;
 using Connect.Domain.Users;
 using Connect.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
@@ -148,6 +149,58 @@ public sealed class ProfileDatabaseTests
 
         Assert.DoesNotThrow(() => dbContext.SaveChanges());
     }
+
+    [Test]
+    public void FindingTheProfileOfAnAccount_ReturnsItsFourValues()
+    {
+        Account account = TestRows.SaveAccount(dbContext);
+        dbContext.Add(TestRows.NewProfile(account));
+        dbContext.SaveChanges();
+
+        using ConnectDbContext readContext = TestDatabase.CreateDbContext();
+        var found = ProfileOfAccount(readContext, account.Id);
+
+        Assert.That(found, Is.EqualTo(new ProfileValues("Sam", AgeBand.Adolescent, "Amstelveen", "I like football.")));
+    }
+
+    [Test]
+    public void FindingTheProfileOfAnAccountWithoutOne_ReturnsNothing()
+    {
+        Account account = TestRows.SaveAccount(dbContext);
+
+        using ConnectDbContext readContext = TestDatabase.CreateDbContext();
+
+        Assert.That(ProfileOfAccount(readContext, account.Id), Is.Null);
+    }
+
+    [Test]
+    public void FindingTheProfileOfAnAccount_NeverReturnsTheProfileOfAnother()
+    {
+        Account own = TestRows.SaveAccount(dbContext);
+        Account other = TestRows.SaveAccount(dbContext);
+        Profile otherProfile = TestRows.NewProfile(other);
+        otherProfile.FirstName = "Alex";
+        dbContext.Add(TestRows.NewProfile(own));
+        dbContext.Add(otherProfile);
+        dbContext.SaveChanges();
+
+        using ConnectDbContext readContext = TestDatabase.CreateDbContext();
+
+        Assert.That(ProfileOfAccount(readContext, own.Id)?.FirstName, Is.EqualTo("Sam"));
+    }
+
+    // The query of GET /api/member-profiles/current: through IAppDbContext, without tracking and
+    // without loading the account.
+    private static ProfileValues? ProfileOfAccount(IAppDbContext appDbContext, Guid accountId)
+    {
+        return appDbContext.Profiles
+            .AsNoTracking()
+            .Where(profile => profile.AccountId == accountId)
+            .Select(profile => new ProfileValues(profile.FirstName, profile.AgeBand, profile.Region, profile.Bio))
+            .SingleOrDefault();
+    }
+
+    private sealed record ProfileValues(string FirstName, AgeBand AgeBand, string Region, string? Bio);
 
     private async Task<bool> SaveProfileAtTheSameMoment(Guid accountId, Barrier barrier)
     {
