@@ -1045,7 +1045,16 @@ The road of a change (issue 96, #162):
 
 Two gates the HvA DevOps workshop asks for do not exist yet: the code quality check in a stage analyze between test and scan comes with #153, and the scan of the images themselves with #154. Each adds its job before deploy, so `deploy-production` waits for it as well.
 
-**What deploy-production does.** It fills the Secrets (`infra/k3s/applySecrets.sh`), runs `terraform apply` with the short commit id as the image version, waits until the new server is rolled out (`kubectl rollout status`, at most five minutes), and asks `https://<the live address>/api/health` every 10 seconds, at most 12 times, until it answers healthy (`infra/k3s/waitForHealthy.sh`). It runs only on a push pipeline of main, never in the weekly scheduled pipeline and never in a pipeline started by hand.
+**What deploy-production does.** It fills the Secrets (`infra/k3s/applySecrets.sh`), runs the migrations of the new version, checks the new version beside the old one (The canary check, below), runs `terraform apply` with the short commit id as the image version, waits until the new server is rolled out (`kubectl rollout status`, at most five minutes), and asks `https://<the live address>/api/health` every 10 seconds, at most 12 times, until it answers healthy (`infra/k3s/waitForHealthy.sh`). It runs only on a push pipeline of main, never in the weekly scheduled pipeline and never in a pipeline started by hand.
+
+**The canary check** (task 96.4, #1558). The readiness probe only asks `/api/health`, which says the server and its database run. So before visitors move, `infra/k3s/canaryCheck.sh` starts the new version beside the old one as `connect-server-canary`: a copy of `connect-server` with only its name, labels and image changed, with no visitors. A Job inside k3s then runs `infra/k3s/canaryCompare.sh` against both, with the curl image, and only sends GET.
+
+- Every address in `infra/k3s/canaryPaths.txt` must answer the new version with the same status and the same kind of content as the old one.
+- The home page of the new version must have its root element, and every file under `/assets` it names must load.
+- `/api/health` of the new version must say healthy.
+- The canary must not restart, and must log no line of level Error or Critical while it is checked.
+
+When anything differs, the job prints the line in capitals, removes the canary and turns red, and visitors stay on the old version. The migrations of the new version already ran, which is why a migration only adds: the old version keeps working on the new tables. A merge request that changes one of these answers on purpose, for example a new address that answers 200 where it gave 404, changes `canaryPaths.txt` in the same merge request, so the reviewer sees it. What the check cannot see: anything behind the log in, and anything the new version writes.
 
 **Which version runs.** Operate, Environments, `production`: the commit, when it went live and who merged it. The same short commit id is the version of the image: `kubectl -n connect-production get deployment connect-server -o jsonpath='{.spec.template.spec.containers[0].image}'`.
 

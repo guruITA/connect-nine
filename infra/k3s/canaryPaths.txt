@@ -1,0 +1,9 @@
+# The addresses the canary check of task 96.4 (#1558) asks the old and the new version. Only GET, so
+# the check never changes anything. Each must answer the new version with the same status and the same
+# kind of content as the old one. A merge request that changes one of these answers on purpose changes
+# this file in the same merge request, so the reviewer sees it.
+GET /
+GET /create-account
+GET /api/health
+GET /api/accounts
+GET /api/does-not-exist

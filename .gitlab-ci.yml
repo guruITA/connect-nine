@@ -507,6 +507,9 @@ terraform-plan:
 # resource_group production lets one deploy run at a time, and the environment production records which
 # commit runs, since when and who merged it (Operate, Environments). A deploy that never gets healthy turns
 # red, while the old version keeps serving, because the rolling update keeps it until the new one is ready.
+# Before visitors move, the new version runs beside the old one and is checked against it (task 96.4,
+# #1558). Its migrations run first, alone, because the new version needs its own tables. A migration only
+# adds, so the old version keeps working on them when the check stops the deploy.
 deploy-production:
   stage: deploy
   extends: .terraform-production
@@ -523,6 +526,8 @@ deploy-production:
   script:
     - export TF_VAR_image_tag="$CI_COMMIT_SHORT_SHA"
     - bash ../k3s/applySecrets.sh
+    - terraform apply -input=false -auto-approve -target=kubernetes_job_v1.connect_migrations
+    - bash ../k3s/canaryCheck.sh "$CI_COMMIT_SHORT_SHA"
     - terraform apply -input=false -auto-approve
     - kubectl -n connect-production rollout status deployment/connect-server --timeout=5m
     - bash ../k3s/waitForHealthy.sh "https://$PRODUCTION_HOST/api/health"
