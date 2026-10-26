@@ -419,6 +419,15 @@ A visitor who is not logged in never causes a read of `profile`: the guard of
 `/api/member-profiles` answers 401 before the handler runs, the same for a known id, an unknown id
 and a text that is not an id (issue 15, task 15.1, #347, proven by `VisitorDatabaseTests`).
 
+The migration `AddParentConsentTable` (issue 130, task 130.1, #392) adds the table
+`parent_consent`: one request to a parent per profile of a young person under 18. It holds
+`profile_id` (unique through `ux_parent_consent_profile_id`, and removed with its profile),
+`parent_email` (citext), `token_hash` (the SHA-256 hash of the token, never the token, 64
+characters and unique), `expires_at` (one month after the request), `given_at`, `created_at`
+and `updated_at`. A profile with a request that has no `given_at` is visible only to its owner,
+and every other member gets the answer of an unknown id (`ParentConsentVisibility`, task 130.4,
+#395).
+
 ## Security in the architecture
 
 The users include young people from 15 years old, so security is part of the design, not an extra.
